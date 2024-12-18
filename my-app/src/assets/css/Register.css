@@ -1,0 +1,22 @@
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+input {
+  border-radius: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: #fff;
+  width: 345px;
+  height: 51px;
+  flex-shrink: 0;
+}
+
+.buttonBig {
+  border-radius: 20px;
+  color: white;
+  background: #bababa !important;
+}

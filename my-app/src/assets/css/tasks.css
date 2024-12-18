@@ -1,0 +1,17 @@
+.taskDiv {
+  background-color: var(--orange);
+  border: 2px solid var(--orange-dark);
+  border-radius: 24px;
+  padding: 2px 4px;
+}
+
+#tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.taskTitle {
+  margin: 10px 0px;
+  width: 80%;
+}

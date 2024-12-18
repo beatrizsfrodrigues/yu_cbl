@@ -1,0 +1,46 @@
+.home {
+  background-color: white;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  /* gap: 60%; */
+}
+
+/*-------- Botão Pontos --------*/
+
+.buttonsHome {
+  border-radius: 24px;
+  background: var(--orange05, #ffab5c);
+  display: flex;
+  width: 91px;
+  height: 42px;
+  padding: 2px 4px;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.star {
+  width: 25px;
+  height: 24px;
+  fill: none;
+}
+
+/*---------- Botão Armário ------*/
+
+.buttonsCloset {
+  border-radius: 24px;
+  background: var(--orange05, #ffab5c);
+  display: flex;
+  flex-direction: column;
+  width: 91px;
+  height: 42px;
+  padding: 2px 4px;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}

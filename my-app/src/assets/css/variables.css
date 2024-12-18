@@ -1,0 +1,28 @@
+/** color palette  */
+:root {
+  --white: #fbfbfb;
+
+  --blue-lighter: #d1eeed;
+  --blue-light: #afe1df;
+  --blue: #8dd4d1;
+  --blue-dark: #639593;
+  --blue-darker: #385554;
+
+  --purple-lighter: #e1d7e9;
+  --purple-light: #cab9d8;
+  --purple: #b49bc7;
+  --purple-dark: #7e6d8c;
+  --purple-darker: #483e50;
+
+  --green-lighter: #edf9ee;
+  --green-light: #dff4e2;
+  --green: #d2efd5;
+  --green-dark: #93a896;
+  --green-darker: #546055;
+
+  --orange-lighter: #ffddbe;
+  --orange-light: #ffc48d;
+  --orange: #ffab5c;
+  --orange-dark: #b37841;
+  --orange-darker: #664425;
+}

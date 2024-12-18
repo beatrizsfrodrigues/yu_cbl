@@ -1,0 +1,23 @@
+.Welcome {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.text-container {
+}
+
+.title {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.start-button {
+  border-radius: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: #fff;
+  width: 345px;
+  height: 51px;
+  flex-shrink: 0;
+}

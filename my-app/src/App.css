@@ -1,0 +1,72 @@
+@import "./assets/css/variables.css";
+body {
+  background-color: var(--white);
+  display: flex;
+  justify-content: center;
+  font-family: "Quicksand", serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--purple-darker);
+}
+
+#root {
+  margin-top: 40px;
+  width: 100%;
+  padding: 8px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mainBody {
+  width: 100%;
+}
+
+h1 {
+  font-family: "Sour Gummy", serif;
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.navDiv {
+  display: flex;
+  justify-content: center;
+}
+
+nav {
+  background-color: var(--purple);
+  border-radius: 32px;
+  position: fixed;
+  bottom: 20px;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.navIcon {
+  color: var(--purple-darker);
+  width: 30px;
+  height: 30px;
+}
+
+button {
+  font-family: "Quicksand", serif;
+  font-size: 16px;
+  color: var(--purple-darker);
+  font-weight: 600;
+}
+
+.buttonBig {
+  width: 100%;
+  background-color: var(--purple-light);
+  border-radius: 20px;
+  height: 48px;
+  box-shadow: 0px;
+  border: none;
+}
+
+.buttonBig:active {
+  background-color: var(--purple-dark);
+}
