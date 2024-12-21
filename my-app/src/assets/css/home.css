@@ -10,11 +10,19 @@
   /* gap: 60%; */
 }
 
+/*-------- Yu ----------*/
+
+.Yu{
+  justify-content: center;
+  margin-top: 50%;
+  margin-left: 5%;
+}
+
 /*-------- Botão Pontos --------*/
 
 .buttonsHome {
   border-radius: 24px;
-  background: var(--orange05, #ffab5c);
+  background: var(--orange);
   display: flex;
   width: 91px;
   height: 42px;
@@ -34,7 +42,7 @@
 
 .buttonsCloset {
   border-radius: 24px;
-  background: var(--orange05, #ffab5c);
+  background: var(--orange);
   display: flex;
   flex-direction: column;
   width: 91px;
@@ -44,3 +52,4 @@
   gap: 8px;
   text-align: center;
 }
+

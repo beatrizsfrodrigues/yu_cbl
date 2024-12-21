@@ -1,6 +1,8 @@
 import React from "react";
 import "../assets/css/home.css";
 import { ChevronDown } from "react-feather";
+import yu from "../assets/imgs/YU_cores/YU-60.svg";
+import Closet from "./closet.js";
 
 const Home = () => {
   return (
@@ -31,6 +33,8 @@ const Home = () => {
           <ChevronDown className="navIcon" />
         </div>
       </div>
+      <img className="Yu" src={yu}></img>
+      <Closet/>
     </div>
   );
 };
