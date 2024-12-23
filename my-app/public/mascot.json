@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "name": "Mascot",
+    "accessoriesOwned": [],
+    "accessoriesEquipped": {
+      "hat": null,
+      "glasses": null,
+      "shirt": null,
+      "color": null,
+      "background": null
+    }
+  }
+]

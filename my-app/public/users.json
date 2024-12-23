@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "username": "beatriz",
+    "name": "Beatriz Rodrigues",
+    "email": "beatriz.sfrodrigues@ua.pt",
+    "password": "123",
+    "age": 21,
+    "points": 0,
+    "partnerId": 2,
+    "tasks": [
+      {
+        "title": "Não usar o instagram hoje",
+        "description": "Não usar o instagram durante o dia de hoje",
+        "completed": false
+      },
+      {
+        "title": "Lê 1 capítulo de um livro",
+        "description": "Lê 1 capítulo do livro que tens na prateleira à 6 meses",
+        "completed": false
+      }
+    ],
+    "initialFormAnswers": []
+  }
+]

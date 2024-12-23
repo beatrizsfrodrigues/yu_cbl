@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "question": "Quanto tempo passas no telemóvel por dia?",
+    "answers": [
+      "Menos de uma hora",
+      "1-3 horas",
+      "3-5 horas",
+      "Mais de 5 horas"
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Que problemas encontras atualmente?",
+    "answers": ["Fazer scroll sem pensar", "Escapar a realidade"]
+  }
+]
