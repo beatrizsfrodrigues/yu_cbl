@@ -15,3 +15,25 @@
   margin: 10px 0px;
   width: 80%;
 }
+
+#tasksBody {
+  position: relative;
+}
+
+#newTask {
+  position: fixed;
+  bottom: 120px;
+  left: calc(50% - 32px);
+  background-color: var(--purple-dark);
+  color: var(--white);
+  font-size: 40px;
+}
+
+#textBtn {
+  position: fixed;
+  bottom: 120px;
+  right: 60px;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 40px;
+}

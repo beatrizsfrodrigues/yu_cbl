@@ -70,3 +70,11 @@ button {
 .buttonBig:active {
   background-color: var(--purple-dark);
 }
+
+.btnRound {
+  width: 64px;
+  height: 64px;
+  border-radius: 100%;
+  box-shadow: 0px;
+  border: none;
+}
