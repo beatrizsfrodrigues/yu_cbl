@@ -1,22 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
 label {
   display: block;
+  font-size: 18px;
+  margin-top: 26px;
   margin-bottom: 5px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
 }
 
+.logo-container {
+  position: relative;
+  width: 100%;
+  /* Ensure it spans the necessary width */
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.logo {
+  max-width: 277px;
+  max-height: 191px;
+  position: relative;
+  /* Stays on top of the bolas */
+  z-index: 2;
+  display: block;
+}
+
+.bolas {
+  position: absolute;
+  margin-top: 50px;
+  z-index: 1;
+  /* Behind the logo but above other elements */
+  width: 100%;
+  /* Span the entire container */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
 input {
   border-radius: 20px;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background: #fff;
-  width: 100%;
-  height: 51px;
+  width: 345px;
+  height: 40px;
   flex-shrink: 0;
+  z-index: 0;
+  /* Ensure it's above the bolas */
+  position: relative;
 }
 
 .buttonBig {
+  margin-top: 98px;
   border-radius: 20px;
   color: white;
-  background: #bababa !important;
+  border: none;
+  cursor: not-allowed;
+  transition: background 0.3s ease;
+}
+
+.buttonBig.active {
+  background: #b49bc7;
+  cursor: pointer;
+}
+
+.buttonBig:disabled {
+  background-color: #bababa;
+  opacity: 0.7;
+}
+
+.register-link {
+  font-size: 14px;
+  text-align: center;
+}
+
+.register-link a {
+  color: #be77ee;
 }
