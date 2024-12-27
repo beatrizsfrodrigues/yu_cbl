@@ -1,5 +1,18 @@
 .profile-header {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  padding: 10px;
+  width: 90%;
 }
+
+.profile-title {
+  margin: 0;
+  text-align: left;
+}
+
+.gear-icon {
+  font-size: 1.5rem; /* Ajusta o tamanho do ícone conforme necessário */
+  margin-left: 70%;  /*Espaço entre a palavra e o ícone */
+}
+
+
+

@@ -6,6 +6,10 @@ const Profile = () => {
       <h1 className="profile-title">Perfil</h1>
       <span className="gear-icon bi bi-gear"></span>
     </header>
+    
+    
+    
+  
   );
 };
 
