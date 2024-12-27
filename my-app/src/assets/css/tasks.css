@@ -20,6 +20,8 @@
   position: relative;
 }
 
+/** new task window */
+
 #newTask {
   position: fixed;
   bottom: 120px;
@@ -36,4 +38,19 @@
   background-color: var(--orange);
   color: var(--white);
   font-size: 40px;
+}
+
+#newTaskForm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 8px 24px;
+  gap: 16px;
+}
+
+/** text messages window */
+
+#textSpace {
+  height: 60vh;
+  margin: -16px 0px;
 }

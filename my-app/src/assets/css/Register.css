@@ -70,7 +70,7 @@ input {
 }
 
 .buttonBig.active {
-  background: #B49BC7;
+  background: #b49bc7;
   cursor: pointer;
 }
 
@@ -85,5 +85,5 @@ input {
 }
 
 .register-link a {
-  color: #BE77EE;
+  color: #be77ee;
 }
