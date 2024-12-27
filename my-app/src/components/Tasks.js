@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "../redux/usersSlice.js";
 import "../assets/css/tasks.css";
+import NewTask from "./NewTask.js";
+import { MessageCircle, Plus } from "react-feather";
 
 function Tasks() {
   const dispatch = useDispatch();
@@ -9,6 +11,7 @@ function Tasks() {
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -18,6 +21,14 @@ function Tasks() {
 
   const handleTaskClick = (index) => {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   if (usersStatus === "loading") {
@@ -50,12 +61,13 @@ function Tasks() {
           <div>Não existem tarefas</div>
         )}
       </div>
-      <button id="newTask" className="btnRound">
-        +
+      <button id="newTask" className="btnRound" onClick={handleOpenModal}>
+        <Plus />
       </button>
       <button id="textBtn" className="btnRound">
-        +
+        <MessageCircle />
       </button>
+      {isModalOpen && <NewTask onClose={handleCloseModal} />}
     </div>
   );
 }
