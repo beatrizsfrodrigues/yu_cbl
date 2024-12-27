@@ -1,7 +1,7 @@
 import React from "react";
 
 const Defenition = () => {
-  return <div>Defenition Component</div>;
+  return <div>Definições</div>;
 };
 
 export default Defenition;
