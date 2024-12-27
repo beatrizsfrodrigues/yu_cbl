@@ -14,7 +14,10 @@ function NewTask({ onClose }) {
           <label className="label">Título</label>
           <input type="text" className="input" placeholder="Título" />
           <label className="label">Título</label>
-          <textarea className="input" placeholder="Descrição"></textarea>
+          <textarea
+            className="input descriptionInput"
+            placeholder="Descrição"
+          ></textarea>
           <button className="button buttonBig">Criar</button>
         </form>
       </div>
