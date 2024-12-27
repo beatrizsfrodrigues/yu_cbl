@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../redux/usersSlice.js";
 import { X } from "react-feather";
 
 function NewTask({ onClose }) {
@@ -9,7 +7,7 @@ function NewTask({ onClose }) {
       <div className="window">
         <div>
           <h3>Nova tarefa</h3>
-          <X onClick={onClose} />
+          <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
         <form id="newTaskForm">

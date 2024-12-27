@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "../redux/usersSlice.js";
 import "../assets/css/tasks.css";
 import NewTask from "./NewTask.js";
+import Messages from "./Messages.js";
 import { MessageCircle, Plus } from "react-feather";
 
 function Tasks() {
@@ -11,7 +12,8 @@ function Tasks() {
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
+  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -23,12 +25,20 @@ function Tasks() {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenNewTaskModal = () => {
+    setIsNewTaskModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseNewTaskModal = () => {
+    setIsNewTaskModalOpen(false);
+  };
+
+  const handleOpenMessagesModal = () => {
+    setIsMessagesModalOpen(true);
+  };
+
+  const handleCloseMessagesModal = () => {
+    setIsMessagesModalOpen(false);
   };
 
   if (usersStatus === "loading") {
@@ -61,13 +71,22 @@ function Tasks() {
           <div>Não existem tarefas</div>
         )}
       </div>
-      <button id="newTask" className="btnRound" onClick={handleOpenModal}>
+      <button
+        id="newTask"
+        className="btnRound"
+        onClick={handleOpenNewTaskModal}
+      >
         <Plus />
       </button>
-      <button id="textBtn" className="btnRound">
+      <button
+        id="textBtn"
+        className="btnRound"
+        onClick={handleOpenMessagesModal}
+      >
         <MessageCircle />
       </button>
-      {isModalOpen && <NewTask onClose={handleCloseModal} />}
+      {isNewTaskModalOpen && <NewTask onClose={handleCloseNewTaskModal} />}
+      {isMessagesModalOpen && <Messages onClose={handleCloseMessagesModal} />}
     </div>
   );
 }
