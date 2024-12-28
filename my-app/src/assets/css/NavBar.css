@@ -1,0 +1,56 @@
+/********************************
+ * Nav Container
+ ********************************/
+ nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--purple);
+    border-radius: 40px;
+    height: 80px;  
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    max-width: 90%;
+  }
+  
+  /********************************
+   * Nav Items
+   ********************************/
+  .navItem {
+
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--white);
+    font-size: 28px; 
+    transition: transform 0.3s ease;
+    z-index: 1;
+  }
+  
+  .navItem.active {
+    transform: scale(1.8) translateY(-10%);
+  }
+  
+  /********************************
+   * Indicator (Bolha)
+   ********************************/
+  .indicator {
+    position: absolute;
+    top: 50%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--purple);
+    transform: translateY(-50%);
+    transition: transform 0.4s ease-in-out;
+    z-index: 0;
+    border: 4px solid #fff;
+    left: -1%;
+  }
+  
