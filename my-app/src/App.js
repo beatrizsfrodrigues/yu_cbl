@@ -7,7 +7,7 @@ import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Welcome from "./components/Welcome";
-import Defenition from "./components/Defenition";
+import Informacoes from "./components/Perfil/Informacoes";
 import "./App.css";
 
 
@@ -29,7 +29,7 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/welcome" element={<Welcome />} />
-          <Route path="/defenition" element={<Defenition />} />
+          <Route path="/informacoes" element={<Informacoes />} />
         </Routes>
       </div>
     </>
