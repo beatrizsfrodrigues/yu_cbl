@@ -1,11 +1,30 @@
 .Welcome {
-  text-align: center;
-  justify-content: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   width: 100%;
+  background: url('../imgs/YU_bolas/Group 97.svg') no-repeat center center;
 }
 
 .text-container {
+  margin-top: 20px;
+  position: absolute;
+    bottom: -300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 48px;
 }
 
 .title {
@@ -15,9 +34,21 @@
 
 .start-button {
   border-radius: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background: #fff;
+  background: #b49bc7;
   width: 345px;
   height: 51px;
-  flex-shrink: 0;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.start-button:hover {
+  background-color: #7e6d8c;
+  transition: 0.3s ease;
 }
