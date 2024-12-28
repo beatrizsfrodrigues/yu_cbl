@@ -13,7 +13,9 @@ import "./App.css";
 
 function AppContent() {
   const location = useLocation();
-  const showNavRoutes = ["/", "/tasks", "/profile"];
+  /* Só mostra a NavBar se a rota atual estiver em showNavRoutes , se quiserem adicionar
+  outra pagina, basta meter o /nome no showNavRoutes como fiz no home, task e profile */
+  const showNavRoutes = ["/", "/tasks", "/profile"]; 
   const shouldShowNav = showNavRoutes.includes(location.pathname);
 
   return (
