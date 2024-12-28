@@ -5,7 +5,7 @@ import logo from "../assets/imgs/YU_logo/YU-02.svg";
 const Welcome = () => {
 
   const handleClick = () => {
-    console.log("Button clicked!");
+    console.log("Button clicked");
   };
 
   return (
