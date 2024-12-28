@@ -1,7 +1,7 @@
 import React from "react";
 import "../assets/css/home.css";
-import { ChevronDown } from "react-feather";
-import yu from "../assets/imgs/YU_cores/YU-60.svg";
+import { ChevronDown } from "react-feather"
+import yu from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 import Closet from "./closet.js";
 
 const Home = () => {

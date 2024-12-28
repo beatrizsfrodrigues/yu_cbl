@@ -27,14 +27,15 @@ const Login = () => {
            <img src={bolas} alt="bolas" className="bolas" />
           </div>
 
+          <div className="label-container">
           <label>Email</label>
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
+            onChange={(e) => setEmail(e.target.value)} />
+          </div>
+
+        <div classname="pass-container">
           <label>Palavra-passe</label>
           <input
             type="password"
@@ -52,9 +53,10 @@ const Login = () => {
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
         > Login </button>
-
+       
+       </div>
       </form>
-    </div>
+      </div>
   );
 };
 

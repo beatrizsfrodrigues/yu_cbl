@@ -48,7 +48,7 @@ label {
   /* Maintain aspect ratio */
 }
 
-input {
+.form-container input{
   border-radius: 20px;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background: #fff;
