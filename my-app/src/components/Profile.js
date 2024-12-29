@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../assets/css/profile.css";
 import YURoxo from "../assets/imgs/YU_cores/YU-roxo.svg";
 
+
 const Profile = () => {
   const [showSettings, setShowSettings] = useState(false);
 
