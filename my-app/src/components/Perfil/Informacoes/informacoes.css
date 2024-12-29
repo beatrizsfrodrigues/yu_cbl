@@ -1,0 +1,146 @@
+/**********************************
+ * Container Principal
+ **********************************/
+ .informacoes-container {
+    font-family: "Quicksand", sans-serif;
+  }
+  
+  /**********************************
+   * Cabeçalho
+   **********************************/
+  .informacoes-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .back-button {
+    border-radius: 50%; 
+    background-color: var(--purple); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+    cursor: pointer;
+    border: none; 
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 9%;
+    height: 9%;
+    margin-top: -5%;
+  }
+   
+  .bi-arrow-left{
+    content: "\f12f";
+    margin-bottom: 9%;
+  }
+  
+  .back-button:hover {
+    background-color: var(--purple-light); 
+    transform: scale(1.1); 
+  }
+  
+  .back-link {
+    text-decoration: none;
+    color: #ffffff; 
+    font-size: 1.5rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  
+ title {
+    font-size: 2rem;
+    color: var(--purple-darker);
+    font-weight: bold;
+  }
+  
+  /**********************************
+   * Secção de "Sabias que..."
+   **********************************/
+  .informacoes-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--purple-darker);
+  }
+  
+  .informacoes-list {
+    margin: 20px 0;
+  }
+  
+  .informacao-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .informacao-item h3 {
+    font-size: 3rem; 
+    color: var(--purple-darker);
+    line-height: 1; 
+  }
+  
+  .informacao-item p {
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.5; 
+  }
+  
+  /**********************************
+   * Contactos (Apoios)
+   **********************************/
+  .contact-info {
+    background-color: #d8f3dc;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .contact-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #1b4332;
+  }
+  
+  .contact-info p {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: var(--purple-darker);
+  }
+  
+  .contact-info a {
+    text-decoration: none;
+    color: #1b4332;
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+  }
+  
+  /**********************************
+   * Paginação
+   **********************************/
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  
+  .pagination-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: none;
+    background-color: #d3d3d3;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .pagination-dot.active {
+    background-color: var(--purple-darker);
+    transform: scale(1.2); 
+  }
+  
