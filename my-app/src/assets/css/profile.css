@@ -7,8 +7,6 @@
   align-items: center;
   justify-content: flex-start; 
   padding: 20px;
-  height: 80vh; 
-  background-color: #fff; 
   gap: 20px; 
 }
 
@@ -37,7 +35,7 @@
 }
 
 .gear-icon:hover {
-  transform: rotate(20deg);
+  transform: rotate(45deg);
 }
 
 /**********************************
@@ -51,10 +49,10 @@
 }
 
 .avatar-image {
-  width: 220px; /* Tamanho maior do avatar */
+  width: 220px; 
   height: 220px;
   object-fit: contain;
-  margin-bottom: 10px; /* Espaçamento entre a imagem e o nome */
+  margin-bottom: 10px;
 }
 
 .profile-name {
