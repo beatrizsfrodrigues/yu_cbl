@@ -1,15 +1,16 @@
+
 /**********************************
  * Estilo do container principal
  **********************************/
  .profile-container {
   display: flex;
+
   flex-direction: column;
   align-items: center;
   justify-content: flex-start; 
   padding: 20px;
   gap: 20px; 
-}
-
+ }
 /**********************************
  * Estilo do cabeçalho
  **********************************/
@@ -87,6 +88,8 @@
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
+
+
 .award {
   background-color: var(--green);
 
@@ -94,20 +97,22 @@
 
 .circle {
   background-color: var(--blue);
-
+  
 }
+ 
 
 .dots {
   background-color: var(--orange);
 
 }
 
-
 .profile-button:hover {
   transform: scale(1.2); 
   color: #fff;
 }
 
+
+ 
 
 /**********************************
  * Estilo do modal (definições)

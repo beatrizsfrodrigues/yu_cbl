@@ -25,6 +25,14 @@
     cursor: pointer;
     border: none; 
     transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 9%;
+    height: 9%;
+    margin-top: -5%;
+  }
+   
+  .bi-arrow-left{
+    content: "\f12f";
+    margin-bottom: 9%;
   }
   
   .back-button:hover {
