@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import NavBar from "./components/NavBar"; 
 import Tasks from "./components/Tasks";
 import Home from "./components/Home";
-import Profile from "./components/Profile";
+import Profile from "./components/Perfil/Perfil/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Welcome from "./components/Welcome";
-import Informacoes from "./components/Perfil/Informacoes";
+import Informacoes from "./components/Perfil/Informacoes/Informacoes";
 import "./App.css";
 
 

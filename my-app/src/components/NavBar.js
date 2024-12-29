@@ -7,7 +7,7 @@ function NavBar() {
   const navItems = [
     { path: "/",       icon: <HomeIcon />, label: "Home" },
     { path: "/tasks",  icon: <Clipboard />, label: "Tarefas" },
-    { path: "/profile",icon: <User />,     label: "Perfil" },
+    { path: "Perfil/Perfil/profile",icon: <User />,     label: "Perfil" },
   ];
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);

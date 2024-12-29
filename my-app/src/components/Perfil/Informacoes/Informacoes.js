@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "../../assets/css/informacoes.css";
+import "../Informacoes/informacoes.css";
+
+ 
 
 const Informacoes = () => {
     const [currentPage, setCurrentPage] = useState(0);
