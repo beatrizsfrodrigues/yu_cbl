@@ -41,11 +41,11 @@ const Informacoes = () => {
       <div className="informacoes-container">
         {/* Cabeçalho */}
         <header className="informacoes-header">
-        <button className="back-button">
+          <button className="back-button">
             <Link to="/profile" className="back-link">
                 <i className="bi bi-arrow-left"></i>
             </Link>
-            </button>
+          </button>
 
           <h1 className="informacoes-title">Informações</h1>
         </header>

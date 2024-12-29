@@ -88,6 +88,8 @@
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
+
+
 .award {
   background-color: var(--green);
 
@@ -95,14 +97,14 @@
 
 .circle {
   background-color: var(--blue);
-
+  
 }
+ 
 
 .dots {
   background-color: var(--orange);
 
 }
-
 
 .profile-button:hover {
   transform: scale(1.2); 
@@ -110,7 +112,7 @@
 }
 
 
-
+ 
 
 /**********************************
  * Estilo do modal (definições)
