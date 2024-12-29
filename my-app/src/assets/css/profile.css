@@ -5,11 +5,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Mantém os itens alinhados ao topo */
+  justify-content: flex-start; 
   padding: 20px;
-  height: 100vh; /* Usa toda a altura da viewport */
-  background-color: #fff; /* Fundo branco */
-  gap: 20px; /* Espaçamento entre os elementos */
+  height: 80vh; 
+  background-color: #fff; 
+  gap: 20px; 
 }
 
 /**********************************
@@ -70,9 +70,9 @@
  **********************************/
 .profile-buttons {
   display: flex;
-  justify-content: center; /* Alinha os botões ao centro */
-  gap: 20px; /* Espaçamento entre os botões */
-  margin-top: 20px; /* Espaçamento entre os botões e o nome */
+  justify-content: center; 
+  gap: 20px; 
+  margin-top: 20px; 
 }
 
 .profile-button {
