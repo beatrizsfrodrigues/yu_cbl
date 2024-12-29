@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; 
-import "../assets/css/profile.css";
-import YURoxo from "../assets/imgs/YU_cores/YU-roxo.svg";
+import "../Perfil/profile.css";
+
 
 
 const Profile = () => {
@@ -21,7 +21,7 @@ const Profile = () => {
 
       {/* Parte principal do perfil */}
       <div className="profile-avatar">
-        <img src={YURoxo} alt="Avatar" className="avatar-image" />
+        <img src="/assets/img/YU_cores/YU-roxo.svg" alt="Avatar" className="avatar-image" />
         <h2 className="profile-name">Luísa</h2>
       </div>
 
