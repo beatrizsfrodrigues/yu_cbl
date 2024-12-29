@@ -20,7 +20,7 @@ const Login = () => {
     <div>
       {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
-        <div classname= "form-container">
+        <div className="form-container">
           
           <div className="logo-container">
            <img src={logo} alt="logo" className="logo" />
