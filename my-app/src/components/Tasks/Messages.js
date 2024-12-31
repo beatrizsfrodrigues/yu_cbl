@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMessages } from "../redux/messagesSlice";
+import { fetchMessages } from "../../redux/messagesSlice";
 import { X } from "react-feather";
 
 function Messages({ onClose }) {
@@ -23,6 +23,29 @@ function Messages({ onClose }) {
     return <div>Error: {error}</div>;
   }
 
+  let messageContent;
+  if (messages && messages.length > 0) {
+    messageContent = messages[0].messages.map((message, index) => {
+      if (message.senderId === 1) {
+        return (
+          <div key={index} className="textMessage ">
+            <p className="bubble bubbleBlue">{message.message}</p>
+            <p className="dateText textRight ">{message.date}</p>
+          </div>
+        );
+      } else {
+        return (
+          <div key={index} className="textMessage ">
+            <p className="bubble">{message.message}</p>
+            <p className="dateText textLeft ">{message.date}</p>
+          </div>
+        );
+      }
+    });
+  } else {
+    messageContent = <div>Não existem mensagens</div>;
+  }
+
   return (
     <div className="modal">
       <div className="window">
@@ -31,21 +54,10 @@ function Messages({ onClose }) {
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
-        <div id="textSpace">
-          {messages && messages.length > 0 ? (
-            messages[0].messages.map((message, index) => (
-              <div className="textMessage">
-                <p key={index} className="bubble">
-                  {message.message}
-                </p>
-                <p className="dateText">{message.date}</p>
-              </div>
-            ))
-          ) : (
-            <div>Não existem mensagens</div>
-          )}
+        <div id="textSpace">{messageContent}</div>
+        <div className="inputMessage">
+          <p>Deixa uma mensagem</p>
         </div>
-        <input placeholder="Deixa uma mensagem"></input>
       </div>
     </div>
   );

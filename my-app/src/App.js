@@ -1,7 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import NavBar from "./components/NavBar"; 
-import Tasks from "./components/Tasks";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Tasks from "./components/Tasks/Tasks";
 import Home from "./components/Home";
 import Profile from "./components/Perfil/Perfil/Profile";
 import Login from "./components/Login";
@@ -10,12 +15,11 @@ import Welcome from "./components/Welcome";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
 import "./App.css";
 
-
 function AppContent() {
   const location = useLocation();
   /* Só mostra a NavBar se a rota atual estiver em showNavRoutes , se quiserem adicionar
   outra pagina, basta meter o /nome no showNavRoutes como fiz no home, task e profile */
-  const showNavRoutes = ["/", "/tasks", "/profile"]; 
+  const showNavRoutes = ["/", "/tasks", "/profile"];
   const shouldShowNav = showNavRoutes.includes(location.pathname);
 
   return (
