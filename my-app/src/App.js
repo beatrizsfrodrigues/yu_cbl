@@ -11,7 +11,7 @@ import Home from "./components/Home";
 import Profile from "./components/Perfil/Perfil/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Welcome from "./components/Welcome";
+import Welcome from "./components/Welcome/Welcome";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
 import "./App.css";
 

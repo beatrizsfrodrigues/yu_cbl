@@ -1,6 +1,6 @@
 import React from "react";
-import "../assets/css/welcome.css";
-import logo from "../assets/imgs/YU_logo/YU-02.svg";
+import "./welcome.css";
+import logo from "../../assets/imgs/YU_logo/YU-02.svg";
 
 const Welcome = () => {
 
