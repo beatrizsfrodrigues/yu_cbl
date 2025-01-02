@@ -67,6 +67,11 @@
   margin: -16px 0px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  box-sizing: border-box;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  padding-top: 64px;
 }
 
 .textMessage {
@@ -86,11 +91,16 @@
   height: auto;
   word-wrap: break-word;
   white-space: normal;
+  margin-bottom: -4px;
 }
 
 .bubbleBlue {
   background-color: var(--blue-light);
   align-self: flex-end;
+}
+
+.bubbleDotted {
+  border: 2px dashed var(--blue-dark);
 }
 
 .textLeft {
@@ -112,12 +122,13 @@
   justify-content: start;
   padding-left: 16px;
   height: 48px;
-  border: 2px solid var(--purple-darker);
+  border: 1px solid var(--purple-darker);
   border-radius: 16px;
   font-size: 16px;
   color: var(--purple-dark);
   text-align: left;
   width: 100%;
+  /* margin-bottom: 8px; */
 }
 
 .inputMessage p {
@@ -127,4 +138,33 @@
   padding: 0; /* Remove default padding */
   width: 100%; /* Ensure the paragraph takes the full width */
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+#textOptions {
+  display: flex;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--purple-darker);
+  gap: 8px;
+  padding: 16px;
+  align-items: start;
+  height: 10vh;
+}
+
+#textOptions div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: start;
+}
+
+.optionText {
+  width: 100%;
+  text-align: start;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--purple-darker);
+  color: var(--purple-dark);
+  background-color: var(--white);
+  font-weight: 400;
 }
