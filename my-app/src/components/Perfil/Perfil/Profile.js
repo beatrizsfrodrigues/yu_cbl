@@ -1,15 +1,32 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; 
 import "../Perfil/profile.css";
-
+import Definicoes from "../Definicoes/Definicoes";
+import InfoPessoal from "../Definicoes/InfoPessoal";
 
 
 const Profile = () => {
   const [showSettings, setShowSettings] = useState(false);
+  const [showInfoPessoal, setShowInfoPessoal] = useState(false);
 
   const toggleSettings = () => {
     setShowSettings(!showSettings);
   };
+
+  const handleInfoPessoalClick = () => {
+    setShowInfoPessoal(true);
+    setShowSettings(false); // Fecha o modal de definições
+  };
+
+  const closeSettings = () => {
+    setShowSettings(false);
+  };
+  const backToSettings = () => {
+    setShowInfoPessoal(false); // Fecha o modal de InfoPessoal
+    setShowSettings(true);
+  };
+
+  
 
   return (
     <div className="profile-container">
@@ -37,39 +54,25 @@ const Profile = () => {
           </Link>
         </button>
     
+         
         <button className="profile-button dots">
           <i className="bi bi-chat-dots"></i>
         </button>
+     
       </div>
 
-      {/* Modal de definições */}
-      {showSettings && (
-        <div className="settings-modal">
-          <div className="settings-header">
-            <h2>Definições</h2>
-            <button className="close-button" onClick={toggleSettings}>
-              ✕
-            </button>
-          </div>
-          <hr />
-          <div className="settings-section">
-            <h3>A tua conta</h3>
-            <button className="settings-button">Informação pessoal</button>
-            <button className="settings-button">Arquivo</button>
-            <button className="settings-button">Amigo</button>
-            <button className="settings-button">Comunidade</button>
-          </div>
-          <div className="settings-section">
-            <h3>Saídas</h3>
-            <Link to="/login">
-              <button className="settings-button logout">Sair</button>
-            </Link>
-            <button className="settings-button delete-account">
-              Apagar conta
-            </button>
-          </div>
-        </div>
-      )}
+      <Definicoes
+        show={showSettings}
+        onClose={closeSettings}
+        onInfoPessoalClick={handleInfoPessoalClick}
+      />
+
+      <InfoPessoal 
+        show={showInfoPessoal} 
+        onBack={backToSettings} />
+
+
+       
     </div>
   );
 };
