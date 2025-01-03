@@ -1,11 +1,15 @@
 import React from "react";
 import "./welcome.css";
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/imgs/YU_logo/YU-02.svg";
 
 const Welcome = () => {
 
+  const navigate = useNavigate();
+
   const handleClick = () => {
     console.log("Button clicked");
+    navigate("/questions");
   };
 
   return (

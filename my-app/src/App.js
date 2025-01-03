@@ -13,6 +13,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Welcome from "./components/Welcome/Welcome";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
+import Questions from "./components/Welcome/Questions";
 import "./App.css";
 
 function AppContent() {
@@ -33,6 +34,7 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/welcome" element={<Welcome />} />
+          <Route path="/questions" element={<Questions />} />
           <Route path="/informacoes" element={<Informacoes />} />
         </Routes>
       </div>
