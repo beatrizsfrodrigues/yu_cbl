@@ -25,15 +25,16 @@ const Register = () => {
               <img src={logo} alt="logo" className="logo" />
               <img src={bolas} alt="bolas" className="bolas" />
             </div>
-
-          <label>Email</label>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <div className="label-container">
+            <label>Email</label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
         </div>
-        <div>
+        <div classname="user-container">
           <label>Nome de Utilizador</label>
           <input
             type="text"
@@ -41,7 +42,7 @@ const Register = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        <div>
+        <div classname="pass-container">
           <label>Palavra-passe</label>
           <input
             type="password"

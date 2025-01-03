@@ -18,9 +18,7 @@ label {
 }
 
 .logo-container {
-  position: relative;
   width: 100%;
-  /* Ensure it spans the necessary width */
   height: auto;
   display: flex;
   justify-content: center;
@@ -29,8 +27,8 @@ label {
 }
 
 .logo {
-  max-width: 277px;
-  max-height: 191px;
+  max-width: 100%;
+  height: auto;
   position: relative;
   /* Stays on top of the bolas */
   z-index: 2;
@@ -38,17 +36,14 @@ label {
 }
 
 .bolas {
+  width: 100%;
+  height: auto;
   position: absolute;
   margin-top: 50px;
   z-index: 1;
-  /* Behind the logo but above other elements */
-  width: 100%;
-  /* Span the entire container */
-  height: auto;
-  /* Maintain aspect ratio */
 }
 
-input {
+.form-container input {
   border-radius: 20px;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background: #fff;

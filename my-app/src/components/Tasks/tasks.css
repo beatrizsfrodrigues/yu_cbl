@@ -1,0 +1,170 @@
+.taskDiv {
+  background-color: var(--orange);
+  border: 2px solid var(--orange-dark);
+  border-radius: 24px;
+  padding: 2px 4px;
+}
+
+#tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.taskTitle {
+  margin: 10px 0px;
+  width: 80%;
+}
+
+#tasksBody {
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings {
+  width: 32px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/** new task window */
+
+#newTask {
+  position: fixed;
+  bottom: 120px;
+  left: calc(50% - 32px);
+  background-color: var(--purple-dark);
+  color: var(--white);
+  font-size: 40px;
+}
+
+#textBtn {
+  position: fixed;
+  bottom: 120px;
+  right: 60px;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 40px;
+}
+
+#newTaskForm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 8px 24px;
+  gap: 16px;
+}
+
+/** text messages window */
+
+#textSpace {
+  height: 60vh;
+  margin: -16px 0px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-sizing: border-box;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  padding-top: 64px;
+}
+
+.textMessage {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.bubble {
+  border: 2px solid var(--blue-dark);
+  border-radius: 32px;
+  padding: 8px 16px;
+  text-align: left;
+  font-size: 14px;
+  align-self: flex-start;
+  max-width: 60%;
+  height: auto;
+  word-wrap: break-word;
+  white-space: normal;
+  margin-bottom: -4px;
+}
+
+.bubbleBlue {
+  background-color: var(--blue-light);
+  align-self: flex-end;
+}
+
+.bubbleDotted {
+  border: 2px dashed var(--blue-dark);
+}
+
+.textLeft {
+  align-self: flex-start;
+}
+
+.textRight {
+  align-self: flex-end;
+}
+
+.dateText {
+  font-size: 12px;
+  color: var(--blue-darker);
+}
+
+.inputMessage {
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  padding-left: 16px;
+  height: 48px;
+  border: 1px solid var(--purple-darker);
+  border-radius: 16px;
+  font-size: 16px;
+  color: var(--purple-dark);
+  text-align: left;
+  width: 100%;
+  /* margin-bottom: 8px; */
+}
+
+.inputMessage p {
+  text-align: left;
+  margin-left: 0px;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  width: 100%; /* Ensure the paragraph takes the full width */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+#textOptions {
+  display: flex;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--purple-darker);
+  gap: 8px;
+  padding: 16px;
+  align-items: start;
+  height: 10vh;
+}
+
+#textOptions div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: start;
+}
+
+.optionText {
+  width: 100%;
+  text-align: start;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--purple-darker);
+  color: var(--purple-dark);
+  background-color: var(--white);
+  font-weight: 400;
+}

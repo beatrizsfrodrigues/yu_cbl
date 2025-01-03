@@ -14,5 +14,29 @@
   {
     "id": "4",
     "message": "Estou a ganhar!"
+  },
+  {
+    "id": "5",
+    "message": "Estou a precisar de uma tarefa nova!"
+  },
+  {
+    "id": "6",
+    "message": "Estás a demorar para completar esta tarefa!"
+  },
+  {
+    "id": "7",
+    "message": "Está a correr tudo bem?"
+  },
+  {
+    "id": "8",
+    "message": "Estou quase a passar-te!"
+  },
+  {
+    "id": "9",
+    "message": "Sim."
+  },
+  {
+    "id": "10",
+    "message": "Não."
   }
 ]

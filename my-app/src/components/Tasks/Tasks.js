@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../redux/usersSlice.js";
-import "../assets/css/tasks.css";
+import { fetchUser } from "../../redux/usersSlice.js";
+import "./tasks.css";
 import NewTask from "./NewTask.js";
 import Messages from "./Messages.js";
-import { MessageCircle, Plus } from "react-feather";
+import { MessageCircle, Plus, Settings } from "react-feather";
 
 function Tasks() {
   const dispatch = useDispatch();
@@ -51,7 +51,10 @@ function Tasks() {
 
   return (
     <div className="mainBody" id="tasksBody">
-      <h1>Lista de Tarefas</h1>
+      <div className="header">
+        <h1>Lista de Tarefas</h1>
+        <Settings className="settings" />
+      </div>
       <div id="tasks">
         {users && users.length > 0 ? (
           users[0].tasks.map((task, index) => (
