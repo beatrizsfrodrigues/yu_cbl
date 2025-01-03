@@ -1,0 +1,135 @@
+.info-modal {
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 70%;
+    max-width: 400px; 
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1000;
+    animation: fade-in 0.3s ease-in-out;
+  }
+  
+  .info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .info-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--purple-darker);
+  }
+
+  
+  hr {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid var(--purple-light);
+  }
+
+  input{
+    width: 90%;
+    padding: 8px; 
+    display: block;
+    margin: 4px 0 ;
+    border-radius: 15px; 
+  }
+
+
+  /* Botão "Guardar" */
+ .save-button {
+    margin-top: 20px; /* Move o botão para baixo */
+    background-color: var(--purple-light);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 15px; 
+    cursor: pointer;
+  }
+  
+  .save-button:hover {
+    background-color:var(--purple-darker);
+  }
+
+  .back-button {
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    background-color: transparent; 
+  }
+  
+  .back-button i {
+    font-size: 1.2rem; /* Define um tamanho menor para a seta */
+    color: var(--purple-darker); /* Cor do preenchimento */
+    background-color: transparent; /* Fundo transparente */
+    -webkit-text-stroke: 1px var(--purple-darker); /* Contorno da seta */
+  }
+  
+   
+  
+  
+   /* Modal Confirmar  */
+   .confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    border-radius: 15px;
+  }
+  
+  .confirm-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 80%;
+  }
+  
+  .confirm-modal-content h3 {
+    font-size: 16px; /* Reduz o tamanho da letra */
+    margin-bottom: 20px; /* Espaçamento inferior para separar do botão */
+  }
+  
+  .confirm-button, .cancel-button {
+    background-color: var(--blue-dark);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 45%; /* Largura de 45% para caber lado a lado */
+  }
+  
+  .confirm-button {
+    background-color: var(--blue-dark); /* Botão "Sim" */
+  }
+  
+  .confirm-button:hover {
+    background-color: var(--blue-darker);
+  }
+  
+  .cancel-button {
+    background-color: var(--orange-light); /* Botão "Não" */
+  }
+  
+   
+  
+  .confirm-modal-buttons {
+    display: flex;
+    justify-content: space-between; /* Espaçamento entre os botões */
+    gap: 10px; /* Espaço entre os botões */
+  }
+  

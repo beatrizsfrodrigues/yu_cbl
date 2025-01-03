@@ -8,11 +8,19 @@ import {
 import NavBar from "./components/NavBar";
 import Tasks from "./components/Tasks/Tasks";
 import Home from "./components/Home";
-import Profile from "./components/Perfil/Perfil/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Welcome from "./components/Welcome";
+ 
+ 
+import Profile from "./components/Perfil/Perfil/Profile";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
+import InfoPessoal from "./components/Perfil/Definicoes/InfoPessoal";
+import Definicoes from "./components/Perfil/Definicoes/Definicoes";
+ 
+import Welcome from "./components/Welcome/Welcome";
+ 
+import Questions from "./components/Welcome/Questions";
+ 
 import "./App.css";
 
 function AppContent() {
@@ -33,7 +41,10 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/welcome" element={<Welcome />} />
+          <Route path="/questions" element={<Questions />} />
           <Route path="/informacoes" element={<Informacoes />} />
+          <Route path="/infoPessoal" element={<InfoPessoal />} />
+          <Route path="/definicoes" element={<Definicoes />} />
         </Routes>
       </div>
     </>
