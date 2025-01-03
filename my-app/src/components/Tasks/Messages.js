@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
@@ -15,6 +15,7 @@ function Messages({ onClose }) {
   const error = useSelector((state) => state.messages.error);
   const textSpaceRef = useRef(null);
   const textOptionsRef = useRef(null);
+  const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
 
   useEffect(() => {
     if (messagesStatus === "idle") {
@@ -28,7 +29,13 @@ function Messages({ onClose }) {
     }
   }, [presetMessagesStatus, dispatch]);
 
+  const handleOpenPresetMessages = () => {
+    setIsPresetMessagesOpen(!isPresetMessagesOpen);
+  };
+
   const addDragScrolling = (element) => {
+    if (!element) return; // Ensure the element is not null
+
     let isDown = false;
     let startY;
     let scrollTop;
@@ -76,10 +83,10 @@ function Messages({ onClose }) {
     const removeTextOptionsListeners = addDragScrolling(textOptions);
 
     return () => {
-      removeTextSpaceListeners();
-      removeTextOptionsListeners();
+      if (removeTextSpaceListeners) removeTextSpaceListeners();
+      if (removeTextOptionsListeners) removeTextOptionsListeners();
     };
-  }, []);
+  }, [isPresetMessagesOpen]);
 
   if (messagesStatus === "loading") {
     return <div>Loading...</div>;
@@ -94,23 +101,23 @@ function Messages({ onClose }) {
     messageContent = messages[0].messages.map((message, index) => {
       if (message.senderId === 1) {
         return (
-          <div key={index} className="textMessage ">
+          <div key={index} className="textMessage">
             <p className="bubble bubbleBlue">{message.message}</p>
-            <p className="dateText textRight ">{message.date}</p>
+            <p className="dateText textRight">{message.date}</p>
           </div>
         );
       } else if (message.senderId === "app") {
         return (
           <div key={index} className="textMessage">
             <p className="bubble bubbleDotted">{message.message}</p>
-            <p className="dateText textLeft ">{message.date}</p>
+            <p className="dateText textLeft">{message.date}</p>
           </div>
         );
       } else {
         return (
-          <div key={index} className="textMessage ">
+          <div key={index} className="textMessage">
             <p className="bubble">{message.message}</p>
-            <p className="dateText textLeft ">{message.date}</p>
+            <p className="dateText textLeft">{message.date}</p>
           </div>
         );
       }
@@ -122,9 +129,14 @@ function Messages({ onClose }) {
   let presetMsgs;
   if (presetMessages && presetMessages.length > 0) {
     presetMsgs = presetMessages.map((message, index) => {
-      if (index % 2 == 0) {
-        return <button className="optionText">{message.message}</button>;
+      if (index % 2 === 0) {
+        return (
+          <button key={index} className="optionText">
+            {message.message}
+          </button>
+        );
       }
+      return null;
     });
   } else {
     presetMsgs = <div>Não existem mensagens</div>;
@@ -133,10 +145,14 @@ function Messages({ onClose }) {
   let presetMsgs2;
   if (presetMessages && presetMessages.length > 0) {
     presetMsgs2 = presetMessages.map((message, index) => {
-      console.log(index);
-      if (index % 2 != 0) {
-        return <button className="optionText">{message.message}</button>;
+      if (index % 2 !== 0) {
+        return (
+          <button key={index} className="optionText">
+            {message.message}
+          </button>
+        );
       }
+      return null;
     });
   } else {
     presetMsgs2 = <div>Não existem mensagens</div>;
@@ -150,16 +166,22 @@ function Messages({ onClose }) {
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
-        <div id="textSpace" ref={textSpaceRef}>
+        <div
+          id="textSpace"
+          ref={textSpaceRef}
+          className={isPresetMessagesOpen ? "textSpaceSmall" : ""}
+        >
           {messageContent}
         </div>
-        <div className="inputMessage">
+        <div className="inputMessage" onClick={handleOpenPresetMessages}>
           <p>Deixa uma mensagem</p>
         </div>
-        <div id="textOptions" ref={textOptionsRef}>
-          <div>{presetMsgs}</div>
-          <div>{presetMsgs2}</div>
-        </div>
+        {isPresetMessagesOpen && (
+          <div id="textOptions" ref={textOptionsRef}>
+            <div>{presetMsgs}</div>
+            <div>{presetMsgs2}</div>
+          </div>
+        )}
       </div>
     </div>
   );

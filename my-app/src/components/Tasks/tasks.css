@@ -74,6 +74,11 @@
   padding-top: 64px;
 }
 
+#textSpace.textSpaceSmall {
+  height: 40vh;
+  padding-top: 28vh;
+}
+
 .textMessage {
   display: flex;
   flex-direction: column;
@@ -148,7 +153,10 @@
   gap: 8px;
   padding: 16px;
   align-items: start;
-  height: 10vh;
+  height: 20vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: none;
 }
 
 #textOptions div {
