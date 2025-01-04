@@ -64,14 +64,19 @@
 
 #textSpace {
   height: 60vh;
-  margin: -16px 0px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   overflow-y: auto;
   box-sizing: border-box;
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  -ms-overflow-style: none;
   scrollbar-width: none;
-  padding-top: 64px;
+  scroll-behavior: smooth;
+  margin: -16px 0px;
+}
+
+#textSpace.textSpaceSmall {
+  height: 40vh;
 }
 
 .textMessage {
@@ -148,7 +153,10 @@
   gap: 8px;
   padding: 16px;
   align-items: start;
-  height: 10vh;
+  height: 20vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: none;
 }
 
 #textOptions div {
