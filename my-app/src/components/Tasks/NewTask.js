@@ -12,11 +12,15 @@ function NewTask({ onClose }) {
         <div className="line"></div>
         <form id="newTaskForm">
           <label className="label">Título</label>
-          <input type="text" className="input" placeholder="Título" />
-          <label className="label">Título</label>
+          <input
+            type="text"
+            className="input"
+            placeholder="Dá um título à tarefa"
+          />
+          <label className="label">Descrição</label>
           <textarea
             className="input descriptionInput"
-            placeholder="Descrição"
+            placeholder="Descreve a tarefa"
           ></textarea>
           <button className="button buttonBig">Criar</button>
         </form>
