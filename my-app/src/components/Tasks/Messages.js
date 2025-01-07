@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 
 function Messages({ onClose, currentUser }) {
   const currentUserId = 1;
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.data);
+  const usersStatus = useSelector((state) => state.users.status);
   const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const presetMessages = useSelector((state) => state.presetMessages.data);
@@ -31,6 +34,12 @@ function Messages({ onClose, currentUser }) {
       textSpace.scrollTop = textSpace.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [usersStatus, dispatch]);
 
   //* fetch preset text messages
   useEffect(() => {
@@ -149,7 +158,13 @@ function Messages({ onClose, currentUser }) {
     <div className="modal">
       <div className="window">
         <div className="header">
-          <h3>@amigo</h3>
+          {currentUser.partnerId &&
+            (() => {
+              const partnerUser = users.find(
+                (user) => user.id === currentUser.partnerId
+              );
+              return partnerUser ? <h3>@{partnerUser.username}</h3> : null;
+            })()}
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
