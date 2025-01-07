@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../../redux/usersSlice.js";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import "./tasks.css";
 import NewTask from "./NewTask.js";
 import Messages from "./Messages.js";
 import { MessageCircle, Plus, Settings } from "react-feather";
 
 function Tasks() {
+  const currentUserId = 1;
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
@@ -17,7 +18,7 @@ function Tasks() {
 
   useEffect(() => {
     if (usersStatus === "idle") {
-      dispatch(fetchUser());
+      dispatch(fetchUsers());
     }
   }, [usersStatus, dispatch]);
 
@@ -49,6 +50,8 @@ function Tasks() {
     return <div>Error: {error}</div>;
   }
 
+  const currentUser = users && users.length > 0 ? users[0] : null;
+
   return (
     <div className="mainBody" id="tasksBody">
       <div className="header">
@@ -71,7 +74,7 @@ function Tasks() {
             </div>
           ))
         ) : (
-          <div>Não existem tarefas</div>
+          <div>Não existem tarefas disponiveis.</div>
         )}
       </div>
       <button
@@ -88,8 +91,15 @@ function Tasks() {
       >
         <MessageCircle />
       </button>
-      {isNewTaskModalOpen && <NewTask onClose={handleCloseNewTaskModal} />}
-      {isMessagesModalOpen && <Messages onClose={handleCloseMessagesModal} />}
+      {isNewTaskModalOpen && (
+        <NewTask onClose={handleCloseNewTaskModal} currentUser={currentUser} />
+      )}
+      {isMessagesModalOpen && (
+        <Messages
+          onClose={handleCloseMessagesModal}
+          currentUser={currentUser}
+        />
+      )}
     </div>
   );
 }
