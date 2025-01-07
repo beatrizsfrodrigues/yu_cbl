@@ -11,15 +11,16 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //console.log("Username:", username);
-    //console.log("Password:", password);
+    localStorage.setItem("Username", username);
+    localStorage.setItem("Email", email);
+    localStorage.setItem("Password", password);
+    setMessage("Registo efetuado com sucesso!");
   };
 
   const isFormComplete = email.trim() !== "" && password.trim() !== "";
 
   return (
     <div>
-      {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
         <div classname= "form-container">
             <div className="logo-container">
@@ -57,10 +58,12 @@ const Register = () => {
         </div>
 
         <button
+          href="/Login"
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
-        > Login </button>
+        >Registar</button>
+        {message && <p>{message}</p>}
 
       </form>
     </div>
