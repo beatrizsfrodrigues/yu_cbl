@@ -48,9 +48,8 @@ function Messages({ onClose, currentUser }) {
   const handleAddMessage = (text) => {
     const senderId = currentUserId;
     const receiverId = currentUser.partnerId;
-    const message = text;
 
-    dispatch(addMessage(senderId, receiverId, message));
+    dispatch(addMessage({ senderId, receiverId, text }));
   };
 
   //* text messages status info
@@ -68,7 +67,6 @@ function Messages({ onClose, currentUser }) {
     const sortedMessages = [...messages[0].messages].sort(
       (a, b) => +a.date - +b.date
     );
-    console.log(sortedMessages);
     messageContent = sortedMessages.map((message, index) => {
       const year = message.date.slice(0, 4);
       const month = message.date.slice(4, 6);
