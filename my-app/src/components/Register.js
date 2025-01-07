@@ -20,21 +20,20 @@ const Register = () => {
     <div>
       {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
-        <div classname= "form-container">
+        <div className= "form-container">
             <div className="logo-container">
               <img src={logo} alt="logo" className="logo" />
               <img src={bolas} alt="bolas" className="bolas" />
             </div>
-          <div className="label-container">
+            <div className="label-container">
             <label>Email</label>
             <input
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-          </div>
-        </div>
-        <div classname="user-container">
+            </div>
+        <div className="user-container">
           <label>Nome de Utilizador</label>
           <input
             type="text"
@@ -42,13 +41,14 @@ const Register = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        <div classname="pass-container">
+        <div className="pass-container">
           <label>Palavra-passe</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+        </div>
         </div>
 
         <div className="register-link">

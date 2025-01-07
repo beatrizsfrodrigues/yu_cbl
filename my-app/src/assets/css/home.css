@@ -2,6 +2,14 @@
   background-color: white;
 }
 
+.home {
+  transition: transform 0.5s ease-in-out;
+}
+
+.home.slide-up {
+  transform: translateY(-100%);
+}
+
 .row {
   display: flex;
   align-items: center;
@@ -10,12 +18,29 @@
   /* gap: 60%; */
 }
 
-/*-------- Yu ----------*/
+.homeContainer {
+  position: relative;
+  overflow: hidden;
+}
 
-.Yu{
-  justify-content: center;
-  margin-top: 50%;
-  margin-left: 5%;
+.home {
+  transition: transform 0.5s ease-in-out;
+}
+
+.home.locked {
+  transform: translateY(-100%);
+}
+
+.closet {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.home.locked+.closet {
+  transform: translateY(-100%);
 }
 
 /*-------- Botão Pontos --------*/

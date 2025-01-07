@@ -35,7 +35,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)} />
           </div>
 
-        <div classname="pass-container">
+        <div className="pass-container">
           <label>Palavra-passe</label>
           <input
             type="password"
