@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../assets/css/Closet.css';
+import '../../assets/css/closet.css';
 import { Circle } from "react-feather";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
