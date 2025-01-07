@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 
 function Messages({ onClose, currentUser }) {
   const currentUserId = 1;
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.data);
+  const usersStatus = useSelector((state) => state.users.status);
   const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const presetMessages = useSelector((state) => state.presetMessages.data);
@@ -32,6 +35,12 @@ function Messages({ onClose, currentUser }) {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [usersStatus, dispatch]);
+
   //* fetch preset text messages
   useEffect(() => {
     if (presetMessagesStatus === "idle") {
@@ -48,9 +57,8 @@ function Messages({ onClose, currentUser }) {
   const handleAddMessage = (text) => {
     const senderId = currentUserId;
     const receiverId = currentUser.partnerId;
-    const message = text;
 
-    dispatch(addMessage(senderId, receiverId, message));
+    dispatch(addMessage({ senderId, receiverId, text }));
   };
 
   //* text messages status info
@@ -68,7 +76,6 @@ function Messages({ onClose, currentUser }) {
     const sortedMessages = [...messages[0].messages].sort(
       (a, b) => +a.date - +b.date
     );
-    console.log(sortedMessages);
     messageContent = sortedMessages.map((message, index) => {
       const year = message.date.slice(0, 4);
       const month = message.date.slice(4, 6);
@@ -151,7 +158,13 @@ function Messages({ onClose, currentUser }) {
     <div className="modal">
       <div className="window">
         <div className="header">
-          <h3>@amigo</h3>
+          {currentUser.partnerId &&
+            (() => {
+              const partnerUser = users.find(
+                (user) => user.id === currentUser.partnerId
+              );
+              return partnerUser ? <h3>@{partnerUser.username}</h3> : null;
+            })()}
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>

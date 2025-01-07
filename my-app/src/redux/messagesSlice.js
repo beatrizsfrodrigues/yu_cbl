@@ -31,14 +31,19 @@ const messagesSlice = createSlice({
   },
   reducers: {
     addMessage: (state, action) => {
-      const { senderId, receiverId, message } = action.payload;
+      const { senderId, receiverId, text } = action.payload;
+      console.log("Current state data:", state.data);
+      console.log("Action payload:", action.payload);
       const conversation = state.data.find(
         (conv) =>
-          JSON.stringify(conv.usersId) ===
-            JSON.stringify([senderId, receiverId]) ||
-          JSON.stringify(conv.usersId) ===
-            JSON.stringify([receiverId, senderId])
+          conv.usersId.includes(senderId) && conv.usersId.includes(receiverId)
       );
+
+      if (!conversation) {
+        console.log("No conversation found for the given users.");
+      } else {
+        console.log("Conversation found:", conversation);
+      }
 
       function getFormattedDate() {
         const now = new Date();
@@ -57,9 +62,11 @@ const messagesSlice = createSlice({
         id: state.data.length + 1,
         senderId: senderId,
         receiverId: receiverId,
-        messages: message,
+        message: text,
         date: getFormattedDate(),
       };
+
+      console.log(conversation);
 
       if (conversation) {
         conversation.messages.push(newMessage);
