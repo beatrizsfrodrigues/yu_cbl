@@ -1,8 +1,40 @@
-.avatareditor {
+.closetContainer {
     background-color: var(--purple-lighter);
     border-top-left-radius: 50px;
     border-top-right-radius: 50px;
-    height: 40%;
+}
+/*-------- Yu ----------*/
+.Yu{
+    justify-content: center;
+    max-width: 277px;
+    max-height: 191px;
+    z-index: 2;
+    display: block;
+}
+
+.homeContainer {
+    position: relative;
+    overflow: hidden;
+}
+
+.home {
+    transition: transform 0.5s ease-in-out;
+}
+
+.home.locked {
+    transform: translateY(-100%);
+}
+
+.closet {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.home.locked+.closet {
+    transform: translateY(-100%);
 }
 
 .avatarheader{
