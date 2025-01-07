@@ -31,23 +31,40 @@ const messagesSlice = createSlice({
   },
   reducers: {
     addMessage: (state, action) => {
-      const { message } = action.payload;
+      const { senderId, receiverId, message } = action.payload;
       const conversation = state.data.find(
         (conv) =>
           JSON.stringify(conv.usersId) ===
-          JSON.stringify([message.senderId, message.receiverId])
+            JSON.stringify([senderId, receiverId]) ||
+          JSON.stringify(conv.usersId) ===
+            JSON.stringify([receiverId, senderId])
       );
 
+      function getFormattedDate() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+      }
+
+      const newMessage = {
+        id: state.data.length + 1,
+        senderId: senderId,
+        receiverId: receiverId,
+        messages: message,
+        date: getFormattedDate(),
+      };
+
       if (conversation) {
-        conversation.messages.push(message);
+        conversation.messages.push(newMessage);
       } else {
-        state.data.push({
-          id: state.data.length + 1,
-          senderId: message.senderId,
-          receiverId: message.receiverId,
-          messages: message,
-          date: new Date().toLocaleString(),
-        });
+        state.data.push(newMessage);
       }
 
       localStorage.setItem("messages", JSON.stringify(state.data));

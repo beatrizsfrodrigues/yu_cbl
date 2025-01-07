@@ -4,7 +4,8 @@ import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { X } from "react-feather";
 
-function Messages({ onClose }) {
+function Messages({ onClose, currentUser }) {
+  const currentUserId = 1;
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
@@ -43,30 +44,13 @@ function Messages({ onClose }) {
     setIsPresetMessagesOpen(!isPresetMessagesOpen);
   };
 
-  function getFormattedDate() {
-    const now = new Date();
-
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-
-    return `${year}${month}${day}${hours}${minutes}${seconds}`;
-  }
-
   //* send a text message
   const handleAddMessage = (text) => {
-    const message = {
-      id: messages[0].messages.length + 1,
-      senderId: 1,
-      receiverId: 2,
-      message: text,
-      date: getFormattedDate(),
-    };
+    const senderId = currentUserId;
+    const receiverId = currentUser.partnerId;
+    const message = text;
 
-    dispatch(addMessage({ message }));
+    dispatch(addMessage(senderId, receiverId, message));
   };
 
   //* text messages status info
