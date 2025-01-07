@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../assets/css/Login.css";
-import logo from "../assets/imgs/YU_logo/YU-03.svg";
+import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Login = () => {
