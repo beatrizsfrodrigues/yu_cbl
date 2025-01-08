@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "./questions.css";
+import { useNavigate } from "react-router-dom";
 
 const Questions = () => {
+
+    const navigate = useNavigate();
     
     const questionData = [
         {
@@ -64,7 +67,7 @@ const Questions = () => {
             setSelectedOption(null);
         } else {
             console.log("Fim do questionário");
-            // ⚠️ Navegar para página de coneção aqui
+            navigate("/connection");
         }
     };
 
