@@ -10,83 +10,86 @@ const Register = () => {
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
 
-
   const handleRegister = () => {
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    if (users.some(user => user.username === username)) {
-      setAlert('Nome de utilizador já existente!');
+    if (users.some((user) => user.username === username)) {
+      setAlert("Nome de utilizador já existente!");
       return;
     }
 
-     const newUser = {
+    const newUser = {
       id: Date.now(),
       username,
       email,
-      password
+      password,
     };
 
-    users.push({newUser});
-    localStorage.setItem('users', JSON.stringify(users));
-    setMessage('Utilizador registado com sucesso!');
-    setEmail('');
-    setUsername('');
-    setPassword('');
-    setAlert('');
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    setMessage("Utilizador registado com sucesso!");
+    setEmail("");
+    setUsername("");
+    setPassword("");
+    setAlert("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleRegister();
-  }
+  };
 
-  const isFormComplete = email.trim() !== "" && password.trim() !== "" && username.trim() !== "";
+  const isFormComplete =
+    email.trim() !== "" && password.trim() !== "" && username.trim() !== "";
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className= "form-container">
-            <div className="logo-container">
-              <img src={logo} alt="logo" className="logo" />
-              {/*<img src={bolas} alt="bolas" className="bolas" />*/}
-              
-            </div>
-            {alert && <p className="alert">{alert}</p>}
-            <div className="label-container">
+        <div className="form-container">
+          <div className="logo-container">
+            <img src={logo} alt="logo" className="logo" />
+            {/*<img src={bolas} alt="bolas" className="bolas" />*/}
+          </div>
+          {alert && <p className="alert">{alert}</p>}
+          <div className="label-container">
             <label>Email</label>
             <input
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            </div>
-        <div className="user-container">
-          <label>Nome de Utilizador</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div className="pass-container">
-          <label>Palavra-passe</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+          </div>
+          <div className="user-container">
+            <label>Nome de Utilizador</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className="pass-container">
+            <label>Palavra-passe</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="register-link">
-          <p>Já tens conta? <a href="/Login">Login</a> </p>
+          <p>
+            Já tens conta? <a href="/Login">Login</a>{" "}
+          </p>
         </div>
         {message && <p>{message}</p>}
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
-        >Registar</button>
+        >
+          Registar
+        </button>
       </form>
     </div>
   );

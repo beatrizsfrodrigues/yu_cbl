@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addMessage } from "./messagesSlice";
 
 //* fetch users from local storage
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
@@ -86,16 +85,6 @@ const usersSlice = createSlice({
       }
 
       localStorage.setItem("users", JSON.stringify(state.data));
-
-      const message = "Nova tarefa foi criada";
-
-      // dispatch(
-      //   addMessage({
-      //     senderId: userId,
-      //     receiverId: user.partnerId,
-      //     text: message,
-      //   })
-      // );
     },
   },
   extraReducers: (builder) => {
