@@ -38,7 +38,7 @@ function ConcludeTask({ onClose, currentUser, task }) {
       sendNotification({
         senderId: currentUserId,
         receiverId: currentUser.partnerId,
-        text: "Tarefa concluída com sucesso!",
+        text: `Tarefa <b>${task.title}</b> foi marcada como concluída.`,
       })
     );
     onClose();
