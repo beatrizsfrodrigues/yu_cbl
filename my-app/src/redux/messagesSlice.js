@@ -32,8 +32,6 @@ const messagesSlice = createSlice({
   reducers: {
     addMessage: (state, action) => {
       const { senderId, receiverId, text } = action.payload;
-      console.log("Current state data:", state.data);
-      console.log("Action payload:", action.payload);
       const conversation = state.data.find(
         (conv) =>
           conv.usersId.includes(senderId) && conv.usersId.includes(receiverId)
@@ -76,6 +74,53 @@ const messagesSlice = createSlice({
 
       localStorage.setItem("messages", JSON.stringify(state.data));
     },
+    sendNotification: (state, action) => {
+      console.log("text");
+      const { senderId, receiverId, text } = action.payload;
+      console.log("Current state data:", state.data);
+      console.log("Action payload:", action.payload);
+      const conversation = state.data.find(
+        (conv) =>
+          conv.usersId.includes(senderId) && conv.usersId.includes(receiverId)
+      );
+
+      if (!conversation) {
+        console.log("No conversation found for the given users.");
+      } else {
+        console.log("Conversation found:", conversation);
+      }
+
+      function getFormattedDate() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+      }
+
+      const newMessage = {
+        id: state.data.length + 1,
+        senderId: "app",
+        receiverId: receiverId,
+        message: text,
+        date: getFormattedDate(),
+      };
+
+      console.log(conversation);
+
+      if (conversation) {
+        conversation.messages.push(newMessage);
+      } else {
+        state.data.push(newMessage);
+      }
+
+      localStorage.setItem("messages", JSON.stringify(state.data));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -93,5 +138,5 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { addMessage } = messagesSlice.actions;
+export const { addMessage, sendNotification } = messagesSlice.actions;
 export default messagesSlice.reducer;
