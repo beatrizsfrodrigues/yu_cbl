@@ -18,6 +18,7 @@ import Profile from "./components/Perfil/Perfil/Profile";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
 import InfoPessoal from "./components/Perfil/Definicoes/InfoPessoal";
 import Definicoes from "./components/Perfil/Definicoes/Definicoes";
+import Grafico from "./components/Perfil/Grafico/Grafico";
  
 import Welcome from "./components/Welcome/Welcome";
  
@@ -49,6 +50,7 @@ function AppContent() {
           <Route path="/informacoes" element={<Informacoes />} />
           <Route path="/infoPessoal" element={<InfoPessoal />} />
           <Route path="/definicoes" element={<Definicoes />} />
+          <Route path="/grafico" element={<Grafico />} />
         </Routes>
       </div>
     </>
