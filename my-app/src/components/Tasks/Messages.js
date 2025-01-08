@@ -2,10 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 
-function Messages({ onClose }) {
+function Messages({ onClose, currentUser }) {
+  const currentUserId = 1;
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.data);
+  const usersStatus = useSelector((state) => state.users.status);
   const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const presetMessages = useSelector((state) => state.presetMessages.data);
@@ -31,6 +35,12 @@ function Messages({ onClose }) {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [usersStatus, dispatch]);
+
   //* fetch preset text messages
   useEffect(() => {
     if (presetMessagesStatus === "idle") {
@@ -43,30 +53,12 @@ function Messages({ onClose }) {
     setIsPresetMessagesOpen(!isPresetMessagesOpen);
   };
 
-  function getFormattedDate() {
-    const now = new Date();
-
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-
-    return `${year}${month}${day}${hours}${minutes}${seconds}`;
-  }
-
   //* send a text message
   const handleAddMessage = (text) => {
-    const message = {
-      id: messages[0].messages.length + 1,
-      senderId: 1,
-      receiverId: 2,
-      message: text,
-      date: getFormattedDate(),
-    };
+    const senderId = currentUserId;
+    const receiverId = currentUser.partnerId;
 
-    dispatch(addMessage({ message }));
+    dispatch(addMessage({ senderId, receiverId, text }));
   };
 
   //* text messages status info
@@ -84,7 +76,6 @@ function Messages({ onClose }) {
     const sortedMessages = [...messages[0].messages].sort(
       (a, b) => +a.date - +b.date
     );
-    console.log(sortedMessages);
     messageContent = sortedMessages.map((message, index) => {
       const year = message.date.slice(0, 4);
       const month = message.date.slice(4, 6);
@@ -167,7 +158,13 @@ function Messages({ onClose }) {
     <div className="modal">
       <div className="window">
         <div className="header">
-          <h3>@amigo</h3>
+          {currentUser.partnerId &&
+            (() => {
+              const partnerUser = users.find(
+                (user) => user.id === currentUser.partnerId
+              );
+              return partnerUser ? <h3>@{partnerUser.username}</h3> : null;
+            })()}
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>

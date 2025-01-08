@@ -31,23 +31,47 @@ const messagesSlice = createSlice({
   },
   reducers: {
     addMessage: (state, action) => {
-      const { message } = action.payload;
+      const { senderId, receiverId, text } = action.payload;
+      console.log("Current state data:", state.data);
+      console.log("Action payload:", action.payload);
       const conversation = state.data.find(
         (conv) =>
-          JSON.stringify(conv.usersId) ===
-          JSON.stringify([message.senderId, message.receiverId])
+          conv.usersId.includes(senderId) && conv.usersId.includes(receiverId)
       );
 
-      if (conversation) {
-        conversation.messages.push(message);
+      if (!conversation) {
+        console.log("No conversation found for the given users.");
       } else {
-        state.data.push({
-          id: state.data.length + 1,
-          senderId: message.senderId,
-          receiverId: message.receiverId,
-          messages: message,
-          date: new Date().toLocaleString(),
-        });
+        console.log("Conversation found:", conversation);
+      }
+
+      function getFormattedDate() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+      }
+
+      const newMessage = {
+        id: state.data.length + 1,
+        senderId: senderId,
+        receiverId: receiverId,
+        message: text,
+        date: getFormattedDate(),
+      };
+
+      console.log(conversation);
+
+      if (conversation) {
+        conversation.messages.push(newMessage);
+      } else {
+        state.data.push(newMessage);
       }
 
       localStorage.setItem("messages", JSON.stringify(state.data));

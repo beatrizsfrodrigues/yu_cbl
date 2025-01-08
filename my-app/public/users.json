@@ -10,11 +10,38 @@
     "partnerId": 2,
     "tasks": [
       {
+        "id": 1,
         "title": "Não usar o instagram hoje",
         "description": "Não usar o instagram durante o dia de hoje",
         "completed": false
       },
       {
+        "id": 2,
+        "title": "Lê 1 capítulo de um livro",
+        "description": "Lê 1 capítulo do livro que tens na prateleira há 6 meses",
+        "completed": false
+      }
+    ],
+    "initialFormAnswers": []
+  },
+  {
+    "id": 2,
+    "username": "catarina",
+    "name": "Catarina Seemann",
+    "email": "catarina@ua.pt",
+    "password": "123",
+    "age": 22,
+    "points": 0,
+    "partnerId": 1,
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Não usar o instagram hoje",
+        "description": "Não usar o instagram durante o dia de hoje",
+        "completed": false
+      },
+      {
+        "id": 2,
         "title": "Lê 1 capítulo de um livro",
         "description": "Lê 1 capítulo do livro que tens na prateleira há 6 meses",
         "completed": false
