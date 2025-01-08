@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
-import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
+//import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,7 +36,7 @@ const Login = () => {
           
           <div className="logo-container">
            <img src={logo} alt="logo" className="logo" />
-           <img src={bolas} alt="bolas" className="bolas" />
+           {/*<img src={bolas} alt="bolas" className="bolas" />*/}
           </div>
 
           <div className="label-container">
