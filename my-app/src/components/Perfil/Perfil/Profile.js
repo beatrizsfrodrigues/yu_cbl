@@ -5,6 +5,8 @@ import Definicoes from "../Definicoes/Definicoes";
 import InfoPessoal from "../Definicoes/InfoPessoal";
 
 
+
+
 const Profile = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
@@ -26,6 +28,15 @@ const Profile = () => {
     setShowSettings(true);
   };
 
+  /*Modal das mensagens 
+  const handleOpenMessagesModal = () => {
+    setIsMessagesModalOpen(true);
+  };
+
+  const handleCloseMessagesModal = () => {
+    setIsMessagesModalOpen(false);
+  };*/
+
   
 
   return (
@@ -45,7 +56,10 @@ const Profile = () => {
       {/* Botões abaixo do nome */}
       <div className="profile-buttons">
         <button className="profile-button award">
-          <i className="bi bi-award"></i>
+          {/*<i className="bi bi-award"></i>*/}
+          <Link to="/grafico">
+           <i class="bi bi-bar-chart-line"></i>
+          </Link>
         </button>
         
         <button className="profile-button circle">
@@ -55,7 +69,7 @@ const Profile = () => {
         </button>
     
          
-        <button className="profile-button dots">
+        <button className="profile-button dots" >
           <i className="bi bi-chat-dots"></i>
         </button>
      

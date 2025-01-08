@@ -7,51 +7,52 @@
         "id": 1,
         "senderId": 1,
         "receiverId": 2,
-        "message": "Hello",
-        "date": "20250104001058"
+        "message": "Olá",
+        "date": "2021-06-01, 9:00"
       },
       {
         "id": 2,
         "senderId": 2,
         "receiverId": 1,
-        "message": "Hi",
-        "date": "20250104002058"
+        "message": "Oi",
+        "date": "2021-06-01, 10:12"
       },
       {
         "id": 3,
         "senderId": 1,
         "receiverId": 2,
-        "message": "how are you",
-        "date": "20250104003058"
+        "message": "Está tudo bem?",
+        "date": "2021-06-03, 13:30"
       },
       {
         "id": 4,
         "senderId": "app",
         "receiverId": 1,
-        "message": "Nova tarefa",
-        "date": "20250104004058"
+        "message": "Nova Tarefa",
+        "date": "2021-06-03, 15:00"
       },
       {
         "id": 5,
         "senderId": 1,
         "receiverId": 2,
-        "message": "how are you",
-        "date": "20250104010058"
+        "message": "Está tudo bem ?",
+        "date": "2021-06-04, 12:00 "
       },
       {
         "id": 6,
         "senderId": 1,
         "receiverId": 2,
-        "message": "how are you",
-        "date": "20250104010158"
+        "message": "Está tudo bem ??",
+        "date": "2021-06-05, 12:05"
       },
       {
         "id": 7,
         "senderId": 1,
         "receiverId": 2,
-        "message": "how are you",
-        "date": "20250104010258"
+        "message": "Está tudo bem ?",
+        "date": "2021-06-06, 13:30"
       }
     ]
   }
 ]
+
