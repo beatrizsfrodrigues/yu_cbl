@@ -1,43 +1,45 @@
-.closetContainer {
-    background-color: var(--purple-lighter);
-    border-top-left-radius: 50px;
-    border-top-right-radius: 50px;
-}
-/*-------- Yu ----------*/
-.Yu{
-    justify-content: center;
-    max-width: 277px;
-    max-height: 191px;
-    z-index: 2;
-    display: block;
+/* General Home Styles */
+.home {
+    background-color: transparent;
+    transition: none;
+    /* No transition applied here */
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    /* Ensures the home takes up the entire height of the viewport */
 }
 
 .homeContainer {
     position: relative;
     overflow: hidden;
-}
-
-.home {
-    transition: transform 0.5s ease-in-out;
-}
-
-.home.locked {
-    transform: translateY(-100%);
-}
-
-.closet {
-    position: absolute;
-    top: 100%;
-    left: 0;
     width: 100%;
-    transition: transform 0.5s ease-in-out;
+    height: auto;
+    /* Full screen */
+    z-index: 0;
+
 }
 
-.home.locked+.closet {
+/* Home Lock Animation (only the closet should be affected) */
+.home.locked .closet {
     transform: translateY(-100%);
+    /* Slide the closet up */
 }
 
-.avatarheader{
+.home.locked .closetOverlay {
+    transform: translateY(0);
+    /* Ensure the overlay stays fixed */
+}
+
+/* Row Layout */
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Avatar Styling */
+.avatarheader {
     padding: 5%;
     padding-bottom: 0%;
     text-align: center;
@@ -45,16 +47,95 @@
     justify-content: space-between;
 }
 
-.avatarcontent{
+.avatarcontent {
     padding-left: 5%;
     display: flex;
     justify-content: left;
 }
 
-.avatarcircle{
+.avatarcircle {
     background-color: var(--purple-dark);
     width: 50px;
     height: 50px;
     border-radius: 50%;
     margin-right: 10%;
+}
+
+.avatarcircle2 {
+    background-color: var(--purple);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10%;
+}
+
+/* Closet Styles */
+.closet {
+    position: absolute;
+    top: 100%;
+    /* Start below the screen */
+    left: 0;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+    z-index: 1001;
+    /* Ensure closet is above other elements */
+}
+
+.closetContainer {
+    background-color: var(--purple-lighter);
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+
+/* Closet Overlay */
+.closetOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Yu Mascot */
+.Yu {
+    justify-content: center;
+    max-width: 277px;
+    max-height: 191px;
+    z-index: 2;
+    display: block;
+}
+
+/* Buttons Styles */
+.buttonsHome,
+.buttonsCloset {
+    border-radius: 24px;
+    background: var(--orange);
+    display: flex;
+    width: 91px;
+    height: 42px;
+    padding: 2px 4px;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.buttonsCloset {
+    flex-direction: column;
+}
+
+/* Button Icons */
+.star {
+    width: 25px;
+    height: 24px;
+    fill: none;
 }
