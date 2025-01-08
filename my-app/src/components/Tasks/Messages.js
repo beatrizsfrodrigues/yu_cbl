@@ -6,7 +6,6 @@ import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 
 function Messages({ onClose, currentUser }) {
-  const currentUserId = 1;
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
@@ -55,7 +54,7 @@ function Messages({ onClose, currentUser }) {
 
   //* send a text message
   const handleAddMessage = (text) => {
-    const senderId = currentUserId;
+    const senderId = currentUser.id;
     const receiverId = currentUser.partnerId;
 
     dispatch(addMessage({ senderId, receiverId, text }));
@@ -73,7 +72,12 @@ function Messages({ onClose, currentUser }) {
   //* text messages
   let messageContent;
   if (messages && messages.length > 0) {
-    const sortedMessages = [...messages[0].messages].sort(
+    const conversation = messages.find(
+      (msg) =>
+        msg.usersId.includes(currentUser.id) &&
+        msg.usersId.includes(currentUser.partnerId)
+    );
+    const sortedMessages = [...conversation.messages].sort(
       (a, b) => +a.date - +b.date
     );
     messageContent = sortedMessages.map((message, index) => {
@@ -83,28 +87,45 @@ function Messages({ onClose, currentUser }) {
       const hours = message.date.slice(8, 10);
       const minutes = message.date.slice(10, 12);
 
-      if (message.senderId === 1) {
-        return (
-          <div key={index} className="textMessage">
-            <p className="bubble bubbleBlue">{message.message}</p>
+      if (message.receiverId === currentUser.partnerId) {
+        if (message.senderId === "app") {
+          return (
+            <div key={index} className="textMessage">
+              <p
+                className="bubble bubbleDotted textRight"
+                dangerouslySetInnerHTML={{ __html: message.message }}
+              ></p>
+              <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
+            </div>
+          );
+        } else {
+          return (
+            <div key={index} className="textMessage">
+              <p className="bubble bubbleBlue">{message.message}</p>
 
-            <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-          </div>
-        );
-      } else if (message.senderId === "app") {
-        return (
-          <div key={index} className="textMessage">
-            <p className="bubble bubbleDotted">{message.message}</p>
-            <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-          </div>
-        );
+              <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
+            </div>
+          );
+        }
       } else {
-        return (
-          <div key={index} className="textMessage">
-            <p className="bubble">{message.message}</p>
-            <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-          </div>
-        );
+        if (message.senderId === "app") {
+          return (
+            <div key={index} className="textMessage">
+              <p
+                className="bubble bubbleDotted"
+                dangerouslySetInnerHTML={{ __html: message.message }}
+              ></p>
+              <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
+            </div>
+          );
+        } else {
+          return (
+            <div key={index} className="textMessage">
+              <p className="bubble">{message.message}</p>
+              <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
+            </div>
+          );
+        }
       }
     });
   } else {
