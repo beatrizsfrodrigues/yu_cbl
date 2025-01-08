@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import "../assets/css/Register.css";
-import logo from "../assets/imgs/YU_logo/YU-03.svg";
+import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
+    localStorage.setItem("Username", username);
+    localStorage.setItem("Email", email);
+    localStorage.setItem("Password", password);
+    setMessage("Registo efetuado com sucesso!");
   };
 
   const isFormComplete = email.trim() !== "" && password.trim() !== "";
 
   return (
     <div>
-      {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
         <div className= "form-container">
             <div className="logo-container">
@@ -56,10 +58,12 @@ const Register = () => {
         </div>
 
         <button
+          href="/Login"
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
-        > Login </button>
+        >Registar</button>
+        {message && <p>{message}</p>}
 
       </form>
     </div>

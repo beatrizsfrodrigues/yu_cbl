@@ -1,7 +1,7 @@
-import React from "react";
-import "../../assets/css/closet.css";
+import React from 'react';
+import '../../assets/css/closet.css';
 import { Circle } from "react-feather";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Closet = () => {
   return (
