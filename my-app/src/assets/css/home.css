@@ -79,6 +79,8 @@
   transition: transform 0.5s ease-in-out;
   z-index: 1001;
   /* Ensure closet is above other elements */
+  position: fixed;
+  bottom: 0px;
 }
 
 .closetContainer {
@@ -90,6 +92,8 @@
   padding: 20px;
   position: relative;
   text-align: center;
+  position: fixed;
+    bottom: 0px;
 }
 
 /* Closet Overlay */
@@ -104,6 +108,8 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  position: fixed;
+    bottom: 0px;
 }
 
 /* Yu Mascot */

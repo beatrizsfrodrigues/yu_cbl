@@ -1,5 +1,4 @@
 import React from "react";
-import "../../assets/css/Closet.css";
 import { Circle } from "react-feather";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import bigode from "../../assets/imgs/YU_acessorios/YU-bigode.svg";
