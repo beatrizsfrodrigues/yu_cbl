@@ -38,7 +38,8 @@ const InfoPessoal = ({ show, onBack }) => {
   if (!show) return null;
 
   return (
-    <div className="info-modal">
+    <div className="modal">
+      <div className="window" style={{ display: 'block' }}>
       <div className="info-header">
         <button className="back-button" onClick={onBack}>
           <i className="bi bi-arrow-left"></i>
@@ -47,7 +48,7 @@ const InfoPessoal = ({ show, onBack }) => {
       </div>
       <hr />
       <div className="settings-section">
-        <form>
+        <form >
           <div className="form-group">
             <label htmlFor="nome">Nome</label>
             <input
@@ -131,6 +132,7 @@ const InfoPessoal = ({ show, onBack }) => {
         </div>
       )}
     </div>
+  </div>
   );
 };
 

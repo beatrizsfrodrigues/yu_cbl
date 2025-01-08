@@ -1,7 +1,7 @@
 .grafico-modal {
   position: fixed; 
   display: flex;
-  top: 20%;
+  top: 15%;
   flex-direction: column;
   background-color: #fff;
   border-radius: 20px;

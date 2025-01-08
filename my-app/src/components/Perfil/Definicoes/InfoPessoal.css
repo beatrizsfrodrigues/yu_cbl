@@ -1,4 +1,4 @@
-.info-modal {
+/*.info-modal {
     position: fixed; 
     top: 50%;
     left: 50%;
@@ -11,9 +11,9 @@
     padding: 20px;
     z-index: 1000;
     animation: fade-in 0.3s ease-in-out;
-  }
+  }*/
   
-  .info-header {
+  /*.info-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -30,7 +30,7 @@
     margin: 10px 0;
     border: none;
     border-top: 1px solid var(--purple-light);
-  }
+  }*/
 
   input{
     width: 90%;
@@ -39,6 +39,7 @@
     margin: 4px 0 ;
     border-radius: 15px; 
   }
+ 
 
 
   /* Botão "Guardar" */
