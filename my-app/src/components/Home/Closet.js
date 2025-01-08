@@ -46,15 +46,14 @@ const Closet = ({ addAccessory, closeCloset }) => {
             >
               <img src={chapeucowboy} alt="Chapéu Cowboy" />
             </div>
-            <div className="avatarcircle"></div>
+            <div className="avatarcircle "></div>
             <div className="avatarcircle"></div>
           </div>
         </div>
 
         {/* Footer with Close Button */}
         <div className="closetFooter">
-
-          <button className="avatarcircle2" onClick={closeCloset}>
+          <button className="avatarcircle colorLight" onClick={closeCloset}>
             Reset
           </button>
 
@@ -62,10 +61,9 @@ const Closet = ({ addAccessory, closeCloset }) => {
             Save
           </button>
 
-          <button className="avatarcircle2" onClick={closeCloset}>
+          <button className="avatarcircle colorLight" onClick={closeCloset}>
             Exit
           </button>
-          
         </div>
       </div>
     </div>

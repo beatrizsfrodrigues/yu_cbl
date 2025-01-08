@@ -5,7 +5,6 @@ import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 
 function ConcludeTask({ onClose, currentUser, task }) {
-  const currentUserId = 1;
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -30,13 +29,13 @@ function ConcludeTask({ onClose, currentUser, task }) {
       completeTask({
         taskId: task.id,
         proofImage: selectedFile.name,
-        userId: currentUserId,
+        userId: currentUser.id,
       })
     );
 
     dispatch(
       sendNotification({
-        senderId: currentUserId,
+        senderId: currentUser.id,
         receiverId: currentUser.partnerId,
         text: `Tarefa <b>${task.title}</b> foi marcada como concluída.`,
       })

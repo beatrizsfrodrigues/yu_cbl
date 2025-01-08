@@ -5,7 +5,6 @@ import { fetchUsers, addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 
 function NewTask({ onClose, currentUser }) {
-  const currentUserId = 1;
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -18,7 +17,7 @@ function NewTask({ onClose, currentUser }) {
 
     dispatch(
       sendNotification({
-        senderId: currentUserId,
+        senderId: currentUser.id,
         receiverId: currentUser.partnerId,
         text: `Tarefa <b>${title}</b> foi criada.`,
       })

@@ -6,7 +6,6 @@ import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 
 function Messages({ onClose, currentUser }) {
-  const currentUserId = 1;
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
@@ -55,7 +54,7 @@ function Messages({ onClose, currentUser }) {
 
   //* send a text message
   const handleAddMessage = (text) => {
-    const senderId = currentUserId;
+    const senderId = currentUser.id;
     const receiverId = currentUser.partnerId;
 
     dispatch(addMessage({ senderId, receiverId, text }));
@@ -75,7 +74,7 @@ function Messages({ onClose, currentUser }) {
   if (messages && messages.length > 0) {
     const conversation = messages.find(
       (msg) =>
-        msg.usersId.includes(currentUserId) &&
+        msg.usersId.includes(currentUser.id) &&
         msg.usersId.includes(currentUser.partnerId)
     );
     const sortedMessages = [...conversation.messages].sort(
