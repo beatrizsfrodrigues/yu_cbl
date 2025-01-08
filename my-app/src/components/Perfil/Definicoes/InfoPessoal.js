@@ -56,7 +56,7 @@ const InfoPessoal = ({ show, onBack }) => {
               name="nome"
               value={formData.nome}
               onChange={handleChange}
-              placeholder="nome"
+              placeholder="Luísa"
               className="form-input"
             />
           </div>
@@ -68,7 +68,7 @@ const InfoPessoal = ({ show, onBack }) => {
               name="nomeUtilizador"
               value={formData.nomeUtilizador}
               onChange={handleChange}
-              placeholder="nome do utilizador"
+              placeholder="luisaS"
               className="form-input"
             />
           </div>
@@ -80,7 +80,7 @@ const InfoPessoal = ({ show, onBack }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="email"
+              placeholder="luisa@gmail.com"
               className="form-input"
             />
           </div>
@@ -92,7 +92,7 @@ const InfoPessoal = ({ show, onBack }) => {
               name="palavraChave"
               value={formData.palavraChave}
               onChange={handleChange}
-              placeholder="palavra-chave"
+              placeholder="****"
               className="form-input"
             />
           </div>
