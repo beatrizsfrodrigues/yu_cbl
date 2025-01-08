@@ -1,23 +1,46 @@
 import React, { useState } from "react";
 import "../assets/css/Register.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
-import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
+//import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [alert, setAlert] = useState("");
+
+
+  const handleRegister = () => {
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    if (users.some(user => user.username === username)) {
+      setAlert('Nome de utilizador já existente!');
+      return;
+    }
+
+     const newUser = {
+      id: Date.now(),
+      username,
+      email,
+      password
+    };
+
+    users.push({newUser});
+    localStorage.setItem('users', JSON.stringify(users));
+    setMessage('Utilizador registado com sucesso!');
+    setEmail('');
+    setUsername('');
+    setPassword('');
+    setAlert('');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("Username", username);
-    localStorage.setItem("Email", email);
-    localStorage.setItem("Password", password);
-    setMessage("Registo efetuado com sucesso!");
-  };
+    handleRegister();
+  }
 
-  const isFormComplete = email.trim() !== "" && password.trim() !== "";
+  const isFormComplete = email.trim() !== "" && password.trim() !== "" && username.trim() !== "";
 
   return (
     <div>
@@ -25,8 +48,10 @@ const Register = () => {
         <div className= "form-container">
             <div className="logo-container">
               <img src={logo} alt="logo" className="logo" />
-              <img src={bolas} alt="bolas" className="bolas" />
+              {/*<img src={bolas} alt="bolas" className="bolas" />*/}
+              
             </div>
+            {alert && <p className="alert">{alert}</p>}
             <div className="label-container">
             <label>Email</label>
             <input
@@ -56,15 +81,12 @@ const Register = () => {
         <div className="register-link">
           <p>Já tens conta? <a href="/Login">Login</a> </p>
         </div>
-
+        {message && <p>{message}</p>}
         <button
-          href="/Login"
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
         >Registar</button>
-        {message && <p>{message}</p>}
-
       </form>
     </div>
   );
