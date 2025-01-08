@@ -26,7 +26,7 @@ const Register = () => {
       password
     };
 
-    users.push({newUser});
+    users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     setMessage('Utilizador registado com sucesso!');
     setEmail('');
