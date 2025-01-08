@@ -1,8 +1,24 @@
+.taskDivOp {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 8px;
+}
+
 .taskDiv {
   background-color: var(--orange);
   border: 2px solid var(--orange-dark);
   border-radius: 24px;
-  padding: 2px 4px;
+  padding: 2px 8px;
+}
+
+.doneTask {
+  background-color: var(--orange-dark);
+  padding: 8px 12px;
+  border-radius: 24px;
+  color: var(--white);
+  box-shadow: none;
+  border: none;
 }
 
 #tasks {
@@ -26,7 +42,7 @@
   align-items: center;
 }
 
-.settings {
+.sliders {
   width: 32px;
   height: auto;
   margin-bottom: 10px;
@@ -56,7 +72,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 8px 24px;
+  box-sizing: border-box;
   gap: 16px;
 }
 
@@ -64,14 +80,19 @@
 
 #textSpace {
   height: 60vh;
-  margin: -16px 0px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   overflow-y: auto;
   box-sizing: border-box;
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  -ms-overflow-style: none;
   scrollbar-width: none;
-  padding-top: 64px;
+  scroll-behavior: smooth;
+  margin: -16px 0px;
+}
+
+#textSpace.textSpaceSmall {
+  height: 40vh;
 }
 
 .textMessage {
@@ -148,7 +169,10 @@
   gap: 8px;
   padding: 16px;
   align-items: start;
-  height: 10vh;
+  height: 20vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: none;
 }
 
 #textOptions div {
@@ -167,4 +191,19 @@
   color: var(--purple-dark);
   background-color: var(--white);
   font-weight: 400;
+}
+
+/** conclude task window */
+.proofImage {
+  height: 50vh;
+  border: 2px solid var(--purple);
+  border-radius: 16px;
+}
+
+.submitBtn {
+  background-color: var(--blue-light);
+  padding: 12px 16px;
+  border-radius: 24px;
+  box-shadow: none;
+  border: none;
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import '../assets/css/closet.css';
+import '../../assets/css/Store.css';
 import { Circle } from "react-feather";
 
-const Closet = () => {
+const Store = () => {
   return (
     <div className="avatareditor">
       <div className="avatarheader">
@@ -22,4 +22,4 @@ const Closet = () => {
   );
 };
 
-export default Closet;
+export default Store;

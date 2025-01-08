@@ -7,7 +7,9 @@ import {
 } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Tasks from "./components/Tasks/Tasks";
-import Home from "./components/Home";
+import Home from "./components/Home/Home";
+import Closet from './components/Home/Closet';
+import Store from './components/Home/Store';
 import Login from "./components/Login";
 import Register from "./components/Register";
  
@@ -37,6 +39,8 @@ function AppContent() {
       <div className="route-container">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/closet" element={<Closet />} />
+          <Route path="/store" element={<Store />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />

@@ -1,11 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMessages } from "../../redux/messagesSlice";
+import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 
-function Messages({ onClose }) {
+function Messages({ onClose, currentUser }) {
+  const currentUserId = 1;
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.data);
+  const usersStatus = useSelector((state) => state.users.status);
   const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const presetMessages = useSelector((state) => state.presetMessages.data);
@@ -15,7 +19,9 @@ function Messages({ onClose }) {
   const error = useSelector((state) => state.messages.error);
   const textSpaceRef = useRef(null);
   const textOptionsRef = useRef(null);
+  const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
 
+  //* fetch text messages
   useEffect(() => {
     if (messagesStatus === "idle") {
       dispatch(fetchMessages());
@@ -23,64 +29,39 @@ function Messages({ onClose }) {
   }, [messagesStatus, dispatch]);
 
   useEffect(() => {
+    if (messages && messages.length > 0) {
+      const textSpace = textSpaceRef.current;
+      textSpace.scrollTop = textSpace.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [usersStatus, dispatch]);
+
+  //* fetch preset text messages
+  useEffect(() => {
     if (presetMessagesStatus === "idle") {
       dispatch(fetchPresetMessages());
     }
   }, [presetMessagesStatus, dispatch]);
 
-  const addDragScrolling = (element) => {
-    let isDown = false;
-    let startY;
-    let scrollTop;
-
-    const handleMouseDown = (e) => {
-      isDown = true;
-      startY = e.pageY - element.offsetTop;
-      scrollTop = element.scrollTop;
-    };
-
-    const handleMouseLeave = () => {
-      isDown = false;
-    };
-
-    const handleMouseUp = () => {
-      isDown = false;
-    };
-
-    const handleMouseMove = (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const y = e.pageY - element.offsetTop;
-      const walk = (y - startY) * 2; // Adjust scroll speed
-      element.scrollTop = scrollTop - walk;
-    };
-
-    element.addEventListener("mousedown", handleMouseDown);
-    element.addEventListener("mouseleave", handleMouseLeave);
-    element.addEventListener("mouseup", handleMouseUp);
-    element.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      element.removeEventListener("mousedown", handleMouseDown);
-      element.removeEventListener("mouseleave", handleMouseLeave);
-      element.removeEventListener("mouseup", handleMouseUp);
-      element.removeEventListener("mousemove", handleMouseMove);
-    };
+  //* open and close preset text messages
+  const handleOpenPresetMessages = () => {
+    setIsPresetMessagesOpen(!isPresetMessagesOpen);
   };
 
-  useEffect(() => {
-    const textSpace = textSpaceRef.current;
-    const textOptions = textOptionsRef.current;
+  //* send a text message
+  const handleAddMessage = (text) => {
+    const senderId = currentUserId;
+    const receiverId = currentUser.partnerId;
 
-    const removeTextSpaceListeners = addDragScrolling(textSpace);
-    const removeTextOptionsListeners = addDragScrolling(textOptions);
+    dispatch(addMessage({ senderId, receiverId, text }));
+  };
 
-    return () => {
-      removeTextSpaceListeners();
-      removeTextOptionsListeners();
-    };
-  }, []);
-
+  //* text messages status info
   if (messagesStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -89,28 +70,39 @@ function Messages({ onClose }) {
     return <div>Error: {error}</div>;
   }
 
+  //* text messages
   let messageContent;
   if (messages && messages.length > 0) {
-    messageContent = messages[0].messages.map((message, index) => {
+    const sortedMessages = [...messages[0].messages].sort(
+      (a, b) => +a.date - +b.date
+    );
+    messageContent = sortedMessages.map((message, index) => {
+      const year = message.date.slice(0, 4);
+      const month = message.date.slice(4, 6);
+      const day = message.date.slice(6, 8);
+      const hours = message.date.slice(8, 10);
+      const minutes = message.date.slice(10, 12);
+
       if (message.senderId === 1) {
         return (
-          <div key={index} className="textMessage ">
+          <div key={index} className="textMessage">
             <p className="bubble bubbleBlue">{message.message}</p>
-            <p className="dateText textRight ">{message.date}</p>
+
+            <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
           </div>
         );
       } else if (message.senderId === "app") {
         return (
           <div key={index} className="textMessage">
             <p className="bubble bubbleDotted">{message.message}</p>
-            <p className="dateText textLeft ">{message.date}</p>
+            <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
           </div>
         );
       } else {
         return (
-          <div key={index} className="textMessage ">
+          <div key={index} className="textMessage">
             <p className="bubble">{message.message}</p>
-            <p className="dateText textLeft ">{message.date}</p>
+            <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
           </div>
         );
       }
@@ -119,47 +111,79 @@ function Messages({ onClose }) {
     messageContent = <div>Não existem mensagens</div>;
   }
 
+  //* preset text messages column 1
   let presetMsgs;
   if (presetMessages && presetMessages.length > 0) {
     presetMsgs = presetMessages.map((message, index) => {
-      if (index % 2 == 0) {
-        return <button className="optionText">{message.message}</button>;
+      if (index % 2 === 0) {
+        return (
+          <button
+            key={index}
+            className="optionText"
+            onClick={() => handleAddMessage(message.message)}
+          >
+            {message.message}
+          </button>
+        );
       }
+      return null;
     });
   } else {
     presetMsgs = <div>Não existem mensagens</div>;
   }
 
+  //* preset text messages column 2
   let presetMsgs2;
   if (presetMessages && presetMessages.length > 0) {
     presetMsgs2 = presetMessages.map((message, index) => {
-      console.log(index);
-      if (index % 2 != 0) {
-        return <button className="optionText">{message.message}</button>;
+      if (index % 2 !== 0) {
+        return (
+          <button
+            key={index}
+            className="optionText"
+            onClick={() => handleAddMessage(message.message)}
+          >
+            {message.message}
+          </button>
+        );
       }
+      return null;
     });
   } else {
     presetMsgs2 = <div>Não existem mensagens</div>;
   }
 
+  //* modal
   return (
     <div className="modal">
       <div className="window">
         <div className="header">
-          <h3>@amigo</h3>
+          {currentUser.partnerId &&
+            (() => {
+              const partnerUser = users.find(
+                (user) => user.id === currentUser.partnerId
+              );
+              return partnerUser ? <h3>@{partnerUser.username}</h3> : null;
+            })()}
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
-        <div id="textSpace" ref={textSpaceRef}>
+        <div
+          id="textSpace"
+          ref={textSpaceRef}
+          className={isPresetMessagesOpen ? "textSpaceSmall" : ""}
+        >
           {messageContent}
         </div>
-        <div className="inputMessage">
+        <div className="inputMessage" onClick={handleOpenPresetMessages}>
           <p>Deixa uma mensagem</p>
         </div>
-        <div id="textOptions" ref={textOptionsRef}>
-          <div>{presetMsgs}</div>
-          <div>{presetMsgs2}</div>
-        </div>
+        {isPresetMessagesOpen && (
+          <div id="textOptions" ref={textOptionsRef}>
+            <div>{presetMsgs}</div>
+            <div>{presetMsgs2}</div>
+          </div>
+        )}
       </div>
     </div>
   );

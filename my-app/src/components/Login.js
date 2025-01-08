@@ -1,17 +1,29 @@
 import React, { useState } from "react";
 import "../assets/css/Login.css";
-import logo from "../assets/imgs/YU_logo/YU-03.svg";
+import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //console.log("Username:", username);
-    //console.log("Password:", password);
-  };
+    const storedEmail = localStorage.getItem("Email");
+    const storedPassword = localStorage.getItem("Password");
+  
+
+  if (storedEmail === email){
+    if(storedPassword === password){
+      setMessage("Login efetuado com sucesso!");
+    } else {
+      setMessage("Palavra-passe incorreta.");
+    }
+  } else {
+    setMessage("Utilizador não encontrado.")
+  }
+};  
 
   const isFormComplete = email.trim() !== "" && password.trim() !== "";
   //console.log("Form Complete:", isFormComplete);
@@ -35,7 +47,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)} />
           </div>
 
-        <div classname="pass-container">
+        <div className="pass-container">
           <label>Palavra-passe</label>
           <input
             type="password"
@@ -53,6 +65,7 @@ const Login = () => {
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
         > Login </button>
+        {message && <p>{message}</p>}
        
        </div>
       </form>
