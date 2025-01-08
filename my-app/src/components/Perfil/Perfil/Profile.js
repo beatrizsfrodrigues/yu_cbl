@@ -3,14 +3,24 @@ import { Link } from "react-router-dom";
 import "../Perfil/profile.css";
 import Definicoes from "../Definicoes/Definicoes";
 import InfoPessoal from "../Definicoes/InfoPessoal";
+import Grafico from "../Grafico/Grafico";
+
 
 
 const Profile = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
+  const [showGrafico, setShowGrafico] = useState(false);
+
+  const monthlyData = [5, 8, 2, 10, 7, 15, 20, 13, 17, 22, 19, 5, 9, 14, 18, 25, 11, 20, 22, 24, 18, 12, 15, 9, 7, 14, 12, 16, 19, 11, 8];
+  const yearlyData = [50, 60, 70, 80, 90, 100, 110, 95, 85, 75, 65, 55];
 
   const toggleSettings = () => {
     setShowSettings(!showSettings);
+  };
+
+  const toggleGrafico = () => {
+    setShowGrafico(!showGrafico);
   };
 
   const handleInfoPessoalClick = () => {
@@ -21,12 +31,28 @@ const Profile = () => {
   const closeSettings = () => {
     setShowSettings(false);
   };
+
+  const closeGrafico = () => {
+    setShowGrafico(false);
+  };
+
+
+
   const backToSettings = () => {
     setShowInfoPessoal(false); // Fecha o modal de InfoPessoal
     setShowSettings(true);
   };
 
-  
+  /*Modal das mensagens 
+  const handleOpenMessagesModal = () => {
+    setIsMessagesModalOpen(true);
+  };
+
+  const handleCloseMessagesModal = () => {
+    setIsMessagesModalOpen(false);
+  };*/
+
+ 
 
   return (
     <div className="profile-container">
@@ -44,9 +70,11 @@ const Profile = () => {
 
       {/* Botões abaixo do nome */}
       <div className="profile-buttons">
+        
         <button className="profile-button award">
-          <i className="bi bi-award"></i>
-        </button>
+          {/*<i className="bi bi-award"></i>*/}
+          <span className="bi bi-bar-chart-line" onClick={toggleGrafico}></span>
+      </button>
         
         <button className="profile-button circle">
           <Link to="/informacoes">
@@ -55,7 +83,7 @@ const Profile = () => {
         </button>
     
          
-        <button className="profile-button dots">
+        <button className="profile-button dots" >
           <i className="bi bi-chat-dots"></i>
         </button>
      
@@ -71,6 +99,12 @@ const Profile = () => {
         show={showInfoPessoal} 
         onBack={backToSettings} />
 
+      <Grafico 
+        show={showGrafico} 
+        onClose={closeGrafico} 
+        monthlyData={[5, 10, 15, 20, 25]} 
+        yearlyData={[100, 200, 300, 400, 500]} 
+      />
 
        
     </div>
