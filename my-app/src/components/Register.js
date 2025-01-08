@@ -26,12 +26,13 @@ const Register = () => {
     };
 
     users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    setMessage("Utilizador registado com sucesso!");
-    setEmail("");
-    setUsername("");
-    setPassword("");
-    setAlert("");
+
+    localStorage.setItem('users', JSON.stringify(users));
+    setMessage('Utilizador registado com sucesso!');
+    setEmail('');
+    setUsername('');
+    setPassword('');
+    setAlert('');
   };
 
   const handleSubmit = (e) => {
