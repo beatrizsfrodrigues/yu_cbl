@@ -48,7 +48,7 @@ const InfoPessoal = ({ show, onBack }) => {
       </div>
       <hr />
       <div className="settings-section">
-        <form >
+      <form >
           <div className="form-group">
             <label htmlFor="nome">Nome</label>
             <input
@@ -97,8 +97,6 @@ const InfoPessoal = ({ show, onBack }) => {
               className="form-input"
             />
           </div>
-
-          {/* Botão "Guardar" */}
           <button
             type="button"
             className="settings-button save-button"
