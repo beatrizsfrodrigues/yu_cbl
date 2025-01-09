@@ -2,20 +2,30 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { X } from "react-feather";
 import { fetchUsers, addTask } from "../../redux/usersSlice";
+import { sendNotification } from "../../redux/messagesSlice";
 
 function NewTask({ onClose, currentUser }) {
-  const currentUserId = 1;
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const handleAddTask = (e) => {
     const partnerId = currentUser.partnerId;
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
+
     dispatch(addTask({ title, description, partnerId }));
-    setTitle(""); // Clear the input fields
+
+    dispatch(
+      sendNotification({
+        senderId: currentUser.id,
+        receiverId: currentUser.partnerId,
+        text: `Tarefa <b>${title}</b> foi criada.`,
+      })
+    );
+
+    setTitle("");
     setDescription("");
-    onClose(); // Close the modal
+    onClose();
   };
 
   return (

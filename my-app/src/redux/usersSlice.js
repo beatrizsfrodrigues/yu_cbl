@@ -1,16 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-//* fetch users from local storage
+//* Fetch users from local storage or JSON
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   const localData = localStorage.getItem("users");
+
   if (localData) {
-    return JSON.parse(localData);
+    try {
+      return JSON.parse(localData);
+    } catch (error) {
+      console.error("Failed to parse localStorage data:", error);
+    }
   }
 
   const response = await fetch("/users.json");
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
+
   try {
     const data = await response.json();
     localStorage.setItem("users", JSON.stringify(data));
@@ -28,11 +34,9 @@ const usersSlice = createSlice({
     error: null,
   },
   reducers: {
-    //* adds a new task to partner user
     addTask: (state, action) => {
       const { title, description, partnerId } = action.payload;
 
-      //* finds the partner
       const user = state.data.find((u) => u.id === partnerId);
 
       const newTask = {
@@ -45,17 +49,15 @@ const usersSlice = createSlice({
         completedDate: 0,
       };
 
-      //* if it find the partner, it adds a new task
       if (user) {
         user.tasks.push(newTask);
-      }
-      //* this is to update the state
-      else {
+      } else {
         state.data.push(newTask);
       }
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
+
     completeTask: (state, action) => {
       const { taskId, proofImage, userId } = action.payload;
 
@@ -77,7 +79,6 @@ const usersSlice = createSlice({
       if (user) {
         const task = user.tasks.find((t) => t.id === taskId);
         if (task) {
-          console.log("ok");
           task.picture = proofImage;
           task.completedDate = getFormattedDate();
           task.completed = true;
@@ -85,6 +86,17 @@ const usersSlice = createSlice({
       }
 
       localStorage.setItem("users", JSON.stringify(state.data));
+    },
+    updateUser: (state, action) => {
+      const updatedUser = action.payload;
+      const index = state.data.findIndex((user) => user.id === updatedUser.id);
+      if (index !== -1) {
+        state.data[index] = {
+          ...state.data[index],
+          ...updatedUser,
+        };
+        localStorage.setItem("users", JSON.stringify(state.data));
+      }
     },
   },
   extraReducers: (builder) => {
@@ -95,6 +107,7 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
+        localStorage.setItem("users", JSON.stringify(action.payload));
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = "failed";
@@ -103,5 +116,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask, completeTask } = usersSlice.actions;
+export const { addTask, updateUser, completeTask } = usersSlice.actions;
 export default usersSlice.reducer;

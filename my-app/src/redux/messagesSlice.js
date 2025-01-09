@@ -64,8 +64,6 @@ const messagesSlice = createSlice({
         date: getFormattedDate(),
       };
 
-      console.log(conversation);
-
       if (conversation) {
         conversation.messages.push(newMessage);
       } else {
@@ -75,10 +73,7 @@ const messagesSlice = createSlice({
       localStorage.setItem("messages", JSON.stringify(state.data));
     },
     sendNotification: (state, action) => {
-      console.log("text");
       const { senderId, receiverId, text } = action.payload;
-      console.log("Current state data:", state.data);
-      console.log("Action payload:", action.payload);
       const conversation = state.data.find(
         (conv) =>
           conv.usersId.includes(senderId) && conv.usersId.includes(receiverId)

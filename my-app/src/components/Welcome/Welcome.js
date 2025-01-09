@@ -19,7 +19,7 @@ const Welcome = () => {
         <div className="title">Bem vindo à YU!</div>
         <div>
           Vamos iniciar esta jornada para <br></br> conquistares os teus
-          objetivos.hhh
+          objetivos.
         </div>
         <button type="submit" className="start-button" onClick={handleClick}>Começar</button>
       </div>

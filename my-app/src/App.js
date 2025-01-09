@@ -21,6 +21,7 @@ import Definicoes from "./components/Perfil/Definicoes/Definicoes";
 import Grafico from "./components/Perfil/Grafico/Grafico";
  
 import Welcome from "./components/Welcome/Welcome";
+import Connection from "./components/Welcome/Connection";
  
 import Questions from "./components/Welcome/Questions";
  
@@ -46,6 +47,7 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/welcome" element={<Welcome />} />
+          <Route path="/connection" element={<Connection />} />
           <Route path="/questions" element={<Questions />} />
           <Route path="/informacoes" element={<Informacoes />} />
           <Route path="/infoPessoal" element={<InfoPessoal />} />

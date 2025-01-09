@@ -23,6 +23,11 @@ const Home = () => {
     setShowCloset(false); // Hide Closet overlay
   };
 
+  const resetAccessories = () => {
+  setAccessories([]); // Clear all accessories
+};
+
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setShowDropdown(false); // Close dropdown if click is outside
@@ -42,53 +47,55 @@ const Home = () => {
   };
 
   return (
-    <div className="homeContainer">
-      <div className={`home mainBody ${showCloset ? "locked" : ""}`}>
-        <div className="row">
-          <div className="buttonsHome">
-            <svg className="star" xmlns="http://www.w3.org/2000/svg">
-              {/* SVG Path */}
-            </svg>
-            <p>1300</p>
-          </div>
-
-          <div className="buttonsCloset">
-            <i
-              stroke="#B49BC7"
-              className="bi bi-door-open"
-              onClick={toggleDropdown}
-            ></i>
-            <ChevronDown className="navIcon" onClick={toggleDropdown} />
-            {showDropdown && (
-              <div className="dropdown-menu" ref={dropdownRef}>
-                <button onClick={openCloset}>Open Closet</button>
-                <button>
-                  <i className="bi bi-store"></i>
-                </button>
-              </div>
-            )}
-          </div>
+    // <div className="homeContainer">
+    <div className={`home mainBody ${showCloset ? "locked" : ""}`}>
+      <div className="row">
+        <div className="buttonsHome">
+          <svg className="star" xmlns="http://www.w3.org/2000/svg">
+            {/* SVG Path */}
+          </svg>
+          <p>1300</p>
         </div>
 
-        <div className="mascotContainer">
-          <img className="Yu" src={yu} alt="YU logo" />
-          {accessories.map((accessory, index) => (
-            <img
-              key={index}
-              className="accessory"
-              src={accessory}
-              alt={`Accessory ${index}`}
-            />
-          ))}
+        <div className="buttonsCloset">
+          <i
+            stroke="#B49BC7"
+            className="bi bi-door-open"
+            onClick={toggleDropdown}
+          ></i>
+          <ChevronDown className="navIcon" onClick={toggleDropdown} />
+          {showDropdown && (
+            <div className="dropdown-menu" ref={dropdownRef}>
+              <button onClick={openCloset}>Open Closet</button>
+              <button>
+                <i className="bi bi-store"></i>
+              </button>
+            </div>
+          )}
         </div>
-
-        {showCloset && (
-          <div className="closetOverlay">
-            <Closet addAccessory={addAccessory} closeCloset={closeCloset} />
-          </div>
-        )}
       </div>
+
+      <div className="mascotContainer">
+        <img className="Yu" src={yu} alt="YU logo" />
+        {accessories.map((accessory, index) => (
+          <img
+            key={index}
+            className="accessory"
+            src={accessory}
+            alt={`Accessory ${index}`}
+          />
+        ))}
+      </div>
+
+      {showCloset && (
+        <div className="closetOverlay">
+          <Closet addAccessory={addAccessory} 
+          closeCloset={closeCloset}
+          resetAccessories={resetAccessories} />
+        </div>
+      )}
     </div>
+    // </div>
   );
 };
 
