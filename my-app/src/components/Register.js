@@ -16,7 +16,7 @@ const Register = () => {
 
     if (users.some(user => user.username === username)) {
       setAlert('Nome de utilizador já existente!');
-      return;
+      return; 
     }
 
      const newUser = {

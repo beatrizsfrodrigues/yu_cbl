@@ -10,8 +10,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const storedEmail = localStorage.getItem("Email");
-    const storedPassword = localStorage.getItem("Password");
+    const users = JSON.parse(localStorage.getItem('users')) || [];
   
 
   if (storedEmail === email){
