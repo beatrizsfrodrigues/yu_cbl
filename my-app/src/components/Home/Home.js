@@ -23,6 +23,11 @@ const Home = () => {
     setShowCloset(false); // Hide Closet overlay
   };
 
+  const resetAccessories = () => {
+  setAccessories([]); // Clear all accessories
+};
+
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setShowDropdown(false); // Close dropdown if click is outside
@@ -84,7 +89,9 @@ const Home = () => {
 
       {showCloset && (
         <div className="closetOverlay">
-          <Closet addAccessory={addAccessory} closeCloset={closeCloset} />
+          <Closet addAccessory={addAccessory} 
+          closeCloset={closeCloset}
+          resetAccessories={resetAccessories} />
         </div>
       )}
     </div>
