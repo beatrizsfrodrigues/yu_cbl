@@ -1,23 +1,39 @@
-import React, { useState } from "react";
+import React, {useEffect,  useState } from "react";
 import { Link } from "react-router-dom"; 
+import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
 import Definicoes from "../Definicoes/Definicoes";
 import InfoPessoal from "../Definicoes/InfoPessoal";
 import Grafico from "../Grafico/Grafico";
+import Messages from "../../Tasks/Messages";
+import { fetchUsers } from "../../../redux/usersSlice.js";
 
 
 
 const Profile = () => {
+  const currentUserId = 1;
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.data);
+  const usersStatus = useSelector((state) => state.users.status);
+   const error = useSelector((state) => state.users.error);
   const [showSettings, setShowSettings] = useState(false);
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
   const [showGrafico, setShowGrafico] = useState(false);
+  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
   const monthlyData = [5, 8, 2, 10, 7, 15, 20, 13, 17, 22, 19, 5, 9, 14, 18, 25, 11, 20, 22, 24, 18, 12, 15, 9, 7, 14, 12, 16, 19, 11, 8];
   const yearlyData = [50, 60, 70, 80, 90, 100, 110, 95, 85, 75, 65, 55];
 
+  useEffect(() => {
+      if (usersStatus === "idle") {
+        dispatch(fetchUsers());
+      }
+    }, [usersStatus, dispatch]);
+
   const toggleSettings = () => {
     setShowSettings(!showSettings);
   };
+
 
   const toggleGrafico = () => {
     setShowGrafico(!showGrafico);
@@ -43,16 +59,28 @@ const Profile = () => {
     setShowSettings(true);
   };
 
-  /*Modal das mensagens 
+  
+
   const handleOpenMessagesModal = () => {
     setIsMessagesModalOpen(true);
   };
 
   const handleCloseMessagesModal = () => {
     setIsMessagesModalOpen(false);
-  };*/
+  };
 
- 
+  if (usersStatus === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (usersStatus === "failed") {
+    return <div>Error: {error}</div>;
+  }
+
+  const currentUser =
+    users && users.length > 0
+      ? users.find((user) => user.id == currentUserId)
+      : null;
 
   return (
     <div className="profile-container">
@@ -83,7 +111,7 @@ const Profile = () => {
         </button>
     
          
-        <button className="profile-button dots" >
+        <button className="profile-button dots"  onClick={handleOpenMessagesModal}>
           <i className="bi bi-chat-dots"></i>
         </button>
      
@@ -106,6 +134,9 @@ const Profile = () => {
         yearlyData={[100, 200, 300, 400, 500]} 
       />
 
+       
+
+      
        
     </div>
   );
