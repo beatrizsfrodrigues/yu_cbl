@@ -151,16 +151,15 @@
   color: var(--purple-dark);
   text-align: left;
   width: 100%;
-  /* margin-bottom: 8px; */
 }
 
 .inputMessage p {
   text-align: left;
   margin-left: 0px;
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  width: 100%; /* Ensure the paragraph takes the full width */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #textOptions {
@@ -248,4 +247,10 @@
 #infoUpload {
   font-size: 14px;
   color: var(--purple-dark);
+}
+
+/** verify task window  */
+#btnGroupDiv {
+  flex-direction: row;
+  gap: 16px;
 }

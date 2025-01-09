@@ -64,6 +64,10 @@ button {
   border: none;
 }
 
+.orangeBtn {
+  background-color: var(--orange);
+}
+
 .label {
   margin-bottom: -8px;
 }
