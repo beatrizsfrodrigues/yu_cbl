@@ -33,9 +33,7 @@ const usersSlice = createSlice({
       const { title, description, partnerId } = action.payload;
 
       //* finds the partner
-      const user = state.data.find(
-        (u) => JSON.stringify(u.id) === JSON.stringify(partnerId)
-      );
+      const user = state.data.find((u) => u.id === partnerId);
 
       const newTask = {
         id: state.data.length + 1,
@@ -58,7 +56,11 @@ const usersSlice = createSlice({
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
-    completeTask: (state, task) => {
+    completeTask: (state, action) => {
+      const { taskId, proofImage, userId } = action.payload;
+
+      const user = state.data.find((u) => u.id === userId);
+
       function getFormattedDate() {
         const now = new Date();
 
@@ -71,6 +73,18 @@ const usersSlice = createSlice({
 
         return `${year}${month}${day}${hours}${minutes}${seconds}`;
       }
+
+      if (user) {
+        const task = user.tasks.find((t) => t.id === taskId);
+        if (task) {
+          console.log("ok");
+          task.picture = proofImage;
+          task.completedDate = getFormattedDate();
+          task.completed = true;
+        }
+      }
+
+      localStorage.setItem("users", JSON.stringify(state.data));
     },
   },
   extraReducers: (builder) => {
@@ -89,5 +103,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask } = usersSlice.actions;
+export const { addTask, completeTask } = usersSlice.actions;
 export default usersSlice.reducer;

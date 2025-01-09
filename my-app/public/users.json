@@ -13,13 +13,19 @@
         "id": 1,
         "title": "Não usar o instagram hoje",
         "description": "Não usar o instagram durante o dia de hoje",
-        "completed": false
+        "picture": "",
+        "completed": false,
+        "verified": false,
+        "completedDate": 0
       },
       {
         "id": 2,
         "title": "Lê 1 capítulo de um livro",
         "description": "Lê 1 capítulo do livro que tens na prateleira há 6 meses",
-        "completed": false
+        "picture": "",
+        "completed": false,
+        "verified": false,
+        "completedDate": 0
       }
     ],
     "initialFormAnswers": []
@@ -38,13 +44,19 @@
         "id": 1,
         "title": "Não usar o instagram hoje",
         "description": "Não usar o instagram durante o dia de hoje",
-        "completed": false
+        "picture": "",
+        "completed": false,
+        "verified": false,
+        "completedDate": 0
       },
       {
         "id": 2,
         "title": "Lê 1 capítulo de um livro",
         "description": "Lê 1 capítulo do livro que tens na prateleira há 6 meses",
-        "completed": false
+        "picture": "",
+        "completed": false,
+        "verified": false,
+        "completedDate": 0
       }
     ],
     "initialFormAnswers": []
