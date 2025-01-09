@@ -37,23 +37,56 @@ const usersSlice = createSlice({
     addTask: (state, action) => {
       const { title, description, partnerId } = action.payload;
 
-      //* finds the partner
       const user = state.data.find((u) => u.id === partnerId);
 
       const newTask = {
-        id: user?.tasks.length + 1 || 1,
-        title,
-        description,
+        id: state.data.length + 1,
+        title: title,
+        description: description,
+        picture: "",
         completed: false,
-        completedDate: null,
+        verified: false,
+        completedDate: 0,
       };
 
       if (user) {
         user.tasks.push(newTask);
+      } else {
+        state.data.push(newTask);
       }
+
       localStorage.setItem("users", JSON.stringify(state.data));
     },
 
+    completeTask: (state, action) => {
+      const { taskId, proofImage, userId } = action.payload;
+
+      const user = state.data.find((u) => u.id === userId);
+
+      function getFormattedDate() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+      }
+
+      if (user) {
+        const task = user.tasks.find((t) => t.id === taskId);
+        if (task) {
+          task.picture = proofImage;
+          task.completedDate = getFormattedDate();
+          task.completed = true;
+        }
+      }
+
+      localStorage.setItem("users", JSON.stringify(state.data));
+    },
     updateUser: (state, action) => {
       const updatedUser = action.payload;
       const index = state.data.findIndex((user) => user.id === updatedUser.id);
@@ -64,26 +97,6 @@ const usersSlice = createSlice({
         };
         localStorage.setItem("users", JSON.stringify(state.data));
       }
-    },
-
-    completeTask: (state, action) => {
-      const { taskId, proofImage, userId } = action.payload;
-
-      const user = state.data.find((u) => u.id === userId);
-
-      if (user) {
-        const task = user.tasks.find((t) => t.id === taskId);
-        if (task) {
-          console.log("ok");
-          task.picture = proofImage;
-          task.completedDate = new Date().toISOString();
-          task.completed = true;
-   
-          
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
     },
   },
   extraReducers: (builder) => {
