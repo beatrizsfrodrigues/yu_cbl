@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Definicoes/InfoPessoal.css";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser, fetchUsers } from "../../../redux/usersSlice"; 
 
 const InfoPessoal = ({ show, onBack }) => {
-  // Estado para os dados do formulário
+  const dispatch = useDispatch();
+
+  const users = useSelector((state) => state.users.data);
+  const activeUser = users?.find((user) => user.ativo === 1); 
+
+
   const [formData, setFormData] = useState({
     nome: "",
     nomeUtilizador: "",
@@ -10,24 +17,52 @@ const InfoPessoal = ({ show, onBack }) => {
     palavraChave: "",
   });
 
-  // Estado para o modal de confirmação
+  useEffect(() => {
+    if (activeUser) {
+      setFormData({
+        nome: activeUser.name,
+        nomeUtilizador: activeUser.username,
+        email: activeUser.email,
+        palavraChave: activeUser.password,
+      });
+    }
+  }, [activeUser]);
+
+  useEffect(() => {
+    if (!users) {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, users]);
+
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // Manipula as mudanças nos inputs
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSave = () => {
-    setShowConfirmModal(true); // Exibe o modal de confirmação
+    setShowConfirmModal(true); 
   };
 
   const confirmSave = () => {
-    console.log("Dados atualizados:", formData);
-    alert("Dados atualizados com sucesso!");
-    setShowConfirmModal(false); // Fecha o modal de confirmação
-    onBack(); // Volta para o modal de definições
+    if (activeUser) {
+      const updatedUser = {
+        ...activeUser,
+        name: formData.nome,
+        username: formData.nomeUtilizador,
+        email: formData.email,
+        password: formData.palavraChave,
+      };
+
+      // Atualiza os dados no Redux
+      dispatch(updateUser(updatedUser));
+      alert("Dados atualizados com sucesso!");
+    }
+    setShowConfirmModal(false);
+    onBack(); 
   };
 
   const cancelSave = () => {
@@ -39,98 +74,100 @@ const InfoPessoal = ({ show, onBack }) => {
 
   return (
     <div className="modal">
-      <div className="window" style={{ display: 'block' }}>
-      <div className="info-header">
-        <button className="back-button" onClick={onBack}>
-          <i className="bi bi-arrow-left"></i>
-        </button>
-        <h2>Os meus dados</h2>
-      </div>
-      <hr />
-      <div className="settings-section">
-      <form >
-          <div className="form-group">
-            <label htmlFor="nome">Nome</label>
-            <input
-              type="text"
-              id="nome"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
-              placeholder="Luísa"
-              className="form-input"
-            />
+      <div className="info-pessoal-page">
+        <div className="window" style={{ display: "block" }}>
+          <div className="info-header">
+            <button className="back-button" onClick={onBack}>
+              <i className="bi bi-arrow-left"></i>
+            </button>
+            <h2>Os meus dados</h2>
           </div>
-          <div className="form-group">
-            <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
-            <input
-              type="text"
-              id="nomeUtilizador"
-              name="nomeUtilizador"
-              value={formData.nomeUtilizador}
-              onChange={handleChange}
-              placeholder="luisaS"
-              className="form-input"
-            />
+          <hr />
+          <div className="settings-section">
+            <form>
+              <div className="form-group">
+                <label htmlFor="nome">Nome</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  placeholder="Luísa"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
+                <input
+                  type="text"
+                  id="nomeUtilizador"
+                  name="nomeUtilizador"
+                  value={formData.nomeUtilizador}
+                  onChange={handleChange}
+                  placeholder="luisaS"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="luisa@gmail.com"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="palavraChave">Palavra Chave</label>
+                <input
+                  type="password"
+                  id="palavraChave"
+                  name="palavraChave"
+                  value={formData.palavraChave}
+                  onChange={handleChange}
+                  placeholder="****"
+                  className="form-input"
+                />
+              </div>
+              <button
+                type="button"
+                className="settings-button save-button"
+                onClick={handleSave}
+              >
+                Guardar
+              </button>
+            </form>
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="luisa@gmail.com"
-              className="form-input"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="palavraChave">Palavra Chave</label>
-            <input
-              type="password"
-              id="palavraChave"
-              name="palavraChave"
-              value={formData.palavraChave}
-              onChange={handleChange}
-              placeholder="****"
-              className="form-input"
-            />
-          </div>
-          <button
-            type="button"
-            className="settings-button save-button"
-            onClick={handleSave}
-          >
-            Guardar
-          </button>
-        </form>
-      </div>
 
-      {/* Modal de confirmação */}
-      {showConfirmModal && (
-        <div className="confirm-modal">
-          <div className="confirm-modal-content">
-            <h3>Tens a certeza que queres alterar os teus dados?</h3>
-            <div className="confirm-modal-buttons">
-              <button
-                className="settings-button confirm-button"
-                onClick={confirmSave}
-              >
-                Sim
-              </button>
-              <button
-                className="settings-button cancel-button"
-                onClick={cancelSave}
-              >
-                Não
-              </button>
+          {/* Modal de confirmação */}
+          {showConfirmModal && (
+            <div className="confirm-modal">
+              <div className="confirm-modal-content">
+                <h3>Tens a certeza que queres alterar os teus dados?</h3>
+                <div className="confirm-modal-buttons">
+                  <button
+                    className="settings-button confirm-button"
+                    onClick={confirmSave}
+                  >
+                    Sim
+                  </button>
+                  <button
+                    className="settings-button cancel-button"
+                    onClick={cancelSave}
+                  >
+                    Não
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
-  </div>
   );
 };
 

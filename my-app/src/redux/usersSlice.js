@@ -1,24 +1,31 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-//* fetch users from local storage
+//* Fetch users from local storage or JSON
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   const localData = localStorage.getItem("users");
+
   if (localData) {
-    return JSON.parse(localData);
+    try {
+      return JSON.parse(localData); 
+    } catch (error) {
+      console.error("Failed to parse localStorage data:", error);
+    }
   }
 
   const response = await fetch("/users.json");
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
+
   try {
     const data = await response.json();
-    localStorage.setItem("users", JSON.stringify(data));
+    localStorage.setItem("users", JSON.stringify(data)); 
     return data;
   } catch (error) {
     throw new Error("Failed to parse JSON");
   }
 });
+
 
 const usersSlice = createSlice({
   name: "users",
@@ -28,49 +35,49 @@ const usersSlice = createSlice({
     error: null,
   },
   reducers: {
-    //* adds a new task to partner user
     addTask: (state, action) => {
       const { title, description, partnerId } = action.payload;
-
-      //* finds the partner
-      const user = state.data.find(
-        (u) => JSON.stringify(u.id) === JSON.stringify(partnerId)
-      );
+      const user = state.data.find((u) => u.id === partnerId);
 
       const newTask = {
-        id: state.data.length + 1,
-        title: title,
-        description: description,
-        picture: "",
+        id: user?.tasks.length + 1 || 1,
+        title,
+        description,
         completed: false,
-        verified: false,
-        completedDate: 0,
+        completedDate: null,
       };
 
-      //* if it find the partner, it adds a new task
       if (user) {
         user.tasks.push(newTask);
       }
-      //* this is to update the state
-      else {
-        state.data.push(newTask);
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
+      localStorage.setItem("users", JSON.stringify(state.data)); 
     },
-    completeTask: (state, task) => {
-      function getFormattedDate() {
-        const now = new Date();
 
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        const seconds = String(now.getSeconds()).padStart(2, "0");
-
-        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+    updateUser: (state, action) => {
+      const updatedUser = action.payload;
+      const index = state.data.findIndex((user) => user.id === updatedUser.id);
+      if (index !== -1) {
+        state.data[index] = {
+          ...state.data[index],
+          ...updatedUser, 
+        };
+        localStorage.setItem("users", JSON.stringify(state.data)); 
       }
+    },
+    
+
+    completeTask: (state, action) => {
+      const { userId, taskId } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+
+      if (user) {
+        const task = user.tasks.find((t) => t.id === taskId);
+        if (task) {
+          task.completed = true;
+          task.completedDate = new Date().toISOString(); 
+        }
+      }
+      localStorage.setItem("users", JSON.stringify(state.data)); 
     },
   },
   extraReducers: (builder) => {
@@ -81,6 +88,7 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
+        localStorage.setItem("users", JSON.stringify(action.payload)); 
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = "failed";
@@ -89,5 +97,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask } = usersSlice.actions;
+export const { addTask, updateUser, completeTask } = usersSlice.actions;
 export default usersSlice.reducer;

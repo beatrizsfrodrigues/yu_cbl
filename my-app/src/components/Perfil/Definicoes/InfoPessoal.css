@@ -108,69 +108,71 @@
   }
   
   /* Modal de confirmação */
-  .confirm-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-  }
-  
-  .confirm-modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 90%;
-  }
-  
-  .confirm-modal-content h3 {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    color: var(--purple-darker);
-  }
-  
-  .confirm-modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  
-  .confirm-button,
-  .cancel-button {
-    width: 100%;
-    padding: 10px 15px;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .confirm-button {
-    background-color: var(--purple-light);
-    color: white;
-  }
-  
-  .confirm-button:hover {
-    background-color: var(--purple-darker);
-  }
-  
-  .cancel-button {
-    background-color: var(--orange-light);
-    color: white;
-  }
-  
-  .cancel-button:hover {
-    background-color: var(--orange-darker);
-  }
+ /* Estilo para o modal de confirmação */
+
+
+
+ .info-pessoal-page .confirm-modal {
+  position: fixed ; /* Mantém o modal fixo na janela */
+  top: 0;
+  left: 0;
+  width: 100vw; /* Ocupa a largura total da janela */
+  height: 100vh; /* Ocupa a altura total da janela */
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  z-index: 2000; /* Garante que está acima de outros elementos */
+}
+
+/* Conteúdo do modal */
+.confirm-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  animation: fade-in 0.3s ease-in-out; /* Animação suave */
+}
+
+/* Botões do modal */
+.confirm-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.confirm-button,
+.cancel-button {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.confirm-button {
+  background-color: var(--purple-light);
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: var(--purple-darker);
+}
+
+.cancel-button {
+  background-color: var(--orange-light);
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: var(--orange-darker);
+}
+
   
   /* Animação de fade-in */
   @keyframes fade-in {
@@ -183,4 +185,3 @@
       transform: scale(1);
     }
   }
-  
