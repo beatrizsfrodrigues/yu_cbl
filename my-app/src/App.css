@@ -119,6 +119,7 @@ button {
 .window div {
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   width: 100%;
   justify-content: space-between;
   text-align: center;
@@ -129,8 +130,10 @@ button {
 
 .closeWindow {
   position: absolute;
-  right: 8px;
-  top: 8px;
+  right: 0px;
+  top: 18px;
+  width: 40px;
+  height: auto;
 }
 
 .line {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { X } from "react-feather";
+import { X, UploadCloud, RefreshCw } from "react-feather";
 import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 
@@ -51,18 +51,46 @@ function ConcludeTask({ onClose, currentUser, task }) {
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
-        <h4>{task.title}</h4>
-        <div className="proofImage">
-          {preview ? (
-            <img src={preview} alt="Proof" style={{ width: "100%" }} />
-          ) : (
-            "No image uploaded"
-          )}
+        <div id="concludeTaskDiv">
+          <h5 className="titleTask">{task.title}</h5>
+          <div id="proofImage">
+            {preview ? (
+              <div>
+                <img src={preview} alt="Proof" style={{ width: "100%" }} />
+                <label
+                  htmlFor="fileInput"
+                  className="btnRound"
+                  id="retakePhoto"
+                >
+                  <RefreshCw />
+                  <input
+                    type="file"
+                    id="fileInput"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                  />
+                </label>
+              </div>
+            ) : (
+              <label htmlFor="fileInput" className="fileInputLabel">
+                <UploadCloud id="iconRetake" />
+                <input
+                  type="file"
+                  id="fileInput"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <p id="infoUpload">
+                  Faz upload de uma imagem como prova para o teu amigo!
+                </p>
+              </label>
+            )}
+          </div>
+
+          <button className="submitBtn" onClick={handleSubmit}>
+            Submeter
+          </button>
         </div>
-        <input type="file" onChange={handleFileChange} />
-        <button className="submitBtn" onClick={handleSubmit}>
-          Submeter
-        </button>
       </div>
     </div>
   );
