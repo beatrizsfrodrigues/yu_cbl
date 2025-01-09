@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../assets/css/Store.css';
 import { Circle } from "react-feather";
 
 const Store = () => {

@@ -82,3 +82,7 @@ label {
 .register-link a {
   color: #be77ee;
 }
+
+.alert {
+  color: red;
+}

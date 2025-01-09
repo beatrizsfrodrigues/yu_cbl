@@ -6,7 +6,7 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 
   if (localData) {
     try {
-      return JSON.parse(localData); 
+      return JSON.parse(localData);
     } catch (error) {
       console.error("Failed to parse localStorage data:", error);
     }
@@ -19,13 +19,12 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 
   try {
     const data = await response.json();
-    localStorage.setItem("users", JSON.stringify(data)); 
+    localStorage.setItem("users", JSON.stringify(data));
     return data;
   } catch (error) {
     throw new Error("Failed to parse JSON");
   }
 });
-
 
 const usersSlice = createSlice({
   name: "users",
@@ -37,6 +36,8 @@ const usersSlice = createSlice({
   reducers: {
     addTask: (state, action) => {
       const { title, description, partnerId } = action.payload;
+
+      //* finds the partner
       const user = state.data.find((u) => u.id === partnerId);
 
       const newTask = {
@@ -50,7 +51,7 @@ const usersSlice = createSlice({
       if (user) {
         user.tasks.push(newTask);
       }
-      localStorage.setItem("users", JSON.stringify(state.data)); 
+      localStorage.setItem("users", JSON.stringify(state.data));
     },
 
     updateUser: (state, action) => {
@@ -59,25 +60,30 @@ const usersSlice = createSlice({
       if (index !== -1) {
         state.data[index] = {
           ...state.data[index],
-          ...updatedUser, 
+          ...updatedUser,
         };
-        localStorage.setItem("users", JSON.stringify(state.data)); 
+        localStorage.setItem("users", JSON.stringify(state.data));
       }
     },
-    
 
     completeTask: (state, action) => {
-      const { userId, taskId } = action.payload;
+      const { taskId, proofImage, userId } = action.payload;
+
       const user = state.data.find((u) => u.id === userId);
 
       if (user) {
         const task = user.tasks.find((t) => t.id === taskId);
         if (task) {
+          console.log("ok");
+          task.picture = proofImage;
+          task.completedDate = new Date().toISOString();
           task.completed = true;
-          task.completedDate = new Date().toISOString(); 
+   
+          
         }
       }
-      localStorage.setItem("users", JSON.stringify(state.data)); 
+
+      localStorage.setItem("users", JSON.stringify(state.data));
     },
   },
   extraReducers: (builder) => {
@@ -88,7 +94,7 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
-        localStorage.setItem("users", JSON.stringify(action.payload)); 
+        localStorage.setItem("users", JSON.stringify(action.payload));
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = "failed";
