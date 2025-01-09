@@ -4,6 +4,8 @@ import Shirts from "../../assets/imgs/Icons_closet/Shirt.svg";
 import Hat from "../../assets/imgs/Icons_closet/TallHat.svg";
 import Background from "../../assets/imgs/Icons_closet/Background.svg";
 import Circle from "../../assets/imgs/Icons_closet/Circle.svg";
+import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
+import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
 const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
@@ -93,21 +95,22 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
           </div>
         </div>
         <div className="closetFooter">
-          <button
-            className="avatarcircle colorLight"
+          <button className="buttonRound" onClick={closeCloset}>
+            <img src={X} alt="Exit" />
+          </button>
+
+          <button className="buttonMid"  onClick={closeCloset}>
+
+            Salvar alterações
+          </button>
+
+           <button
+            className="buttonRound"
             onClick={() => {
               if (resetAccessories) resetAccessories();
             }}
           >
-            Reset
-          </button>
-
-          <button className="buttonBig" onClick={closeCloset}>
-            Save
-          </button>
-
-          <button className="avatarcircle colorLight" onClick={closeCloset}>
-            Exit
+            <img src={Reset} alt="Reset" />
           </button>
         </div>
       </div>

@@ -143,6 +143,32 @@
   flex-direction: column;
 }
 
+.buttonMid{
+  width: 50%;
+  background-color: var(--purple-light);
+  color: white;
+  border-radius: 20px;
+  height: 48px;
+  box-shadow: 0px;
+  border: none;
+}
+
+.buttonRound{
+  background-color: var(--purple-light);;
+  width: 64px;
+  height: 64px;
+  border-radius: 100%;
+  box-shadow: 0px;
+  border: none;
+}
+
+.closetFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
 /* Button Icons */
 .star {
   width: 25px;
