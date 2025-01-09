@@ -2,12 +2,18 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 //* adiciona e vai buscar ao localstorage o array de objetos
 export const fetchCloset = createAsyncThunk("closet/fetchCloset", async () => {
+  const localData = localStorage.getItem("closet");
+  if (localData) {
+    return JSON.parse(localData);
+  }
+
   const response = await fetch("/closet.json");
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   try {
     const data = await response.json();
+    localStorage.setItem("closet", JSON.stringify(data));
     return data;
   } catch (error) {
     throw new Error("Failed to parse JSON");
