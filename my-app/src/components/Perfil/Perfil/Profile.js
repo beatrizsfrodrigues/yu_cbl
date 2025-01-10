@@ -92,7 +92,7 @@ const Profile = () => {
 
       {/* Parte principal do perfil */}
       <div className="profile-avatar">
-        <img src="/assets/img/YU_cores/YU-roxo.svg" alt="Avatar" className="avatar-image" />
+        <img src="/assets/YU_cores/YU-roxo.svg" alt="Avatar" className="avatar-image" />
         <h2 className="profile-name">Luísa</h2>
       </div>
 
