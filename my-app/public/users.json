@@ -8,7 +8,6 @@
     "age": 21,
     "points": 0,
     "partnerId": 2,
-    "ativo" : 0,
     "tasks": [
       {
         "id": 1,
@@ -40,7 +39,6 @@
     "age": 22,
     "points": 0,
     "partnerId": 1,
-    "ativo" : 1,
     "tasks": [
       {
         "id": 1,

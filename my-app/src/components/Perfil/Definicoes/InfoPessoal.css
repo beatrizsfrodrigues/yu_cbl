@@ -111,59 +111,63 @@
   
  /* Modal de confirmação - página Info Pessoal */
  
+ /* Modal principal */
 .info-pessoal-page .confirm-modal {
-  position: fixed; /* Mantém o modal fixo na janela */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100vw; 
-  height: 100vh; 
-  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); 
   display: flex;
-  justify-content: center; 
-  align-items: center; 
-  z-index: 2000; 
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 
 /* Conteúdo do modal */
 .info-pessoal-page .confirm-modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  background: white;
+  padding: 30px; 
+  border-radius: 20px; 
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); 
   max-width: 400px;
   width: 90%;
-  animation: fade-in 0.3s ease-in-out; /* Animação */
-  display: flex;
+  animation: fade-in 0.3s ease-in-out;
 }
 
 /* Título do modal */
 .info-pessoal-page .confirm-modal-content h3 {
-  margin-bottom: 20px; /* Espaço entre o texto e os botões*/
-  font-size: 1.2rem;
-  font-weight: bold;
+  margin-bottom: 15px; 
+  font-size: 1.4rem; 
+  font-weight: 600; 
   color: var(--text-dark);
+  line-height: 1.5; 
 }
 
-/* Contêiner dos botões do modal */
+/* Contêiner dos botões */
 .info-pessoal-page .confirm-modal-buttons {
   display: flex;
-  justify-content: space-between;  
-  gap: 10px; /* Espaço entre os botões */
-  margin-top: 10px;  
+  justify-content: center;
+  gap: 15px; 
+  margin-top: 10px; 
 }
 
-/* Estilos dos botões */
+/* Botões */
 .info-pessoal-page .confirm-modal-buttons .confirm-button,
 .info-pessoal-page .confirm-modal-buttons .cancel-button {
-  flex: 1;  
-  padding: 10px 15px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  font-weight: bold;
+  width: 120px; 
+  padding: 10px 0; 
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   border: none;
-  text-align: center;
+  transition: transform 0.2s, background-color 0.3s;
 }
 
 /* Botão "Sim" */
@@ -171,21 +175,29 @@
   background-color: var(--purple-light);
   color: white;
 }
+.info-pessoal-page .confirm-modal-buttons .confirm-button:hover {
+  background-color: var(--purple-darker);
+  transform: scale(1.05); 
+}
 
 /* Botão "Não" */
 .info-pessoal-page .confirm-modal-buttons .cancel-button {
   background-color: var(--orange-light);
   color: white;
 }
- 
-  /* Animação de fade-in */
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+.info-pessoal-page .confirm-modal-buttons .cancel-button:hover {
+  background-color: var(--orange-darker);
+  transform: scale(1.05);
+}
+
+/* Animação do modal */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
