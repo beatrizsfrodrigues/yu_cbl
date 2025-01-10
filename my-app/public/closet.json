@@ -3,13 +3,19 @@
     "id": 1,
     "name": "Bigode",
     "type": "Decor",
+    "subcategory": {
+      "name": "Boca",
+      "coordinates" : { "x": 4000, "y": 150 } },
+
     "src": "/assets/YU_acessorios/YU-bigode.svg"
+
   },
 
   {
     "id": 2,
     "name": "BigodeCurvo",
     "type": "Decor",
+    "subcategory": "Boca",
     "src": "/assets/YU_acessorios/YU-bigodecurvo.svg"
   },
 
@@ -17,72 +23,84 @@
     "id": 3,
     "name": "BigodeFino",
     "type": "Decor",
+    "subcategory": "Boca",
     "src": "/assets/YU_acessorios/YU-bigodeFino.svg"
   },
   {
     "id": 4,
     "name": "CachecolPreto",
     "type": "Decor",
+    "subcategory": "Pescoço",
     "src": "/assets/YU_acessorios/YU-cachecolPreto.svg"
   },
   {
     "id": 5,
     "name": "CachecolVerde",
     "type": "Decor",
+    "subcategory": "Pescoço",
     "src": "/assets/YU_acessorios/YU-cachecolVerde.svg"
   },
   {
     "id": 6,
     "name": "Chapeu",
     "type": "Decor",
+    "subcategory": "Cabeça",
     "src": "/assets/YU_acessorios/YU-chapeu.svg"
   },
   {
     "id": 7,
-    "name": "CachecolCowboy",
+    "name": "ChapeuCowboy",
     "type": "Decor",
+    "subcategory": "Cabeça",
     "src": "/assets/YU_acessorios/YU-chapeuCowboy.svg"
   },
   {
     "id": 8,
     "name": "CachecolPaiNatal",
     "type": "Decor",
+    "subcategory": "Pescoço",
     "src": "/assets/YU_acessorios/YU-chapeuPaiNatal.svg"
   },
   {
     "id": 9,
     "name": "CoisoOuvidos",
     "type": "Decor",
+    "subcategory": "Cabeça",
     "src": "/assets/YU_acessorios/YU-coisoOuvidos.svg"
   },
   {
     "id": 10,
     "name": "Oculos",
     "type": "Decor",
+    "subcategory": "Olhos",
     "src": "/assets/YU_acessorios/YU-oculos.svg"
   },
   {
     "id": 11,
     "name": "OculosSol",
     "type": "Decor",
+    "subcategory": "Olhos",
     "src": "/assets/YU_acessorios/YU-oculosSol.svg"
   },
   {
     "id": 12,
     "name": "RoupaBranca",
     "type": "Shirts",
+    "subcategory": "Corpo",
     "src": "/assets/YU_acessorios/YU-roupaBranca.svg"
   },
   {
     "id": 13,
     "name": "RoupaPaiNatal",
     "type": "Shirts",
+    "subcategory": "Corpo",
     "src": "/assets/YU_acessorios/YU-roupaPaiNatal.svg"
   },
   {
     "id": 14,
     "name": "RoupaPreta",
     "type": "Shirts",
+    "subcategory": "Corpo",
     "src": "/assets/YU_acessorios/YU-roupaPreta.svg"
   }
 ]
