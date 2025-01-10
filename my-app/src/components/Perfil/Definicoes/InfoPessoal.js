@@ -7,7 +7,7 @@ const InfoPessoal = ({ show, onBack }) => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users.data);
-  const activeUser = users?.find((user) => user.ativo === 1); 
+  const activeUser = users?.find((user) => user.id === 2); 
 
 
   const [formData, setFormData] = useState({
@@ -147,7 +147,7 @@ const InfoPessoal = ({ show, onBack }) => {
           {showConfirmModal && (
           <div className="info-pessoal-page confirm-modal">
             <div className="confirm-modal-content">
-              <h3>Tens a certeza que queres alterar os teus dados?</h3>
+              <h3>Tens a certeza que queres alterar os teus dados?</h3> <br></br>
               <div className="confirm-modal-buttons">
                 <button
                   className="confirm-button"
