@@ -3,7 +3,10 @@ import { ChevronDown } from "react-feather";
 import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
 import Closet from "./Closet";
 import Star from "../../assets/imgs/Icons_closet/Star.svg";
+import Closeticon from "../../assets/imgs/Icons_closet/Closeticon.svg";
+import Store from "../../assets/imgs/Icons_closet/Store.svg";
 import "../../assets/css/home.css";
+
 
 const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false); // Controls dropdown visibility
@@ -57,17 +60,15 @@ const Home = () => {
         </div>
 
         <div className="buttonsCloset">
-          <i
-            stroke="#B49BC7"
-            className="bi bi-door-open"
-            onClick={toggleDropdown}
-          ></i>
+
+          <image src={Closeticon} alt="Closet" />
+
           <ChevronDown className="navIcon" onClick={toggleDropdown} />
           {showDropdown && (
             <div className="dropdown-menu" ref={dropdownRef}>
               <button onClick={openCloset}>Open Closet</button>
               <button>
-                <i className="bi bi-store"></i>
+                <image src={Store} alt="Store" />
               </button>
             </div>
           )}
