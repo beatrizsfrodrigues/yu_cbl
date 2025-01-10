@@ -145,26 +145,26 @@ const InfoPessoal = ({ show, onBack }) => {
 
           {/* Modal de confirmação */}
           {showConfirmModal && (
-            <div className="confirm-modal">
-              <div className="confirm-modal-content">
-                <h3>Tens a certeza que queres alterar os teus dados?</h3>
-                <div className="confirm-modal-buttons">
-                  <button
-                    className="settings-button confirm-button"
-                    onClick={confirmSave}
-                  >
-                    Sim
-                  </button>
-                  <button
-                    className="settings-button cancel-button"
-                    onClick={cancelSave}
-                  >
-                    Não
-                  </button>
-                </div>
+          <div className="info-pessoal-page confirm-modal">
+            <div className="confirm-modal-content">
+              <h3>Tens a certeza que queres alterar os teus dados?</h3>
+              <div className="confirm-modal-buttons">
+                <button
+                  className="confirm-button"
+                  onClick={confirmSave}
+                >
+                  Sim
+                </button>
+                <button
+                  className="cancel-button"
+                  onClick={cancelSave}
+                >
+                  Não
+                </button>
               </div>
             </div>
-          )}
+          </div>
+        )}
         </div>
       </div>
     </div>

@@ -28,6 +28,7 @@
     margin-top: -5%;
     font-size: 2rem;
     color: var(--purple-darker);
+    border-radius: 50%;
      
   }
    
@@ -82,6 +83,7 @@
     font-size: 3rem; 
     color: var(--purple-darker);
     line-height: 1; 
+    margin-top: 1%;
   }
   
   .informacao-item p {
