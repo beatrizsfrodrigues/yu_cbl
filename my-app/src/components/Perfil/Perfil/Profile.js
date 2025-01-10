@@ -99,7 +99,7 @@ const currentUser =
 
         <button className="profile-button circle">
           <Link to="/informacoes">
-            <i className="bi bi-info-circle"></i>
+            <i className="bi bi-info-circle" ></i>
           </Link>
         </button>
 
