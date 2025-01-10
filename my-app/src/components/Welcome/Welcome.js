@@ -9,7 +9,7 @@ const Welcome = () => {
 
   const handleClick = () => {
     console.log("Button clicked");
-    navigate("/questions");
+    navigate("/register");
   };
 
   return (
