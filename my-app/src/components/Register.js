@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers} from "../redux/usersSlice";
 import "../assets/css/Register.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 //import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
@@ -13,19 +15,31 @@ const Register = () => {
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
 
+    const dispatch = useDispatch();
+    const users = useSelector((state) => state.users.data) || [];
+    const usersStatus = useSelector((state) => state.users.status);
+
+    //Fetch users data
+    useEffect(() => {
+      if (usersStatus === "idle") {
+        dispatch(fetchUsers());
+      }
+    }, [usersStatus, dispatch]);
+
+  
   const generateCode = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let code = '';
-    for (let i = 0; i < 10; i++) {
-      code += characters.charAt(Math.floor(Math.random() * characters.length));
+    let code;
+    do{
+      code = '';
+      for (let i = 0; i < 10; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
     }
+    } while (users.some( user => user.code === code))  
     return code;
-  }
+  };
 
   const handleRegister = () => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-
     if (users.some(user => user.username === username)) {
       setAlert('Nome de utilizador já existente!');
       return; 
@@ -36,16 +50,16 @@ const Register = () => {
     }
 
     const newUser = {
-      id: Date.now(),
+      id: users.length + 1,
       code: generateCode(),
       username,
       email,
       password,
     };
 
-    users.push(newUser);
+    const updatedUsers = [...users, newUser]; 
 
-    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
     setMessage('Utilizador registado com sucesso!');
     setEmail('');
     setUsername('');

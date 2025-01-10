@@ -20,7 +20,7 @@ const Login = () => {
     if (user) {
       if (user.password === password) {
         setMessage("Login efetuado com sucesso!");
-        localStorage.setItem('loggedInUser', JSON.stringify({ id: user.id, code: user.code, username: user.username }));
+        localStorage.setItem('loggedInUser', JSON.stringify({id: user.id}));
         setAlert('');
         navigate('/');
       } else {
