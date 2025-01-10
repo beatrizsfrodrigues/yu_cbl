@@ -8,7 +8,7 @@ const Questions = () => {
     
     const questionData = [
         {
-            question: "Quanto tempo passas no telemóvel?",
+            question: "Quanto tempo passas no telemóvel por dia?",
             options: [
                 "Menos de 1 hora",
                 "1-3 horas",

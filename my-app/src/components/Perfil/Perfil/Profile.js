@@ -97,11 +97,12 @@ const currentUser =
           <span className="bi bi-bar-chart-line" onClick={toggleGrafico}></span>
         </button>
 
-        <button className="profile-button circle">
-          <Link to="/informacoes">
-            <i className="bi bi-info-circle"></i>
-          </Link>
-        </button>
+  
+        <Link to="/informacoes" className="profile-button circle">
+          <i className="bi bi-info-circle"></i>
+        </Link>
+   
+
 
         <button className="profile-button dots" onClick={handleOpenMessagesModal}>
           <i className="bi bi-chat-dots"></i>
