@@ -1,32 +1,37 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
-//import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
+// import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [alert, setAlert] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const storedEmail = localStorage.getItem("Email");
-    const storedPassword = localStorage.getItem("Password");
-  
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-  if (storedEmail === email){
-    if(storedPassword === password){
-      setMessage("Login efetuado com sucesso!");
+    const user = users.find(user => user.email === emailOrUsername || user.username === emailOrUsername);
+
+    if (user) {
+      if (user.password === password) {
+        setMessage("Login efetuado com sucesso!");
+        localStorage.setItem('loggedInUser', JSON.stringify({id: user.id}));
+        setAlert('');
+        navigate('/');
+      } else {
+        setAlert("Palavra-passe incorreta.");
+      }
     } else {
-      setMessage("Palavra-passe incorreta.");
+      setAlert("Utilizador não encontrado.");
     }
-  } else {
-    setMessage("Utilizador não encontrado.")
-  }
-};  
+  };
 
-  const isFormComplete = email.trim() !== "" && password.trim() !== "";
-  //console.log("Form Complete:", isFormComplete);
+  const isFormComplete = emailOrUsername.trim() !== "" && password.trim() !== "";
 
   return (
     <div>
@@ -38,38 +43,36 @@ const Login = () => {
            <img src={logo} alt="logo" className="logo" />
            {/*<img src={bolas} alt="bolas" className="bolas" />*/}
           </div>
-
+          {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
-          <label>Email</label>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} />
+            <label>Email / Utilizador</label>
+            <input
+              type="text"
+              value={emailOrUsername}
+              onChange={(e) => setEmailOrUsername(e.target.value)}
+            />
           </div>
-
-        <div className="pass-container">
-          <label>Palavra-passe</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="pass-container">
+            <label>Palavra-passe</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
         </div>
-        
+
         <div className="register-link">
-          <p>Ainda não tens conta? <a href="/register">Registar</a> </p>
+          <p>Ainda não tens conta? <a href="/Register">Registar</a></p>
         </div>
-
+        {message && <p>{message}</p>}
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
-        > Login </button>
-        {message && <p>{message}</p>}
-       
-       </div>
+        >Login</button>
       </form>
-      </div>
+    </div>
   );
 };
 
