@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "react-feather";
 import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
 import Closet from "./Closet";
+import Star from "../../assets/imgs/Icons_closet/Star.svg";
 import "../../assets/css/home.css";
 
 const Home = () => {
@@ -22,6 +23,11 @@ const Home = () => {
   const closeCloset = () => {
     setShowCloset(false); // Hide Closet overlay
   };
+
+  const resetAccessories = () => {
+  setAccessories([]); // Clear all accessories
+};
+
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -46,9 +52,7 @@ const Home = () => {
     <div className={`home mainBody ${showCloset ? "locked" : ""}`}>
       <div className="row">
         <div className="buttonsHome">
-          <svg className="star" xmlns="http://www.w3.org/2000/svg">
-            {/* SVG Path */}
-          </svg>
+          <img src={Star} alt="Star" />
           <p>1300</p>
         </div>
 
@@ -84,7 +88,9 @@ const Home = () => {
 
       {showCloset && (
         <div className="closetOverlay">
-          <Closet addAccessory={addAccessory} closeCloset={closeCloset} />
+          <Closet addAccessory={addAccessory} 
+          closeCloset={closeCloset}
+          resetAccessories={resetAccessories} />
         </div>
       )}
     </div>
