@@ -197,10 +197,11 @@
 /** conclude task window */
 #concludeTaskDiv {
   gap: 16px;
+  flex-direction: column;
 }
 
 #proofImage {
-  height: 40vh;
+  height: 50vh;
   width: 80%;
   border: 2px solid var(--purple);
   border-radius: 16px;

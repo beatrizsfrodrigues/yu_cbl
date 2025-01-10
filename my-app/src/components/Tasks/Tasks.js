@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../../redux/usersSlice.js";
+import { fetchMessages } from "../../redux/messagesSlice";
 import "./tasks.css";
 import NewTask from "./NewTask.js";
 import Messages from "./Messages.js";
 import ConcludeTask from "./ConcludeTask.js";
 import VerifyTask from "./VerifyTask.js";
+import VerifyPopUp from "./VerifyPopUp.js";
 import { MessageCircle, Plus, Sliders, X } from "react-feather";
 
 function Tasks() {
@@ -14,17 +16,60 @@ function Tasks() {
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
+  const messages = useSelector((state) => state.messages.data);
+  const messagesStatus = useSelector((state) => state.messages.status);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
+  const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [showVerifyTask, setShowVerifyTask] = useState(false);
+  const [taskToVerify, setTaskToVerify] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [partnerUser, setPartnerUser] = useState(null);
 
   useEffect(() => {
     if (usersStatus === "idle") {
       dispatch(fetchUsers());
     }
   }, [usersStatus, dispatch]);
+
+  //* fetch text messages
+  useEffect(() => {
+    if (messagesStatus === "idle") {
+      dispatch(fetchMessages());
+    }
+  }, [messagesStatus, dispatch]);
+
+  useEffect(() => {
+    const user =
+      users && users.length > 0
+        ? users.find((user) => user.id == currentUserId)
+        : null;
+    setCurrentUser(user);
+
+    const partner =
+      users && users.length > 0
+        ? users.find((u) => u.id == user.partnerId)
+        : null;
+
+    if (partner) {
+      setPartnerUser(partner);
+
+      const task = partner.tasks.find(
+        (task) => task.completed && !task.verified
+      );
+      if (task) {
+        setTaskToVerify(task);
+        if (partner) {
+          setShowVerifyTask(true);
+        }
+      } else {
+        setShowVerifyTask(false);
+      }
+    }
+  }, [users, currentUserId]);
 
   const handleTaskClick = (index) => {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
@@ -58,6 +103,15 @@ function Tasks() {
     setIsConcludeTaskOpen(false);
   };
 
+  const handleOpenVerifyTaskModal = () => {
+    setShowVerifyTask(false);
+    setIsVerifyTaskOpen(true);
+  };
+
+  const handleCloseVerifyTaskModal = () => {
+    setIsVerifyTaskOpen(false);
+  };
+
   if (usersStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -65,11 +119,6 @@ function Tasks() {
   if (usersStatus === "failed") {
     return <div>Error: {error}</div>;
   }
-
-  const currentUser =
-    users && users.length > 0
-      ? users.find((user) => user.id == currentUserId)
-      : null;
 
   return (
     <div className="mainBody" id="tasksBody">
@@ -118,7 +167,21 @@ function Tasks() {
       >
         <MessageCircle />
       </button>
-      <VerifyTask onClose={handleCloseNewTaskModal} />
+      {showVerifyTask && (
+        <VerifyPopUp
+          task={taskToVerify}
+          partnerUser={partnerUser}
+          onClose={() => setShowVerifyTask(false)}
+          onVerify={handleOpenVerifyTaskModal}
+        />
+      )}
+      {isVerifyTaskOpen && (
+        <VerifyTask
+          onClose={handleCloseVerifyTaskModal}
+          partnerUser={partnerUser}
+          task={taskToVerify}
+        />
+      )}
       {isNewTaskModalOpen && (
         <NewTask onClose={handleCloseNewTaskModal} currentUser={currentUser} />
       )}

@@ -10,8 +10,8 @@ function NewTask({ onClose, currentUser }) {
   const [description, setDescription] = useState("");
 
   const handleAddTask = (e) => {
-    const partnerId = currentUser.partnerId;
     e.preventDefault();
+    const partnerId = currentUser.partnerId;
 
     dispatch(addTask({ title, description, partnerId }));
 

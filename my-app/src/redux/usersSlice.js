@@ -57,7 +57,18 @@ const usersSlice = createSlice({
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
-
+    validateTask: (state, action) => {
+      const { userId, task } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+      if (user) {
+        const taskValidate = user.tasks.find((t) => t.id === task.id);
+        if (taskValidate) {
+          taskValidate.verified = true;
+          user.points += 10;
+        }
+      }
+      localStorage.setItem("users", JSON.stringify(state.data));
+    },
     completeTask: (state, action) => {
       const { taskId, proofImage, userId } = action.payload;
 
@@ -116,5 +127,6 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask, updateUser, completeTask } = usersSlice.actions;
+export const { addTask, updateUser, completeTask, validateTask } =
+  usersSlice.actions;
 export default usersSlice.reducer;
