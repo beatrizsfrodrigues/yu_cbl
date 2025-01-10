@@ -134,6 +134,7 @@
   max-width: 400px;
   width: 90%;
   animation: fade-in 0.3s ease-in-out; /* Animação */
+  display: flex;
 }
 
 /* Título do modal */
