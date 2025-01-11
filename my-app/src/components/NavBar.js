@@ -5,7 +5,7 @@ import "../assets/css/NavBar.css";
 
 function NavBar() {
   const navItems = [
-    { path: "/",       icon: <HomeIcon />, label: "Home" },
+    { path: "/home",       icon: <HomeIcon />, label: "Home" },
     { path: "/tasks",  icon: <Clipboard />, label: "Tarefas" },
     { path: "/profile",icon: <User />,     label: "Perfil" },
   ];
