@@ -8,10 +8,10 @@ import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
-const Store = ({ addAccessory, closeCloset, resetAccessories }) => {
+const Store = ({ addAccessory, closeStore, resetAccessories }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
-  const closetStatus = useSelector((state) => state.closet.status);
+  const closetStatus = useSelector((state) => state.closet.status); //maybe mudar const mas maybe nao porque json
 
   const [sections, setSections] = useState({
     skinColor: false,
@@ -29,7 +29,7 @@ const Store = ({ addAccessory, closeCloset, resetAccessories }) => {
     }
   }, [closetStatus, dispatch]);
 
-  console.log(closet);
+  //console.log(closet);
 
   if (!closet) {
     return <div>Loading...</div>;
@@ -102,11 +102,11 @@ const Store = ({ addAccessory, closeCloset, resetAccessories }) => {
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound" onClick={closeCloset}>
+          <button className="buttonRound" onClick={closeStore}>
             <img src={X} alt="Exit" />
           </button>
 
-          <button className="buttonMid"  onClick={closeCloset}>
+          <button className="buttonMid"  onClick={closeStore}>
 
             Salvar alterações
           </button>
