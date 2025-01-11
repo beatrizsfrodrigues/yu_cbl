@@ -31,7 +31,7 @@ function AppContent() {
   const location = useLocation();
   /* Só mostra a NavBar se a rota atual estiver em showNavRoutes , se quiserem adicionar
   outra pagina, basta meter o /nome no showNavRoutes como fiz no home, task e profile */
-  const showNavRoutes = ["/", "/tasks", "/profile"];
+  const showNavRoutes = ["/home", "/tasks", "/profile"];
   const shouldShowNav = showNavRoutes.includes(location.pathname);
 
   return (
@@ -39,14 +39,14 @@ function AppContent() {
       {shouldShowNav && <NavBar />}
       <div className="route-container">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Welcome />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/closet" element={<Closet />} />
           <Route path="/store" element={<Store />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/welcome" element={<Welcome />} />
           <Route path="/connection" element={<Connection />} />
           <Route path="/questions" element={<Questions />} />
           <Route path="/informacoes" element={<Informacoes />} />

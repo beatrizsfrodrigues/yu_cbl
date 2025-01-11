@@ -17,7 +17,7 @@ const Welcome = () => {
       <img className="logo" src={logo} alt="YU Logo" width="300" />
       <div className="text-container">
         <div className="title">Bem vindo à YU!</div>
-        <div>
+        <div className="title-desc">
           Vamos iniciar esta jornada para <br></br> conquistares os teus
           objetivos.
         </div>
