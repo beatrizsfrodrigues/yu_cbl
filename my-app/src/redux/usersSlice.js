@@ -67,6 +67,7 @@ const usersSlice = createSlice({
           user.points += 10;
         }
       }
+
       localStorage.setItem("users", JSON.stringify(state.data));
     },
     completeTask: (state, action) => {

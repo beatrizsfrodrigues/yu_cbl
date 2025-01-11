@@ -8,6 +8,7 @@ import Messages from "./Messages.js";
 import ConcludeTask from "./ConcludeTask.js";
 import VerifyTask from "./VerifyTask.js";
 import VerifyPopUp from "./VerifyPopUp.js";
+import PopUpInfo from "./PopUpInfo.js";
 import { MessageCircle, Plus, Sliders, X } from "react-feather";
 
 function Tasks() {
@@ -167,6 +168,7 @@ function Tasks() {
       >
         <MessageCircle />
       </button>
+
       {showVerifyTask && (
         <VerifyPopUp
           task={taskToVerify}

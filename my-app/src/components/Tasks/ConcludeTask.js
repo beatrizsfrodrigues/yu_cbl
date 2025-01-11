@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { X, UploadCloud, RefreshCw } from "react-feather";
 import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import PopUpInfo from "./PopUpInfo.js";
 
 function ConcludeTask({ onClose, currentUser, task }) {
   const dispatch = useDispatch();
@@ -13,8 +14,6 @@ function ConcludeTask({ onClose, currentUser, task }) {
     const file = e.target.files[0];
     setSelectedFile(file);
 
-    // Create a preview of the uploaded image
-    console.log(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result);
