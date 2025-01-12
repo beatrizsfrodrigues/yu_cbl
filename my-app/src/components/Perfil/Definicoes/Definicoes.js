@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../Definicoes/Definicoes.css";
 
-const Definicoes = ({ show, onClose, onInfoPessoalClick }) => {
+const Definicoes = ({ show, onClose, onInfoPessoalClick,onArquivoClick }) => {
   if (!show) return null;  
 
   return (
@@ -23,9 +23,9 @@ const Definicoes = ({ show, onClose, onInfoPessoalClick }) => {
             <button className="settings-button" onClick={onInfoPessoalClick}>
               Os meus dados
             </button>
-            <button className="settings-button">Arquivo</button>
+            <button className="settings-button" onClick={onArquivoClick} >Arquivo</button>
             <button className="settings-button">Amigo</button>
-            <button className="settings-button">Comunidade</button>
+
           </div>
           <div className="settings-section" style={{ display: 'block' }}>
             <h3>Saídas</h3>
