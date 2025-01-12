@@ -75,7 +75,7 @@ const Home = () => {
 
               {showDropdown && (
                 <div className="dropdown-menu dropdown-styled" ref={dropdownRef}>
-                  <button className="dropdown-item" onClick={() => {}}>
+                  <button className="dropdown-item" >
                     <i className="bi bi-bag"></i> Shop
                   </button>
                 </div>

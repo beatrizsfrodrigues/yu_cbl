@@ -260,9 +260,9 @@
 .dropdown-menu {
   position: absolute;
   background-color: var(--orange); /* Cor amarela */
-  border-radius: 24px; /* Bordas arredondadas */
+  border-radius: 22px; /* Bordas arredondadas */
   padding: 10px; 
-  top: 100%;
+  top: 75%;
   transform: translateX(-50%);
   left: 50%;
   z-index: 1;
