@@ -4,18 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
 import Definicoes from "../Definicoes/Definicoes";
 import InfoPessoal from "../Definicoes/InfoPessoal";
+import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
 import Messages from "../../Tasks/Messages";
 import { fetchUsers } from "../../../redux/usersSlice.js";
 
 const Profile = () => {
-  const currentUserId = 1;
+  const currentUserId = 2;
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
   const [showSettings, setShowSettings] = useState(false);
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
+  const [showArquivo, setShowArquivo] = useState(false);
   const [showGrafico, setShowGrafico] = useState(false);
   const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
@@ -42,11 +44,17 @@ const Profile = () => {
     setShowSettings(false);
   };
 
+  const handleArquivoClick = () => {
+    setShowArquivo(true);
+    setShowSettings(false);
+  };
+
   const closeSettings = () => setShowSettings(false);
   const closeGrafico = () => setShowGrafico(false);
 
   const backToSettings = () => {
     setShowInfoPessoal(false);
+    setShowArquivo(false);
     setShowSettings(true);
   };
 
@@ -88,7 +96,10 @@ const currentUser =
           alt="Avatar"
           className="avatar-image"
         />
-        <h2 className="profile-name">Luísa</h2>
+        <h2 className="profile-name"> 
+
+        {currentUser ? currentUser.username : "Utilizador"}
+        </h2>
       </div>
 
       {/* Botões abaixo do nome */}
@@ -113,9 +124,12 @@ const currentUser =
         show={showSettings}
         onClose={closeSettings}
         onInfoPessoalClick={handleInfoPessoalClick}
+        onArquivoClick={handleArquivoClick}
       />
 
       <InfoPessoal show={showInfoPessoal} onBack={backToSettings} />
+
+      <Arquivo show={showArquivo} onBack={backToSettings} />
 
       <Grafico
         show={showGrafico}

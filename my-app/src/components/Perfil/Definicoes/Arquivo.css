@@ -1,0 +1,62 @@
+
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--purple-light);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .back-button:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Lista de tarefas */
+  .task-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .task-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(20px);
+    opacity: 0;
+    padding: 10px;
+    animation: slideIn 0.5s forwards;
+  }
+  
+  .task-item h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .task-item p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+
+  
+  hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+  }
+  

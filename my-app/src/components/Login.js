@@ -22,7 +22,7 @@ const Login = () => {
         setMessage("Login efetuado com sucesso!");
         localStorage.setItem('loggedInUser', JSON.stringify({id: user.id}));
         setAlert('');
-        navigate('/home');
+        navigate('/connection');
       } else {
         setAlert("Palavra-passe incorreta.");
       }

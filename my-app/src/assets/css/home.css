@@ -253,3 +253,56 @@
   background-color: var(--purple-dark);
   border-radius: 50%;
 }
+
+/* ................tentativa..............  */
+ 
+/* Dropdown  */
+.dropdown-menu {
+  position: absolute;
+  background-color: var(--orange); /* Cor amarela */
+  border-radius: 22px; /* Bordas arredondadas */
+  padding: 10px; 
+  top: 75%;
+  transform: translateX(-50%);
+  left: 50%;
+  z-index: 1;
+  width: 80px;
+}
+
+
+.dropdown-item {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  color: #000000;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.buttonsCloset {
+  position: relative;
+}
+
+.closetHeader {
+  position: relative; /* Define o contexto para posicionamento absoluto do dropdown */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closetIcon {
+  position: relative; /* Mantém o ícone no seu lugar */
+  z-index: 2; /* Garante que o ícone fique acima do dropdown */
+}
+
+
+
+.navIcon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+
+
+ 

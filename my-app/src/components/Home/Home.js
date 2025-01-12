@@ -9,25 +9,33 @@ import Storeicon from "../../assets/imgs/Icons_closet/Storeicon.svg";
 import "../../assets/css/home.css";
 
 const Home = () => {
-  const [showDropdown, setShowDropdown] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState("bi bi-door-open");
   const [showCloset, setShowCloset] = useState(false);
   const [accessories, setAccessories] = useState([]);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  const openCloset = () => {
-    //console.log("Opening closet");
-    setShowCloset(true);
-    setShowDropdown(false);
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
   };
 
-  const openStore = () => {
-    //console.log("Navigating to store");
-    setShowDropdown(true);
+  const selectCloset = () => {
+    setSelectedIcon("bi bi-door-open");
+    setShowDropdown(false);
+    setShowCloset(true);
+  };
+
+  const selectShop = () => {
+    setSelectedIcon("bi bi-bag");
+    setShowDropdown(false);
+    setShowCloset(false);
     navigate("/store");
   };
 
-  const closeCloset = () => setShowCloset(false);
+  const closeCloset = () => {
+    setShowCloset(false);
+  };
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -57,33 +65,18 @@ const Home = () => {
           {/* ButtonsCloset Section */}
           <div className="buttonsCloset">
             <div className="closetHeader">
-              {/* Closet Icon */}
               <img
                 src={Closeticon}
                 alt="Closet"
-                onClick={openCloset} // Directly call openCloset
+                onClick={selectCloset}
                 className="closetIcon"
               />
-              {/* Chevron Icon */}
-             <ChevronDown
-                className="navIcon"
-                onClick={() => {
-                  setShowDropdown((prev) => {
-                    console.log('Previous state:', prev); // Log the previous state
-                    const newState = !prev;
-                    console.log('New state:', newState); // Log the new state
-                    return newState;
-                  });
-                }}
-              />
-                {/*{console.log('showDropdown:', showDropdown)}*/}
-
-                {console.log("Rendering JSX", showDropdown)}
+              <ChevronDown className="navIcon" onClick={toggleDropdown} />
 
               {showDropdown && (
-                <div className={`dropdown ${showDropdown ? 'open' : ''}`} ref={dropdownRef}>
-                  <button onClick={openStore}>
-                    <img src={Storeicon} alt="Store" />
+                <div className="dropdown-menu dropdown-styled" ref={dropdownRef}>
+                  <button className="dropdown-item" >
+                    <i className="bi bi-bag"></i> Shop
                   </button>
                 </div>
               )}
