@@ -256,12 +256,19 @@
 
 /* ................tentativa..............  */
  
-/* Dropdown estilizado */
+/* Dropdown  */
 .dropdown-menu {
+  position: absolute;
   background-color: var(--orange); /* Cor amarela */
   border-radius: 24px; /* Bordas arredondadas */
   padding: 10px; 
+  top: 100%;
+  transform: translateX(-50%);
+  left: 50%;
+  z-index: 1;
+  width: 80px;
 }
+
 
 .dropdown-item {
   background: none;
@@ -272,6 +279,30 @@
   text-align: left;
   cursor: pointer;
 }
+
+.buttonsCloset {
+  position: relative;
+}
+
+.closetHeader {
+  position: relative; /* Define o contexto para posicionamento absoluto do dropdown */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closetIcon {
+  position: relative; /* Mantém o ícone no seu lugar */
+  z-index: 2; /* Garante que o ícone fique acima do dropdown */
+}
+
+
+
+.navIcon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 
 
  
