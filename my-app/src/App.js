@@ -19,7 +19,8 @@ import Informacoes from "./components/Perfil/Informacoes/Informacoes";
 import InfoPessoal from "./components/Perfil/Definicoes/InfoPessoal";
 import Definicoes from "./components/Perfil/Definicoes/Definicoes";
 import Grafico from "./components/Perfil/Grafico/Grafico";
- 
+import Arquivo from "./components/Perfil/Definicoes/Arquivo";
+
 import Welcome from "./components/Welcome/Welcome";
 import Connection from "./components/Welcome/Connection";
  
@@ -53,6 +54,7 @@ function AppContent() {
           <Route path="/infoPessoal" element={<InfoPessoal />} />
           <Route path="/definicoes" element={<Definicoes />} />
           <Route path="/grafico" element={<Grafico />} />
+          <Route path="/arquivo" element={<Arquivo />} />
         </Routes>
       </div>
     </>
