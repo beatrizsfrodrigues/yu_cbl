@@ -6,7 +6,7 @@
 }
 
 .taskDiv {
-  background-color: var(--orange);
+  background-color: var(--orange-light);
   border: 2px solid var(--orange-dark);
   border-radius: 24px;
   padding: 2px 8px;
@@ -151,16 +151,15 @@
   color: var(--purple-dark);
   text-align: left;
   width: 100%;
-  /* margin-bottom: 8px; */
 }
 
 .inputMessage p {
   text-align: left;
   margin-left: 0px;
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  width: 100%; /* Ensure the paragraph takes the full width */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #textOptions {
@@ -196,15 +195,63 @@
 }
 
 /** conclude task window */
-.proofImage {
+#concludeTaskDiv {
+  gap: 16px;
+  flex-direction: column;
+}
+
+#proofImage {
   height: 50vh;
+  width: 80%;
   border: 2px solid var(--purple);
   border-radius: 16px;
 }
 
-.proofImage img {
+#proofImage div {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#proofImage img {
   height: 100%;
   width: 100%;
   object-fit: cover;
   border-radius: 16px;
+}
+
+.titleTask {
+  border: 2px solid var(--blue);
+  border-radius: 16px;
+  padding: 8px;
+}
+
+#retakePhoto {
+  position: absolute;
+  right: -16px;
+  bottom: -16px;
+  background-color: var(--purple-dark);
+  color: var(--white);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#iconRetake {
+  width: 50px;
+  height: auto;
+  color: var(--purple-darker);
+}
+
+#infoUpload {
+  font-size: 14px;
+  color: var(--purple-dark);
+}
+
+/** verify task window  */
+#btnGroupDiv {
+  flex-direction: row;
+  gap: 16px;
 }

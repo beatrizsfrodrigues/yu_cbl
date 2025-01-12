@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { X } from "react-feather";
 import { fetchUsers, addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import PopUpInfo from "./PopUpInfo.js";
 
 function NewTask({ onClose, currentUser }) {
   const dispatch = useDispatch();
@@ -10,8 +11,8 @@ function NewTask({ onClose, currentUser }) {
   const [description, setDescription] = useState("");
 
   const handleAddTask = (e) => {
-    const partnerId = currentUser.partnerId;
     e.preventDefault();
+    const partnerId = currentUser.partnerId;
 
     dispatch(addTask({ title, description, partnerId }));
 

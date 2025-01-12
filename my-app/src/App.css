@@ -64,6 +64,10 @@ button {
   border: none;
 }
 
+.orangeBtn {
+  background-color: var(--orange);
+}
+
 .label {
   margin-bottom: -8px;
 }
@@ -129,12 +133,34 @@ button {
 
 .closeWindow {
   position: absolute;
-  right: 8px;
-  top: 8px;
+  right: 0px;
+  top: 18px;
+  width: 40px;
+  height: auto;
 }
 
 .line {
   width: 100%;
   height: 2px;
   background-color: var(--purple-dark);
+}
+
+/** popups  */
+.popup {
+  background-color: var(--white);
+  border-radius: 32px;
+  padding: 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.laterLink {
+  color: var(--orange-dark);
+  font-size: 12px;
+  text-decoration: underline;
 }

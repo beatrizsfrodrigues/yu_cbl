@@ -13,13 +13,6 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
-  const [sections, setSections] = useState({
-    skinColor: false,
-    shirts: false,
-    decor: false,
-    backgrounds: false,
-  });
-
   const [activeSection, setActiveSection] = useState(0);
 
   // Fetch closet data
