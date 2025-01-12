@@ -38,7 +38,7 @@ const Grafico = ({ show, onClose }) => {
 
   const users = useSelector((state) => state.users.data);
   const activeUser = useSelector((state) =>
-    state.users.data?.find((user) => user.ativo === 1)
+    state.users.data?.find((user) => user.id === 2)
   );
 
   useEffect(() => {

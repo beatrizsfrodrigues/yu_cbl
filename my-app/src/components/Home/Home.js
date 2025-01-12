@@ -1,100 +1,109 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "react-feather";
 import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
 import Closet from "./Closet";
 import Star from "../../assets/imgs/Icons_closet/Star.svg";
+import Closeticon from "../../assets/imgs/Icons_closet/Closeticon.svg";
+import Storeicon from "../../assets/imgs/Icons_closet/Storeicon.svg";
 import "../../assets/css/home.css";
 
 const Home = () => {
-  const [showDropdown, setShowDropdown] = useState(false); // Controls dropdown visibility
-  const [showCloset, setShowCloset] = useState(false); // Controls Closet overlay visibility
-  const [accessories, setAccessories] = useState([]); // Tracks selected accessories
-  const dropdownRef = useRef(null); // Dropdown reference
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState("bi bi-door-open");
+  const [showCloset, setShowCloset] = useState(false);
+  const [accessories, setAccessories] = useState([]);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
-    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+    setShowDropdown((prev) => !prev);
   };
 
-  const openCloset = () => {
-    setShowDropdown(false); // Close dropdown
-    setShowCloset(true); // Show Closet overlay
+  const selectCloset = () => {
+    setSelectedIcon("bi bi-door-open");
+    setShowDropdown(false);
+    setShowCloset(true);
+  };
+
+  const selectShop = () => {
+    setSelectedIcon("bi bi-bag");
+    setShowDropdown(false);
+    setShowCloset(false);
+    navigate("/store");
   };
 
   const closeCloset = () => {
-    setShowCloset(false); // Hide Closet overlay
+    setShowCloset(false);
   };
-
-  const resetAccessories = () => {
-  setAccessories([]); // Clear all accessories
-};
-
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false); // Close dropdown if click is outside
+      setShowDropdown(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside); // Listen for outside click
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside); // Clean up the event listener
-    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const addAccessory = (accessory) => {
-    setAccessories((prev) => [...prev, accessory]); // Add selected accessory
+    setAccessories((prev) => [...prev, accessory]);
   };
 
   return (
-    // <div className="homeContainer">
-    <div className={`home mainBody ${showCloset ? "locked" : ""}`}>
-      <div className="row">
-        <div className="buttonsHome">
-          <img src={Star} alt="Star" />
-          <p>1300</p>
-        </div>
+    <div className="homeContainer">
+      <div className={`home mainBody ${showCloset ? "locked" : ""}`}>
+        <div className="row">
+          {/* Star Section */}
+          <div className="ClassStar">
+            <img src={Star} alt="Star" />
+            <p>1300</p>
+          </div>
 
-        <div className="buttonsCloset">
-          <i
-            stroke="#B49BC7"
-            className="bi bi-door-open"
-            onClick={toggleDropdown}
-          ></i>
-          <ChevronDown className="navIcon" onClick={toggleDropdown} />
-          {showDropdown && (
-            <div className="dropdown-menu" ref={dropdownRef}>
-              <button onClick={openCloset}>Open Closet</button>
-              <button>
-                <i className="bi bi-store"></i>
-              </button>
+          {/* ButtonsCloset Section */}
+          <div className="buttonsCloset">
+            <div className="closetHeader">
+              <img
+                src={Closeticon}
+                alt="Closet"
+                onClick={selectCloset}
+                className="closetIcon"
+              />
+              <ChevronDown className="navIcon" onClick={toggleDropdown} />
+
+              {showDropdown && (
+                <div className="dropdown-menu dropdown-styled" ref={dropdownRef}>
+                  <button className="dropdown-item" >
+                    <i className="bi bi-bag"></i> Shop
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
 
-      <div className="mascotContainer">
-        <img className="Yu" src={yu} alt="YU logo" />
-        {accessories.map((accessory, index) => (
-          <img
-            key={index}
-            className="accessory"
-            src={accessory}
-            alt={`Accessory ${index}`}
-          />
-        ))}
-      </div>
-
-      {showCloset && (
-        <div className="closetOverlay">
-          <Closet addAccessory={addAccessory} 
-          closeCloset={closeCloset}
-          resetAccessories={resetAccessories} />
+        {/* Mascot Section */}
+        <div className="mascotContainer">
+          <img className="Yu" src={yu} alt="YU logo" />
+          {accessories.map((accessory, index) => (
+            <img
+              key={index}
+              className="accessory"
+              src={accessory}
+              alt={`Accessory ${index}`}
+            />
+          ))}
         </div>
-      )}
+
+        {showCloset && (
+          <div className="closetOverlay">
+            <Closet addAccessory={addAccessory} closeCloset={closeCloset} />
+          </div>
+        )}
+      </div>
     </div>
-    // </div>
   );
 };
 
