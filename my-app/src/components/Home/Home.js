@@ -6,13 +6,47 @@ import Star from "../../assets/imgs/Icons_closet/Star.svg";
 import "../../assets/css/home.css";
 
 const Home = () => {
+  {/*   O que estava antes
   const [showDropdown, setShowDropdown] = useState(false); // Controls dropdown visibility
   const [showCloset, setShowCloset] = useState(false); // Controls Closet overlay visibility
   const [accessories, setAccessories] = useState([]); // Tracks selected accessories
   const dropdownRef = useRef(null); // Dropdown reference
+   
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+  };
+
+  const openCloset = () => {
+    setShowDropdown(false); // Close dropdown
+    setShowCloset(true); // Show Closet overlay
+  };
+
+   const closeCloset = () => {
+    setShowCloset(false); // Hide Closet overlay
+  };
+
+  */}
+   
+   {/*  Parte Nova */}
+  const [showDropdown, setShowDropdown] = useState(false); // Controls dropdown visibility
+  const [selectedIcon, setSelectedIcon] = useState("bi bi-door-open"); // Tracks selected icon
+  const dropdownRef = useRef(null); // Dropdown reference
+  const [showCloset, setShowCloset] = useState(false); // Controls Closet overlay visibility
+  const [accessories, setAccessories] = useState([]);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown); // Toggle dropdown visibility
+  };
+  const selectCloset = () => {
+    setSelectedIcon("bi bi-door-open"); // Set closet icon
+    setShowDropdown(false); // Close dropdown
+    setShowCloset(true);
+  };
+
+  const selectShop = () => {
+    setSelectedIcon("bi bi-bag"); // Set shop icon
+    setShowDropdown(false); // Close dropdown
+    setShowCloset(false);
   };
 
   const openCloset = () => {
@@ -23,7 +57,8 @@ const Home = () => {
   const closeCloset = () => {
     setShowCloset(false); // Hide Closet overlay
   };
-
+  
+   {/* ........ */}
   const resetAccessories = () => {
   setAccessories([]); // Clear all accessories
 };
@@ -57,24 +92,28 @@ const Home = () => {
         </div>
 
         <div className="buttonsCloset">
-          <i
+        {/** */}
+        <i
             stroke="#B49BC7"
-            className="bi bi-door-open"
+            className={`${selectedIcon} button-rounded`}
             onClick={toggleDropdown}
           ></i>
-          <ChevronDown className="navIcon" onClick={toggleDropdown} />
+          <ChevronDown className="navIcon button-rounded" onClick={toggleDropdown} />
           {showDropdown && (
-            <div className="dropdown-menu" ref={dropdownRef}>
-              <button onClick={openCloset}>Open Closet</button>
-              <button>
-                <i className="bi bi-store"></i>
+            <div className="dropdown-menu dropdown-styled" ref={dropdownRef}>
+              <button className="dropdown-item" onClick={selectCloset}>
+                <i className="bi bi-door-open"></i> Closet
+              </button>
+              <button className="dropdown-item" onClick={selectShop}>
+                <i className="bi bi-bag"></i> Shop
               </button>
             </div>
           )}
         </div>
+         {/** */}
       </div>
 
-      <div className="mascotContainer">
+       <div className="mascotContainer">
         <img className="Yu" src={yu} alt="YU logo" />
         {accessories.map((accessory, index) => (
           <img
