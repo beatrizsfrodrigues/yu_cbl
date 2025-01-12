@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchUsers} from "../redux/usersSlice";
 import "../assets/css/Register.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 //import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
@@ -7,32 +10,63 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
+  const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+    const users = useSelector((state) => state.users.data) || [];
+    const usersStatus = useSelector((state) => state.users.status);
+
+    //Fetch users data
+    useEffect(() => {
+      if (usersStatus === "idle") {
+        dispatch(fetchUsers());
+      }
+    }, [usersStatus, dispatch]);
+
+  
+  const generateCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let code;
+    do{
+      code = '';
+      for (let i = 0; i < 10; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    } while (users.some( user => user.code === code))  
+    return code;
+  };
 
   const handleRegister = () => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.some(user => user.username === username)) {
+      setAlert('Nome de utilizador já existente!');
+      return; 
+    }
 
-    if (users.some((user) => user.username === username)) {
-      setAlert("Nome de utilizador já existente!");
-      return;
+    if (password !== confirmPassword) {
+      setAlert('As palavras-passe não coincidem!');
     }
 
     const newUser = {
-      id: Date.now(),
+      id: users.length + 1,
+      code: generateCode(),
       username,
       email,
       password,
     };
 
-    users.push(newUser);
+    const updatedUsers = [...users, newUser]; 
 
-    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
     setMessage('Utilizador registado com sucesso!');
     setEmail('');
     setUsername('');
     setPassword('');
+    setConfirmPassword('');
     setAlert('');
+    navigate('/Login');
   };
 
   const handleSubmit = (e) => {
@@ -41,7 +75,7 @@ const Register = () => {
   };
 
   const isFormComplete =
-    email.trim() !== "" && password.trim() !== "" && username.trim() !== "";
+    email.trim() !== "" && password.trim() !== "" && username.trim() !== "" && confirmPassword.trim() !== "" && password === confirmPassword;
 
   return (
     <div>
@@ -76,21 +110,27 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          {password && (
+            <div className="pass-container">
+            <label>Confirmar Palavra-passe</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          )}
         </div>
 
         <div className="register-link">
-          <p>
-            Já tens conta? <a href="/Login">Login</a>{" "}
-          </p>
+          <p>Já tens conta? <a href="/Login">Login</a>{" "}</p>
         </div>
         {message && <p>{message}</p>}
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} // Disable button if form is incomplete
-        >
-          Registar
-        </button>
+        >Registar</button>
       </form>
     </div>
   );

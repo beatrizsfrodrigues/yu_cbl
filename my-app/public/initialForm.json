@@ -2,16 +2,37 @@
   {
     "id": 1,
     "question": "Quanto tempo passas no telemóvel por dia?",
-    "answers": [
+    "options": [
       "Menos de uma hora",
       "1-3 horas",
-      "3-5 horas",
-      "Mais de 5 horas"
+      "3-4 horas",
+      "4-5 horas",
+      "5-7",
+      "Mais de 7 horas"
     ]
   },
   {
     "id": 2,
     "question": "Que problemas encontras atualmente?",
-    "answers": ["Fazer scroll sem pensar", "Escapar a realidade"]
+    "options": [
+      "Fazer scroll sem pensar",
+      "Recorrer ao telemóvel logo após acordar",
+      "Escapar à realidade",
+      "Ganhar ansiedade",
+      "Constantemente ver notificações",
+      "Distrair-me das minhas tarefas"
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Que idade tens?",
+    "options": [
+      "Menos de 13",
+      "14-17",
+      "18-24",
+      "25-32",
+      "33-40",
+      "Mais de 40"
+    ]
   }
 ]

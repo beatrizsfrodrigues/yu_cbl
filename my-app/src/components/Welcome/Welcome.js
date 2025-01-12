@@ -1,7 +1,7 @@
 import React from "react";
 import "./welcome.css";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/imgs/YU_logo/YU-02.svg";
+import logo from "../../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 
 const Welcome = () => {
 
@@ -9,7 +9,7 @@ const Welcome = () => {
 
   const handleClick = () => {
     console.log("Button clicked");
-    navigate("/questions");
+    navigate("/register");
   };
 
   return (
@@ -17,7 +17,7 @@ const Welcome = () => {
       <img className="logo" src={logo} alt="YU Logo" width="300" />
       <div className="text-container">
         <div className="title">Bem vindo à YU!</div>
-        <div>
+        <div className="title-desc">
           Vamos iniciar esta jornada para <br></br> conquistares os teus
           objetivos.
         </div>
