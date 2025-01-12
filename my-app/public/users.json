@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "code": "8g6QE3uHT9",
     "username": "beatriz",
     "name": "Beatriz Rodrigues",
     "email": "beatriz.sfrodrigues@ua.pt",
@@ -32,6 +33,7 @@
   },
   {
     "id": 2,
+    "code": "QhJmffSpaU",
     "username": "Catarina",
     "name": "Catarina Seemann",
     "email": "catarina@ua.pt",
