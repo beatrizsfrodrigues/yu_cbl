@@ -3,6 +3,7 @@
     "id": 1,
     "name": "Bigode",
     "type": "Decor",
+    "value": "110",
     "subcategory": {
       "name": "Boca",
       "coordinates" : { "x": 4000, "y": 150 } },
@@ -15,6 +16,7 @@
     "id": 2,
     "name": "BigodeCurvo",
     "type": "Decor",
+    "value": "100",
     "subcategory": "Boca",
     "src": "/assets/YU_acessorios/YU-bigodecurvo.svg"
   },
@@ -23,6 +25,7 @@
     "id": 3,
     "name": "BigodeFino",
     "type": "Decor",
+    "value": "90",
     "subcategory": "Boca",
     "src": "/assets/YU_acessorios/YU-bigodeFino.svg"
   },
@@ -30,6 +33,7 @@
     "id": 4,
     "name": "CachecolPreto",
     "type": "Decor",
+    "value": "150",
     "subcategory": "Pescoço",
     "src": "/assets/YU_acessorios/YU-cachecolPreto.svg"
   },
@@ -37,6 +41,7 @@
     "id": 5,
     "name": "CachecolVerde",
     "type": "Decor",
+    "value": "120",
     "subcategory": "Pescoço",
     "src": "/assets/YU_acessorios/YU-cachecolVerde.svg"
   },
@@ -44,6 +49,7 @@
     "id": 6,
     "name": "Chapeu",
     "type": "Decor",
+    "value": "110",
     "subcategory": "Cabeça",
     "src": "/assets/YU_acessorios/YU-chapeu.svg"
   },
@@ -51,6 +57,7 @@
     "id": 7,
     "name": "ChapeuCowboy",
     "type": "Decor",
+    "value": "160",
     "subcategory": "Cabeça",
     "src": "/assets/YU_acessorios/YU-chapeuCowboy.svg"
   },
@@ -58,6 +65,7 @@
     "id": 8,
     "name": "CachecolPaiNatal",
     "type": "Decor",
+    "value": "200",
     "subcategory": "Pescoço",
     "src": "/assets/YU_acessorios/YU-chapeuPaiNatal.svg"
   },
@@ -65,6 +73,7 @@
     "id": 9,
     "name": "CoisoOuvidos",
     "type": "Decor",
+    "value": "160",
     "subcategory": "Cabeça",
     "src": "/assets/YU_acessorios/YU-coisoOuvidos.svg"
   },
@@ -72,6 +81,7 @@
     "id": 10,
     "name": "Oculos",
     "type": "Decor",
+    "value": "130",
     "subcategory": "Olhos",
     "src": "/assets/YU_acessorios/YU-oculos.svg"
   },
@@ -79,6 +89,7 @@
     "id": 11,
     "name": "OculosSol",
     "type": "Decor",
+    "value": "100",
     "subcategory": "Olhos",
     "src": "/assets/YU_acessorios/YU-oculosSol.svg"
   },
@@ -86,6 +97,7 @@
     "id": 12,
     "name": "RoupaBranca",
     "type": "Shirts",
+    "value": "200",
     "subcategory": "Corpo",
     "src": "/assets/YU_acessorios/YU-roupaBranca.svg"
   },
@@ -93,6 +105,7 @@
     "id": 13,
     "name": "RoupaPaiNatal",
     "type": "Shirts",
+    "value": "250",
     "subcategory": "Corpo",
     "src": "/assets/YU_acessorios/YU-roupaPaiNatal.svg"
   },
@@ -100,6 +113,7 @@
     "id": 14,
     "name": "RoupaPreta",
     "type": "Shirts",
+    "value": "210",
     "subcategory": "Corpo",
     "src": "/assets/YU_acessorios/YU-roupaPreta.svg"
   }
