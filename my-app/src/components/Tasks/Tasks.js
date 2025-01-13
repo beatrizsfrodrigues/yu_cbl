@@ -12,7 +12,7 @@ import PopUpInfo from "./PopUpInfo.js";
 import { MessageCircle, Plus, Sliders, X } from "react-feather";
 
 function Tasks() {
-  const currentUserId = 1;
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
@@ -24,11 +24,13 @@ function Tasks() {
   const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
+  const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showVerifyTask, setShowVerifyTask] = useState(false);
   const [taskToVerify, setTaskToVerify] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [partnerUser, setPartnerUser] = useState(null);
+  const [popUpMessage, setPopUpMessage] = useState("");
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -113,6 +115,15 @@ function Tasks() {
     setIsVerifyTaskOpen(false);
   };
 
+  const handleClosePopUpInfo = () => {
+    setIsPopUpInfoOpen(false);
+  };
+
+  const handleShowPopUpInfo = (message) => {
+    setPopUpMessage(message);
+    setIsPopUpInfoOpen(true);
+  };
+
   if (usersStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -169,7 +180,7 @@ function Tasks() {
         <MessageCircle />
       </button>
 
-      {showVerifyTask && (
+      {showVerifyTask && partnerUser && (
         <VerifyPopUp
           task={taskToVerify}
           partnerUser={partnerUser}
@@ -182,10 +193,15 @@ function Tasks() {
           onClose={handleCloseVerifyTaskModal}
           partnerUser={partnerUser}
           task={taskToVerify}
+          onShowPopUpInfo={handleShowPopUpInfo}
         />
       )}
       {isNewTaskModalOpen && (
-        <NewTask onClose={handleCloseNewTaskModal} currentUser={currentUser} />
+        <NewTask
+          onClose={handleCloseNewTaskModal}
+          currentUser={currentUser}
+          onShowPopUpInfo={handleShowPopUpInfo}
+        />
       )}
       {isMessagesModalOpen && (
         <Messages
@@ -198,7 +214,11 @@ function Tasks() {
           onClose={handleCloseConcludeTaskModal}
           currentUser={currentUser}
           task={selectedTask}
+          onShowPopUpInfo={handleShowPopUpInfo}
         />
+      )}
+      {isPopUpInfoOpen && (
+        <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 import PopUpInfo from "./PopUpInfo.js";
 
-function ConcludeTask({ onClose, currentUser, task }) {
+function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -40,6 +40,9 @@ function ConcludeTask({ onClose, currentUser, task }) {
       })
     );
     onClose();
+    onShowPopUpInfo(
+      `Tarefa <b>${task.title}</b> foi marcada como concluída. Espera pela verificação para obteres pontos.`
+    );
   };
 
   return (

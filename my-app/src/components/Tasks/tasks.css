@@ -205,6 +205,7 @@
   width: 80%;
   border: 2px solid var(--purple);
   border-radius: 16px;
+  object-fit: cover;
 }
 
 #proofImage div {

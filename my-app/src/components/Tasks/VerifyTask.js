@@ -4,7 +4,7 @@ import { completeTask, validateTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 import PopUpInfo from "./PopUpInfo.js";
 
-function VerifyTask({ onClose, partnerUser, task }) {
+function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo }) {
   const dispatch = useDispatch();
 
   const handleVerifyTask = (e) => {
@@ -20,7 +20,8 @@ function VerifyTask({ onClose, partnerUser, task }) {
       })
     );
 
-    onClose(e);
+    onClose();
+    onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
   };
 
   return (
