@@ -104,12 +104,24 @@ const usersSlice = createSlice({
       const { userId, task, message } = action.payload;
       const user = state.data.find((u) => u.id === userId);
       if (user) {
-        const taskValidate = user.tasks.find((t) => t.id === task.id);
-        if (taskValidate) {
-          taskValidate.verified = false;
-          taskValidate.completed = false;
-          taskValidate.completedDate = 0;
-          taskValidate.rejectMessage = message;
+        const taskReject = user.tasks.find((t) => t.id === task.id);
+        if (taskReject) {
+          taskReject.verified = false;
+          taskReject.completed = false;
+          taskReject.completedDate = 0;
+          taskReject.rejectMessage = message;
+        }
+      }
+
+      localStorage.setItem("users", JSON.stringify(state.data));
+    },
+    clearRejectMessage: (state, action) => {
+      const { userId, taskId } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+      if (user) {
+        const taskReject = user.tasks.find((t) => t.id === taskId);
+        if (taskReject) {
+          taskReject.rejectMessage = "";
         }
       }
 
@@ -144,6 +156,12 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask, updateUser, completeTask, validateTask, rejectTask } =
-  usersSlice.actions;
+export const {
+  addTask,
+  updateUser,
+  completeTask,
+  validateTask,
+  rejectTask,
+  clearRejectMessage,
+} = usersSlice.actions;
 export default usersSlice.reducer;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../redux/usersSlice.js";
+import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
 import { fetchMessages } from "../../redux/messagesSlice";
 import "./tasks.css";
 import NewTask from "./NewTask.js";
@@ -57,6 +57,20 @@ function Tasks() {
         : null;
     setCurrentUser(user);
 
+    const rejectedTask =
+      users && users.length > 0
+        ? user.tasks.find((task) => task.rejectMessage != "")
+        : null;
+    if (rejectedTask) {
+      handleShowPopUpInfo(
+        `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
+      );
+
+      dispatch(
+        clearRejectMessage({ userId: user.id, taskId: rejectedTask.id })
+      );
+    }
+
     const partner =
       users && users.length > 0
         ? users.find((u) => u.id == user.partnerId)
@@ -111,7 +125,7 @@ function Tasks() {
     setIsConcludeTaskOpen(false);
   };
 
-  //* open and close verify task modal
+  //* open and close verify task window
   const handleOpenVerifyTaskModal = () => {
     setShowVerifyTask(false);
     setIsVerifyTaskOpen(true);
@@ -136,6 +150,7 @@ function Tasks() {
     setFilterCriteria(criteria);
   };
 
+  //* open and close reject task window
   const handleOpenRejectModal = () => {
     setIsRejectOpen(true);
   };
