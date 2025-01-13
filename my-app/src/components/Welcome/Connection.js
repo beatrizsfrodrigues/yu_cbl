@@ -18,42 +18,39 @@ const Connection = () => {
         }
     }, []);
 
-    // Handle the click event to toggle the code input visibility
     const handleClick = () => {
-        setIsCodeInputVisible(!isCodeInputVisible); // Toggle the visibility state
+        setIsCodeInputVisible(!isCodeInputVisible);
     };
 
-    // Handle confirming the connection
     const handleConfirmConnection = () => {
-        // Fetch users from localStorage (or state if you're managing users in Redux)
+        // Fetch from local storage
         const users = JSON.parse(localStorage.getItem("users")) || [];
 
-        // Find the partner user by their code
         const partner = users.find((user) => user.code === partnerCode);
-        const currentUser = users.find((user) => user.code === userCode); // Assuming you can get the current user using their code
+        const currentUser = users.find((user) => user.code === userCode);
 
         if (!partner) {
-            setMessage("Código do parceiro não encontrado!");
+            setMessage("Código do parceiro não encontrado");
             return;
         }
 
         if (partner.id === currentUser.id) {
-            setMessage("Não é possível conectar com você mesmo!");
+            setMessage("Não é possível conectar contigo mesmo");
             return;
         }
 
-        // Update the partnerId for both users
+        // Update partnerID for the connected users
         const updatedCurrentUser = { ...currentUser, partnerID: partner.id };
         const updatedPartner = { ...partner, partnerID: currentUser.id };
 
-        // Save updated users in localStorage (or update state if using Redux)
+        // Save changes in local storage
         const updatedUsers = users.map((user) =>
             user.id === updatedCurrentUser.id ? updatedCurrentUser : user.id === updatedPartner.id ? updatedPartner : user
         );
         localStorage.setItem("users", JSON.stringify(updatedUsers));
 
         setMessage("Conexão realizada com sucesso!");
-        setPartnerCode(""); // Clear the input after successful connection
+        setPartnerCode(""); // Clear input
     };
 
     return (
@@ -77,13 +74,13 @@ const Connection = () => {
                 </label>
 
                 {isCodeInputVisible ? (
-                    <span className="generated-code">{userCode}</span> // Display the dynamic code here
+                    <span className="generated-code">{userCode}</span>
                 ) : (
                     <input
                         type="text"
                         className="code-input"
                         value={partnerCode}
-                        onChange={(e) => setPartnerCode(e.target.value)} // Handle input change
+                        onChange={(e) => setPartnerCode(e.target.value)}
                         placeholder="Insira o código"
                     />
                 )}
