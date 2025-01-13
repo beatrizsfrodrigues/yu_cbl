@@ -82,12 +82,11 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
   return (
     <>
     {showNotification && (
-  <div
-    className={`notification ${!showNotification ? "hidden" : ""}`}
-  >
-    Dados alterados com sucesso!
-  </div>
-)}
+      <div className={`notification 
+         ${!showNotification ? "hidden" : ""}`}>
+        Dados alterados com sucesso!
+      </div>
+    )}
 
 
     <div className="modal">
