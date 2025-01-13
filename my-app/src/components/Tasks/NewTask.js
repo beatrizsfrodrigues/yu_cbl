@@ -3,15 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { X } from "react-feather";
 import { fetchUsers, addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import PopUpInfo from "./PopUpInfo.js";
 
-function NewTask({ onClose, currentUser }) {
+function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const handleAddTask = (e) => {
-    const partnerId = currentUser.partnerId;
     e.preventDefault();
+    const partnerId = currentUser.partnerId;
 
     dispatch(addTask({ title, description, partnerId }));
 
@@ -26,6 +27,7 @@ function NewTask({ onClose, currentUser }) {
     setTitle("");
     setDescription("");
     onClose();
+    onShowPopUpInfo(`Tarefa <b>${title}</b> foi criada com sucesso.`);
   };
 
   return (

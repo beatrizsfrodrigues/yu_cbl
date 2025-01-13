@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { X } from "react-feather";
+import { X, UploadCloud, RefreshCw } from "react-feather";
 import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import PopUpInfo from "./PopUpInfo.js";
 
-function ConcludeTask({ onClose, currentUser, task }) {
+function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -13,8 +14,6 @@ function ConcludeTask({ onClose, currentUser, task }) {
     const file = e.target.files[0];
     setSelectedFile(file);
 
-    // Create a preview of the uploaded image
-    console.log(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result);
@@ -41,6 +40,9 @@ function ConcludeTask({ onClose, currentUser, task }) {
       })
     );
     onClose();
+    onShowPopUpInfo(
+      `Tarefa <b>${task.title}</b> foi marcada como concluída. Espera pela verificação para obteres pontos.`
+    );
   };
 
   return (
@@ -51,18 +53,46 @@ function ConcludeTask({ onClose, currentUser, task }) {
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
-        <h4>{task.title}</h4>
-        <div className="proofImage">
-          {preview ? (
-            <img src={preview} alt="Proof" style={{ width: "100%" }} />
-          ) : (
-            "No image uploaded"
-          )}
+        <div id="concludeTaskDiv">
+          <h5 className="titleTask">{task.title}</h5>
+          <div id="proofImage">
+            {preview ? (
+              <div>
+                <img src={preview} alt="Proof" />
+                <label
+                  htmlFor="fileInput"
+                  className="btnRound"
+                  id="retakePhoto"
+                >
+                  <RefreshCw />
+                  <input
+                    type="file"
+                    id="fileInput"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                  />
+                </label>
+              </div>
+            ) : (
+              <label htmlFor="fileInput" className="fileInputLabel">
+                <UploadCloud id="iconRetake" />
+                <input
+                  type="file"
+                  id="fileInput"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+                <p id="infoUpload">
+                  Faz upload de uma imagem como prova para o teu amigo!
+                </p>
+              </label>
+            )}
+          </div>
+
+          <button className="submitBtn" onClick={handleSubmit}>
+            Submeter
+          </button>
         </div>
-        <input type="file" onChange={handleFileChange} />
-        <button className="submitBtn" onClick={handleSubmit}>
-          Submeter
-        </button>
       </div>
     </div>
   );

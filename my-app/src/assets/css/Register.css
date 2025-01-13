@@ -86,3 +86,17 @@ label {
 .alert {
   color: red;
 }
+
+.password-requirements {
+  padding: 20px;
+  margin: 0;
+}
+
+.password-requirements li {
+  font-size: 14px;
+  color: red;
+}
+
+.password-requirements li.valid {
+  color: green;
+}

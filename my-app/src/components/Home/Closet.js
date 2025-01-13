@@ -13,54 +13,38 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
-  const [sections, setSections] = useState({
-    skinColor: false,
-    shirts: false,
-    decor: false,
-    backgrounds: false,
-  });
-
   const [activeSection, setActiveSection] = useState(0);
 
-  // Fetch closet data
   useEffect(() => {
     if (closetStatus === "idle") {
       dispatch(fetchCloset());
     }
   }, [closetStatus, dispatch]);
 
-  console.log(closet);
-
   if (!closet) {
     return <div>Loading...</div>;
   }
-
-  // Filter items by type
-  const skinColorItems = closet.filter((item) => item.type === "SkinColor");
-  const shirtsItems = closet.filter((item) => item.type === "Shirts");
-  const decorItems = closet.filter((item) => item.type === "Decor");
-  const backgroundsItems = closet.filter((item) => item.type === "Backgrounds");
 
   const sectionsData = [
     {
       label: "Skin Color",
       icon: <img src={Circle} alt="Skin Color" />,
-      items: skinColorItems,
+      items: closet.filter((item) => item.type === "SkinColor"),
     },
     {
       label: "Shirts",
-      icon: <img src={Shirts} alt="Skin Color" />,
-      items: shirtsItems,
+      icon: <img src={Shirts} alt="Shirts" />,
+      items: closet.filter((item) => item.type === "Shirts"),
     },
     {
       label: "Decor",
-      icon: <img src={Hat} alt="Skin Color" />,
-      items: decorItems,
+      icon: <img src={Hat} alt="Decor" />,
+      items: closet.filter((item) => item.type === "Decor"),
     },
     {
       label: "Backgrounds",
-      icon: <img src={Background} alt="Skin Color" />,
-      items: backgroundsItems,
+      icon: <img src={Background} alt="Backgrounds" />,
+      items: closet.filter((item) => item.type === "Backgrounds"),
     },
   ];
 
@@ -91,12 +75,9 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
               <div
                 key={item.id}
                 className="avatarcircle"
-                onClick={() => {
-                  if (addAccessory) addAccessory(item.src);
-                }}
+                onClick={() => addAccessory(item.src)}
               >
                 <img src={item.src} alt={item.name} />
-                {/* <p>{item.name}</p> */}
               </div>
             ))}
           </div>
@@ -105,18 +86,10 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
           <button className="buttonRound" onClick={closeCloset}>
             <img src={X} alt="Exit" />
           </button>
-
-          <button className="buttonMid"  onClick={closeCloset}>
-
-            Salvar alterações
+          <button className="buttonMid" onClick={closeCloset}>
+            Save Changes
           </button>
-
-           <button
-            className="buttonRound"
-            onClick={() => {
-              if (resetAccessories) resetAccessories();
-            }}
-          >
+          <button className="buttonRound" onClick={resetAccessories}>
             <img src={Reset} alt="Reset" />
           </button>
         </div>

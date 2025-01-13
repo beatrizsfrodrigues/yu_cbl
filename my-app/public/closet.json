@@ -3,11 +3,13 @@
     "id": 1,
     "name": "Bigode",
     "type": "Decor",
+    "price": "110",
     "subcategory": {
       "name": "Boca",
       "coordinates" : { "x": 4000, "y": 150 } },
 
-    "src": "/assets/YU_acessorios/YU-bigode.svg"
+    "src": "/assets/YU_acessorios/YU-bigode.svg",
+    "locked" : "true"
 
   },
 
@@ -15,92 +17,118 @@
     "id": 2,
     "name": "BigodeCurvo",
     "type": "Decor",
+    "value": "100",
     "subcategory": "Boca",
-    "src": "/assets/YU_acessorios/YU-bigodecurvo.svg"
+    "src": "/assets/YU_acessorios/YU-bigodecurvo.svg",
+    "locked" : "true"
   },
 
   {
     "id": 3,
     "name": "BigodeFino",
     "type": "Decor",
+    "value": "90",
     "subcategory": "Boca",
-    "src": "/assets/YU_acessorios/YU-bigodeFino.svg"
+    "src": "/assets/YU_acessorios/YU-bigodeFino.svg",
+    "locked" : "true"
   },
   {
     "id": 4,
     "name": "CachecolPreto",
     "type": "Decor",
+    "value": "150",
     "subcategory": "Pescoço",
-    "src": "/assets/YU_acessorios/YU-cachecolPreto.svg"
+    "src": "/assets/YU_acessorios/YU-cachecolPreto.svg",
+    "locked" : "true"
   },
   {
     "id": 5,
     "name": "CachecolVerde",
     "type": "Decor",
+    "value": "120",
     "subcategory": "Pescoço",
-    "src": "/assets/YU_acessorios/YU-cachecolVerde.svg"
+    "src": "/assets/YU_acessorios/YU-cachecolVerde.svg",
+    "locked" : "true"
   },
   {
     "id": 6,
     "name": "Chapeu",
     "type": "Decor",
+    "value": "110",
     "subcategory": "Cabeça",
-    "src": "/assets/YU_acessorios/YU-chapeu.svg"
+    "src": "/assets/YU_acessorios/YU-chapeu.svg",
+    "locked" : "true"
   },
   {
     "id": 7,
     "name": "ChapeuCowboy",
     "type": "Decor",
+    "value": "160",
     "subcategory": "Cabeça",
-    "src": "/assets/YU_acessorios/YU-chapeuCowboy.svg"
+    "src": "/assets/YU_acessorios/YU-chapeuCowboy.svg",
+    "locked" : "true"
   },
   {
     "id": 8,
     "name": "CachecolPaiNatal",
     "type": "Decor",
+    "value": "200",
     "subcategory": "Pescoço",
-    "src": "/assets/YU_acessorios/YU-chapeuPaiNatal.svg"
+    "src": "/assets/YU_acessorios/YU-chapeuPaiNatal.svg",
+    "locked" : "true"
   },
   {
     "id": 9,
     "name": "CoisoOuvidos",
     "type": "Decor",
+    "value": "160",
     "subcategory": "Cabeça",
-    "src": "/assets/YU_acessorios/YU-coisoOuvidos.svg"
+    "src": "/assets/YU_acessorios/YU-coisoOuvidos.svg",
+    "locked" : "true"
   },
   {
     "id": 10,
     "name": "Oculos",
     "type": "Decor",
+    "value": "130",
     "subcategory": "Olhos",
-    "src": "/assets/YU_acessorios/YU-oculos.svg"
+    "src": "/assets/YU_acessorios/YU-oculos.svg",
+    "locked" : "true"
   },
   {
     "id": 11,
     "name": "OculosSol",
     "type": "Decor",
+    "value": "100",
     "subcategory": "Olhos",
-    "src": "/assets/YU_acessorios/YU-oculosSol.svg"
+    "src": "/assets/YU_acessorios/YU-oculosSol.svg",
+    "locked" : "true"
   },
   {
     "id": 12,
     "name": "RoupaBranca",
     "type": "Shirts",
+    "value": "200",
     "subcategory": "Corpo",
-    "src": "/assets/YU_acessorios/YU-roupaBranca.svg"
+    "src": "/assets/YU_acessorios/YU-roupaBranca.svg",
+    "locked" : "true"
   },
   {
     "id": 13,
     "name": "RoupaPaiNatal",
     "type": "Shirts",
+    "value": "250",
     "subcategory": "Corpo",
-    "src": "/assets/YU_acessorios/YU-roupaPaiNatal.svg"
+    "src": "/assets/YU_acessorios/YU-roupaPaiNatal.svg",
+    "locked" : "true"
   },
   {
     "id": 14,
     "name": "RoupaPreta",
     "type": "Shirts",
+    "value": "210",
     "subcategory": "Corpo",
-    "src": "/assets/YU_acessorios/YU-roupaPreta.svg"
+    "src": "/assets/YU_acessorios/YU-roupaPreta.svg",
+    "locked" : "true"
   }
 ]
