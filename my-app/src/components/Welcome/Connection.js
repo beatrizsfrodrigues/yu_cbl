@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook for navigation
+import { useNavigate } from "react-router-dom";
 import "./connection.css";
 import yu_icon from "../../assets/imgs/YU_icon/Group 48.svg";
 
@@ -10,8 +10,8 @@ const Connection = () => {
     const [connectedUserName, setConnectedUserName] = useState("");
     const [partnerCode, setPartnerCode] = useState("");
     const [message, setMessage] = useState("");
-    const [isConnected, setIsConnected] = useState(false); // New state for connection status
-    const navigate = useNavigate(); // Instantiate useNavigate hook for navigation
+    const [isConnected, setIsConnected] = useState(false);
+    const navigate = useNavigate();
 
     // Fetch LocalStorage
     useEffect(() => {
@@ -67,15 +67,15 @@ const Connection = () => {
         );
         localStorage.setItem("users", JSON.stringify(updatedUsers));
 
-        setConnectedUserName(partner.username); // Set the connected user's username
+        setConnectedUserName(partner.username);
         setMessage("Conexão realizada com sucesso ✔");
         setPartnerCode(""); // Clear input
 
-        setIsConnected(true); // Update the connection status
+        setIsConnected(true);
     };
 
     const handleNavigateToHome = () => {
-        navigate("/home"); // Navigate to the /home page using useNavigate
+        navigate("/home"); // Go to home after connection
     };
 
     return (
@@ -108,7 +108,7 @@ const Connection = () => {
                 </div>
             </div>
 
-            {/* Show message above input section (outside input section) */}
+            {/* Show message above input section */}
             {message && <p className="message">{message}</p>}
 
             {/* Only show input section if not connected */}
@@ -138,7 +138,7 @@ const Connection = () => {
                 </div>
             )}
 
-            {/* Always show the "Confirmar" button when connected */}
+            {/* Button remains visible during connection */}
             {isConnected && (
                 <button className="confirm-button" onClick={handleNavigateToHome}>
                     Terminar
