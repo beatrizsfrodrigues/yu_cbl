@@ -47,6 +47,7 @@ const usersSlice = createSlice({
         completed: false,
         verified: false,
         completedDate: 0,
+        rejectMessage: "",
       };
 
       if (user) {
@@ -99,6 +100,33 @@ const usersSlice = createSlice({
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
+    rejectTask: (state, action) => {
+      const { userId, task, message } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+      if (user) {
+        const taskReject = user.tasks.find((t) => t.id === task.id);
+        if (taskReject) {
+          taskReject.verified = false;
+          taskReject.completed = false;
+          taskReject.completedDate = 0;
+          taskReject.rejectMessage = message;
+        }
+      }
+
+      localStorage.setItem("users", JSON.stringify(state.data));
+    },
+    clearRejectMessage: (state, action) => {
+      const { userId, taskId } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+      if (user) {
+        const taskReject = user.tasks.find((t) => t.id === taskId);
+        if (taskReject) {
+          taskReject.rejectMessage = "";
+        }
+      }
+
+      localStorage.setItem("users", JSON.stringify(state.data));
+    },
     updateUser: (state, action) => {
       const updatedUser = action.payload;
       const index = state.data.findIndex((user) => user.id === updatedUser.id);
@@ -128,6 +156,12 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask, updateUser, completeTask, validateTask } =
-  usersSlice.actions;
+export const {
+  addTask,
+  updateUser,
+  completeTask,
+  validateTask,
+  rejectTask,
+  clearRejectMessage,
+} = usersSlice.actions;
 export default usersSlice.reducer;

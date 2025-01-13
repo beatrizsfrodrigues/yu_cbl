@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { completeTask, validateTask } from "../../redux/usersSlice";
+import { validateTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 import PopUpInfo from "./PopUpInfo.js";
 
-function VerifyTask({ onClose, partnerUser, task }) {
+function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
   const dispatch = useDispatch();
 
   const handleVerifyTask = (e) => {
@@ -20,7 +20,14 @@ function VerifyTask({ onClose, partnerUser, task }) {
       })
     );
 
-    onClose(e);
+    onClose();
+    onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
+  };
+
+  const handleRejectTask = (e) => {
+    e.preventDefault();
+    onClose();
+    onReject({ task, partnerUser });
   };
 
   return (
@@ -42,7 +49,9 @@ function VerifyTask({ onClose, partnerUser, task }) {
           <button className="submitBtn" onClick={handleVerifyTask}>
             Aceitar
           </button>
-          <button className="submitBtn orangeBtn">Rejeitar</button>
+          <button className="submitBtn orangeBtn" onClick={handleRejectTask}>
+            Rejeitar
+          </button>
         </div>
       </div>
     </div>
