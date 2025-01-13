@@ -100,3 +100,17 @@ label {
 .password-requirements li.valid {
   color: green;
 }
+
+.birthdate-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.birthdate-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.birthdate-inputs input {
+  width: 20%;
+}
