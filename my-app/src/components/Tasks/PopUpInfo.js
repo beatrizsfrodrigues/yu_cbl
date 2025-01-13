@@ -4,8 +4,10 @@ function PopUpInfo({ onClose, message }) {
   return (
     <div className="modal">
       <div className="popup">
-        <p>texto</p>
-        <button className="submitBtn">Confirmar</button>
+        <p dangerouslySetInnerHTML={{ __html: message }}></p>
+        <button className="submitBtn" onClick={onClose}>
+          Confirmar
+        </button>
       </div>
     </div>
   );

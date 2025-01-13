@@ -17,7 +17,8 @@
         "completed": false,
         "completedDate": "0",
         "picture": "",
-        "verified": false
+        "verified": false,
+        "rejectMessage": ""
       },
       {
         "id": 2,
@@ -26,7 +27,8 @@
         "completed": false,
         "completedDate": "0",
         "picture": "",
-        "verified": false
+        "verified": false,
+        "rejectMessage": ""
       }
     ],
     "initialFormAnswers": []
@@ -49,7 +51,8 @@
         "completed": true,
         "completedDate": "20250104003058",
         "picture": "screenTime.jpg",
-        "verified": false
+        "verified": false,
+        "rejectMessage": ""
       },
       {
         "id": 2,
@@ -58,7 +61,8 @@
         "completed": false,
         "completedDate": "0",
         "picture": "",
-        "verified": false
+        "verified": false,
+        "rejectMessage": ""
       }
     ],
     "initialFormAnswers": []

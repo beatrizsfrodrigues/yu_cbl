@@ -14,6 +14,12 @@
   font-size: 16px;
 }
 
+.taskDone {
+  background-color: var(--orange-lighter);
+  border: 2px solid var(--orange-dark);
+  text-decoration: line-through;
+}
+
 .doneTask {
   background-color: var(--orange-dark);
   padding: 8px 12px;
@@ -205,6 +211,7 @@
   width: 80%;
   border: 2px solid var(--purple);
   border-radius: 16px;
+  object-fit: cover;
 }
 
 #proofImage div {
@@ -254,4 +261,41 @@
 #btnGroupDiv {
   flex-direction: row;
   gap: 16px;
+}
+
+/** filter  */
+#filter {
+  background-color: var(--purple-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 24px;
+  width: 200px;
+  position: fixed;
+  top: 120px;
+  right: 24px;
+}
+
+#filter button {
+  background-color: var(--purple-lighter);
+}
+
+.activeFilter {
+  background-color: var(--orange-lighter) !important;
+}
+
+/** reject task  */
+#rejectForm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 16px;
+}
+
+#sendReject {
+  margin-top: 40px;
+  width: fit-content;
+  align-self: center;
 }

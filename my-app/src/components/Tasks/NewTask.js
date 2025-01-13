@@ -5,7 +5,7 @@ import { fetchUsers, addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 import PopUpInfo from "./PopUpInfo.js";
 
-function NewTask({ onClose, currentUser }) {
+function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -27,6 +27,7 @@ function NewTask({ onClose, currentUser }) {
     setTitle("");
     setDescription("");
     onClose();
+    onShowPopUpInfo(`Tarefa <b>${title}</b> foi criada com sucesso.`);
   };
 
   return (

@@ -63,13 +63,30 @@ const Register = () => {
       hasLowerCase,
       hasNumbers,
       hasSpecialChar,
-    })
+    });
 
     return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
-  }
+  };
+
+  const formatBirthdate = (setter) => (e) => {
+      const value = e.target.value;
+      if (value.length === 1) {
+        setter(`0${value}`);
+      } else {
+        setter(value);
+      }
+    };
 
   const handleRegister = () => {
-    if (users.some(user => user.username === username)) {
+  const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
+
+    if (invalidUsernameChars.test(username)) {
+      setAlert('Nome de utilizador contem caracteres inválidos!');
+      setAlertPass('');
+      return;
+    }
+
+    if (users.some(user => user.username === username.toLocaleLowerCase())) {
       setAlert('Nome de utilizador já existente!');
       setAlertPass('');
       return; 
@@ -90,7 +107,7 @@ const Register = () => {
       password,
       age: `${day}/${month}/${year}`,
       points: 0,
-      partnerID: '',
+      partnerID: null,
       tasks: [],
       initialFormAnswers: [],
     };
@@ -154,22 +171,30 @@ const Register = () => {
             <label>Data de Nascimento</label>
             <div className="birthdate-inputs">
               <input
-                type="text"
+                type="number"
                 placeholder="Dia"
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
+                onBlur={formatBirthdate(setDay)}
+                min="1"
+                max="31"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="Mês"
                 value={month}
                 onChange={(e) => setMonth(e.target.value)}
+                onBlur={formatBirthdate(setMonth)}
+                min="1"
+                max="12"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="Ano"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
+                min="1900"
+                max={new Date().getFullYear()}
               />
             </div>
           </div>
