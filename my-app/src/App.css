@@ -35,6 +35,10 @@ button {
   font-weight: 600;
 }
 
+p {
+  font-size: 16px;
+}
+
 .buttonBig {
   width: 100%;
   background-color: var(--purple-light);
@@ -54,6 +58,14 @@ button {
   border-radius: 100%;
   box-shadow: 0px;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnRound > * {
+  width: 32px;
+  height: auto;
 }
 
 .submitBtn {

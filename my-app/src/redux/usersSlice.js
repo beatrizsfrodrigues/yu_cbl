@@ -47,6 +47,7 @@ const usersSlice = createSlice({
         completed: false,
         verified: false,
         completedDate: 0,
+        rejectMessage: "",
       };
 
       if (user) {
@@ -99,6 +100,21 @@ const usersSlice = createSlice({
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
+    rejectTask: (state, action) => {
+      const { userId, task, message } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+      if (user) {
+        const taskValidate = user.tasks.find((t) => t.id === task.id);
+        if (taskValidate) {
+          taskValidate.verified = false;
+          taskValidate.completed = false;
+          taskValidate.completedDate = 0;
+          taskValidate.rejectMessage = message;
+        }
+      }
+
+      localStorage.setItem("users", JSON.stringify(state.data));
+    },
     updateUser: (state, action) => {
       const updatedUser = action.payload;
       const index = state.data.findIndex((user) => user.id === updatedUser.id);
@@ -128,6 +144,6 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addTask, updateUser, completeTask, validateTask } =
+export const { addTask, updateUser, completeTask, validateTask, rejectTask } =
   usersSlice.actions;
 export default usersSlice.reducer;

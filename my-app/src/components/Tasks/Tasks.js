@@ -10,6 +10,7 @@ import VerifyTask from "./VerifyTask.js";
 import VerifyPopUp from "./VerifyPopUp.js";
 import PopUpInfo from "./PopUpInfo.js";
 import Filter from "./Filter.js";
+import Reject from "./Reject.js";
 import { MessageCircle, Plus, Sliders } from "react-feather";
 
 function Tasks() {
@@ -27,8 +28,9 @@ function Tasks() {
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
   const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [showVerifyTask, setShowVerifyTask] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [taskToVerify, setTaskToVerify] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [partnerUser, setPartnerUser] = useState(null);
@@ -109,6 +111,7 @@ function Tasks() {
     setIsConcludeTaskOpen(false);
   };
 
+  //* open and close verify task modal
   const handleOpenVerifyTaskModal = () => {
     setShowVerifyTask(false);
     setIsVerifyTaskOpen(true);
@@ -118,6 +121,7 @@ function Tasks() {
     setIsVerifyTaskOpen(false);
   };
 
+  //* open and close pop-up info
   const handleClosePopUpInfo = () => {
     setIsPopUpInfoOpen(false);
   };
@@ -127,16 +131,17 @@ function Tasks() {
     setIsPopUpInfoOpen(true);
   };
 
-  const handleCloseFilter = () => {
-    setIsFilterOpen(false);
-  };
-
-  const handleShowFilter = () => {
-    setIsFilterOpen(true);
-  };
-
+  //* change task filter
   const handleFilterChange = (criteria) => {
     setFilterCriteria(criteria);
+  };
+
+  const handleOpenRejectModal = () => {
+    setIsRejectOpen(true);
+  };
+
+  const handleCloseRejectModal = () => {
+    setIsRejectOpen(false);
   };
 
   const filteredTasks = currentUser
@@ -169,30 +174,45 @@ function Tasks() {
       </div>
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
-          filteredTasks.map((task, index) => (
-            <div className="taskDivOp" key={index}>
-              <div
-                className={`taskDiv ${
-                  toggledTaskIndex === index ? "toggled" : ""
-                }`}
-                onClick={() => handleTaskClick(index)}
-              >
-                <p className="taskTitle">
-                  {toggledTaskIndex === index ? task.description : task.title}
-                </p>
-              </div>
-              {!task.completed && !task.verified && (
-                <button
-                  className="doneTask"
-                  onClick={() => handleOpenConcludeTaskModal(task)}
+          filteredTasks.map((task, index) =>
+            !task.completed && !task.verified ? (
+              <div className="taskDivOp" key={index}>
+                <div
+                  className={`taskDiv ${
+                    toggledTaskIndex === index ? "toggled" : ""
+                  }`}
+                  onClick={() => handleTaskClick(index)}
                 >
-                  Concluir
-                </button>
-              )}
-            </div>
-          ))
+                  <p className="taskTitle">
+                    {toggledTaskIndex === index ? task.description : task.title}
+                  </p>
+                </div>
+                {!task.completed && !task.verified && (
+                  <button
+                    className="doneTask"
+                    onClick={() => handleOpenConcludeTaskModal(task)}
+                  >
+                    Concluir
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="taskDivOp " key={index}>
+                <div
+                  className={`taskDiv taskDone ${
+                    toggledTaskIndex === index ? "toggled" : ""
+                  }`}
+                  onClick={() => handleTaskClick(index)}
+                >
+                  <p className="taskTitle ">
+                    {toggledTaskIndex === index ? task.description : task.title}
+                  </p>
+                </div>
+              </div>
+            )
+          )
         ) : (
-          <div>Não existem tarefas disponiveis.</div>
+          <div>Não existem tarefas disponíveis.</div>
         )}
       </div>
       <button
@@ -224,6 +244,7 @@ function Tasks() {
           partnerUser={partnerUser}
           task={taskToVerify}
           onShowPopUpInfo={handleShowPopUpInfo}
+          onReject={handleOpenRejectModal}
         />
       )}
       {isNewTaskModalOpen && (
@@ -255,6 +276,14 @@ function Tasks() {
           filterCriteria={filterCriteria}
           onFilterChange={handleFilterChange}
           onClose={() => setIsFilterOpen(false)}
+        />
+      )}
+      {isRejectOpen && (
+        <Reject
+          onClose={handleCloseRejectModal}
+          task={taskToVerify}
+          partnerUser={partnerUser}
+          onShowPopUpInfo={handleShowPopUpInfo}
         />
       )}
     </div>
