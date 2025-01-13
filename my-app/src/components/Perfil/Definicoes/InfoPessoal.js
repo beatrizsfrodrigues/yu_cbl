@@ -9,6 +9,9 @@ const InfoPessoal = ({ show, onBack }) => {
   const users = useSelector((state) => state.users.data);
   const activeUser = users?.find((user) => user.id === 2); 
 
+   
+const [showNotification, setShowNotification] = useState(false); 
+const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -35,9 +38,7 @@ const InfoPessoal = ({ show, onBack }) => {
   }, [dispatch, users]);
 
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-
- 
+   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -59,10 +60,16 @@ const InfoPessoal = ({ show, onBack }) => {
 
       // Atualiza os dados no Redux
       dispatch(updateUser(updatedUser));
-      alert("Dados atualizados com sucesso!");
-    }
+    
+      // Mostra a notificação de sucesso
+      setShowNotification(true);
+      setTimeout(() => {
+      setShowNotification(false);
+      onBack(); 
+    }, 3000); // Oculta após 3 segundos
+  }
     setShowConfirmModal(false);
-    onBack(); 
+    //onBack(); 
   };
 
   const cancelSave = () => {
@@ -73,6 +80,16 @@ const InfoPessoal = ({ show, onBack }) => {
   if (!show) return null;
 
   return (
+    <>
+    {showNotification && (
+  <div
+    className={`notification ${!showNotification ? "hidden" : ""}`}
+  >
+    Dados alterados com sucesso!
+  </div>
+)}
+
+
     <div className="modal">
       <div className="info-pessoal-page">
         <div className="window" style={{ display: "block" }}>
@@ -93,7 +110,7 @@ const InfoPessoal = ({ show, onBack }) => {
                   name="nome"
                   value={formData.nome}
                   onChange={handleChange}
-                  placeholder="Luísa"
+                  placeholder="nome"
                   className="form-input"
                 />
               </div>
@@ -105,7 +122,7 @@ const InfoPessoal = ({ show, onBack }) => {
                   name="nomeUtilizador"
                   value={formData.nomeUtilizador}
                   onChange={handleChange}
-                  placeholder="luisaS"
+                  placeholder="nome do utilizador"
                   className="form-input"
                 />
               </div>
@@ -117,7 +134,7 @@ const InfoPessoal = ({ show, onBack }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="luisa@gmail.com"
+                  placeholder="email@gmail.com"
                   className="form-input"
                 />
               </div>
@@ -165,9 +182,13 @@ const InfoPessoal = ({ show, onBack }) => {
             </div>
           </div>
         )}
+
+        
+
         </div>
       </div>
     </div>
+    </>
   );
 };
 
