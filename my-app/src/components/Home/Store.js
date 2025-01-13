@@ -8,13 +8,14 @@ import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
-const Store = ({ addAccessory, closeStore, resetAccessories }) => {
+const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, currentUser, currentMascot, selectedFit }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
   const [activeSection, setActiveSection] = useState(0);
 
+  
   useEffect(() => {
     if (closetStatus === "idle") {
       dispatch(fetchCloset());
@@ -74,8 +75,10 @@ const Store = ({ addAccessory, closeStore, resetAccessories }) => {
             {sectionsData[activeSection].items.map((item) => (
               <div
                 key={item.id}
-                className="avatarcircle"
-                onClick={() => addAccessory(item.src)}
+                className={`avatarcircle ${
+                  selectedFit === item.id ? "activeFit" : ""
+                }`}
+                onClick={() => addAccessory(item.src, item.id)}
               >
                 <img src={item.src} alt={item.name} />
               </div>
@@ -86,8 +89,8 @@ const Store = ({ addAccessory, closeStore, resetAccessories }) => {
           <button className="buttonRound" onClick={closeStore}>
             <img src={X} alt="Exit" />
           </button>
-          <button className="buttonMid" onClick={closeStore}>
-            Save Changes
+          <button className="buttonMid" onClick={() => buyItemBtn()}>
+            Comprar
           </button>
           <button className="buttonRound" onClick={resetAccessories}>
             <img src={Reset} alt="Reset" />
