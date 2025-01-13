@@ -9,7 +9,8 @@ import ConcludeTask from "./ConcludeTask.js";
 import VerifyTask from "./VerifyTask.js";
 import VerifyPopUp from "./VerifyPopUp.js";
 import PopUpInfo from "./PopUpInfo.js";
-import { MessageCircle, Plus, Sliders, X } from "react-feather";
+import Filter from "./Filter.js";
+import { MessageCircle, Plus, Sliders } from "react-feather";
 
 function Tasks() {
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
@@ -25,12 +26,14 @@ function Tasks() {
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
   const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showVerifyTask, setShowVerifyTask] = useState(false);
   const [taskToVerify, setTaskToVerify] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [partnerUser, setPartnerUser] = useState(null);
   const [popUpMessage, setPopUpMessage] = useState("");
+  const [filterCriteria, setFilterCriteria] = useState("porConcluir");
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -124,6 +127,32 @@ function Tasks() {
     setIsPopUpInfoOpen(true);
   };
 
+  const handleCloseFilter = () => {
+    setIsFilterOpen(false);
+  };
+
+  const handleShowFilter = () => {
+    setIsFilterOpen(true);
+  };
+
+  const handleFilterChange = (criteria) => {
+    setFilterCriteria(criteria);
+  };
+
+  const filteredTasks = currentUser
+    ? currentUser.tasks.filter((task) => {
+        if (filterCriteria === "todas") {
+          return true;
+        } else if (filterCriteria === "concluidas") {
+          return task.completed && task.verified;
+        } else if (filterCriteria === "porConcluir") {
+          return !task.completed && !task.verified;
+        } else if (filterCriteria === "espera") {
+          return task.completed && !task.verified;
+        }
+      })
+    : [];
+
   if (usersStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -136,14 +165,13 @@ function Tasks() {
     <div className="mainBody" id="tasksBody">
       <div className="header">
         <h1>Lista de Tarefas</h1>
-        <Sliders className="sliders" />
+        <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
       </div>
       <div id="tasks">
-        {currentUser && currentUser.tasks.length > 0 ? (
-          currentUser.tasks.map((task, index) => (
-            <div className="taskDivOp">
+        {currentUser && filteredTasks.length > 0 ? (
+          filteredTasks.map((task, index) => (
+            <div className="taskDivOp" key={index}>
               <div
-                key={index}
                 className={`taskDiv ${
                   toggledTaskIndex === index ? "toggled" : ""
                 }`}
@@ -153,12 +181,14 @@ function Tasks() {
                   {toggledTaskIndex === index ? task.description : task.title}
                 </p>
               </div>
-              <button
-                className="doneTask"
-                onClick={() => handleOpenConcludeTaskModal(task)}
-              >
-                Concluir
-              </button>
+              {!task.completed && !task.verified && (
+                <button
+                  className="doneTask"
+                  onClick={() => handleOpenConcludeTaskModal(task)}
+                >
+                  Concluir
+                </button>
+              )}
             </div>
           ))
         ) : (
@@ -219,6 +249,13 @@ function Tasks() {
       )}
       {isPopUpInfoOpen && (
         <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
+      )}
+      {isFilterOpen && (
+        <Filter
+          filterCriteria={filterCriteria}
+          onFilterChange={handleFilterChange}
+          onClose={() => setIsFilterOpen(false)}
+        />
       )}
     </div>
   );

@@ -256,3 +256,25 @@
   flex-direction: row;
   gap: 16px;
 }
+
+/** filter  */
+#filter {
+  background-color: var(--purple-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 24px;
+  width: 200px;
+  position: fixed;
+  top: 120px;
+  right: 24px;
+}
+
+#filter button {
+  background-color: var(--purple-lighter);
+}
+
+.activeFilter {
+  background-color: var(--orange-lighter) !important;
+}
