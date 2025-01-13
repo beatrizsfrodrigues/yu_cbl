@@ -97,9 +97,6 @@ const Register = () => {
 
     const updatedUsers = [...users, newUser]; 
 
-    // update code in local storage
-    localStorage.setItem("code", newUser.code);
-
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     setMessage('Utilizador registado com sucesso!');
     setEmail('');
