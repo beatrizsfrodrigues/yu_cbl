@@ -16,37 +16,57 @@ body {
 
 .page-title {
     font-size: 30px;
-        font-weight: bold;
-        color: black;
-        margin-bottom: 10px;
-        margin-top: 10px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .page-desc {
     font-size: 15px;
-        color: black;
-        font-weight: lighter;
-        margin-bottom: 35px;
+    color: black;
+    font-weight: lighter;
+    margin-bottom: 35px;
 }
 
 .connection-placeholder {
     margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-images {
+    display: flex;
+    justify-content: space-between;
+    gap: 70px;
+    position: relative;
+}
+
+.profile-images::after {
+    content: "";
+    position: absolute;
+    top: 60%;
+    left: 0;
+    right: 0;
+    border-top: 4px dashed #b49bc7;
+    transform: translateY(-50%);
+    z-index: -1;
+    margin: 0 5px 0 5px;
+}
+
+.profile-item {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .profile-label {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: bold;
     color: #666;
-    margin-bottom: 10px;
-}
-
-.profile-images {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    position: relative;
+    margin-bottom: 5px;
 }
 
 .profile-img {
@@ -55,6 +75,19 @@ body {
     background-color: #e0e0e0;
     border-radius: 50%;
     display: inline-block;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+    /* Ensure smooth transition */
+}
+
+.message{
+    font-size: 15px;
+    color: #b49bc7;
+}
+
+.grayscale {
+    filter: grayscale(100%) !important;
+    /* Forcefully apply grayscale */
 }
 
 .profile-placeholder {
