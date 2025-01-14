@@ -145,12 +145,15 @@ const Connection = () => {
                 </button>
             )}
 
-            <p className="footer-text">
-                {isCodeInputVisible ? "Insere o código do teu parceiro" : "Ou partilha o teu código"}{" "}
-                <a href="#" className="create-link" onClick={handleClick}>
-                    aqui.
-                </a>
-            </p>
+            {!isConnected && (
+                <p className="footer-text">
+                    {isCodeInputVisible ? "Insere o código do teu parceiro" : "Ou partilha o teu código"}{" "}
+                    <a href="#" className="create-link" onClick={handleClick}>
+                        aqui.
+                    </a>
+                </p>
+            )}
+
         </div>
     );
 };
