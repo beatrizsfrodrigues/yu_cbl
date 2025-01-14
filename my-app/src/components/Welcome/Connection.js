@@ -75,7 +75,7 @@ const Connection = () => {
     };
 
     const handleNavigateToHome = () => {
-        navigate("/home"); // Go to home after connection
+        navigate("/home"); // Go to home after connection (or skip)
     };
 
     return (
@@ -140,9 +140,9 @@ const Connection = () => {
 
             {/* Button remains visible during connection */}
             {isConnected && (
-                <button className="confirm-button" onClick={handleNavigateToHome}>
+                    <button className="confirm-button" onClick={handleNavigateToHome}>
                     Terminar
-                </button>
+                    </button>
             )}
 
             {!isConnected && (
@@ -151,6 +151,11 @@ const Connection = () => {
                     <a href="#" className="create-link" onClick={handleClick}>
                         aqui.
                     </a>
+                    <div class="skip-section">
+                        <a href="#" className="skip-button" onClick={handleNavigateToHome}>
+                            Fazer a ligação mais tarde.
+                        </a>
+                    </div>
                 </p>
             )}
 

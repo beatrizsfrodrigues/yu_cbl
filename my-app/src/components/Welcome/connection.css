@@ -151,3 +151,14 @@ body {
 .create-link:hover {
     text-decoration: underline;
 }
+
+.skip-button {
+    color: #b49bc7;
+    /* text-decoration: none; */
+    font-weight: bold;
+}
+
+.skip-section{
+    margin: 20px;
+    font-size: 0.9rem;
+}
