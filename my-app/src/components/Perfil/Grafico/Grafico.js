@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../Grafico/grafico.css";
-import {
-  Line,
-  Bar,
-} from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,9 +12,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
 import { useSelector, useDispatch } from "react-redux";
-import {  fetchUsers } from "../../../redux/usersSlice"; 
+import { fetchUsers } from "../../../redux/usersSlice";
 
 ChartJS.register(
   CategoryScale,
@@ -35,6 +31,7 @@ const Grafico = ({ show, onClose }) => {
 
   const [monthlyData, setMonthlyData] = useState([]);
   const [yearlyData, setYearlyData] = useState([]);
+  const [hasCompletedTasks, setHasCompletedTasks] = useState(true); 
 
   const users = useSelector((state) => state.users.data);
   const activeUser = useSelector((state) =>
@@ -49,20 +46,29 @@ const Grafico = ({ show, onClose }) => {
 
   useEffect(() => {
     if (activeUser) {
-      // Filtra tarefas concluídas
+      console.log("Active user tasks:", activeUser.tasks); // Verifique se as tarefas estão sendo carregadas corretamente
+  
       const completedTasks = activeUser.tasks.filter((task) => task.completed);
-
-      // Dados mensais e anuais
+  
+      if (completedTasks.length === 0) {
+        setHasCompletedTasks(false); // Não há tarefas concluídas
+        setMonthlyData([]);
+        setYearlyData([]);
+        return;
+      } else {
+        setHasCompletedTasks(true); // Existem tarefas concluídas
+      }
+  
       const monthly = Array(31).fill(0);
       const yearly = Array(12).fill(0);
-
+  
       completedTasks.forEach((task) => {
-        const completionDate = new Date(task.completedDate); // completedDate deve ser uma string válida
-        const month = completionDate.getMonth(); // 0-11
-        const day = completionDate.getDate(); // 1-31
-
-        if (!isNaN(day) && day > 0 && day <= 31) monthly[day - 1] += 1; // Incrementa o dia correspondente
-        if (!isNaN(month) && month >= 0 && month <= 11) yearly[month] += 1; // Incrementa o mês correspondente
+        const completionDate = new Date(task.completedDate);
+        const month = completionDate.getMonth();
+        const day = completionDate.getDate();
+  
+        if (!isNaN(day) && day > 0 && day <= 31) monthly[day - 1] += 1;
+        if (!isNaN(month) && month >= 0 && month <= 11) yearly[month] += 1;
       });
 
       setMonthlyData(monthly);
@@ -71,7 +77,6 @@ const Grafico = ({ show, onClose }) => {
   }, [activeUser]);
 
   if (!show) return null;
-
 
   const monthlyChartData = {
     labels: Array.from({ length: 31 }, (_, i) => i + 1),
@@ -120,14 +125,22 @@ const Grafico = ({ show, onClose }) => {
         </button>
       </div>
       <hr />
-      <div className="grafico-section">
-        <h3>Evolução Mensal</h3>
-        <Line data={monthlyChartData} />
-      </div>
-      <div className="grafico-section">
-        <h3>Evolução Anual</h3>
-        <Bar data={yearlyChartData} />
-      </div>
+      {activeUser && hasCompletedTasks ? (
+        <>
+          <div className="grafico-section">
+            <h3>Evolução Mensal</h3>
+            <Line data={monthlyChartData} />
+          </div>
+          <div className="grafico-section">
+            <h3>Evolução Anual</h3>
+            <Bar data={yearlyChartData} />
+          </div>
+        </>
+      ) : (
+        <div className="no-tasks-message">
+          <p>Ainda não existem tarefas conclúidas!</p>
+        </div>
+      )}
     </div>
   );
 };
