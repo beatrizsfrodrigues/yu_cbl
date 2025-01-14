@@ -7,8 +7,11 @@ const InfoPessoal = ({ show, onBack }) => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users.data);
-  const activeUser = users?.find((user) => user.id === 2); 
-  //const currentUserId = loggedInUser ? JSON.parse(loggedInUser).id : null;
+
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+
+  const activeUser = users?.find((user) => user.id === currentUserId); 
+
 
    
 const [showNotification, setShowNotification] = useState(false); 

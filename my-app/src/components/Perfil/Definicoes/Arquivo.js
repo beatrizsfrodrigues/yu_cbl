@@ -3,11 +3,27 @@ import "../Definicoes/Arquivo.css";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../../../redux/usersSlice";
 
+
+
+
+function parseCompletionDate(dateString) {
+  if (!dateString || dateString.length < 14) return null;
+
+  const year = parseInt(dateString.substring(0, 4), 10);
+  const month = parseInt(dateString.substring(4, 6), 10) - 1; 
+  const day = parseInt(dateString.substring(6, 8), 10);
+  const hour = parseInt(dateString.substring(8, 10), 10);
+  const minute = parseInt(dateString.substring(10, 12), 10);
+  const second = parseInt(dateString.substring(12, 14), 10);
+
+  return new Date(year, month, day, hour, minute, second);
+}
 const Arquivo = ({ show, onBack }) => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users.data);
-  const activeUser = users?.find((user) => user.id === 2); // Obtém o usuário ativo
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+  const activeUser = users?.find((user) => user.id === currentUserId); 
 
   useEffect(() => {
     if (!users) {
@@ -17,8 +33,8 @@ const Arquivo = ({ show, onBack }) => {
 
   if (!show) return null;
 
-  // Filtra tarefas concluídas do utilizador ativo
   const completedTasks = activeUser?.tasks.filter((task) => task.completed);
+
 
   return (
     <div className="modal ">
@@ -40,7 +56,7 @@ const Arquivo = ({ show, onBack }) => {
                     <p>{task.description}</p>
                     <p>
                       <strong>Data de Conclusão: </strong>
-                      {new Date(task.completedDate).toLocaleDateString("pt-PT", {
+                      {new Date(parseCompletionDate(task.completedDate)).toLocaleDateString("pt-PT", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",

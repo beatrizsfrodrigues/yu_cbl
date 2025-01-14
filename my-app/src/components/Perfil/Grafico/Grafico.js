@@ -26,16 +26,31 @@ ChartJS.register(
   Legend
 );
 
+function parseCompletionDate(dateString) {
+  // Exemplo: "20250104003058" => 2025-01-04 00:30:58
+  if (!dateString || dateString.length < 14) return null;
+
+  const year = parseInt(dateString.substring(0, 4), 10);
+  const month = parseInt(dateString.substring(4, 6), 10) - 1; // Em JS, Janeiro = 0
+  const day = parseInt(dateString.substring(6, 8), 10);
+  const hour = parseInt(dateString.substring(8, 10), 10);
+  const minute = parseInt(dateString.substring(10, 12), 10);
+  const second = parseInt(dateString.substring(12, 14), 10);
+
+  return new Date(year, month, day, hour, minute, second);
+}
+
 const Grafico = ({ show, onClose }) => {
   const dispatch = useDispatch();
 
   const [monthlyData, setMonthlyData] = useState([]);
   const [yearlyData, setYearlyData] = useState([]);
-  const [hasCompletedTasks, setHasCompletedTasks] = useState(true); 
+  const [hasCompletedTasks, setHasCompletedTasks] = useState(true);
 
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
   const users = useSelector((state) => state.users.data);
   const activeUser = useSelector((state) =>
-    state.users.data?.find((user) => user.id === 2)
+    state.users.data?.find((user) => user.id === currentUserId)
   );
 
   useEffect(() => {
@@ -46,29 +61,36 @@ const Grafico = ({ show, onClose }) => {
 
   useEffect(() => {
     if (activeUser) {
-      console.log("Active user tasks:", activeUser.tasks); // Verifique se as tarefas estão sendo carregadas corretamente
-  
+      console.log("Active user tasks:", activeUser.tasks);
+
       const completedTasks = activeUser.tasks.filter((task) => task.completed);
-  
+
       if (completedTasks.length === 0) {
-        setHasCompletedTasks(false); // Não há tarefas concluídas
+        setHasCompletedTasks(false);
         setMonthlyData([]);
         setYearlyData([]);
         return;
       } else {
-        setHasCompletedTasks(true); // Existem tarefas concluídas
+        setHasCompletedTasks(true);
       }
-  
+
       const monthly = Array(31).fill(0);
       const yearly = Array(12).fill(0);
-  
+
       completedTasks.forEach((task) => {
-        const completionDate = new Date(task.completedDate);
-        const month = completionDate.getMonth();
-        const day = completionDate.getDate();
-  
-        if (!isNaN(day) && day > 0 && day <= 31) monthly[day - 1] += 1;
-        if (!isNaN(month) && month >= 0 && month <= 11) yearly[month] += 1;
+        // Aqui usamos a função parseCompletionDate
+        const completionDate = parseCompletionDate(task.completedDate);
+        if (!completionDate) return; // Se por acaso vier inválido, ignora
+
+        const month = completionDate.getMonth();  // 0 a 11
+        const day = completionDate.getDate();     // 1 a 31
+
+        if (!isNaN(day) && day > 0 && day <= 31) {
+          monthly[day - 1] += 1;
+        }
+        if (!isNaN(month) && month >= 0 && month <= 11) {
+          yearly[month] += 1;
+        }
       });
 
       setMonthlyData(monthly);
