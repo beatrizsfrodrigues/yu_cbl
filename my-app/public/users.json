@@ -7,7 +7,7 @@
     "email": "beatriz.sfrodrigues@ua.pt",
     "password": "123",
     "age": 21,
-    "points": 1000,
+    "points": 100000,
     "partnerId": 2,
     "tasks": [
       {
@@ -36,12 +36,12 @@
   {
     "id": 2,
     "code": "QhJmffSpaU",
-    "username": "Catarina",
+    "username": "catarina",
     "name": "Catarina Seemann",
-    "email": "catarina@ua.pt",
+    "email": "catarinaseemann@ua.pt",
     "password": "123",
     "age": 22,
-    "points": 0,
+    "points": 200000,
     "partnerId": 1,
     "tasks": [
       {
