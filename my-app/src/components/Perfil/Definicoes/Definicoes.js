@@ -23,9 +23,10 @@ const Definicoes = ({ show, onClose, onInfoPessoalClick,onArquivoClick }) => {
             <button className="settings-button" onClick={onInfoPessoalClick}>
               Os meus dados
             </button>
-            <button className="settings-button" onClick={onArquivoClick} >Arquivo</button>
-            <button className="settings-button">Amigo</button>
-
+            <button className="settings-button" onClick={onArquivoClick} >As minhas Tarefas Concluídas</button>
+            <Link to="/connection" style={{ textDecoration: "none", color: "inherit" }}>
+              <button className="settings-button">Fazer Ligação</button>
+            </Link>
           </div>
           <div className="settings-section" style={{ display: 'block' }}>
             <h3>Saídas</h3>

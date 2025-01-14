@@ -8,6 +8,7 @@ const InfoPessoal = ({ show, onBack }) => {
 
   const users = useSelector((state) => state.users.data);
   const activeUser = users?.find((user) => user.id === 2); 
+  //const currentUserId = loggedInUser ? JSON.parse(loggedInUser).id : null;
 
    
 const [showNotification, setShowNotification] = useState(false); 
@@ -23,7 +24,8 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
   useEffect(() => {
     if (activeUser) {
       setFormData({
-        nome: activeUser.name,
+        //nome: activeUser.name,
+        //nomeUtilizador: activeUser.username,
         nomeUtilizador: activeUser.username,
         email: activeUser.email,
         palavraChave: activeUser.password,
@@ -101,7 +103,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
           <hr />
           <div className="settings-section">
             <form>
-              <div className="form-group">
+             {/*  <div className="form-group">
                 <label htmlFor="nome">Nome</label>
                 <input
                   type="text"
@@ -112,7 +114,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
                   placeholder="nome"
                   className="form-input"
                 />
-              </div>
+              </div>*/}
               <div className="form-group">
                 <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
