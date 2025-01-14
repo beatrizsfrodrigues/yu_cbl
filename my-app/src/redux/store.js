@@ -4,6 +4,7 @@ import messagesReducer from "./messagesSlice.js";
 import presetMessagesReducer from "./presetMessagesSlice.js";
 import formReducer from "./formSlice.js";
 import closetReducer from "./closetSlice.js";
+import mascotReducer from "./mascotSlice.js";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     presetMessages: presetMessagesReducer,
     form: formReducer,
     closet: closetReducer,
+    mascot: mascotReducer
   },
 });
 

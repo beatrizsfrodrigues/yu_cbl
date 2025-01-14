@@ -8,12 +8,15 @@ import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
-const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
+const Closet = ({ addAccessory, closeCloset, resetAccessories, currentMascot }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
   const [activeSection, setActiveSection] = useState(0);
+
+
+  const ownedItems = closet.filter(item => currentMascot.accessoriesOwned.includes(item.id));
 
   useEffect(() => {
     if (closetStatus === "idle") {
@@ -29,22 +32,22 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories }) => {
     {
       label: "Skin Color",
       icon: <img src={Circle} alt="Skin Color" />,
-      items: closet.filter((item) => item.type === "SkinColor"),
+      items: ownedItems.filter((item) => item.type === "SkinColor"),
     },
     {
       label: "Shirts",
       icon: <img src={Shirts} alt="Shirts" />,
-      items: closet.filter((item) => item.type === "Shirts"),
+      items: ownedItems.filter((item) => item.type === "Shirts"),
     },
     {
       label: "Decor",
       icon: <img src={Hat} alt="Decor" />,
-      items: closet.filter((item) => item.type === "Decor"),
+      items: ownedItems.filter((item) => item.type === "Decor"),
     },
     {
       label: "Backgrounds",
       icon: <img src={Background} alt="Backgrounds" />,
-      items: closet.filter((item) => item.type === "Backgrounds"),
+      items: ownedItems.filter((item) => item.type === "Backgrounds"),
     },
   ];
 

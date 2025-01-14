@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {fetchUsers} from "../redux/usersSlice";
 import "../assets/css/Register.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
-//import bolas from "../assets/imgs/YU_bolas/Group 97.svg";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -18,6 +17,7 @@ const Register = () => {
   const [alert, setAlert] = useState("");
   const [alertPass, setAlertPass] = useState("");
   const [passwordRequirements, setPasswordRequirements] = useState({
+   //Definição dos critérios da password como falso por default
     minLength: false,
     hasUpperCase: false,
     hasLowerCase: false,
@@ -37,11 +37,11 @@ const Register = () => {
       }
     }, [usersStatus, dispatch]);
 
-  
+  //Função para criar código único de um novo utilizador
   const generateCode = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let code;
-    do{
+    do {
       code = '';
       for (let i = 0; i < 10; i++) {
         code += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -50,26 +50,50 @@ const Register = () => {
     return code;
   };
 
+  // Função para validar se a password corresponde aos critérios obrigatórios
   const validatePassword = (password) => {
-    const minLength = 6;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(password);
+    const minLength = 6; //Número mínimo de caracteres
+    const hasUpperCase = /[A-Z]/.test(password); //Verifica se a password tem letras maiúsculas
+    const hasLowerCase = /[a-z]/.test(password); //Verifica se a password tem letras minúsculas
+    const hasNumbers = /[0-9]/.test(password); //Verifica se a password tem números
+    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(password); //Verifica se a password tem caracteres especiais
 
+    //Utualiza passwordRequirements com os resultados da verificação feita acima
     setPasswordRequirements({
       minLength: password.length >= minLength,
       hasUpperCase,
       hasLowerCase,
       hasNumbers,
       hasSpecialChar,
-    })
+    });
 
     return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
-  }
+  };
+
+  //Função para adicionar um 0 no início sempre que o utilizador introduzir apenas 1 algarismo
+  const formatBirthdate = (setter) => (e) => {
+      const value = e.target.value;
+      if (value.length === 1) {
+        setter(`0${value}`);
+      } else {
+        setter(value);
+      }
+    };
 
   const handleRegister = () => {
-    if (users.some(user => user.username === username)) {
+  
+    //Caracteres inválidos no username
+    const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
+
+    //Verifica se o username tem algum caracter inválido e alerta o utilizador caso seja verdade
+    if (invalidUsernameChars.test(username)) {
+      setAlert('Nome de utilizador contem caracteres inválidos!');
+      setAlertPass('');
+      return;
+    }
+
+    //Verifica se o utilizador registado j´´a existe ou não e alerta o utilizador caso seja verdade
+    if (users.some(user => user.username === username.toLocaleLowerCase())) {
       setAlert('Nome de utilizador já existente!');
       setAlertPass('');
       return; 
@@ -77,11 +101,13 @@ const Register = () => {
       setAlert('');
     }
 
+    //Verifica se a password introduzida na criação da password e na verificação da mesma são iguais e alerta o utilizador caso estas não coincidam 
     if (password !== confirmPassword) {
       setAlertPass('As palavras-passe não coincidem!');
       return;
     }
 
+    //Parâmetros agregados à criação de um novo utilizador
     const newUser = {
       id: users.length + 1,
       code: generateCode(),
@@ -90,16 +116,15 @@ const Register = () => {
       password,
       age: `${day}/${month}/${year}`,
       points: 0,
-      partnerID: '',
+      partnerID: null,
       tasks: [],
       initialFormAnswers: [],
     };
 
+    //Update do objeto users para introduzir um novo utilizador criado
     const updatedUsers = [...users, newUser]; 
 
-    // update code in local storage
-    localStorage.setItem("code", newUser.code);
-
+    //Guarda em localstorage os utilizadores e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     setMessage('Utilizador registado com sucesso!');
     setEmail('');
@@ -119,12 +144,14 @@ const Register = () => {
     handleRegister();
   };
 
+  //Atualiza a password para os valores inseridos no input e valida se a mesma corresponde aos critérios obrigatórios 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
     validatePassword(newPassword);
   };
 
+  //Apenas deixa avançar com o registo quando todos os campos do formulário dorem preenchidos
   const isFormComplete = email.trim() !== "" && password.trim() !== "" && username.trim() !== "" && confirmPassword.trim() !== "" && day.trim() !== "" && month.trim() !== "" && year.trim() !== "";
   return (
     <div>
@@ -132,8 +159,8 @@ const Register = () => {
         <div className="form-container">
           <div className="logo-container">
             <img src={logo} alt="logo" className="logo" />
-            {/*<img src={bolas} alt="bolas" className="bolas" />*/}
           </div>
+          {/*Alerta de username já existente e username com caracteres inválidos*/}
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
             <label>Email</label>
@@ -157,25 +184,34 @@ const Register = () => {
             <label>Data de Nascimento</label>
             <div className="birthdate-inputs">
               <input
-                type="text"
+                type="number"
                 placeholder="Dia"
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
+                onBlur={formatBirthdate(setDay)}
+                min="1" //Definição de número mínimo e máximo para o campo do Dia
+                max="31"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="Mês"
                 value={month}
                 onChange={(e) => setMonth(e.target.value)}
+                onBlur={formatBirthdate(setMonth)}
+                min="1" //Definição de número mínimo e máximo para o campo do Mês
+                max="12"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="Ano"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
+                min="1900"
+                max={new Date().getFullYear()} //Definição de número mínimo e máximo para o campo do Ano, o ano nunca pode exceder o ano atual
               />
             </div>
           </div>
+          {/*Alerta de passwords não corresponderem*/}
           {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
             <label>Palavra-passe</label>
@@ -185,6 +221,7 @@ const Register = () => {
               value={password}
               onChange={handlePasswordChange}
             />
+            {/*Lista de critérios obrigatórios da password que se verificam a verde conforme o seu cumprimento*/}
             <ul className="password-requirements">
               <li className={passwordRequirements.minLength ? "valid" : "invalid"}>Pelo menos 6 caracteres</li>
               <li className={passwordRequirements.hasUpperCase ? "valid" : "invalid"}>Pelo menos uma letra maiúscula</li>
@@ -213,7 +250,7 @@ const Register = () => {
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
-          disabled={!isFormComplete} // Disable button if form is incomplete
+          disabled={!isFormComplete} //O botão está inativo enquanto o formulário não é preenchido
         >Registar</button>
       </form>
     </div>

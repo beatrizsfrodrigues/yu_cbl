@@ -16,45 +16,78 @@ body {
 
 .page-title {
     font-size: 30px;
-        font-weight: bold;
-        color: black;
-        margin-bottom: 10px;
-        margin-top: 10px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .page-desc {
     font-size: 15px;
-        color: black;
-        font-weight: lighter;
-        margin-bottom: 35px;
+    color: black;
+    font-weight: lighter;
+    margin-bottom: 35px;
 }
 
 .connection-placeholder {
     margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-images {
+    display: flex;
+    justify-content: space-between;
+    gap: 70px;
+    position: relative;
+}
+
+.profile-images::after {
+    content: "";
+    position: absolute;
+    top: 60%;
+    left: 0;
+    right: 0;
+    border-top: 4px dashed #b49bc7;
+    transform: translateY(-50%);
+    z-index: -1;
+    margin: 0 5px 0 5px;
+}
+
+.profile-item {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .profile-label {
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 1rem;
+    font-weight: bold;
+    color: rgb(74, 74, 74);
     margin-bottom: 10px;
 }
 
-.profile-images {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    position: relative;
-}
-
 .profile-img {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     background-color: #e0e0e0;
     border-radius: 50%;
     display: inline-block;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+    /* Ensure smooth transition */
+}
+
+.message{
+    font-size: 15px;
+    color: #b49bc7;
+}
+
+.grayscale {
+    filter: grayscale(100%) !important;
+    /* Forcefully apply grayscale */
 }
 
 .profile-placeholder {
@@ -96,6 +129,7 @@ body {
     border: none;
     border-radius: 20px;
     transition: background-color 0.3s;
+    cursor: pointer;
 }
 
 .confirm-button:hover {
@@ -116,4 +150,15 @@ body {
 
 .create-link:hover {
     text-decoration: underline;
+}
+
+.skip-button {
+    color: #b49bc7;
+    /* text-decoration: none; */
+    font-weight: bold;
+}
+
+.skip-section{
+    margin: 20px;
+    font-size: 0.9rem;
 }
