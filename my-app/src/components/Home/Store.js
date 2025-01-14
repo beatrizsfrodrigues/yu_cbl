@@ -9,7 +9,15 @@ import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 import PopUpInfo from "../Tasks/PopUpInfo.js";
 
-const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, currentUser, currentMascot, selectedFit }) => {
+const Store = ({
+  addAccessory,
+  buyItemBtn,
+  closeStore,
+  resetAccessories,
+  currentUser,
+  currentMascot,
+  selectedFit,
+}) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
@@ -17,7 +25,6 @@ const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, current
   const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
 
-  
   useEffect(() => {
     if (closetStatus === "idle") {
       dispatch(fetchCloset());
@@ -88,9 +95,9 @@ const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, current
               <div
                 key={item.id}
                 className={`avatarcircle ${
-                  selectedFit === item.id ? "activeFit" : ""
+                  selectedFit.id === item.id ? "activeFit" : ""
                 }`}
-                onClick={() => addAccessory(item.src, item.id)}
+                onClick={() => addAccessory(item.src, item)}
               >
                 <img src={item.src} alt={item.name} />
               </div>
@@ -117,4 +124,3 @@ const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, current
 };
 
 export default Store;
-

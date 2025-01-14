@@ -24,7 +24,7 @@ const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
-  const [accessories, setAccessories] = useState([]);
+  const [accessories, setAccessories] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [currentMascot, setCurrentMascot] = useState(null);
   const [selectedFit, setSelectedFit] = useState("porConcluir");
@@ -58,9 +58,9 @@ const Home = () => {
 
   useEffect(() => {
     const mascot =
-    mascots && mascots.length > 0
-    ? mascots.find((mascot) => mascot.userId == currentUserId)
-    : null;
+      mascots && mascots.length > 0
+        ? mascots.find((mascot) => mascot.userId == currentUserId)
+        : null;
     setCurrentMascot(mascot);
   }, [mascots, currentUserId]);
 
@@ -88,85 +88,101 @@ const Home = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const addAccessory = (accessory, id) => {
-    console.log(id);
-  setSelectedFit(id);
-  
-    setAccessories((prev) => [...prev, accessory]);
+  const addAccessory = (accessory, item) => {
+    setSelectedFit(item);
+
+    setAccessories(accessory);
   };
 
-  const buyItemBtn = ()=>{
+  const buyItemBtn = () => {
     dispatch(buyItem({ itemId: selectedFit, userId: currentUserId }));
-  const item = closet.find(item => item.id === selectedFit);
-  if (item) {
-    dispatch(buyAcc({ price: item.value, userId: currentUserId }));
-  }
-  }
+    const item = closet.find((item) => item.id === selectedFit);
+    if (item) {
+      dispatch(buyAcc({ price: item.value, userId: currentUserId }));
+    }
+  };
 
   return (
     <div className="homeContainer">
-      {currentUser && (<div className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}>
-        <div className="row">
-          {/* Star Section */}
-          <div className="ClassStar">
-            <img src={Star} alt="Star" />
-            <p>{currentUser.points}</p>
-          </div>
-
-          {/* ButtonsCloset Section */}
-          <div className="buttonsCloset">
-            <div className="closetHeader">
-              {/* Closet Icon */}
-              <img
-                src={Closeticon}
-                alt="Closet"
-                onClick={openCloset}
-                className="closetIcon"
-              />
-              {/* Chevron Icon */}
-              <ChevronDown
-                className="navIcon"
-                onClick={() => setShowDropdown((prev) => !prev)}
-              />
+      {currentUser && (
+        <div
+          className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
+        >
+          <div className="row">
+            {/* Star Section */}
+            <div className="ClassStar">
+              <img src={Star} alt="Star" />
+              <p>{currentUser.points}</p>
             </div>
 
-            {showDropdown && (
-              <div className="dropdown open" ref={dropdownRef}>
-                <button onClick={openStore}>
-                  <img src={Storeicon} alt="Store" />
-                </button>
+            {/* ButtonsCloset Section */}
+            <div className="buttonsCloset">
+              <div className="closetHeader">
+                {/* Closet Icon */}
+                <img
+                  src={Closeticon}
+                  alt="Closet"
+                  onClick={openCloset}
+                  className="closetIcon"
+                />
+                {/* Chevron Icon */}
+                <ChevronDown
+                  className="navIcon"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                />
               </div>
-            )}
-          </div>
-        </div>
 
-        {/* Mascot Section */}
-        <div className="mascotContainer">
-          <img className="Yu" src={yu} alt="YU logo" />
-          {accessories.map((accessory, index) => (
+              {showDropdown && (
+                <div className="dropdown open" ref={dropdownRef}>
+                  <button onClick={openStore}>
+                    <img src={Storeicon} alt="Store" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mascot Section */}
+          <div className="mascotContainer">
+            <img className="Yu" src={yu} alt="YU logo" />
+
             <img
-              key={index}
               className="accessory"
-              src={accessory}
-              alt={`Accessory ${index}`}
+              style={{
+                width: selectedFit.width,
+                left: selectedFit.left,
+                bottom: selectedFit.bottom,
+              }}
+              src={selectedFit.src}
             />
-          ))}
+          </div>
+
+          {/* Closet Overlay */}
+          {showCloset && (
+            <div className="closetOverlay">
+              <Closet
+                addAccessory={addAccessory}
+                closeCloset={closeCloset}
+                currentMascot={currentMascot}
+              />
+            </div>
+          )}
+
+          {/* Store Overlay */}
+          {showStore && (
+            <div className="storeOverlay">
+              <Store
+                addAccessory={addAccessory}
+                closeStore={closeStore}
+                currentUser={currentUser}
+                currentMascot={currentMascot}
+                selectedFit={selectedFit}
+                buyItemBtn={buyItemBtn}
+              />
+            </div>
+          )}
         </div>
-
-        {/* Closet Overlay */}
-        {showCloset && (
-          <div className="closetOverlay">
-            <Closet addAccessory={addAccessory} closeCloset={closeCloset} currentMascot={currentMascot}/>
-          </div>
-        )}
-
-        {/* Store Overlay */}
-        {showStore && (
-          <div className="storeOverlay">
-            <Store addAccessory={addAccessory} closeStore={closeStore} currentUser={currentUser} currentMascot={currentMascot} selectedFit={selectedFit} buyItemBtn={buyItemBtn} />
-          </div>
-        )}
-      </div>)}
+      )}
     </div>
   );
 };

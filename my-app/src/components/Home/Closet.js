@@ -8,15 +8,21 @@ import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
-const Closet = ({ addAccessory, closeCloset, resetAccessories, currentMascot }) => {
+const Closet = ({
+  addAccessory,
+  closeCloset,
+  resetAccessories,
+  currentMascot,
+}) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
   const [activeSection, setActiveSection] = useState(0);
 
-
-  const ownedItems = closet.filter(item => currentMascot.accessoriesOwned.includes(item.id));
+  const ownedItems = closet.filter((item) =>
+    currentMascot.accessoriesOwned.includes(item.id)
+  );
 
   useEffect(() => {
     if (closetStatus === "idle") {
