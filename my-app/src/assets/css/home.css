@@ -48,7 +48,8 @@
 
 .avatarcontent {
   padding-left: 5%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   flex-wrap: wrap;
   justify-content: left;
   gap: 15px;
@@ -227,6 +228,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  cursor: pointer;
 }
 
 /* Button Icons */
@@ -234,6 +236,7 @@
   width: 25px;
   height: 24px;
   fill: none;
+  
 }
 
 .icons {

@@ -7,12 +7,14 @@ import Circle from "../../assets/imgs/Icons_closet/Circle.svg";
 import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
+import PopUpInfo from "../Tasks/PopUpInfo.js";
 
 const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, currentUser, currentMascot, selectedFit }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
-
+  const [popUpMessage, setPopUpMessage] = useState("");
+  const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
 
   
@@ -49,6 +51,16 @@ const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, current
     },
   ];
 
+  //* open and close pop-up info
+  const handleBuyItem = () => {
+    buyItemBtn();
+    setPopUpMessage("Compraste um item!");
+    setIsPopUpInfoOpen(true);
+  };
+
+  const handleClosePopUpInfo = () => {
+    setIsPopUpInfoOpen(false);
+  };
   return (
     <div className="storeOverlay">
       <div className="closetContainer">
@@ -97,6 +109,9 @@ const Store = ({ addAccessory, buyItemBtn, closeStore, resetAccessories, current
           </button>
         </div>
       </div>
+      {isPopUpInfoOpen && (
+        <PopUpInfo message={popUpMessage} onClose={handleClosePopUpInfo} />
+      )}
     </div>
   );
 };
