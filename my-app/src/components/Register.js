@@ -134,6 +134,7 @@ const Register = () => {
 
     //Guarda em localstorage os utilizadores e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
     localStorage.setItem("users", JSON.stringify(updatedUsers));
+    localStorage.setItem("loggedInUser", JSON.stringify({ id: newUser.id }));
     setMessage("Utilizador registado com sucesso!");
     setEmail("");
     setUsername("");
@@ -144,7 +145,7 @@ const Register = () => {
     setYear("");
     setAlert("");
     setAlertPass("");
-    navigate("/Login");
+    navigate("/questions");
   };
 
   const handleSubmit = (e) => {
@@ -168,6 +169,7 @@ const Register = () => {
     day.trim() !== "" &&
     month.trim() !== "" &&
     year.trim() !== "";
+
   return (
     <div className="mainBody">
       <form onSubmit={handleSubmit}>

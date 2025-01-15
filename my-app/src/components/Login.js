@@ -24,9 +24,9 @@ const Login = () => {
       if (user.password === password) {
         // Se encontrar o utilizador inserido e caso a password inserida seja igual à registada, avança o login com sucesso
         setMessage("Login efetuado com sucesso!");
-        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id }));
+        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); //Guarda o id do utilizador que fez login
         setAlert("");
-        navigate("/questions");
+        navigate("/home");
       } else {
         setAlert("Palavra-passe incorreta.");
       }
