@@ -42,28 +42,46 @@ const Questions = () => {
   ];
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  // Em vez de guardar apenas 1 valor, guardamos um array com os índices selecionados
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const currentQuestion = questionData[currentQuestionIndex];
+  // Exemplo simples: permita múltipla seleção somente na segunda pergunta (índice 1)
+  const isMultiSelect = currentQuestionIndex === 1;
 
   const handleOptionClick = (index) => {
-    setSelectedOption(index);
+    if (isMultiSelect) {
+      // Se já existir no array, remove; se não existir, adiciona
+      if (selectedOptions.includes(index)) {
+        setSelectedOptions(selectedOptions.filter((i) => i !== index));
+      } else {
+        setSelectedOptions([...selectedOptions, index]);
+      }
+    } else {
+      // Pergunta de escolha única
+      setSelectedOptions([index]);
+    }
   };
 
   const handleNextQuestion = () => {
-    if (selectedOption === null) {
-      return;
+    if (selectedOptions.length === 0) {
+      return; // não avança se não houver nada selecionado
     }
 
-    // Talvez para guardar os dados ?
+    // Pega as respostas selecionadas
+    const selectedAnswers = selectedOptions.map(
+      (i) => currentQuestion.options[i]
+    );
     console.log(
-      `Pergunta: ${currentQuestion.question}, Resposta: ${currentQuestion.options[selectedOption]}`
+      `Pergunta: ${
+        currentQuestion.question
+      } | Respostas: ${selectedAnswers.join(", ")}`
     );
 
-    // Avançar pergunta OU terminar questionário
+    // Avança a pergunta ou termina
     if (currentQuestionIndex < questionData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
+      setSelectedOptions([]);
     } else {
       console.log("Fim do questionário");
       navigate("/connection");
@@ -73,24 +91,34 @@ const Questions = () => {
   return (
     <div className="questions-container mainBody">
       <p className="question-title">{currentQuestion.question}</p>
-      <p className="question-desc">Seleciona apenas uma opção.</p>
+      {/* Texto adaptado para multi ou single */}
+      <p className="question-desc">
+        {isMultiSelect
+          ? "Podes selecionar várias opções."
+          : "Seleciona apenas uma opção."}
+      </p>
+
       <div className="options-container">
-        {currentQuestion.options.map((option, index) => (
-          <div
-            key={index}
-            className={`option ${selectedOption === index ? "selected" : ""}`}
-            onClick={() => handleOptionClick(index)}
-          >
-            {option}
-          </div>
-        ))}
+        {currentQuestion.options.map((option, index) => {
+          const isSelected = selectedOptions.includes(index);
+          return (
+            <div
+              key={index}
+              className={`option ${isSelected ? "selected" : ""}`}
+              onClick={() => handleOptionClick(index)}
+            >
+              {option}
+            </div>
+          );
+        })}
       </div>
+
       <button
         className={`continue-button ${
-          selectedOption === null ? "disabled" : ""
+          selectedOptions.length === 0 ? "disabled" : ""
         }`}
         onClick={handleNextQuestion}
-        disabled={selectedOption === null}
+        disabled={selectedOptions.length === 0}
       >
         Continuar
       </button>

@@ -23,6 +23,7 @@ import Arquivo from "./components/Perfil/Definicoes/Arquivo";
 
 import Welcome from "./components/Welcome/Welcome";
 import Connection from "./components/Welcome/Connection";
+import Apresentacao from "./components/Welcome/Apresentacao";
  
 import Questions from "./components/Welcome/Questions";
  
@@ -55,6 +56,7 @@ function AppContent() {
           <Route path="/definicoes" element={<Definicoes />} />
           <Route path="/grafico" element={<Grafico />} />
           <Route path="/arquivo" element={<Arquivo />} />
+          <Route path="/apresentacao" element={<Apresentacao />} />
         </Routes>
       </div>
     </>
