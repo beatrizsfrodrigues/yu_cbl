@@ -17,6 +17,7 @@ const Closet = ({
   selectedShirt,
   selectedAcc,
   selectedColor,
+  saveOutfit,
 }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
@@ -106,7 +107,10 @@ const Closet = ({
           <button className="buttonRound btnHomeActive" onClick={closeCloset}>
             <img src={X} alt="Exit" />
           </button>
-          <button className="buttonMid btnHomeActive" onClick={closeCloset}>
+          <button
+            className="buttonMid btnHomeActive"
+            onClick={() => saveOutfit()}
+          >
             Guardar
           </button>
           <button

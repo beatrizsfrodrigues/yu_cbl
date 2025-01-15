@@ -16,11 +16,15 @@
 }
 
 .mascotContainer {
+  display: flex;
   width: fit-content;
   height: fit-content;
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  bottom: 0px;
+  height: 60vh;
+  align-items: end;
 }
 
 /*? Yu Mascot */
@@ -40,6 +44,7 @@
   left: 32px;
   bottom: -35px;
   width: 240px;
+  z-index: 2;
 }
 
 /** closet amd store  */
