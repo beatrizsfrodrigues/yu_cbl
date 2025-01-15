@@ -126,8 +126,6 @@ const Apresentacao = () => {
             )}
             {currentPage === 4 && (
             <>
-            <h3>{pages[currentPage].mainTitle}</h3>
-            <h2>{pages[currentPage].subTitle}</h2>
             <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
          {console.log(pages)}
         {pages[currentPage].images.map((image, index) => (
