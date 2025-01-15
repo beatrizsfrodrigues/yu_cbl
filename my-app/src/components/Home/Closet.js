@@ -8,15 +8,25 @@ import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
-const Closet = ({ addAccessory, closeCloset, resetAccessories, currentMascot }) => {
+const Closet = ({
+  dressUp,
+  closeCloset,
+  resetAccessories,
+  currentMascot,
+  selectedBackground,
+  selectedShirt,
+  selectedAcc,
+  selectedColor,
+}) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
   const [activeSection, setActiveSection] = useState(0);
 
-
-  const ownedItems = closet.filter(item => currentMascot.accessoriesOwned.includes(item.id));
+  const ownedItems = closet.filter((item) =>
+    currentMascot.accessoriesOwned.includes(item.id)
+  );
 
   useEffect(() => {
     if (closetStatus === "idle") {
@@ -77,8 +87,15 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories, currentMascot }) 
             {sectionsData[activeSection].items.map((item) => (
               <div
                 key={item.id}
-                className="avatarcircle"
-                onClick={() => addAccessory(item.src)}
+                className={`avatarcircle ${
+                  selectedBackground.id === item.id ||
+                  selectedAcc.id === item.id ||
+                  selectedColor.id === item.id ||
+                  selectedShirt.id === item.id
+                    ? "activeFit"
+                    : ""
+                }`}
+                onClick={() => dressUp(item)}
               >
                 <img src={item.src} alt={item.name} />
               </div>
@@ -86,13 +103,16 @@ const Closet = ({ addAccessory, closeCloset, resetAccessories, currentMascot }) 
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound" onClick={closeCloset}>
+          <button className="buttonRound btnHomeActive" onClick={closeCloset}>
             <img src={X} alt="Exit" />
           </button>
-          <button className="buttonMid" onClick={closeCloset}>
-            Save Changes
+          <button className="buttonMid btnHomeActive" onClick={closeCloset}>
+            Guardar
           </button>
-          <button className="buttonRound" onClick={resetAccessories}>
+          <button
+            className="buttonRound btnHomeActive"
+            onClick={resetAccessories}
+          >
             <img src={Reset} alt="Reset" />
           </button>
         </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
 import Definicoes from "../Definicoes/Definicoes";
@@ -28,7 +28,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!loggedInUser) {
-      //Quando o user tem login feito  
+      //Quando o user tem login feito
       navigate("/login");
     }
   }, [loggedInUser, navigate]);
@@ -79,7 +79,7 @@ const Profile = () => {
   };
 
   if (!loggedInUser) {
-    //mensagem de erro 
+    //mensagem de erro
     return (
       <div className="error-message">
         <h2>Efetua login para poderes aceder à YU.</h2>
@@ -104,7 +104,7 @@ const Profile = () => {
       : null;
 
   return (
-    <div className="profile-container">
+    <div className="profile-container mainBody">
       <header className="profile-header">
         <h1 className="profile-title">Perfil</h1>
         <span className="gear-icon bi bi-gear" onClick={toggleSettings}></span>
@@ -130,7 +130,10 @@ const Profile = () => {
           <i className="bi bi-info-circle"></i>
         </Link>
 
-        <button className="profile-button dots"onClick={handleOpenMessagesModal}>
+        <button
+          className="profile-button dots"
+          onClick={handleOpenMessagesModal}
+        >
           <i className="bi bi-chat-dots"></i>
         </button>
       </div>
@@ -154,7 +157,10 @@ const Profile = () => {
       />
 
       {isMessagesModalOpen && (
-        <Messages onClose={handleCloseMessagesModal} currentUser={currentUser} />
+        <Messages
+          onClose={handleCloseMessagesModal}
+          currentUser={currentUser}
+        />
       )}
     </div>
   );
