@@ -82,7 +82,10 @@ const Home = () => {
   };
 
   const closeCloset = () => {
-    setSelectedFit("");
+    setSelectedBackground("");
+    setSelectedShirt("");
+    setSelectedAcc("");
+    setSelectedColor("");
     setShowCloset(false);
   };
   const closeStore = () => {
@@ -119,13 +122,20 @@ const Home = () => {
     setSelectedFit("");
   };
 
+  const resetClothes = () => {
+    setSelectedBackground("");
+    setSelectedShirt("");
+    setSelectedAcc("");
+    setSelectedColor("");
+  };
+
   const saveOutfit = () => {
     dispatch(
       saveFit({
-        hat: selectedAcc.id,
-        shirt: selectedShirt.id,
-        color: selectedColor.id,
-        background: selectedBackground.id,
+        hat: selectedAcc.id || "",
+        shirt: selectedShirt.id || "",
+        color: selectedColor.id || 40,
+        background: selectedBackground.id || "",
         id: currentMascot.id,
       })
     );
@@ -133,33 +143,27 @@ const Home = () => {
 
   return (
     <div className="homeContainer">
-      {currentUser &&
-        (selectedBackground ? (
-          <div
-            style={{
-              backgroundImage: `url(${selectedBackground.src})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-            }}
-            id="backgroundDiv"
-          ></div>
-        ) : (
-          currentMascot.accessoriesEquipped.background && (
-            <div
-              style={{
-                backgroundImage: `url(${
+      {currentUser && (
+        <div
+          style={{
+            backgroundImage: selectedBackground
+              ? `url(${selectedBackground.src})`
+              : selectedFit && selectedFit.type === "Backgrounds"
+              ? `url(${selectedFit.src})`
+              : currentMascot.accessoriesEquipped.background
+              ? `url(${
                   closet.find(
                     (item) =>
                       item.id == currentMascot.accessoriesEquipped.background
                   )?.src
-                })`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-              }}
-              id="backgroundDiv"
-            ></div>
-          )
-        ))}
+                })`
+              : "",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+          id="backgroundDiv"
+        ></div>
+      )}
       {currentUser && (
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
@@ -199,13 +203,19 @@ const Home = () => {
           </div>
 
           {/* Mascot Section */}
-          <div className="mascotContainer">
+          <div
+            className={`mascotContainer ${
+              showCloset || showStore ? "moveUp" : ""
+            }`}
+          >
             {/*dress up yu color  */}
             {selectedColor ? (
-              <img className="Yu" src={selectedColor.src} alt="YU" />
+              <img className={`Yu `} src={selectedColor.src} alt="YU" />
+            ) : selectedFit && selectedFit.type === "SkinColor" ? (
+              <img className={`Yu `} src={selectedFit.src} alt="YU" />
             ) : (
               <img
-                className="Yu"
+                className={`Yu `}
                 src={
                   closet.find(
                     (item) => item.id == currentMascot.accessoriesEquipped.color
@@ -227,6 +237,18 @@ const Home = () => {
                   position: "absolute",
                 }}
                 src={selectedShirt.src}
+              />
+            ) : selectedFit && selectedFit.type === "Shirts" ? (
+              <img
+                className="accessory"
+                alt={selectedFit.name}
+                style={{
+                  width: selectedFit.width,
+                  left: selectedFit.left,
+                  bottom: selectedFit.bottom,
+                  position: "absolute",
+                }}
+                src={selectedFit.src}
               />
             ) : (
               currentMascot.accessoriesEquipped.shirt && (
@@ -276,6 +298,18 @@ const Home = () => {
                 }}
                 src={selectedAcc.src}
               />
+            ) : selectedFit && selectedFit.type === "Decor" ? (
+              <img
+                className="accessory"
+                alt={selectedFit.name}
+                style={{
+                  width: selectedFit.width,
+                  left: selectedFit.left,
+                  bottom: selectedFit.bottom,
+                  position: "absolute",
+                }}
+                src={selectedFit.src}
+              />
             ) : (
               currentMascot.accessoriesEquipped.hat && (
                 <img
@@ -305,20 +339,6 @@ const Home = () => {
                 />
               )
             )}
-
-            {selectedFit && (
-              <img
-                className="accessory"
-                alt={selectedFit.name}
-                style={{
-                  width: selectedFit.width,
-                  left: selectedFit.left,
-                  bottom: selectedFit.bottom,
-                  position: "absolute",
-                }}
-                src={selectedFit.src}
-              />
-            )}
           </div>
 
           {/* Closet Overlay */}
@@ -333,6 +353,7 @@ const Home = () => {
                 selectedAcc={selectedAcc}
                 selectedColor={selectedColor}
                 saveOutfit={saveOutfit}
+                resetClothes={resetClothes}
               />
             </div>
           )}

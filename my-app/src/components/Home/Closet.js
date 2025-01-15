@@ -18,6 +18,7 @@ const Closet = ({
   selectedAcc,
   selectedColor,
   saveOutfit,
+  resetClothes,
 }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
@@ -115,7 +116,7 @@ const Closet = ({
           </button>
           <button
             className="buttonRound btnHomeActive"
-            onClick={resetAccessories}
+            onClick={() => resetClothes()}
           >
             <img src={Reset} alt="Reset" />
           </button>
