@@ -36,10 +36,19 @@ const mascotSlice = createSlice({
           mascot.accessoriesOwned.push(itemId);
         }
       }
-      localStorage.setItem('mascot', JSON.stringify(state.data));
+      localStorage.setItem("mascot", JSON.stringify(state.data));
     },
-    //* este espaço é para adicionar as funções
-    //* se criarem as funções dps têm de as exportar no fim. vejam como tenho nos outros ficheiros
+    saveFit: (state, action) => {
+      const { hat, shirt, color, background, id } = action.payload;
+      const mascot = state.data.find((m) => m.id === id);
+      if (mascot) {
+        mascot.accessoriesEquipped.hat = hat;
+        mascot.accessoriesEquipped.shirt = shirt;
+        mascot.accessoriesEquipped.color = color;
+        mascot.accessoriesEquipped.background = background;
+      }
+      localStorage.setItem("mascot", JSON.stringify(state.data));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -57,7 +66,5 @@ const mascotSlice = createSlice({
   },
 });
 
-export const {
-  buyItem
-} = mascotSlice.actions;
+export const { buyItem, saveFit } = mascotSlice.actions;
 export default mascotSlice.reducer;

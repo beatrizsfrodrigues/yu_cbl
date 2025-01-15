@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
-import { fetchMascot, buyItem } from "../../redux/mascotSlice.js";
+import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import { ChevronDown } from "react-feather";
 import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
@@ -111,10 +111,24 @@ const Home = () => {
     dispatch(buyItem({ itemId: selectedFit.id, userId: currentUserId }));
 
     dispatch(buyAcc({ price: selectedFit.value, userId: currentUserId }));
+
+    setSelectedFit("");
   };
 
   const resetFit = () => {
     setSelectedFit("");
+  };
+
+  const saveOutfit = () => {
+    dispatch(
+      saveFit({
+        hat: selectedAcc.id,
+        shirt: selectedShirt.id,
+        color: selectedColor.id,
+        background: selectedBackground.id,
+        id: currentMascot.id,
+      })
+    );
   };
 
   return (
@@ -318,6 +332,7 @@ const Home = () => {
                 selectedShirt={selectedShirt}
                 selectedAcc={selectedAcc}
                 selectedColor={selectedColor}
+                saveOutfit={saveOutfit}
               />
             </div>
           )}
