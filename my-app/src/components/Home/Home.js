@@ -119,28 +119,33 @@ const Home = () => {
 
   return (
     <div className="homeContainer">
-      {selectedBackground ? (
-        <div
-          style={{
-            backgroundImage: `url(${selectedBackground.src})`,
-          }}
-          id="backgroundDiv"
-        ></div>
-      ) : (
-        currentMascot.accessoriesEquipped.background && (
+      {currentUser &&
+        (selectedBackground ? (
           <div
             style={{
-              backgroundImage: `url(${
-                closet.find(
-                  (item) =>
-                    item.id == currentMascot.accessoriesEquipped.background
-                )?.src
-              })`,
+              backgroundImage: `url(${selectedBackground.src})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
             }}
             id="backgroundDiv"
           ></div>
-        )
-      )}
+        ) : (
+          currentMascot.accessoriesEquipped.background && (
+            <div
+              style={{
+                backgroundImage: `url(${
+                  closet.find(
+                    (item) =>
+                      item.id == currentMascot.accessoriesEquipped.background
+                  )?.src
+                })`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+              }}
+              id="backgroundDiv"
+            ></div>
+          )
+        ))}
       {currentUser && (
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
