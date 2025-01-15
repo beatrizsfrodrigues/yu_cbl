@@ -10,16 +10,19 @@ body {
 }
 
 #root {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mainBody {
+  width: 100%;
   margin-top: 40px;
   width: 100%;
   padding: 8px 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.mainBody {
-  width: 100%;
+  box-sizing: border-box;
 }
 
 h1 {

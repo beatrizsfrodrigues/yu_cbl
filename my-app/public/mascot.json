@@ -2,13 +2,22 @@
   {
     "id": 1,
     "userId": 1,
-    "name": "Mascot",
-    "accessoriesOwned": [],
+    "accessoriesOwned": [40],
     "accessoriesEquipped": {
       "hat": null,
-      "glasses": null,
       "shirt": null,
-      "color": null,
+      "color": 40,
+      "background": null
+    }
+  },
+  {
+    "id": 1,
+    "userId": 2,
+    "accessoriesOwned": [40],
+    "accessoriesEquipped": {
+      "hat": null,
+      "shirt": null,
+      "color": 40,
       "background": null
     }
   }

@@ -1,6 +1,19 @@
 /* General Home Styles */
 
 /** home  */
+.homeContainer {
+  /* background-color: aqua; */
+  height: 100vh;
+  margin-top: -40px;
+  position: relative;
+}
+
+#backgroundDiv {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  z-index: -50;
+}
 
 .mascotContainer {
   width: fit-content;
@@ -29,26 +42,42 @@
   width: 240px;
 }
 
-/** Home Lock Animation (only the closet should be affected) */
-.home.locked .closet {
-  transform: translateY(-100%);
-  /* Slide the closet up */
+/** closet amd store  */
+.closetFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
 }
 
-.home.locked .closetOverlay {
-  transform: translateY(0);
-  /* Ensure the overlay stays fixed */
-}
-
-/** Row Layout */
-.row {
+.buttonMid {
+  width: 50%;
+  background-color: var(--purple);
+  color: white;
+  border-radius: 20px;
+  height: 48px;
+  box-shadow: 0px;
+  border: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center;
+  gap: 4px;
 }
 
-/** Avatar Styling */
+.buttonRound {
+  background-color: var(--purple);
+  width: 64px;
+  height: 64px;
+  border-radius: 100%;
+  box-shadow: 0px;
+  border: none;
+}
+
+.btnHomeActive {
+  background-color: var(--purple-dark);
+}
+
+/*? Avatar Styling */
 .avatarheader {
   padding: 0px 16px;
   text-align: center;
@@ -87,6 +116,32 @@
 
 .colorLight {
   background-color: var(--purple);
+}
+
+.activeFit {
+  background-color: var(--purple-lighter);
+  border: 4px solid var(--purple-darker);
+  box-sizing: border-box;
+}
+
+/** Home Lock Animation (only the closet should be affected) */
+.home.locked .closet {
+  transform: translateY(-100%);
+  /* Slide the closet up */
+}
+
+.home.locked .closetOverlay {
+  transform: translateY(0);
+  /* Ensure the overlay stays fixed */
+}
+
+/** Row Layout */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 40px;
 }
 
 /** Closet Styles */
@@ -196,33 +251,6 @@
   background-color: var(--orange);
 }
 
-.buttonMid {
-  width: 50%;
-  background-color: var(--purple);
-  color: white;
-  border-radius: 20px;
-  height: 48px;
-  box-shadow: 0px;
-  border: none;
-}
-
-.buttonRound {
-  background-color: var(--purple);
-  width: 64px;
-  height: 64px;
-  border-radius: 100%;
-  box-shadow: 0px;
-  border: none;
-}
-
-.closetFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 10px;
-  cursor: pointer;
-}
-
 /* Button Icons */
 .star {
   width: 25px;
@@ -260,10 +288,4 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-}
-
-.activeFit {
-  background-color: var(--purple-lighter);
-  border: 4px solid var(--purple-darker);
-  box-sizing: border-box;
 }

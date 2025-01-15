@@ -330,5 +330,95 @@
     "left": 0,
     "bottom": 0,
     "width": 0
+  },
+  {
+    "id": 34,
+    "name": "Amarelo",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-amarelo.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 35,
+    "name": "Azul",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YUazul.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 36,
+    "name": "Bege",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-bege.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 37,
+    "name": "Cinza",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-cinza.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 38,
+    "name": "Laranja",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-laranja.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 39,
+    "name": "Preto",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-preto.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 40,
+    "name": "Roxo",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-roxo.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 41,
+    "name": "Verde",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-verde.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 42,
+    "name": "Vermelho",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-vermelho.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
   }
 ]

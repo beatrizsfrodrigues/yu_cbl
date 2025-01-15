@@ -8,22 +8,28 @@ import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 import PopUpInfo from "../Tasks/PopUpInfo.js";
+import Star from "../../assets/imgs/Icons_closet/Star.svg";
 
 const Store = ({
   addAccessory,
   buyItemBtn,
   closeStore,
-  resetAccessories,
   currentUser,
   currentMascot,
   selectedFit,
+  resetFit,
 }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
+
   const [popUpMessage, setPopUpMessage] = useState("");
   const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
+
+  const unownedItems = closet.filter(
+    (item) => !currentMascot.accessoriesOwned.includes(item.id)
+  );
 
   useEffect(() => {
     if (closetStatus === "idle") {
@@ -35,26 +41,28 @@ const Store = ({
     return <div>Loading...</div>;
   }
 
+  console.log(selectedFit);
+
   const sectionsData = [
     {
       label: "Skin Color",
       icon: <img src={Circle} alt="Skin Color" />,
-      items: closet.filter((item) => item.type === "SkinColor"),
+      items: unownedItems.filter((item) => item.type === "SkinColor"),
     },
     {
       label: "Shirts",
       icon: <img src={Shirts} alt="Shirts" />,
-      items: closet.filter((item) => item.type === "Shirts"),
+      items: unownedItems.filter((item) => item.type === "Shirts"),
     },
     {
       label: "Decor",
       icon: <img src={Hat} alt="Decor" />,
-      items: closet.filter((item) => item.type === "Decor"),
+      items: unownedItems.filter((item) => item.type === "Decor"),
     },
     {
       label: "Backgrounds",
       icon: <img src={Background} alt="Backgrounds" />,
-      items: closet.filter((item) => item.type === "Backgrounds"),
+      items: unownedItems.filter((item) => item.type === "Backgrounds"),
     },
   ];
 
@@ -97,7 +105,7 @@ const Store = ({
                 className={`avatarcircle ${
                   selectedFit.id === item.id ? "activeFit" : ""
                 }`}
-                onClick={() => addAccessory(item.src, item)}
+                onClick={() => addAccessory(item)}
               >
                 <img src={item.src} alt={item.name} />
               </div>
@@ -105,13 +113,31 @@ const Store = ({
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound" onClick={closeStore}>
+          <button className="buttonRound btnHomeActive" onClick={closeStore}>
             <img src={X} alt="Exit" />
           </button>
-          <button className="buttonMid" onClick={() => buyItemBtn()}>
-            Comprar
-          </button>
-          <button className="buttonRound" onClick={resetAccessories}>
+          {selectedFit && selectedFit != "" ? (
+            currentUser && currentUser.points >= selectedFit.value ? (
+              <button
+                className="buttonMid btnHomeActive"
+                onClick={() => buyItemBtn()}
+              >
+                {selectedFit.value}
+                <img src={Star} alt="Star" /> Comprar
+              </button>
+            ) : (
+              <button className="buttonMid">
+                {selectedFit.value}
+                <img src={Star} alt="Star" /> Comprar
+              </button>
+            )
+          ) : (
+            <button className="buttonMid">Comprar</button>
+          )}
+          <button
+            className="buttonRound btnHomeActive"
+            onClick={() => resetFit()}
+          >
             <img src={Reset} alt="Reset" />
           </button>
         </div>
