@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../Grafico/grafico.css";
-import {
-  Line,
-  Bar,
-} from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,9 +12,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
 import { useSelector, useDispatch } from "react-redux";
-import {  fetchUsers } from "../../../redux/usersSlice"; 
+import { fetchUsers } from "../../../redux/usersSlice";
 
 ChartJS.register(
   CategoryScale,
@@ -30,15 +26,31 @@ ChartJS.register(
   Legend
 );
 
+function parseCompletionDate(dateString) {
+  // Exemplo: "20250104003058" => 2025-01-04 00:30:58
+  if (!dateString || dateString.length < 14) return null;
+
+  const year = parseInt(dateString.substring(0, 4), 10);
+  const month = parseInt(dateString.substring(4, 6), 10) - 1; // Em JS, Janeiro = 0
+  const day = parseInt(dateString.substring(6, 8), 10);
+  const hour = parseInt(dateString.substring(8, 10), 10);
+  const minute = parseInt(dateString.substring(10, 12), 10);
+  const second = parseInt(dateString.substring(12, 14), 10);
+
+  return new Date(year, month, day, hour, minute, second);
+}
+
 const Grafico = ({ show, onClose }) => {
   const dispatch = useDispatch();
 
   const [monthlyData, setMonthlyData] = useState([]);
   const [yearlyData, setYearlyData] = useState([]);
+  const [hasCompletedTasks, setHasCompletedTasks] = useState(true);
 
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
   const users = useSelector((state) => state.users.data);
   const activeUser = useSelector((state) =>
-    state.users.data?.find((user) => user.id === 2)
+    state.users.data?.find((user) => user.id === currentUserId)
   );
 
   useEffect(() => {
@@ -49,20 +61,36 @@ const Grafico = ({ show, onClose }) => {
 
   useEffect(() => {
     if (activeUser) {
-      // Filtra tarefas concluídas
+      console.log("Active user tasks:", activeUser.tasks);
+
       const completedTasks = activeUser.tasks.filter((task) => task.completed);
 
-      // Dados mensais e anuais
+      if (completedTasks.length === 0) {
+        setHasCompletedTasks(false);
+        setMonthlyData([]);
+        setYearlyData([]);
+        return;
+      } else {
+        setHasCompletedTasks(true);
+      }
+
       const monthly = Array(31).fill(0);
       const yearly = Array(12).fill(0);
 
       completedTasks.forEach((task) => {
-        const completionDate = new Date(task.completedDate); // completedDate deve ser uma string válida
-        const month = completionDate.getMonth(); // 0-11
-        const day = completionDate.getDate(); // 1-31
+        // Aqui usamos a função parseCompletionDate
+        const completionDate = parseCompletionDate(task.completedDate);
+        if (!completionDate) return; // Se por acaso vier inválido, ignora
 
-        if (!isNaN(day) && day > 0 && day <= 31) monthly[day - 1] += 1; // Incrementa o dia correspondente
-        if (!isNaN(month) && month >= 0 && month <= 11) yearly[month] += 1; // Incrementa o mês correspondente
+        const month = completionDate.getMonth();  // 0 a 11
+        const day = completionDate.getDate();     // 1 a 31
+
+        if (!isNaN(day) && day > 0 && day <= 31) {
+          monthly[day - 1] += 1;
+        }
+        if (!isNaN(month) && month >= 0 && month <= 11) {
+          yearly[month] += 1;
+        }
       });
 
       setMonthlyData(monthly);
@@ -71,7 +99,6 @@ const Grafico = ({ show, onClose }) => {
   }, [activeUser]);
 
   if (!show) return null;
-
 
   const monthlyChartData = {
     labels: Array.from({ length: 31 }, (_, i) => i + 1),
@@ -120,14 +147,22 @@ const Grafico = ({ show, onClose }) => {
         </button>
       </div>
       <hr />
-      <div className="grafico-section">
-        <h3>Evolução Mensal</h3>
-        <Line data={monthlyChartData} />
-      </div>
-      <div className="grafico-section">
-        <h3>Evolução Anual</h3>
-        <Bar data={yearlyChartData} />
-      </div>
+      {activeUser && hasCompletedTasks ? (
+        <>
+          <div className="grafico-section">
+            <h3>Evolução Mensal</h3>
+            <Line data={monthlyChartData} />
+          </div>
+          <div className="grafico-section">
+            <h3>Evolução Anual</h3>
+            <Bar data={yearlyChartData} />
+          </div>
+        </>
+      ) : (
+        <div className="no-tasks-message">
+          <p>Ainda não existem tarefas conclúidas!</p>
+        </div>
+      )}
     </div>
   );
 };
