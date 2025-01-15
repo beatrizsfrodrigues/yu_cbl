@@ -20,9 +20,9 @@ const Login = () => {
     if (user) {
       if (user.password === password) { // Se encontrar o utilizador inserido e caso a password inserida seja igual à registada, avança o login com sucesso
         setMessage("Login efetuado com sucesso!");
-        localStorage.setItem('loggedInUser', JSON.stringify({id: user.id}));
+        localStorage.setItem('loggedInUser', JSON.stringify({id: user.id})); //Guarda o id do utilizador que fez login
         setAlert('');
-        navigate('/connection');
+        navigate('/home');
       } else {
         setAlert("Palavra-passe incorreta.");
       }
@@ -36,7 +36,6 @@ const Login = () => {
 
   return (
     <div>
-      {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           
