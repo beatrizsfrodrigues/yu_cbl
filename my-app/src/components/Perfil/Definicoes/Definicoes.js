@@ -30,10 +30,14 @@ const Definicoes = ({ show, onClose, onInfoPessoalClick,onArquivoClick }) => {
           </div>
           <div className="settings-section" style={{ display: 'block' }}>
             <h3>Saídas</h3>
-            <Link to="/login" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link 
+              to="/login" 
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={() => localStorage.removeItem("loggedInUser")}
+            >
               <button className="settings-button logout">Sair</button>
             </Link>
-            <button className="settings-button delete-account">Apagar conta</button>
+
             <br></br>
           </div>
 
