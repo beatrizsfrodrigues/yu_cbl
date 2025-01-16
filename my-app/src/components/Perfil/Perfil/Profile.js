@@ -61,6 +61,8 @@ const Profile = () => {
     setShowSettings(false);
   };
 
+
+
   const closeSettings = () => setShowSettings(false);
   const closeGrafico = () => setShowGrafico(false);
 
