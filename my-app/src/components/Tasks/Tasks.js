@@ -8,7 +8,7 @@ import Messages from "./Messages.js";
 import ConcludeTask from "./ConcludeTask.js";
 import VerifyTask from "./VerifyTask.js";
 import VerifyPopUp from "./VerifyPopUp.js";
-import PopUpInfo from "./PopUpInfo.js";
+import PopUpInfo from "../PopUpInfo.js";
 import Filter from "./Filter.js";
 import Reject from "./Reject.js";
 import { MessageCircle, Plus, Sliders } from "react-feather";
