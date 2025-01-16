@@ -58,9 +58,9 @@ const Connection = () => {
       return;
     }
 
-    // Update partnerID for the connected users
-    const updatedCurrentUser = { ...currentUser, partnerID: partner.id };
-    const updatedPartner = { ...partner, partnerID: currentUser.id };
+    // Update partnerId for the connected users
+    const updatedCurrentUser = { ...currentUser, partnerId: partner.id };
+    const updatedPartner = { ...partner, partnerId: currentUser.id };
 
     const updatedUsers = users.map((user) =>
       user.id === updatedCurrentUser.id
