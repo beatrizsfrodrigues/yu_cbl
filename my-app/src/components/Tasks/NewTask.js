@@ -12,22 +12,26 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
 
   const handleAddTask = (e) => {
     e.preventDefault();
-    const partnerId = currentUser.partnerId;
+    if (currentUser.partnerId) {
+      const partnerId = currentUser.partnerId;
 
-    dispatch(addTask({ title, description, partnerId }));
+      dispatch(addTask({ title, description, partnerId }));
 
-    dispatch(
-      sendNotification({
-        senderId: currentUser.id,
-        receiverId: currentUser.partnerId,
-        text: `Tarefa <b>${title}</b> foi criada.`,
-      })
-    );
+      dispatch(
+        sendNotification({
+          senderId: currentUser.id,
+          receiverId: currentUser.partnerId,
+          text: `Tarefa <b>${title}</b> foi criada.`,
+        })
+      );
 
-    setTitle("");
-    setDescription("");
-    onClose();
-    onShowPopUpInfo(`Tarefa <b>${title}</b> foi criada com sucesso.`);
+      setTitle("");
+      setDescription("");
+      onClose();
+      onShowPopUpInfo(`Tarefa <b>${title}</b> foi criada com sucesso.`);
+    } else {
+      onShowPopUpInfo(`Cria uma ligação para criares tarefas!`);
+    }
   };
 
   return (

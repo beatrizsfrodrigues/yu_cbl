@@ -38,37 +38,32 @@ const Home = () => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
+    const fetchData = async () => {
+      await dispatch(fetchUsers());
+      await dispatch(fetchMascot());
+      await dispatch(fetchCloset());
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   useEffect(() => {
-    if (mascotsStatus === "idle") {
-      dispatch(fetchMascot());
-    }
-  }, [mascotsStatus, dispatch]);
-
-  useEffect(() => {
-    if (closetStatus === "idle") {
-      dispatch(fetchCloset());
-    }
-  }, [closetStatus, dispatch]);
-
-  useEffect(() => {
+    console.log("Users:", users);
+    console.log("Current User ID:", currentUserId);
     const user =
       users && users.length > 0
-        ? users.find((user) => user.id == currentUserId)
+        ? users.find((user) => user.id === currentUserId)
         : null;
+    console.log("Current User:", user);
     setCurrentUser(user);
   }, [users, currentUserId]);
 
   useEffect(() => {
-    const mascot =
-      mascots && mascots.length > 0
-        ? mascots.find((mascot) => mascot.userId == currentUserId)
-        : null;
-    setCurrentMascot(mascot);
+    if (mascots && mascots.length > 0) {
+      const mascot = mascots.find((mascot) => mascot.userId === currentUserId);
+      setCurrentMascot(mascot);
+      console.log("Current Mascot:", mascot);
+    }
   }, [mascots, currentUserId]);
 
   const openCloset = () => {
@@ -80,6 +75,10 @@ const Home = () => {
     setShowStore(true);
     setShowDropdown(false);
   };
+
+  if (!currentUser || !currentMascot || !closet) {
+    return <div>Loading...</div>;
+  }
 
   const closeCloset = () => {
     setSelectedBackground("");
@@ -143,7 +142,7 @@ const Home = () => {
 
   return (
     <div className="homeContainer">
-      {currentUser && (
+      {currentUser && currentMascot && (
         <div
           style={{
             backgroundImage: selectedBackground
@@ -164,7 +163,7 @@ const Home = () => {
           id="backgroundDiv"
         ></div>
       )}
-      {currentUser && (
+      {currentUser && currentMascot && (
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
