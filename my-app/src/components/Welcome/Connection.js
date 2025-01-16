@@ -69,6 +69,11 @@ const Connection = () => {
       return;
     }
 
+    if (partner.partnerId) {
+      setMessage("Este utilizador já tem um parceiro.");
+      return;
+    }
+
     // Update partnerId for the connected users
     const updatedCurrentUser = { ...currentUser, partnerId: partner.id };
     const updatedPartner = { ...partner, partnerId: currentUser.id };
