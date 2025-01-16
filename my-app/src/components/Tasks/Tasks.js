@@ -199,7 +199,7 @@ function Tasks() {
                   onClick={() => handleTaskClick(index)}
                 >
                   <p className="taskTitle">
-                    {toggledTaskIndex === index ? task.description : task.title}
+                    {toggledTaskIndex === index ? task.description : <b>{task.title}</b>} 
                   </p>
                 </div>
                 {!task.completed && !task.verified && (
