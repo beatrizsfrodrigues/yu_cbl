@@ -130,7 +130,7 @@ const Register = () => {
       password,
       age: `${day}/${month}/${year}`,
       points: 0,
-      partnerID: null,
+      partnerId: null,
       tasks: [],
       initialFormAnswers: [],
     };
