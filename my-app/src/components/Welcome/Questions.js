@@ -69,9 +69,13 @@ const Questions = () => {
     }
 
     // Pega as respostas selecionadas
-    const selectedAnswers = selectedOptions.map((i) => currentQuestion.options[i]);
+    const selectedAnswers = selectedOptions.map(
+      (i) => currentQuestion.options[i]
+    );
     console.log(
-      `Pergunta: ${currentQuestion.question} | Respostas: ${selectedAnswers.join(", ")}`
+      `Pergunta: ${
+        currentQuestion.question
+      } | Respostas: ${selectedAnswers.join(", ")}`
     );
 
     // Avança a pergunta ou termina
@@ -85,7 +89,7 @@ const Questions = () => {
   };
 
   return (
-    <div className="questions-container">
+    <div className="questions-container mainBody">
       <p className="question-title">{currentQuestion.question}</p>
       {/* Texto adaptado para multi ou single */}
       <p className="question-desc">
@@ -110,7 +114,9 @@ const Questions = () => {
       </div>
 
       <button
-        className={`continue-button ${selectedOptions.length === 0 ? "disabled" : ""}`}
+        className={`continue-button ${
+          selectedOptions.length === 0 ? "disabled" : ""
+        }`}
         onClick={handleNextQuestion}
         disabled={selectedOptions.length === 0}
       >

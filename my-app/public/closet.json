@@ -4,12 +4,10 @@
     "name": "Bigode",
     "type": "Decor",
     "value": 110,
-    "subcategory": {
-      "name": "Boca",
-      "coordinates" : { "x": 4000, "y": 150 } },
-
-    "src": "/assets/YU_acessorios/YU-bigode.svg"
-
+    "src": "/assets/YU_acessorios/YU-bigode.svg",
+    "left": 50,
+    "bottom": -10,
+    "width": 200
   },
 
   {
@@ -17,8 +15,10 @@
     "name": "BigodeCurvo",
     "type": "Decor",
     "value": 100,
-    "subcategory": "Boca",
-    "src": "/assets/YU_acessorios/YU-bigodecurvo.svg"
+    "src": "/assets/YU_acessorios/YU-bigodecurvo.svg",
+    "left": 50,
+    "bottom": -10,
+    "width": 200
   },
 
   {
@@ -26,95 +26,399 @@
     "name": "BigodeFino",
     "type": "Decor",
     "value": 90,
-    "subcategory": "Boca",
-    "src": "/assets/YU_acessorios/YU-bigodeFino.svg"
+    "src": "/assets/YU_acessorios/YU-bigodeFino.svg",
+    "left": 55,
+    "bottom": -50,
+    "width": 200
   },
   {
     "id": 4,
     "name": "CachecolPreto",
     "type": "Decor",
     "value": 150,
-    "subcategory": "Pescoço",
-    "src": "/assets/YU_acessorios/YU-cachecolPreto.svg"
+    "src": "/assets/YU_acessorios/YU-cachecolPreto.svg",
+    "left": -10,
+    "bottom": -110,
+    "width": 320
   },
   {
     "id": 5,
     "name": "CachecolVerde",
     "type": "Decor",
     "value": 120,
-    "subcategory": "Pescoço",
-    "src": "/assets/YU_acessorios/YU-cachecolVerde.svg"
+    "src": "/assets/YU_acessorios/YU-cachecolVerde.svg",
+    "left": 20,
+    "bottom": 50,
+    "width": 330
   },
   {
     "id": 6,
     "name": "Chapeu",
     "type": "Decor",
     "value": 110,
-    "subcategory": "Cabeça",
-    "src": "/assets/YU_acessorios/YU-chapeu.svg"
+    "src": "/assets/YU_acessorios/YU-chapeu.svg",
+    "left": 10,
+    "bottom": 100,
+    "width": 300
   },
   {
     "id": 7,
     "name": "ChapeuCowboy",
     "type": "Decor",
     "value": 160,
-    "subcategory": "Cabeça",
-    "src": "/assets/YU_acessorios/YU-chapeuCowboy.svg"
+    "src": "/assets/YU_acessorios/YU-chapeuCowboy.svg",
+    "left": 10,
+    "bottom": 80,
+    "width": 300
   },
   {
     "id": 8,
-    "name": "CachecolPaiNatal",
+    "name": "ChapeuPalhaço",
     "type": "Decor",
-    "value": 200,
-    "subcategory": "Pescoço",
-    "src": "/assets/YU_acessorios/YU-chapeuPaiNatal.svg"
+    "value": 160,
+    "src": "/assets/YU_acessorios/chapeuPalhaco.svg",
+    "left": 20,
+    "bottom": 80,
+    "width": 300
   },
   {
     "id": 9,
-    "name": "CoisoOuvidos",
+    "name": "ChapeuVERDE",
     "type": "Decor",
     "value": 160,
-    "subcategory": "Cabeça",
-    "src": "/assets/YU_acessorios/YU-coisoOuvidos.svg"
+    "src": "/assets/YU_acessorios/chapeuVERDE.svg",
+    "left": 20,
+    "bottom": 70,
+    "width": 300
   },
   {
     "id": 10,
-    "name": "Oculos",
+    "name": "CachecolPaiNatal",
     "type": "Decor",
-    "value": 130,
-    "subcategory": "Olhos",
-    "src": "/assets/YU_acessorios/YU-oculos.svg"
+    "value": 200,
+    "src": "/assets/YU_acessorios/YU-chapeuPaiNatal.svg",
+    "left": 0,
+    "bottom": 140,
+    "width": 300
   },
   {
     "id": 11,
-    "name": "OculosSol",
-    "type": "Decor",
-    "value": 100,
-    "subcategory": "Olhos",
-    "src": "/assets/YU_acessorios/YU-oculosSol.svg"
+    "name": "Fato",
+    "type": "Shirts",
+    "value": 160,
+    "src": "/assets/YU_acessorios/Fato.svg",
+    "left": 32,
+    "bottom": -35,
+    "width": 240
   },
   {
     "id": 12,
-    "name": "RoupaBranca",
-    "type": "Shirts",
-    "value": 200,
-    "subcategory": "Corpo",
-    "src": "/assets/YU_acessorios/YU-roupaBranca.svg"
+    "name": "CoisoOuvidos",
+    "type": "Decor",
+    "value": 160,
+    "src": "/assets/YU_acessorios/YU-coisoOuvidos.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 300
   },
   {
     "id": 13,
-    "name": "RoupaPaiNatal",
-    "type": "Shirts",
-    "value": 250,
-    "subcategory": "Corpo",
-    "src": "/assets/YU_acessorios/YU-roupaPaiNatal.svg"
+    "name": "Oculos",
+    "type": "Decor",
+    "value": 130,
+    "src": "/assets/YU_acessorios/YU-oculos.svg",
+    "left": 10,
+    "bottom": -30,
+    "width": 300
   },
   {
     "id": 14,
+    "name": "OculosSol",
+    "type": "Decor",
+    "value": 100,
+    "src": "/assets/YU_acessorios/YU-oculosSol.svg",
+    "left": 5,
+    "bottom": -40,
+    "width": 300
+  },
+  {
+    "id": 15,
+    "name": "RoupaBranca",
+    "type": "Shirts",
+    "value": 200,
+    "src": "/assets/YU_acessorios/YU-roupaBranca.svg",
+    "left": 0,
+    "bottom": -96,
+    "width": 300
+  },
+  {
+    "id": 16,
+    "name": "RoupaPaiNatal",
+    "type": "Shirts",
+    "value": 250,
+    "src": "/assets/YU_acessorios/YU-roupaPaiNatal.svg",
+    "left": -2,
+    "bottom": 20,
+    "width": 300
+  },
+  {
+    "id": 17,
     "name": "RoupaPreta",
     "type": "Shirts",
     "value": 210,
-    "subcategory": "Corpo",
-    "src": "/assets/YU_acessorios/YU-roupaPreta.svg"
+    "src": "/assets/YU_acessorios/YU-roupaPreta.svg",
+    "left": 4,
+    "bottom": -96,
+    "width": 300
+  },
+  {
+    "id": 18,
+    "name": "camisolaAlema",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/camisolaAlema.svg",
+    "left": 40,
+    "bottom": -45,
+    "width": 220
+  },
+  {
+    "id": 19,
+    "name": "camisolaEspanha",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/camisolaEspanha.svg",
+    "left": 42,
+    "bottom": -45,
+    "width": 220
+  },
+  {
+    "id": 20,
+    "name": "camisolaFranca",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/camisolaFranca.svg",
+    "left": 28,
+    "bottom": -55,
+    "width": 240
+  },
+  {
+    "id": 21,
+    "name": "camisolaTUGA",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/camisolaTUGA.svg",
+    "left": 34,
+    "bottom": -55,
+    "width": 240
+  },
+  {
+    "id": 22,
+    "name": "camisolaITALIA",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/camisolTALIA.svg",
+    "left": 40,
+    "bottom": -45,
+    "width": 220
+  },
+  {
+    "id": 23,
+    "name": "saiaAmarela",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/saiaAMARELA.svg",
+    "left": 8,
+    "bottom": -90,
+    "width": 300
+  },
+  {
+    "id": 24,
+    "name": "saiaRoxa",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/saiaROXA.svg",
+    "left": 8,
+    "bottom": -90,
+    "width": 300
+  },
+  {
+    "id": 25,
+    "name": "saiaVERDE",
+    "type": "Shirts",
+    "value": 210,
+    "src": "/assets/YU_acessorios/saiaVERDE.svg",
+    "left": 8,
+    "bottom": -90,
+    "width": 300
+  },
+  {
+    "id": 26,
+    "name": "Aniversario",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Aniversario.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 27,
+    "name": "Gala",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Gala.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 28,
+    "name": "Londres",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Londres.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 29,
+    "name": "Outono",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Outono.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 30,
+    "name": "Palco",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Palco.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 31,
+    "name": "Parque",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Parque.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 32,
+    "name": "Praia",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Praia.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 33,
+    "name": "Primavera",
+    "type": "Backgrounds",
+    "value": 500,
+    "src": "/assets/YU_background/Primavera.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 34,
+    "name": "Amarelo",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-amarelo.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 35,
+    "name": "Azul",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YUazul.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 36,
+    "name": "Bege",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-bege.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 37,
+    "name": "Cinza",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-cinza.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 38,
+    "name": "Laranja",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-laranja.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 39,
+    "name": "Preto",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-preto.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 40,
+    "name": "Roxo",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-roxo.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 41,
+    "name": "Verde",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-verde.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
+  },
+  {
+    "id": 42,
+    "name": "Vermelho",
+    "type": "SkinColor",
+    "value": 200,
+    "src": "/assets/YU_cores/YU-vermelho.svg",
+    "left": 0,
+    "bottom": 0,
+    "width": 0
   }
 ]

@@ -1,46 +1,95 @@
 /* General Home Styles */
-/* .home {
-  background-color: transparent;
-  transition: none;
-  No transition applied here
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  Ensures the home takes up the entire height of the viewport
-}
 
+/** home  */
 .homeContainer {
+  /* background-color: aqua; */
+  height: 100vh;
+  margin-top: -40px;
   position: relative;
-  overflow: hidden;
-  width: 100%;
+}
+
+#backgroundDiv {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  z-index: -50;
+}
+
+.mascotContainer {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 0px;
+  height: 60vh;
+  align-items: end;
+  transition: transform 0.3s ease-in-out;
+}
+
+/*? Yu Mascot */
+.Yu {
+  /* width: 50%; */
+  height: 300px;
+  width: auto;
+  z-index: 2;
+  display: block;
+  margin-top: 20px auto;
+  margin: 0 auto;
+}
+
+.mascotContainer.moveUp {
+  transform: translateY(-20%); /* Adjust the value as needed */
+}
+
+.accessory {
+  position: absolute;
   height: auto;
-  Full screen
-  z-index: 0;
-} */
-
-/* Home Lock Animation (only the closet should be affected) */
-.home.locked .closet {
-  transform: translateY(-100%);
-  /* Slide the closet up */
+  left: 32px;
+  bottom: -35px;
+  width: 240px;
+  z-index: 2;
 }
 
-.home.locked .closetOverlay {
-  transform: translateY(0);
-  /* Ensure the overlay stays fixed */
+/** closet amd store  */
+.closetFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
 }
 
-/* Row Layout */
-.row {
+.buttonMid {
+  width: 50%;
+  background-color: var(--purple);
+  color: white;
+  border-radius: 20px;
+  height: 48px;
+  box-shadow: 0px;
+  border: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center;
+  gap: 4px;
 }
 
-/* Avatar Styling */
+.buttonRound {
+  background-color: var(--purple);
+  width: 64px;
+  height: 64px;
+  border-radius: 100%;
+  box-shadow: 0px;
+  border: none;
+}
+
+.btnHomeActive {
+  background-color: var(--purple-dark);
+}
+
+/*? Avatar Styling */
 .avatarheader {
-  padding: 5%;
-  padding-bottom: 0%;
+  padding: 0px 16px;
   text-align: center;
   display: flex;
   justify-content: space-between;
@@ -48,10 +97,18 @@
 
 .avatarcontent {
   padding-left: 5%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   flex-wrap: wrap;
   justify-content: left;
   gap: 15px;
+  height: 20vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  margin-bottom: 0px;
 }
 
 .avatarcircle {
@@ -71,19 +128,33 @@
   background-color: var(--purple);
 }
 
-/* Closet Styles */
-/* .closet {
-  position: absolute;
-  top: 100%;
-  Start below the screen
-  left: 0;
+.activeFit {
+  background-color: var(--purple-lighter);
+  border: 4px solid var(--purple-darker);
+  box-sizing: border-box;
+}
+
+/** Home Lock Animation (only the closet should be affected) */
+.home.locked .closet {
+  transform: translateY(-100%);
+  /* Slide the closet up */
+}
+
+.home.locked .closetOverlay {
+  transform: translateY(0);
+  /* Ensure the overlay stays fixed */
+}
+
+/** Row Layout */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  transition: transform 0.5s ease-in-out;
-  z-index: 1001;
-  Ensure closet is above other elements
-  position: fixed;
-  bottom: 0px;
-} */
+  margin-top: 40px;
+}
+
+/** Closet Styles */
 
 .closetContainer {
   background-color: var(--purple-lighter);
@@ -91,7 +162,7 @@
   border-top-right-radius: 50px;
   width: 100%;
   /* max-width: 400px; */
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -103,7 +174,7 @@
   box-sizing: border-box;
 }
 
-/* Closet Overlay */
+/** Closet Overlay */
 .closetOverlay {
   /* margin: 0px 20px; */
   position: fixed;
@@ -120,28 +191,16 @@
   bottom: 0px;
 }
 
-/* Yu Mascot */
-.Yu {
-  width: 50%;
-  max-width: 200px;
-  height: auto;
-  z-index: 2;
-  display: block;
-  margin-top: 20px auto;
-  margin: 0 auto;
-}
-
 /* Buttons Styles */
 .ClassStar {
   display: flex;
   border-radius: 24px;
   background-color: var(--orange);
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   width: 91px;
   height: 42px;
   padding: 2px 4px;
-  gap: 8px;
 }
 
 .buttonsCloset {
@@ -152,7 +211,6 @@
   width: 91px;
   height: 42px;
   padding: 2px 4px;
-  gap: 8px;
   border-radius: 24px;
   background-color: var(--orange);
   border: none;
@@ -164,7 +222,14 @@
   line-height: 1.5;
 }
 
-/* Dropdown styling */
+.closetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/** Dropdown styling */
 /* Initially hidden dropdown */
 .dropdown {
   position: absolute;
@@ -172,11 +237,14 @@
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--orange);
-  padding: 10px;
-  border-radius: 8px;
+  padding: 0px 20px;
+  border-radius: 24px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 10;
   display: none;
+  display: flex;
+  align-items: start;
+  justify-content: start;
   /* Initially hidden */
 }
 
@@ -188,45 +256,10 @@
 /* Button styling inside the dropdown */
 .dropdown button {
   width: auto;
-  padding: 8px 12px;
+  padding: 0px 12px;
   background-color: var(--orange);
   border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-/* Button hover effect */
-.dropdown button:hover {
-  background-color: var(--orange);
-}
-
-.buttonMid {
-  width: 50%;
-  background-color: var(--purple-light);
-  color: white;
-  border-radius: 20px;
-  height: 48px;
-  box-shadow: 0px;
-  border: none;
-}
-
-.buttonRound {
-  background-color: var(--purple-light);
-  ;
-  width: 64px;
-  height: 64px;
-  border-radius: 100%;
-  box-shadow: 0px;
-  border: none;
-}
-
-.closetFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  border-radius: 50px;
 }
 
 /* Button Icons */
@@ -266,8 +299,4 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-}
-
-.activeFit{
-  background-color: aqua;
 }

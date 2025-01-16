@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {fetchUsers} from "../redux/usersSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../redux/usersSlice";
 import "../assets/css/Register.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 
@@ -17,7 +17,7 @@ const Register = () => {
   const [alert, setAlert] = useState("");
   const [alertPass, setAlertPass] = useState("");
   const [passwordRequirements, setPasswordRequirements] = useState({
-   //Definição dos critérios da password como falso por default
+    //Definição dos critérios da password como falso por default
     minLength: false,
     hasUpperCase: false,
     hasLowerCase: false,
@@ -26,27 +26,30 @@ const Register = () => {
   });
   const navigate = useNavigate();
 
-    const dispatch = useDispatch();
-    const users = useSelector((state) => state.users.data) || [];
-    const usersStatus = useSelector((state) => state.users.status);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.data) || [];
+  const usersStatus = useSelector((state) => state.users.status);
 
-    //Fetch users data
-    useEffect(() => {
-      if (usersStatus === "idle") {
-        dispatch(fetchUsers());
-      }
-    }, [usersStatus, dispatch]);
+  //Fetch users data
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [usersStatus, dispatch]);
 
   //Função para criar código único de um novo utilizador
   const generateCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let code;
     do {
-      code = '';
+      code = "";
       for (let i = 0; i < 10; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    } while (users.some( user => user.code === code))  
+        code += characters.charAt(
+          Math.floor(Math.random() * characters.length)
+        );
+      }
+    } while (users.some((user) => user.code === code));
     return code;
   };
 
@@ -67,43 +70,48 @@ const Register = () => {
       hasSpecialChar,
     });
 
-    return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
+    return (
+      password.length >= minLength &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumbers &&
+      hasSpecialChar
+    );
   };
 
   //Função para adicionar um 0 no início sempre que o utilizador introduzir apenas 1 algarismo
   const formatBirthdate = (setter) => (e) => {
-      const value = e.target.value;
-      if (value.length === 1) {
-        setter(`0${value}`);
-      } else {
-        setter(value);
-      }
-    };
+    const value = e.target.value;
+    if (value.length === 1) {
+      setter(`0${value}`);
+    } else {
+      setter(value);
+    }
+  };
 
   const handleRegister = () => {
-  
     //Caracteres inválidos no username
     const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
 
     //Verifica se o username tem algum caracter inválido e alerta o utilizador caso seja verdade
     if (invalidUsernameChars.test(username)) {
-      setAlert('Nome de utilizador contem caracteres inválidos!');
-      setAlertPass('');
+      setAlert("Nome de utilizador contem caracteres inválidos!");
+      setAlertPass("");
       return;
     }
 
     //Verifica se o utilizador registado j´´a existe ou não e alerta o utilizador caso seja verdade
-    if (users.some(user => user.username === username.toLocaleLowerCase())) {
-      setAlert('Nome de utilizador já existente!');
-      setAlertPass('');
-      return; 
+    if (users.some((user) => user.username === username.toLocaleLowerCase())) {
+      setAlert("Nome de utilizador já existente!");
+      setAlertPass("");
+      return;
     } else {
-      setAlert('');
+      setAlert("");
     }
 
-    //Verifica se a password introduzida na criação da password e na verificação da mesma são iguais e alerta o utilizador caso estas não coincidam 
+    //Verifica se a password introduzida na criação da password e na verificação da mesma são iguais e alerta o utilizador caso estas não coincidam
     if (password !== confirmPassword) {
-      setAlertPass('As palavras-passe não coincidem!');
+      setAlertPass("As palavras-passe não coincidem!");
       return;
     }
 
@@ -122,21 +130,22 @@ const Register = () => {
     };
 
     //Update do objeto users para introduzir um novo utilizador criado
-    const updatedUsers = [...users, newUser]; 
+    const updatedUsers = [...users, newUser];
 
     //Guarda em localstorage os utilizadores e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
-    setMessage('Utilizador registado com sucesso!');
-    setEmail('');
-    setUsername('');
-    setPassword('');
-    setConfirmPassword('');
-    setDay('');
-    setMonth('');
-    setYear('');
-    setAlert('');
-    setAlertPass('');
-    navigate('/Login');
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    localStorage.setItem("loggedInUser", JSON.stringify({ id: newUser.id }));
+    setMessage("Utilizador registado com sucesso!");
+    setEmail("");
+    setUsername("");
+    setPassword("");
+    setConfirmPassword("");
+    setDay("");
+    setMonth("");
+    setYear("");
+    setAlert("");
+    setAlertPass("");
+    navigate("/questions");
   };
 
   const handleSubmit = (e) => {
@@ -144,7 +153,7 @@ const Register = () => {
     handleRegister();
   };
 
-  //Atualiza a password para os valores inseridos no input e valida se a mesma corresponde aos critérios obrigatórios 
+  //Atualiza a password para os valores inseridos no input e valida se a mesma corresponde aos critérios obrigatórios
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
@@ -152,9 +161,17 @@ const Register = () => {
   };
 
   //Apenas deixa avançar com o registo quando todos os campos do formulário dorem preenchidos
-  const isFormComplete = email.trim() !== "" && password.trim() !== "" && username.trim() !== "" && confirmPassword.trim() !== "" && day.trim() !== "" && month.trim() !== "" && year.trim() !== "";
+  const isFormComplete =
+    email.trim() !== "" &&
+    password.trim() !== "" &&
+    username.trim() !== "" &&
+    confirmPassword.trim() !== "" &&
+    day.trim() !== "" &&
+    month.trim() !== "" &&
+    year.trim() !== "";
+
   return (
-    <div>
+    <div className="mainBody">
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="logo-container">
@@ -180,7 +197,7 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-           <div className="birthdate-container">
+          <div className="birthdate-container">
             <label>Data de Nascimento</label>
             <div className="birthdate-inputs">
               <input
@@ -223,35 +240,67 @@ const Register = () => {
             />
             {/*Lista de critérios obrigatórios da password que se verificam a verde conforme o seu cumprimento*/}
             <ul className="password-requirements">
-              <li className={passwordRequirements.minLength ? "valid" : "invalid"}>Pelo menos 6 caracteres</li>
-              <li className={passwordRequirements.hasUpperCase ? "valid" : "invalid"}>Pelo menos uma letra maiúscula</li>
-              <li className={passwordRequirements.hasLowerCase ? "valid" : "invalid"}>Pelo menos uma letra minúscula</li>
-              <li className={passwordRequirements.hasNumbers ? "valid" : "invalid"}>Pelo menos um número</li>
-              <li className={passwordRequirements.hasSpecialChar ? "valid" : "invalid"}>Pelo menos um caractere especial</li>
+              <li
+                className={passwordRequirements.minLength ? "valid" : "invalid"}
+              >
+                Pelo menos 6 caracteres
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasUpperCase ? "valid" : "invalid"
+                }
+              >
+                Pelo menos uma letra maiúscula
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasLowerCase ? "valid" : "invalid"
+                }
+              >
+                Pelo menos uma letra minúscula
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasNumbers ? "valid" : "invalid"
+                }
+              >
+                Pelo menos um número
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasSpecialChar ? "valid" : "invalid"
+                }
+              >
+                Pelo menos um caractere especial
+              </li>
             </ul>
           </div>
           {password && (
             <div className="pass-container">
-            <label>Confirmar Palavra-passe</label>
-            <input
-              type="password"
-              placeholder="Confirmar palavra-passe..."
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+              <label>Confirmar Palavra-passe</label>
+              <input
+                type="password"
+                placeholder="Confirmar palavra-passe..."
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </div>
-            )}
+          )}
         </div>
 
         <div className="register-link">
-          <p>Já tens conta? <a href="/Login">Login</a>{" "}</p>
+          <p>
+            Já tens conta? <a href="/Login">Login</a>{" "}
+          </p>
         </div>
         {message && <p>{message}</p>}
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
           disabled={!isFormComplete} //O botão está inativo enquanto o formulário não é preenchido
-        >Registar</button>
+        >
+          Registar
+        </button>
       </form>
     </div>
   );

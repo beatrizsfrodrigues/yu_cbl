@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
-import { fetchMascot, buyItem } from "../../redux/mascotSlice.js";
+import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import { ChevronDown } from "react-feather";
 import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
@@ -24,10 +24,17 @@ const Home = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
-  const [accessories, setAccessories] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentMascot, setCurrentMascot] = useState(null);
-  const [selectedFit, setSelectedFit] = useState("porConcluir");
+  //& things to buy
+  const [selectedFit, setSelectedFit] = useState("");
+
+  //& things in your closet to wear
+  const [selectedBackground, setSelectedBackground] = useState("");
+  const [selectedShirt, setSelectedShirt] = useState("");
+  const [selectedAcc, setSelectedAcc] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -58,9 +65,9 @@ const Home = () => {
 
   useEffect(() => {
     const mascot =
-    mascots && mascots.length > 0
-    ? mascots.find((mascot) => mascot.userId == currentUserId)
-    : null;
+      mascots && mascots.length > 0
+        ? mascots.find((mascot) => mascot.userId == currentUserId)
+        : null;
     setCurrentMascot(mascot);
   }, [mascots, currentUserId]);
 
@@ -74,99 +81,299 @@ const Home = () => {
     setShowDropdown(false);
   };
 
-  const closeCloset = () => setShowCloset(false);
-  const closeStore = () => setShowStore(false);
+  const closeCloset = () => {
+    setSelectedBackground("");
+    setSelectedShirt("");
+    setSelectedAcc("");
+    setSelectedColor("");
+    setShowCloset(false);
+  };
+  const closeStore = () => {
+    setSelectedFit("");
+    setShowStore(false);
+  };
 
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setShowDropdown(false);
+  const addAccessory = (item) => {
+    setSelectedFit(item);
+  };
+
+  const dressUp = (item) => {
+    console.log(item.type);
+    if (item.type == "Backgrounds") {
+      setSelectedBackground(item);
+    } else if (item.type == "Shirts") {
+      setSelectedShirt(item);
+    } else if (item.type == "Decor") {
+      setSelectedAcc(item);
+    } else if (item.type == "SkinColor") {
+      setSelectedColor(item);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const buyItemBtn = () => {
+    dispatch(buyItem({ itemId: selectedFit.id, userId: currentUserId }));
 
-  const addAccessory = (accessory, id) => {
-    console.log(id);
-  setSelectedFit(id);
-  
-    setAccessories((prev) => [...prev, accessory]);
+    dispatch(buyAcc({ price: selectedFit.value, userId: currentUserId }));
+
+    setSelectedFit("");
   };
 
-  const buyItemBtn = ()=>{
-    dispatch(buyItem({ itemId: selectedFit, userId: currentUserId }));
-  const item = closet.find(item => item.id === selectedFit);
-  if (item) {
-    dispatch(buyAcc({ price: item.value, userId: currentUserId }));
-  }
-  }
+  const resetFit = () => {
+    setSelectedFit("");
+  };
+
+  const resetClothes = () => {
+    setSelectedBackground("");
+    setSelectedShirt("");
+    setSelectedAcc("");
+    setSelectedColor("");
+  };
+
+  const saveOutfit = () => {
+    dispatch(
+      saveFit({
+        hat: selectedAcc.id || "",
+        shirt: selectedShirt.id || "",
+        color: selectedColor.id || 40,
+        background: selectedBackground.id || "",
+        id: currentMascot.id,
+      })
+    );
+  };
 
   return (
     <div className="homeContainer">
-      {currentUser && (<div className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}>
-        <div className="row">
-          {/* Star Section */}
-          <div className="ClassStar">
-            <img src={Star} alt="Star" />
-            <p>{currentUser.points}</p>
-          </div>
-
-          {/* ButtonsCloset Section */}
-          <div className="buttonsCloset">
-            <div className="closetHeader">
-              {/* Closet Icon */}
-              <img
-                src={Closeticon}
-                alt="Closet"
-                onClick={openCloset}
-                className="closetIcon"
-              />
-              {/* Chevron Icon */}
-              <ChevronDown
-                className="navIcon"
-                onClick={() => setShowDropdown((prev) => !prev)}
-              />
+      {currentUser && (
+        <div
+          style={{
+            backgroundImage: selectedBackground
+              ? `url(${selectedBackground.src})`
+              : selectedFit && selectedFit.type === "Backgrounds"
+              ? `url(${selectedFit.src})`
+              : currentMascot.accessoriesEquipped.background
+              ? `url(${
+                  closet.find(
+                    (item) =>
+                      item.id == currentMascot.accessoriesEquipped.background
+                  )?.src
+                })`
+              : "",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+          id="backgroundDiv"
+        ></div>
+      )}
+      {currentUser && (
+        <div
+          className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
+        >
+          <div className="row">
+            {/* Star Section */}
+            <div className="ClassStar">
+              <img src={Star} alt="Star" />
+              <p>{currentUser.points}</p>
             </div>
 
-            {showDropdown && (
-              <div className="dropdown open" ref={dropdownRef}>
-                <button onClick={openStore}>
-                  <img src={Storeicon} alt="Store" />
-                </button>
+            {/* ButtonsCloset Section */}
+            <div className="buttonsCloset">
+              <div className="closetHeader">
+                {/* Closet Icon */}
+                <img
+                  src={Closeticon}
+                  alt="Closet"
+                  onClick={openCloset}
+                  className="closetIcon"
+                />
+                {/* Chevron Icon */}
+                <ChevronDown
+                  className="navIcon"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                />
               </div>
+
+              {showDropdown && (
+                <div className="dropdown open" ref={dropdownRef}>
+                  <button onClick={openStore}>
+                    <img src={Storeicon} alt="Store" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mascot Section */}
+          <div
+            className={`mascotContainer ${
+              showCloset || showStore ? "moveUp" : ""
+            }`}
+          >
+            {/*dress up yu color  */}
+            {selectedColor ? (
+              <img className={`Yu `} src={selectedColor.src} alt="YU" />
+            ) : selectedFit && selectedFit.type === "SkinColor" ? (
+              <img className={`Yu `} src={selectedFit.src} alt="YU" />
+            ) : (
+              <img
+                className={`Yu `}
+                src={
+                  closet.find(
+                    (item) => item.id == currentMascot.accessoriesEquipped.color
+                  )?.src
+                }
+                alt="YU logo"
+              />
+            )}
+
+            {/*dress up yu shirt  */}
+            {selectedShirt ? (
+              <img
+                className="accessory"
+                alt={selectedShirt.name}
+                style={{
+                  width: selectedShirt.width,
+                  left: selectedShirt.left,
+                  bottom: selectedShirt.bottom,
+                  position: "absolute",
+                }}
+                src={selectedShirt.src}
+              />
+            ) : selectedFit && selectedFit.type === "Shirts" ? (
+              <img
+                className="accessory"
+                alt={selectedFit.name}
+                style={{
+                  width: selectedFit.width,
+                  left: selectedFit.left,
+                  bottom: selectedFit.bottom,
+                  position: "absolute",
+                }}
+                src={selectedFit.src}
+              />
+            ) : (
+              currentMascot.accessoriesEquipped.shirt && (
+                <img
+                  className="accessory"
+                  alt={
+                    closet.find(
+                      (item) =>
+                        item.id == currentMascot.accessoriesEquipped.shirt
+                    )?.name
+                  }
+                  style={{
+                    width: closet.find(
+                      (item) =>
+                        item.id == currentMascot.accessoriesEquipped.shirt
+                    )?.width,
+                    left: closet.find(
+                      (item) =>
+                        item.id == currentMascot.accessoriesEquipped.shirt
+                    )?.left,
+                    bottom: closet.find(
+                      (item) =>
+                        item.id == currentMascot.accessoriesEquipped.shirt
+                    )?.bottom,
+                    position: "absolute",
+                  }}
+                  src={
+                    closet.find(
+                      (item) =>
+                        item.id == currentMascot.accessoriesEquipped.shirt
+                    )?.src
+                  }
+                />
+              )
+            )}
+
+            {/*dress up yu accessories  */}
+            {selectedAcc ? (
+              <img
+                className="accessory"
+                alt={selectedAcc.name}
+                style={{
+                  width: selectedAcc.width,
+                  left: selectedAcc.left,
+                  bottom: selectedAcc.bottom,
+                  position: "absolute",
+                }}
+                src={selectedAcc.src}
+              />
+            ) : selectedFit && selectedFit.type === "Decor" ? (
+              <img
+                className="accessory"
+                alt={selectedFit.name}
+                style={{
+                  width: selectedFit.width,
+                  left: selectedFit.left,
+                  bottom: selectedFit.bottom,
+                  position: "absolute",
+                }}
+                src={selectedFit.src}
+              />
+            ) : (
+              currentMascot.accessoriesEquipped.hat && (
+                <img
+                  className="accessory"
+                  alt={
+                    closet.find(
+                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                    )?.name
+                  }
+                  style={{
+                    width: closet.find(
+                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                    )?.width,
+                    left: closet.find(
+                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                    )?.left,
+                    bottom: closet.find(
+                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                    )?.bottom,
+                    position: "absolute",
+                  }}
+                  src={
+                    closet.find(
+                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                    )?.src
+                  }
+                />
+              )
             )}
           </div>
+
+          {/* Closet Overlay */}
+          {showCloset && (
+            <div className="closetOverlay">
+              <Closet
+                dressUp={dressUp}
+                closeCloset={closeCloset}
+                currentMascot={currentMascot}
+                selectedBackground={selectedBackground}
+                selectedShirt={selectedShirt}
+                selectedAcc={selectedAcc}
+                selectedColor={selectedColor}
+                saveOutfit={saveOutfit}
+                resetClothes={resetClothes}
+              />
+            </div>
+          )}
+
+          {/* Store Overlay */}
+          {showStore && (
+            <div className="storeOverlay">
+              <Store
+                addAccessory={addAccessory}
+                closeStore={closeStore}
+                currentUser={currentUser}
+                currentMascot={currentMascot}
+                selectedFit={selectedFit}
+                buyItemBtn={buyItemBtn}
+                resetFit={resetFit}
+              />
+            </div>
+          )}
         </div>
-
-        {/* Mascot Section */}
-        <div className="mascotContainer">
-          <img className="Yu" src={yu} alt="YU logo" />
-          {accessories.map((accessory, index) => (
-            <img
-              key={index}
-              className="accessory"
-              src={accessory}
-              alt={`Accessory ${index}`}
-            />
-          ))}
-        </div>
-
-        {/* Closet Overlay */}
-        {showCloset && (
-          <div className="closetOverlay">
-            <Closet addAccessory={addAccessory} closeCloset={closeCloset} currentMascot={currentMascot}/>
-          </div>
-        )}
-
-        {/* Store Overlay */}
-        {showStore && (
-          <div className="storeOverlay">
-            <Store addAccessory={addAccessory} closeStore={closeStore} currentUser={currentUser} currentMascot={currentMascot} selectedFit={selectedFit} buyItemBtn={buyItemBtn} />
-          </div>
-        )}
-      </div>)}
+      )}
     </div>
   );
 };

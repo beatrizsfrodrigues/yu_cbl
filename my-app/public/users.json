@@ -3,11 +3,10 @@
     "id": 1,
     "code": "8g6QE3uHT9",
     "username": "beatriz",
-    "name": "Beatriz Rodrigues",
     "email": "beatriz.sfrodrigues@ua.pt",
     "password": "123",
     "age": 21,
-    "points": 1000,
+    "points": 1800,
     "partnerId": 2,
     "tasks": [
       {
@@ -36,12 +35,11 @@
   {
     "id": 2,
     "code": "QhJmffSpaU",
-    "username": "Catarina",
-    "name": "Catarina Seemann",
-    "email": "catarina@ua.pt",
+    "username": "catarina",
+    "email": "catarinaseemann@ua.pt",
     "password": "123",
     "age": 22,
-    "points": 0,
+    "points": 200000,
     "partnerId": 1,
     "tasks": [
       {
