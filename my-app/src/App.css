@@ -23,6 +23,23 @@ body {
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
+  position: relative;
+}
+
+.backgroundDiv {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: -50;
+  background-image: url("/public/assets/Fundos/background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  top: 0px;
+  left: 0px;
+}
+
+.backgroundDiv2 {
+  background-image: url("/public/assets/Fundos/background2.png");
 }
 
 h1 {
