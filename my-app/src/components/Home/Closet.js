@@ -11,7 +11,6 @@ import { fetchCloset } from "../../redux/closetSlice";
 const Closet = ({
   dressUp,
   closeCloset,
-  resetAccessories,
   currentMascot,
   selectedBackground,
   selectedShirt,
@@ -19,6 +18,7 @@ const Closet = ({
   selectedColor,
   saveOutfit,
   resetClothes,
+  onShowPopUpInfo,
 }) => {
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);

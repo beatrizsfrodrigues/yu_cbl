@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { X, UploadCloud, RefreshCw } from "react-feather";
 import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
-import PopUpInfo from "./PopUpInfo.js";
 
 function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
   const dispatch = useDispatch();

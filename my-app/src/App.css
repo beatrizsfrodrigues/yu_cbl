@@ -109,7 +109,7 @@ p {
   justify-content: center;
   align-items: center;
   position: fixed;
-  z-index: 1;
+  z-index: 5000;
   left: 0;
   top: 0;
   width: 100%;
@@ -171,7 +171,7 @@ p {
   justify-content: center;
   gap: 8px;
   text-align: center;
-  max-width: 300px;
+  max-width: 240px;
 }
 
 .laterLink {

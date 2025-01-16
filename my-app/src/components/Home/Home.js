@@ -4,7 +4,7 @@ import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import { ChevronDown } from "react-feather";
-import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
+import PopUpInfo from "../PopUpInfo.js";
 import Closet from "./Closet";
 import Store from "./Store";
 import Star from "../../assets/imgs/Icons_closet/Star.svg";
@@ -26,6 +26,8 @@ const Home = () => {
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentMascot, setCurrentMascot] = useState(null);
+  const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
+  const [popUpMessage, setPopUpMessage] = useState("");
   //& things to buy
   const [selectedFit, setSelectedFit] = useState("");
 
@@ -65,6 +67,16 @@ const Home = () => {
       console.log("Current Mascot:", mascot);
     }
   }, [mascots, currentUserId]);
+
+  //* open and close pop-up info
+  const handleClosePopUpInfo = () => {
+    setIsPopUpInfoOpen(false);
+  };
+
+  const handleShowPopUpInfo = (message) => {
+    setPopUpMessage(message);
+    setIsPopUpInfoOpen(true);
+  };
 
   const openCloset = () => {
     setShowCloset(true);
@@ -115,6 +127,10 @@ const Home = () => {
     dispatch(buyAcc({ price: selectedFit.value, userId: currentUserId }));
 
     setSelectedFit("");
+
+    handleShowPopUpInfo(
+      "Item comprado com sucesso! Acede ao teu armário para ver!"
+    );
   };
 
   const resetFit = () => {
@@ -138,6 +154,8 @@ const Home = () => {
         id: currentMascot.id,
       })
     );
+
+    handleShowPopUpInfo("Alterações guardadas com sucesso!");
   };
 
   return (
@@ -353,6 +371,7 @@ const Home = () => {
                 selectedColor={selectedColor}
                 saveOutfit={saveOutfit}
                 resetClothes={resetClothes}
+                onShowPopUpInfo={handleShowPopUpInfo}
               />
             </div>
           )}
@@ -368,10 +387,14 @@ const Home = () => {
                 selectedFit={selectedFit}
                 buyItemBtn={buyItemBtn}
                 resetFit={resetFit}
+                onShowPopUpInfo={handleShowPopUpInfo}
               />
             </div>
           )}
         </div>
+      )}
+      {isPopUpInfoOpen && (
+        <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
       )}
     </div>
   );
