@@ -135,9 +135,10 @@ const Register = () => {
       initialFormAnswers: [],
     };
 
+
     //Parâmetros para uma nova mascote agregados à criação de um novo utilizador
     const newMascot = {
-      id: mascot.lenght + 1,
+      id: mascot.length + 1,
       userId: newUser.id ,
       accessoriesOwned: [40],
       accessoriesEquipped: {
@@ -147,6 +148,7 @@ const Register = () => {
         background: null
       }
     }
+
 
     //Update do objeto users para introduzir um novo utilizador criado
     const updatedUsers = [...users, newUser];
