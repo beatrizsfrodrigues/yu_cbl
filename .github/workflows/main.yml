@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-
-permissions:
-  checks: write
-  contents: write
 
 jobs:
   build:
