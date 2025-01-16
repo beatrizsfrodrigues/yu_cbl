@@ -38,8 +38,6 @@ const Definicoes = ({ show, onClose, onInfoPessoalClick,onArquivoClick }) => {
               <button className="settings-button logout">Sair</button>
             </Link>
 
-            
-            <button className="settings-button delete-account">Apagar conta</button>
             <br></br>
           </div>
 
