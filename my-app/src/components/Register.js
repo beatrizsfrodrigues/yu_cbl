@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../redux/usersSlice";
+import {fetchMascot} from "../redux/mascotSlice";
 import "../assets/css/Register.css";
 import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
 
@@ -29,14 +30,19 @@ const Register = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data) || [];
   const usersStatus = useSelector((state) => state.users.status);
+  const mascot = useSelector((state) => state.mascot.data) || [];
+  const mascotStatus = useSelector((state) => state.mascot.status);
 
-  //Fetch users data
+  //Fetch users e mascot data
   useEffect(() => {
     if (usersStatus === "idle") {
       dispatch(fetchUsers());
     }
-  }, [usersStatus, dispatch]);
-
+    if (mascotStatus === "idle") {
+      dispatch(fetchMascot());
+    }
+  }, [usersStatus, mascotStatus, dispatch]);
+  
   //Função para criar código único de um novo utilizador
   const generateCode = () => {
     const characters =
@@ -129,12 +135,29 @@ const Register = () => {
       initialFormAnswers: [],
     };
 
+
+    //Parâmetros para uma nova mascote agregados à criação de um novo utilizador
+    const newMascot = {
+      id: mascot.length + 1,
+      userId: newUser.id ,
+      accessoriesOwned: [40],
+      accessoriesEquipped: {
+        hat: null,
+        shirt: null,
+        color: 40,
+        background: null
+      }
+    }
+
+
     //Update do objeto users para introduzir um novo utilizador criado
     const updatedUsers = [...users, newUser];
+    const updatedMascot = [...mascot, newMascot]
 
-    //Guarda em localstorage os utilizadores e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
+    //Guarda em localstorage os utilizadores e respetivos ids e mascotes e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
     localStorage.setItem("users", JSON.stringify(updatedUsers));
-    localStorage.setItem("loggedInUser", JSON.stringify({ id: newUser.id }));
+    localStorage.setItem("mascot", JSON.stringify(updatedMascot));
+    localStorage.setItem("loggedInUser", JSON.stringify({ id: newUser.id })); //Guarda o id do utilizador que fez login
     setMessage("Utilizador registado com sucesso!");
     setEmail("");
     setUsername("");
@@ -145,7 +168,7 @@ const Register = () => {
     setYear("");
     setAlert("");
     setAlertPass("");
-    navigate("/questions");
+    navigate("/apresentacao");
   };
 
   const handleSubmit = (e) => {
