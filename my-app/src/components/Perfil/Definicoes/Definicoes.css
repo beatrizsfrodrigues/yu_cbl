@@ -81,4 +81,72 @@
   .settings-button.delete-account:hover {
     background-color: #ff9a75;
   }
+
+  
+
+  /*Modal da ligação */
+
+  /* Estilo para o overlay */
+.ligacao-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Estilo do conteúdo do modal */
+.ligacao-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin: 2%;
+}
+
+/* Estilo para o cabeçalho do modal */
+.ligacao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Estilo do título (h2) */
+.ligacao-header h2 {
+  font-size: 20px;
+  color: #333;
+  margin: 0;
+}
+
+/* Estilo do botão de fechar (✕) */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+/* Texto do modal */
+.ligacao-content p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #555;
+  
+}
+
   
