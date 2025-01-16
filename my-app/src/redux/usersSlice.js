@@ -5,11 +5,7 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   const localData = localStorage.getItem("users");
 
   if (localData) {
-    try {
-      return JSON.parse(localData);
-    } catch (error) {
-      console.error("Failed to parse localStorage data:", error);
-    }
+    return JSON.parse(localData);
   }
 
   const response = await fetch("/users.json");
@@ -135,7 +131,7 @@ const usersSlice = createSlice({
       if (user) {
         user.points = (user.points || 0) - Number(price);
       }
-      localStorage.setItem('users', JSON.stringify(state.data));
+      localStorage.setItem("users", JSON.stringify(state.data));
     },
     updateUser: (state, action) => {
       const updatedUser = action.payload;
@@ -172,8 +168,7 @@ export const {
   completeTask,
   validateTask,
   rejectTask,
-  clearRejectMessage, buyAcc
+  clearRejectMessage,
+  buyAcc,
 } = usersSlice.actions;
 export default usersSlice.reducer;
-
-
