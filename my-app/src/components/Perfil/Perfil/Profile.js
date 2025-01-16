@@ -61,8 +61,6 @@ const Profile = () => {
     setShowSettings(false);
   };
 
-
-
   const closeSettings = () => setShowSettings(false);
   const closeGrafico = () => setShowGrafico(false);
 
@@ -107,6 +105,7 @@ const Profile = () => {
 
   return (
     <div className="profile-container mainBody">
+      <div className="backgroundDiv"></div>
       <header className="profile-header">
         <h1 className="profile-title">Perfil</h1>
         <span className="gear-icon bi bi-gear" onClick={toggleSettings}></span>

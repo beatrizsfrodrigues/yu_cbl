@@ -1,7 +1,4 @@
-
-
-
-.profile-background {
+/* .profile-background {
   background-image: url('/public/assets/Fundos/fundoPerfil.png') !important;
   background-size: cover !important; 
   background-position: center !important; 
@@ -11,20 +8,19 @@
   height: 90vh;
   display:block !important ;
 
-}
+} */
 
 /**********************************
  * Estilo do container principal
  **********************************/
- .profile-container {
+.profile-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   padding: 20px;
-  gap: 20px; 
-  
- }
+  gap: 20px;
+}
 /**********************************
  * Estilo do cabeçalho
  **********************************/
@@ -64,7 +60,7 @@
 }
 
 .avatar-image {
-  width: 220px; 
+  width: 220px;
   height: 220px;
   object-fit: contain;
   margin-bottom: 10px;
@@ -83,49 +79,39 @@
  **********************************/
 .profile-buttons {
   display: flex;
-  justify-content: center; 
-  gap: 20px; 
-  margin-top: 20px; 
-  
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .profile-button {
-  width: 80px; 
+  width: 80px;
   height: 80px;
-  border-radius: 50%; 
+  border-radius: 50%;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--purple-darker);
-  font-size: 2rem; 
+  font-size: 2rem;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-
 .award {
   background-color: var(--green);
-
 }
 
 .circle {
   background-color: var(--blue);
-  
 }
- 
 
 .dots {
   background-color: var(--orange);
-
 }
 
 .profile-button:hover {
-  transform: scale(1.2); 
+  transform: scale(1.2);
   color: #fff;
 }
-
-
- 
- 

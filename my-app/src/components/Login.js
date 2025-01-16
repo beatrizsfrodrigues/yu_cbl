@@ -36,10 +36,12 @@ const Login = () => {
   };
 
   //Apenas deixa avançar com o login quando os campos de email/username e password forem preenchidos
-  const isFormComplete = emailOrUsername.trim() !== "" && password.trim() !== "";
+  const isFormComplete =
+    emailOrUsername.trim() !== "" && password.trim() !== "";
 
   return (
     <div className="mainBody">
+      <div className="backgroundDiv backgroundDiv2"></div>
       {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
         <div className="form-container">

@@ -183,6 +183,7 @@ function Tasks() {
 
   return (
     <div className="mainBody" id="tasksBody">
+      <div className="backgroundDiv"></div>
       <div className="header">
         <h1>Lista de Tarefas</h1>
         <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
@@ -199,7 +200,11 @@ function Tasks() {
                   onClick={() => handleTaskClick(index)}
                 >
                   <p className="taskTitle">
-                    {toggledTaskIndex === index ? task.description : <b>{task.title}</b>} 
+                    {toggledTaskIndex === index ? (
+                      task.description
+                    ) : (
+                      <b>{task.title}</b>
+                    )}
                   </p>
                 </div>
                 {!task.completed && !task.verified && (
