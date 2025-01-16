@@ -104,7 +104,7 @@ const Grafico = ({ show, onClose }) => {
     labels: Array.from({ length: 31 }, (_, i) => i + 1),
     datasets: [
       {
-        label: "Tarefas Concluídas (Mensal)",
+        label: "Tarefas Concluídas (Diário)",
         data: monthlyData,
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -129,7 +129,7 @@ const Grafico = ({ show, onClose }) => {
     ],
     datasets: [
       {
-        label: "Tarefas Concluídas (Anual)",
+        label: "Tarefas Concluídas (Mensal)",
         data: yearlyData,
         backgroundColor: "rgba(153, 102, 255, 0.6)",
         borderColor: "rgba(153, 102, 255, 1)",
@@ -150,11 +150,11 @@ const Grafico = ({ show, onClose }) => {
       {activeUser && hasCompletedTasks ? (
         <>
           <div className="grafico-section">
-            <h3>Evolução Mensal</h3>
+            <h3>Evolução Diária</h3>
             <Line data={monthlyChartData} />
           </div>
           <div className="grafico-section">
-            <h3>Evolução Anual</h3>
+            <h3>Evolução Mensal</h3>
             <Bar data={yearlyChartData} />
           </div>
         </>
