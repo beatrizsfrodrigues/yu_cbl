@@ -116,6 +116,31 @@ const messagesSlice = createSlice({
 
       localStorage.setItem("messages", JSON.stringify(state.data));
     },
+    newConversation: (state, action) => {
+      const { userId, partnerId } = action.payload;
+
+      const existingConversation = state.data.find(
+        (conversation) =>
+          conversation.usersId.includes(userId) &&
+          conversation.usersId.includes(partnerId)
+      );
+
+      if (existingConversation) {
+        console.error("Conversation already exists between these users.");
+        return;
+      }
+
+      console.log(userId, partnerId);
+      const newConversation = {
+        id: state.data.length + 1,
+        usersId: [userId, partnerId],
+        messages: [],
+      };
+
+      state.data.push(newConversation);
+
+      localStorage.setItem("messages", JSON.stringify(state.data));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -133,5 +158,6 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { addMessage, sendNotification } = messagesSlice.actions;
+export const { addMessage, sendNotification, newConversation } =
+  messagesSlice.actions;
 export default messagesSlice.reducer;
