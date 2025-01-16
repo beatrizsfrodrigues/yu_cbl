@@ -31,7 +31,7 @@ const Register = () => {
   const users = useSelector((state) => state.users.data) || [];
   const usersStatus = useSelector((state) => state.users.status);
   const mascot = useSelector((state) => state.mascot.data) || [];
-  const mascotStatus = useSelector((state) => state.mascote.status);
+  const mascotStatus = useSelector((state) => state.mascot.status);
 
   //Fetch users e mascot data
   useEffect(() => {
@@ -152,7 +152,7 @@ const Register = () => {
     const updatedUsers = [...users, newUser];
     const updatedMascot = [...mascot, newMascot]
 
-    //Guarda em localstorage os utilizadores e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
+    //Guarda em localstorage os utilizadores e respetivos ids e mascotes e limpa campos de inputs e mensagens de erro existentes ao fazer um registo com sucesso
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     localStorage.setItem("mascot", JSON.stringify(updatedMascot));
     localStorage.setItem("loggedInUser", JSON.stringify({ id: newUser.id })); //Guarda o id do utilizador que fez login
