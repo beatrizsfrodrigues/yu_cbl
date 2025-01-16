@@ -151,8 +151,9 @@ const Apresentacao = () => {
             </div>
         </>
     )}
-
+    
     </div>
+ 
       </section>
 
        
@@ -163,6 +164,7 @@ const Apresentacao = () => {
         ))}
       </div>
     </div>
+    
   );
 };
 
