@@ -106,7 +106,7 @@ const Register = () => {
       return;
     }
 
-    //Verifica se o utilizador registado j´´a existe ou não e alerta o utilizador caso seja verdade
+    //Verifica se o utilizador registado já existe ou não e alerta o utilizador caso seja verdade
     if (users.some((user) => user.username === username.toLocaleLowerCase())) {
       setAlert("Nome de utilizador já existente!");
       setAlertPass("");
@@ -181,7 +181,7 @@ const Register = () => {
     validatePassword(newPassword);
   };
 
-  //Apenas deixa avançar com o registo quando todos os campos do formulário dorem preenchidos
+  //Apenas deixa avançar com o registo quando todos os campos do formulário forem preenchidos
   const isFormComplete =
     email.trim() !== "" &&
     password.trim() !== "" &&
