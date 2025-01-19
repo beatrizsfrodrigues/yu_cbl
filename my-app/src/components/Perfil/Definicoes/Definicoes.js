@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Definicoes/Definicoes.css";
+import { X } from "react-feather";
 
 const Definicoes = ({ show, onClose, onInfoPessoalClick, onArquivoClick, user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -60,10 +61,8 @@ const Definicoes = ({ show, onClose, onInfoPessoalClick, onArquivoClick, user })
     <div className="modal">
       <div className="window">
         <div className="settings-header">
-          <h2>Definições</h2>
-          <button className="close-button" onClick={onClose}>
-            ✕
-          </button>
+          <h3>Definições</h3>
+          <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
 

@@ -1,12 +1,16 @@
 
   input{
-    width: 90%;
+    width: 100%;
     padding: 8px; 
     display: block;
     margin: 4px 0 ;
     border-radius: 15px; 
   }
  
+
+  .window div{
+    display: block !important;
+  }
 
 
   /* Botão "Guardar" */
@@ -43,13 +47,15 @@
     display: flex;
     align-items: center;
     margin-left: 5%;
-    margin-top: 0.5%;
+    margin-top: 1%;
   }
 
   .info-pessoal-page .info-header {
     display: flex; /* Alinha o botão e o título horizontalmente */
     align-items: center; /* Garante que os itens estejam alinhados verticalmente */
-    gap: 5px; /* Define o espaço entre o botão e o título */
+    gap: 10px; /* Define o espaço entre o botão e o título */
+    
+    
   }
   
   
