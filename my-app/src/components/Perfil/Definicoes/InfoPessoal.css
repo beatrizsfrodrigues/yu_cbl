@@ -4,12 +4,13 @@
     padding: 8px; 
     display: block;
     margin: 4px 0 ;
-    border-radius: 15px; 
+    border-radius: 16px; 
   }
  
 
   .window div{
     display: block !important;
+    gap: 16px;
   }
 
 
@@ -29,11 +30,11 @@
   }
 
   .info-pessoal-page .back-button i {
-    font-size: 1.2rem; /* Define um tamanho menor para a seta */
+    font-size: 1.2rem; 
     color: var(--purple-darker);  
     cursor: pointer;
     background-color: transparent;  
-    -webkit-text-stroke: 1px var(--purple-darker); /* Contorno da seta */
+    -webkit-text-stroke: 1px var(--purple-darker); 
     margin-left: 5%;
     margin-top: 10%;
   }
@@ -46,14 +47,15 @@
     color: var(--purple-darker);
     display: flex;
     align-items: center;
-    margin-left: 5%;
-    margin-top: 1%;
+    margin-left: 5%; /* Define o deslocamento horizontal */
+    margin-top: 15%; /* Aumente este valor para mover o botão para baixo */
   }
+  
 
   .info-pessoal-page .info-header {
-    display: flex; /* Alinha o botão e o título horizontalmente */
-    align-items: center; /* Garante que os itens estejam alinhados verticalmente */
-    gap: 10px; /* Define o espaço entre o botão e o título */
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
     
     
   }
@@ -70,6 +72,7 @@
     display: flex;
     flex-direction: column;   
     margin-bottom: 2px;   
+    gap: 16px
   }
   
   .form-group label {
@@ -80,12 +83,13 @@
   }
   
   .form-input {
+    border: 2px solid var(--purple-dark);
+    border-radius: 16px;
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    background-color: #f9f9f9;
+    box-sizing: border-box;
+    padding: 12px 16px;
+    font-family: "Quicksand", serif;
+    font-size: 16px;
   }
   
   .form-input:focus {
@@ -118,18 +122,7 @@
  /* Modal de confirmação - página Info Pessoal */
  
  /* Modal principal */
-.info-pessoal-page .confirm-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-}
+
 
 /* Conteúdo do modal */
 .info-pessoal-page .confirm-modal-content {
@@ -144,6 +137,10 @@
   max-width: 400px;
   width: 90%;
   animation: fade-in 0.3s ease-in-out;
+  z-index: 999999;
+    position: fixed;
+    bottom: 40%;
+    left: 5%;
 }
 
 /* Título do modal */
@@ -162,6 +159,10 @@
   gap: 15px; 
   margin-top: 10px; 
 }
+
+
+
+
 
 /* Botões */
 .info-pessoal-page .confirm-modal-buttons .confirm-button,
@@ -190,6 +191,7 @@
 .info-pessoal-page .confirm-modal-buttons .cancel-button {
   background-color: var(--orange-light);
   color: white;
+  margin-left: 10%;
 }
 .info-pessoal-page .confirm-modal-buttons .cancel-button:hover {
   background-color: var(--orange-darker);

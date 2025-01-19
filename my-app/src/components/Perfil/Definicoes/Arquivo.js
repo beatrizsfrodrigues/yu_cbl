@@ -40,7 +40,7 @@ const Arquivo = ({ show, onBack }) => {
     <div className="modal ">
       <div className="info-pessoal-page">
         <div className="window ">
-          <div className="info-header">
+          <div className="header">
             <button className="back-button" onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
