@@ -48,13 +48,18 @@ const Register = () => {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let code;
-    do {
-      code = "";
+    const generateRandomCode = () => {
+      let result ="";
       for (let i = 0; i < 10; i++) {
         code += characters.charAt(
           Math.floor(Math.random() * characters.length)
         );
       }
+      return result;
+    };
+
+    do {
+      code = generateRandomCode();
     } while (users.some((user) => user.code === code));
     return code;
   };
@@ -106,7 +111,7 @@ const Register = () => {
       return;
     }
 
-    //Verifica se o utilizador registado j´´a existe ou não e alerta o utilizador caso seja verdade
+    //Verifica se o utilizador registado já existe ou não e alerta o utilizador caso seja verdade
     if (users.some((user) => user.username === username.toLocaleLowerCase())) {
       setAlert("Nome de utilizador já existente!");
       setAlertPass("");
@@ -181,7 +186,7 @@ const Register = () => {
     validatePassword(newPassword);
   };
 
-  //Apenas deixa avançar com o registo quando todos os campos do formulário dorem preenchidos
+  //Apenas deixa avançar com o registo quando todos os campos do formulário forem preenchidos
   const isFormComplete =
     email.trim() !== "" &&
     password.trim() !== "" &&
@@ -205,6 +210,7 @@ const Register = () => {
             <label>Email</label>
             <input
               type="text"
+              className="input"
               placeholder="Inserir email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -214,6 +220,7 @@ const Register = () => {
             <label>Nome de Utilizador</label>
             <input
               type="text"
+              className="input"
               placeholder="Inserir nome de utilizador..."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -224,6 +231,7 @@ const Register = () => {
             <div className="birthdate-inputs">
               <input
                 type="number"
+                className="input"
                 placeholder="Dia"
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
@@ -233,6 +241,7 @@ const Register = () => {
               />
               <input
                 type="number"
+                className="input"
                 placeholder="Mês"
                 value={month}
                 onChange={(e) => setMonth(e.target.value)}
@@ -242,6 +251,7 @@ const Register = () => {
               />
               <input
                 type="number"
+                className="input"
                 placeholder="Ano"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
@@ -256,6 +266,7 @@ const Register = () => {
             <label>Palavra-passe</label>
             <input
               type="password"
+              className="input"
               placeholder="Inserir uma palavra-passe..."
               value={password}
               onChange={handlePasswordChange}
@@ -302,6 +313,7 @@ const Register = () => {
               <label>Confirmar Palavra-passe</label>
               <input
                 type="password"
+                className="input"
                 placeholder="Confirmar palavra-passe..."
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
