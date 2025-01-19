@@ -19,7 +19,6 @@ function Tasks() {
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
- // const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -91,7 +90,7 @@ function Tasks() {
         setShowVerifyTask(false);
       }
     }
-  }, [users, currentUserId]);
+  }, [users, currentUserId, dispatch]);
 
   const handleTaskClick = (index) => {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
@@ -170,6 +169,7 @@ function Tasks() {
         } else if (filterCriteria === "espera") {
           return task.completed && !task.verified;
         }
+        return false;
       })
     : [];
 
