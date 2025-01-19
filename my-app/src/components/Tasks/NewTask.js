@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch} from "react-redux";
 import { X } from "react-feather";
-import { fetchUsers, addTask } from "../../redux/usersSlice";
+import { addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 
 function NewTask({ onClose, currentUser, onShowPopUpInfo }) {

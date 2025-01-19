@@ -14,7 +14,7 @@ const Connection = () => {
   const [partnerCode, setPartnerCode] = useState("");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  const messages = useSelector((state) => state.messages.data);
+  //const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
 

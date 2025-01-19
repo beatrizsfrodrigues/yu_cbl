@@ -31,7 +31,7 @@ jobs:
         working-directory: my-app
 
       - name: Build Project (skip linting)
-        run: DISABLE_ESLINT_PLUGIN=true npm run build
+        run: npm run build
         working-directory: my-app
 
       - name: Deploy to Vercel

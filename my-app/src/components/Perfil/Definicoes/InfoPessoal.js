@@ -101,7 +101,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
             <button className="back-button" onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
-            <h2>Os meus dados</h2>
+            <h3>Os meus dados</h3>
           </div>
           <hr />
           <div className="settings-section">

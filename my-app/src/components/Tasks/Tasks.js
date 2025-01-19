@@ -19,7 +19,6 @@ function Tasks() {
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
-  const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -53,13 +52,13 @@ function Tasks() {
   useEffect(() => {
     const user =
       users && users.length > 0
-        ? users.find((user) => user.id == currentUserId)
+        ? users.find((user) => user.id === currentUserId)
         : null;
     setCurrentUser(user);
 
     const rejectedTask =
       users && users.length > 0
-        ? user.tasks.find((task) => task.rejectMessage != "")
+        ? user.tasks.find((task) => task.rejectMessage !== "")
         : null;
     if (rejectedTask) {
       handleShowPopUpInfo(
@@ -73,7 +72,7 @@ function Tasks() {
 
     const partner =
       users && users.length > 0
-        ? users.find((u) => u.id == user.partnerId)
+        ? users.find((u) => u.id === user.partnerId)
         : null;
 
     if (partner) {
@@ -91,7 +90,7 @@ function Tasks() {
         setShowVerifyTask(false);
       }
     }
-  }, [users, currentUserId]);
+  }, [users, currentUserId, dispatch]);
 
   const handleTaskClick = (index) => {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
@@ -170,6 +169,7 @@ function Tasks() {
         } else if (filterCriteria === "espera") {
           return task.completed && !task.verified;
         }
+        return false;
       })
     : [];
 

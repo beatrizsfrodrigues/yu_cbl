@@ -16,11 +16,11 @@ const Home = () => {
   const dispatch = useDispatch();
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
   const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
+  //const usersStatus = useSelector((state) => state.users.status);
   const mascots = useSelector((state) => state.mascot.data);
-  const mascotsStatus = useSelector((state) => state.mascot.status);
+  //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
-  const closetStatus = useSelector((state) => state.closet.status);
+  //const closetStatus = useSelector((state) => state.closet.status);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
@@ -110,13 +110,13 @@ const Home = () => {
 
   const dressUp = (item) => {
     console.log(item.type);
-    if (item.type == "Backgrounds") {
+    if (item.type === "Backgrounds") {
       setSelectedBackground(item);
-    } else if (item.type == "Shirts") {
+    } else if (item.type === "Shirts") {
       setSelectedShirt(item);
-    } else if (item.type == "Decor") {
+    } else if (item.type === "Decor") {
       setSelectedAcc(item);
-    } else if (item.type == "SkinColor") {
+    } else if (item.type === "SkinColor") {
       setSelectedColor(item);
     }
   };
@@ -171,7 +171,7 @@ const Home = () => {
               ? `url(${
                   closet.find(
                     (item) =>
-                      item.id == currentMascot.accessoriesEquipped.background
+                      item.id === currentMascot.accessoriesEquipped.background
                   )?.src
                 })`
               : "",
@@ -235,7 +235,7 @@ const Home = () => {
                 className={`Yu `}
                 src={
                   closet.find(
-                    (item) => item.id == currentMascot.accessoriesEquipped.color
+                    (item) => item.id === currentMascot.accessoriesEquipped.color
                   )?.src
                 }
                 alt="YU logo"
@@ -274,28 +274,28 @@ const Home = () => {
                   alt={
                     closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.name
                   }
                   style={{
                     width: closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.width,
                     left: closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.left,
                     bottom: closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.bottom,
                     position: "absolute",
                   }}
                   src={
                     closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.src
                   }
                 />
@@ -333,24 +333,24 @@ const Home = () => {
                   className="accessory"
                   alt={
                     closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.name
                   }
                   style={{
                     width: closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.width,
                     left: closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.left,
                     bottom: closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.bottom,
                     position: "absolute",
                   }}
                   src={
                     closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.src
                   }
                 />

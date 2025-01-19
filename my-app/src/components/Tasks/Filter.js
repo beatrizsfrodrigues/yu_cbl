@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 
 function Filter({ filterCriteria, onFilterChange, onClose }) {
   const popupRef = useRef(null);
@@ -8,18 +8,21 @@ function Filter({ filterCriteria, onFilterChange, onClose }) {
     onClose();
   };
 
-  const handleClickOutside = (event) => {
-    if (popupRef.current && !popupRef.current.contains(event.target)) {
-      onClose();
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <div id="filter" ref={popupRef}>
