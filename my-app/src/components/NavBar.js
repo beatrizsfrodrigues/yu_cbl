@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Home as HomeIcon, Clipboard, User } from "react-feather";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
-  const navItems = [
-    { path: "/home",       icon: <HomeIcon />, label: "Home" },
-    { path: "/tasks",  icon: <Clipboard />, label: "Tarefas" },
-    { path: "/profile",icon: <User />,     label: "Perfil" },
-  ];
+  // Memoriza o array navItems para evitar recriações desnecessárias
+  const navItems = useMemo(() => [
+    { path: "/home", icon: <HomeIcon />, label: "Home" },
+    { path: "/tasks", icon: <Clipboard />, label: "Tarefas" },
+    { path: "/profile", icon: <User />, label: "Perfil" },
+  ], []);
+
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
+
   useEffect(() => {
     const currentIndex = navItems.findIndex((item) => item.path === location.pathname);
     if (currentIndex !== -1) {
@@ -23,7 +26,7 @@ function NavBar() {
       <div
         className="indicator"
         style={{
-            transform: `translateX(${activeIndex * 80 + 5}px) translateY(-70%)`,
+          transform: `translateX(${activeIndex * 80 + 5}px) translateY(-70%)`,
         }}
       />
 

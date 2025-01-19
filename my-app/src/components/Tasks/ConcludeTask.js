@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { X, UploadCloud, RefreshCw } from "react-feather";
 import { completeTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";

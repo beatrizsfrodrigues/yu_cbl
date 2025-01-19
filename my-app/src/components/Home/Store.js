@@ -102,7 +102,7 @@ const Store = ({
           <button className="buttonRound btnHomeActive" onClick={closeStore}>
             <img src={X} alt="Exit" />
           </button>
-          {selectedFit && selectedFit != "" ? (
+          {selectedFit && selectedFit !== "" ? (
             currentUser && currentUser.points >= selectedFit.value ? (
               <button
                 className="buttonMid btnHomeActive"
