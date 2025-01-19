@@ -95,15 +95,15 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
 
 
     <div className="modal">
-      <div className="info-pessoal-page">
+      
         <div className="window" style={{ display: "block" }}>
           <div className="info-header">
-            <button className="back-button" onClick={onBack}>
+            <button className="back-button" style={{ marginTop: "5%" }}onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
             <h3>Os meus dados</h3>
           </div>
-          <hr />
+          <div className="line"></div>
           <div className="settings-section">
             <form>
              {/*  <div className="form-group">
@@ -186,11 +186,12 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
             </div>
           </div>
         )}
+        
 
         
 
         </div>
-      </div>
+     
     </div>
     </>
   );
