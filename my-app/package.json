@@ -7,6 +7,8 @@
     "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.7",
     "cra-template": "1.2.0",
+    "framer-motion": "^11.18.0",
+    "motion": "^11.18.0",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.0.0",
@@ -24,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint \"src/**/*.{js,jsx}\" --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -43,5 +46,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "eslint": "^8.57.1"
   }
 }

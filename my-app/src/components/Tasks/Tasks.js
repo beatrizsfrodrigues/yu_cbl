@@ -8,7 +8,7 @@ import Messages from "./Messages.js";
 import ConcludeTask from "./ConcludeTask.js";
 import VerifyTask from "./VerifyTask.js";
 import VerifyPopUp from "./VerifyPopUp.js";
-import PopUpInfo from "./PopUpInfo.js";
+import PopUpInfo from "../PopUpInfo.js";
 import Filter from "./Filter.js";
 import Reject from "./Reject.js";
 import { MessageCircle, Plus, Sliders } from "react-feather";
@@ -19,7 +19,7 @@ function Tasks() {
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
-  const messages = useSelector((state) => state.messages.data);
+ // const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -53,13 +53,13 @@ function Tasks() {
   useEffect(() => {
     const user =
       users && users.length > 0
-        ? users.find((user) => user.id == currentUserId)
+        ? users.find((user) => user.id === currentUserId)
         : null;
     setCurrentUser(user);
 
     const rejectedTask =
       users && users.length > 0
-        ? user.tasks.find((task) => task.rejectMessage != "")
+        ? user.tasks.find((task) => task.rejectMessage !== "")
         : null;
     if (rejectedTask) {
       handleShowPopUpInfo(
@@ -73,7 +73,7 @@ function Tasks() {
 
     const partner =
       users && users.length > 0
-        ? users.find((u) => u.id == user.partnerId)
+        ? users.find((u) => u.id === user.partnerId)
         : null;
 
     if (partner) {
@@ -183,6 +183,7 @@ function Tasks() {
 
   return (
     <div className="mainBody" id="tasksBody">
+      <div className="backgroundDiv"></div>
       <div className="header">
         <h1>Lista de Tarefas</h1>
         <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
@@ -199,7 +200,11 @@ function Tasks() {
                   onClick={() => handleTaskClick(index)}
                 >
                   <p className="taskTitle">
-                    {toggledTaskIndex === index ? task.description : task.title}
+                    {toggledTaskIndex === index ? (
+                      task.description
+                    ) : (
+                      <b>{task.title}</b>
+                    )}
                   </p>
                 </div>
                 {!task.completed && !task.verified && (

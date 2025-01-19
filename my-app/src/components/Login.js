@@ -41,6 +41,7 @@ const Login = () => {
 
   return (
     <div className="mainBody">
+      <div className="backgroundDiv backgroundDiv2"></div>
       {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
         <div className="form-container">

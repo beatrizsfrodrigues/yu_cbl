@@ -69,9 +69,13 @@ function Messages({ onClose, currentUser }) {
     return <div>Error: {error}</div>;
   }
 
+  const partnerUser = currentUser.partnerId
+    ? users.find((user) => user.id === currentUser.partnerId)
+    : null;
+
   //* text messages
   let messageContent;
-  if (messages && messages.length > 0) {
+  if (currentUser.partnerId && messages && messages.length > 0) {
     const conversation = messages.find(
       (msg) =>
         msg.usersId.includes(currentUser.id) &&
@@ -141,7 +145,9 @@ function Messages({ onClose, currentUser }) {
           <button
             key={index}
             className="optionText"
-            onClick={() => handleAddMessage(message.message)}
+            onClick={
+              partnerUser ? () => handleAddMessage(message.message) : null
+            }
           >
             {message.message}
           </button>
@@ -162,7 +168,9 @@ function Messages({ onClose, currentUser }) {
           <button
             key={index}
             className="optionText"
-            onClick={() => handleAddMessage(message.message)}
+            onClick={
+              partnerUser ? () => handleAddMessage(message.message) : null
+            }
           >
             {message.message}
           </button>
@@ -179,13 +187,7 @@ function Messages({ onClose, currentUser }) {
     <div className="modal">
       <div className="window">
         <div className="header">
-          {currentUser.partnerId &&
-            (() => {
-              const partnerUser = users.find(
-                (user) => user.id === currentUser.partnerId
-              );
-              return partnerUser ? <h3>@{partnerUser.username}</h3> : null;
-            })()}
+          {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>@parceiro</h3>}
           <X className="closeWindow" onClick={onClose} />
         </div>
         <div className="line"></div>
@@ -194,7 +196,14 @@ function Messages({ onClose, currentUser }) {
           ref={textSpaceRef}
           className={isPresetMessagesOpen ? "textSpaceSmall" : ""}
         >
-          {messageContent}
+          {partnerUser ? (
+            messageContent
+          ) : (
+            <p>
+              Não tens parceiro para trocar mensagens! Cria uma ligação no
+              perfil.
+            </p>
+          )}
         </div>
         <div className="inputMessage" onClick={handleOpenPresetMessages}>
           <p>Deixa uma mensagem</p>

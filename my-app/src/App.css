@@ -1,4 +1,5 @@
 @import "./assets/css/variables.css";
+
 body {
   background-color: var(--white);
   display: flex;
@@ -23,12 +24,30 @@ body {
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
+  position: relative;
+}
+
+.backgroundDiv {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  z-index: -50;
+  background-image: url("/public/assets/Fundos/background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  top: 0px;
+  left: 0px;
+}
+
+.backgroundDiv2 {
+  background-image: url("/public/assets/Fundos/background2.png");
 }
 
 h1 {
   font-family: "Sour Gummy", serif;
   font-size: 32px;
   margin-bottom: 40px;
+  font-weight: 700;
 }
 
 button {
@@ -109,7 +128,7 @@ p {
   justify-content: center;
   align-items: center;
   position: fixed;
-  z-index: 1;
+  z-index: 5000;
   left: 0;
   top: 0;
   width: 100%;
@@ -171,7 +190,7 @@ p {
   justify-content: center;
   gap: 8px;
   text-align: center;
-  max-width: 300px;
+  max-width: 240px;
 }
 
 .laterLink {

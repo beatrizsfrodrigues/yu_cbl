@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchMessages, newConversation } from "../../redux/messagesSlice";
 import "./connection.css";
 import yu_icon from "../../assets/imgs/YU_icon/Group 48.svg";
 
 const Connection = () => {
+  const dispatch = useDispatch();
   const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
   const [userCode, setUserCode] = useState(null);
   const [userName, setUserName] = useState("");
@@ -11,7 +14,15 @@ const Connection = () => {
   const [partnerCode, setPartnerCode] = useState("");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  //const messages = useSelector((state) => state.messages.data);
+  const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (messagesStatus === "idle") {
+      dispatch(fetchMessages());
+    }
+  }, [messagesStatus, dispatch]);
 
   // Fetch LocalStorage
   useEffect(() => {
@@ -58,9 +69,16 @@ const Connection = () => {
       return;
     }
 
-    // Update partnerID for the connected users
-    const updatedCurrentUser = { ...currentUser, partnerID: partner.id };
-    const updatedPartner = { ...partner, partnerID: currentUser.id };
+    if (partner.partnerId) {
+      setMessage("Este utilizador já tem um parceiro.");
+      return;
+    }
+
+    // Update partnerId for the connected users
+    const updatedCurrentUser = { ...currentUser, partnerId: partner.id };
+    const updatedPartner = { ...partner, partnerId: currentUser.id };
+
+    console.log(partner.id);
 
     const updatedUsers = users.map((user) =>
       user.id === updatedCurrentUser.id
@@ -71,6 +89,10 @@ const Connection = () => {
     );
     localStorage.setItem("users", JSON.stringify(updatedUsers));
 
+    //* create msg object
+    dispatch(
+      newConversation({ userId: currentUser.id, partnerId: partner.id })
+    );
     setConnectedUserName(partner.username);
     setMessage("Conexão realizada com sucesso ✔");
     setPartnerCode(""); // Clear input

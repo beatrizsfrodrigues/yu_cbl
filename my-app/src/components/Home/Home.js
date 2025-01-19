@@ -4,7 +4,7 @@ import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import { ChevronDown } from "react-feather";
-import yu from "../../assets/imgs/YU_cores/YU-roxo.svg";
+import PopUpInfo from "../PopUpInfo.js";
 import Closet from "./Closet";
 import Store from "./Store";
 import Star from "../../assets/imgs/Icons_closet/Star.svg";
@@ -16,16 +16,18 @@ const Home = () => {
   const dispatch = useDispatch();
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
   const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
+  //const usersStatus = useSelector((state) => state.users.status);
   const mascots = useSelector((state) => state.mascot.data);
-  const mascotsStatus = useSelector((state) => state.mascot.status);
+  //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
-  const closetStatus = useSelector((state) => state.closet.status);
+  //const closetStatus = useSelector((state) => state.closet.status);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentMascot, setCurrentMascot] = useState(null);
+  const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
+  const [popUpMessage, setPopUpMessage] = useState("");
   //& things to buy
   const [selectedFit, setSelectedFit] = useState("");
 
@@ -38,38 +40,43 @@ const Home = () => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
+    const fetchData = async () => {
+      await dispatch(fetchUsers());
+      await dispatch(fetchMascot());
+      await dispatch(fetchCloset());
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   useEffect(() => {
-    if (mascotsStatus === "idle") {
-      dispatch(fetchMascot());
-    }
-  }, [mascotsStatus, dispatch]);
-
-  useEffect(() => {
-    if (closetStatus === "idle") {
-      dispatch(fetchCloset());
-    }
-  }, [closetStatus, dispatch]);
-
-  useEffect(() => {
+    console.log("Users:", users);
+    console.log("Current User ID:", currentUserId);
     const user =
       users && users.length > 0
-        ? users.find((user) => user.id == currentUserId)
+        ? users.find((user) => user.id === currentUserId)
         : null;
+    console.log("Current User:", user);
     setCurrentUser(user);
   }, [users, currentUserId]);
 
   useEffect(() => {
-    const mascot =
-      mascots && mascots.length > 0
-        ? mascots.find((mascot) => mascot.userId == currentUserId)
-        : null;
-    setCurrentMascot(mascot);
+    if (mascots && mascots.length > 0) {
+      const mascot = mascots.find((mascot) => mascot.userId === currentUserId);
+      setCurrentMascot(mascot);
+      console.log("Current Mascot:", mascot);
+    }
   }, [mascots, currentUserId]);
+
+  //* open and close pop-up info
+  const handleClosePopUpInfo = () => {
+    setIsPopUpInfoOpen(false);
+  };
+
+  const handleShowPopUpInfo = (message) => {
+    setPopUpMessage(message);
+    setIsPopUpInfoOpen(true);
+  };
 
   const openCloset = () => {
     setShowCloset(true);
@@ -80,6 +87,10 @@ const Home = () => {
     setShowStore(true);
     setShowDropdown(false);
   };
+
+  if (!currentUser || !currentMascot || !closet) {
+    return <div>Loading...</div>;
+  }
 
   const closeCloset = () => {
     setSelectedBackground("");
@@ -99,13 +110,13 @@ const Home = () => {
 
   const dressUp = (item) => {
     console.log(item.type);
-    if (item.type == "Backgrounds") {
+    if (item.type === "Backgrounds") {
       setSelectedBackground(item);
-    } else if (item.type == "Shirts") {
+    } else if (item.type === "Shirts") {
       setSelectedShirt(item);
-    } else if (item.type == "Decor") {
+    } else if (item.type === "Decor") {
       setSelectedAcc(item);
-    } else if (item.type == "SkinColor") {
+    } else if (item.type === "SkinColor") {
       setSelectedColor(item);
     }
   };
@@ -116,6 +127,10 @@ const Home = () => {
     dispatch(buyAcc({ price: selectedFit.value, userId: currentUserId }));
 
     setSelectedFit("");
+
+    handleShowPopUpInfo(
+      "Item comprado com sucesso! Acede ao teu armário para ver!"
+    );
   };
 
   const resetFit = () => {
@@ -139,11 +154,13 @@ const Home = () => {
         id: currentMascot.id,
       })
     );
+
+    handleShowPopUpInfo("Alterações guardadas com sucesso!");
   };
 
   return (
     <div className="homeContainer">
-      {currentUser && (
+      {currentUser && currentMascot && (
         <div
           style={{
             backgroundImage: selectedBackground
@@ -154,7 +171,7 @@ const Home = () => {
               ? `url(${
                   closet.find(
                     (item) =>
-                      item.id == currentMascot.accessoriesEquipped.background
+                      item.id === currentMascot.accessoriesEquipped.background
                   )?.src
                 })`
               : "",
@@ -164,7 +181,7 @@ const Home = () => {
           id="backgroundDiv"
         ></div>
       )}
-      {currentUser && (
+      {currentUser && currentMascot && (
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
@@ -218,7 +235,7 @@ const Home = () => {
                 className={`Yu `}
                 src={
                   closet.find(
-                    (item) => item.id == currentMascot.accessoriesEquipped.color
+                    (item) => item.id === currentMascot.accessoriesEquipped.color
                   )?.src
                 }
                 alt="YU logo"
@@ -257,28 +274,28 @@ const Home = () => {
                   alt={
                     closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.name
                   }
                   style={{
                     width: closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.width,
                     left: closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.left,
                     bottom: closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.bottom,
                     position: "absolute",
                   }}
                   src={
                     closet.find(
                       (item) =>
-                        item.id == currentMascot.accessoriesEquipped.shirt
+                        item.id === currentMascot.accessoriesEquipped.shirt
                     )?.src
                   }
                 />
@@ -316,24 +333,24 @@ const Home = () => {
                   className="accessory"
                   alt={
                     closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.name
                   }
                   style={{
                     width: closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.width,
                     left: closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.left,
                     bottom: closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.bottom,
                     position: "absolute",
                   }}
                   src={
                     closet.find(
-                      (item) => item.id == currentMascot.accessoriesEquipped.hat
+                      (item) => item.id === currentMascot.accessoriesEquipped.hat
                     )?.src
                   }
                 />
@@ -354,6 +371,7 @@ const Home = () => {
                 selectedColor={selectedColor}
                 saveOutfit={saveOutfit}
                 resetClothes={resetClothes}
+                onShowPopUpInfo={handleShowPopUpInfo}
               />
             </div>
           )}
@@ -369,10 +387,14 @@ const Home = () => {
                 selectedFit={selectedFit}
                 buyItemBtn={buyItemBtn}
                 resetFit={resetFit}
+                onShowPopUpInfo={handleShowPopUpInfo}
               />
             </div>
           )}
         </div>
+      )}
+      {isPopUpInfoOpen && (
+        <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
       )}
     </div>
   );

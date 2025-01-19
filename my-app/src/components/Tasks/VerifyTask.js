@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {} from "react";
+import { useDispatch } from "react-redux";
 import { validateTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
-import PopUpInfo from "./PopUpInfo.js";
 
 function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
   const dispatch = useDispatch();
@@ -41,6 +40,7 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
           <h5 className="titleTask">{task.title}</h5>
           <img
             id="proofImage"
+            //! folder with images while we don't have a bd
             src={`/imgsForUpload/${task.picture}`}
             alt={task.picture}
           />
