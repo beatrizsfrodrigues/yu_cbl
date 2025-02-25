@@ -12,7 +12,7 @@ const Welcome = () => {
   };
 
   return (
-    <div className="Welcome">
+    <div className="Welcome mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
       <img className="logo" src={logo} alt="YU Logo" width="300" />
       <div className="text-container">
