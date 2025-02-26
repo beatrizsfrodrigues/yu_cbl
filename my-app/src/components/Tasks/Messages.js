@@ -52,6 +52,11 @@ function Messages({ onClose, currentUser }) {
     setIsPresetMessagesOpen(!isPresetMessagesOpen);
   };
 
+  //* close preset text messages
+  const closePresetMessages = () => {
+    setIsPresetMessagesOpen(false);
+  };
+
   //* send a text message
   const handleAddMessage = (text) => {
     const senderId = currentUser.id;
@@ -194,7 +199,10 @@ function Messages({ onClose, currentUser }) {
         <div
           id="textSpace"
           ref={textSpaceRef}
-          className={isPresetMessagesOpen ? "textSpaceSmall" : ""}
+          className={`${
+            isPresetMessagesOpen ? "textSpaceSmall" : ""
+          } windowBody`}
+          onClick={closePresetMessages}
         >
           {partnerUser ? (
             messageContent

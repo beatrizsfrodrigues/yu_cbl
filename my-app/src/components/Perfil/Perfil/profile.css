@@ -15,10 +15,10 @@
  **********************************/
 .profile-container {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
-  justify-content: flex-start;
-  padding: 20px;
+  /* justify-content: flex-start;
+  padding: 20px; */
   gap: 20px;
 }
 /**********************************
@@ -29,13 +29,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  /* padding: 0 20px; */
 }
 
 .profile-title {
   margin: 0;
-  font-size: 1.8rem;
-  color: var(--purple-darker);
+  /* font-size: 1.8rem;
+  color: var(--purple-darker); */
 }
 
 .gear-icon {
