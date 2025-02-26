@@ -47,7 +47,26 @@
   font-size: 16px;
 }
 
+.start-button-light {
+  border-radius: 20px;
+  background: #e1d7e9;
+  width: 345px;
+  height: 52px;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #483e50;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 .start-button:hover {
   background-color: #7e6d8c;
+  transition: 0.3s ease;
+}
+
+.start-button-light:hover {
+  background-color: #cab9d8;
   transition: 0.3s ease;
 }
