@@ -8,12 +8,13 @@ nav {
   transform: translateX(-50%);
   background-color: var(--purple);
   border-radius: 40px;
-  height: 80px;
+  height: 60px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   box-sizing: border-box;
-  max-width: 90%;
+  width: 70vw;
+  max-width: 400px;
   z-index: 1;
 }
 
@@ -28,13 +29,13 @@ nav {
   justify-content: center;
   text-decoration: none;
   color: var(--white);
-  font-size: 28px;
+  font-size: 40px;
   transition: transform 0.3s ease;
   z-index: 1;
 }
 
 .navItem.active {
-  transform: scale(1.8) translateY(-10%);
+  transform: scale(1.4) translateY(-10%);
 }
 
 /********************************
@@ -47,9 +48,9 @@ nav {
   height: 70px;
   border-radius: 50%;
   background-color: var(--purple);
-  transform: translateY(-50%);
+  transform: translateY(10%);
   transition: transform 0.4s ease-in-out;
   z-index: 0;
   border: 4px solid #fff;
-  left: -1%;
+  /* left: -1%; */
 }
