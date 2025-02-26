@@ -31,7 +31,7 @@ jobs:
         working-directory: my-app
 
       - name: Build Project (skip linting)
-        run: npm run build
+        run: NODE_ENV=production CI=false npm run build
         working-directory: my-app
 
       - name: Deploy to Vercel
