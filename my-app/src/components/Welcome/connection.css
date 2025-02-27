@@ -1,164 +1,163 @@
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .connection-page {
-    text-align: center;
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .page-title {
-    font-size: 30px;
-    font-weight: bold;
-    color: black;
-    margin-bottom: 10px;
-    margin-top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .page-desc {
-    font-size: 15px;
-    color: black;
-    font-weight: lighter;
-    margin-bottom: 35px;
+  font-size: 15px;
+  color: black;
+  font-weight: lighter;
+  margin-bottom: 35px;
 }
 
 .connection-placeholder {
-    margin: 30px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .profile-images {
-    display: flex;
-    justify-content: space-between;
-    gap: 70px;
-    position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 70px;
+  position: relative;
 }
 
 .profile-images::after {
-    content: "";
-    position: absolute;
-    top: 60%;
-    left: 0;
-    right: 0;
-    border-top: 4px dashed #b49bc7;
-    transform: translateY(-50%);
-    z-index: -1;
-    margin: 0 5px 0 5px;
+  content: "";
+  position: absolute;
+  top: 60%;
+  left: 0;
+  right: 0;
+  border-top: 4px dashed #b49bc7;
+  transform: translateY(-50%);
+  z-index: -1;
+  margin: 0 5px 0 5px;
 }
 
 .profile-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-label {
-    font-size: 1rem;
-    font-weight: bold;
-    color: rgb(74, 74, 74);
-    margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgb(74, 74, 74);
+  margin-bottom: 10px;
 }
 
 .profile-img {
-    width: 120px;
-    height: 120px;
-    background-color: #e0e0e0;
-    border-radius: 50%;
-    display: inline-block;
-    object-fit: cover;
-    transition: filter 0.3s ease;
-    /* Ensure smooth transition */
+  width: 120px;
+  height: 120px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: inline-block;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+  /* Ensure smooth transition */
 }
 
-.message{
-    font-size: 15px;
-    color: #b49bc7;
+.message {
+  font-size: 15px;
+  color: #b49bc7;
 }
 
 .grayscale {
-    filter: grayscale(100%) !important;
-    /* Forcefully apply grayscale */
+  filter: grayscale(100%) !important;
+  /* Forcefully apply grayscale */
 }
 
 .profile-placeholder {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .input-section {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .input-label {
-    display: block;
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 10px;
+  display: block;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 10px;
 }
 
 .code-input {
-    width: 85%;
-    margin-top: 20px;
-    padding: 15px 30px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    outline: #cdcdcd 3px solid;
+  border: 2px solid var(--purple-dark);
+  border-radius: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  font-family: "Quicksand", serif;
+  font-size: 16px;
 }
 
 .code-input:focus {
-    outline: #b49bc7 2px solid;
+  outline: #b49bc7 2px solid;
 }
 
 .confirm-button {
-    width: 100%;
-    padding: 15px 30px;
-    background-color: #b49bc7;
-    color: #fff;
-    font-size: 1rem;
-    border: none;
-    border-radius: 20px;
-    transition: background-color 0.3s;
-    cursor: pointer;
+  width: 100%;
+  padding: 15px 30px;
+  background-color: #b49bc7;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+  cursor: pointer;
 }
 
 .confirm-button:hover {
-    background-color: #a09f9f;
+  background-color: #a09f9f;
 }
 
 .footer-text {
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: 20px;
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 20px;
 }
 
 .create-link {
-    color: #b49bc7;
-    text-decoration: none;
-    font-weight: bold;
+  color: #b49bc7;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .create-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .skip-button {
-    color: #b49bc7;
-    /* text-decoration: none; */
-    font-weight: bold;
+  color: #b49bc7;
+  /* text-decoration: none; */
+  font-weight: bold;
 }
 
-.skip-section{
-    margin: 20px;
-    font-size: 0.9rem;
+.skip-section {
+  margin: 20px;
+  font-size: 0.9rem;
 }
