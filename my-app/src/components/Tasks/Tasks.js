@@ -283,20 +283,23 @@ function Tasks() {
           <div>Não existem tarefas disponíveis.</div>
         )}
       </div>
+
       <button
         id="newTask"
         className="btnRound"
         onClick={handleOpenNewTaskModal}
       >
-        <Plus />
+        <i class="bi bi-plus"></i>
       </button>
+
       <button
         id="textBtn"
         className="btnRound"
         onClick={handleOpenMessagesModal}
       >
-        <MessageCircle />
+        <i className="bi bi-chat-dots"></i>
       </button>
+
 
       {showVerifyTask && partnerUser && (
         <VerifyPopUp

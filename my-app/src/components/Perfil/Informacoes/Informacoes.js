@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 import "../Informacoes/informacoes.css";
 
 const Informacoes = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-
   const pages = [
     {
       title: "SOS Voz Amiga",
@@ -32,10 +34,6 @@ const Informacoes = () => {
       link: "https://saudemental.min-saude.pt",
     },
   ];
-
-  const handlePageChange = (index) => {
-    setCurrentPage(index);
-  };
 
   return (
     <div className="informacoes-container mainBody">
@@ -80,40 +78,40 @@ const Informacoes = () => {
         <h2>Nunca estás sozinho</h2>
         <p>Se precisares de ajuda, pede. Não tenhas vergonha.</p>
 
-        {/* Página atual de apoio */}
-        <div className="contact-info">
-          <h3>{pages[currentPage].title}</h3>
-          <p>{pages[currentPage].description}</p>
-          <p>
-            <strong>Telefone:</strong> {pages[currentPage].contact.join(" | ")}
-          </p>
-          {pages[currentPage].email && (
-            <p>
-              <strong>Email:</strong> {pages[currentPage].email}
-            </p>
-          )}
-          <a
-            href={pages[currentPage].link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Mais informações
-          </a>
-        </div>
+        {/* Swiper Slider para exibir os contactos de apoio */}
+        <Swiper
+          modules={[Pagination]}
+          spaceBetween={20}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          className="contact-slider"
+        >
+          {pages.map((page, index) => (
+            <SwiperSlide key={index}>
+              <div className="contact-info">
+                <h3>{page.title}</h3>
+                <p>{page.description}</p>
+                <p>
+                  <strong>Telefone:</strong> {page.contact.join(" | ")}
+                </p>
+                {page.email && (
+                  <p>
+                    <strong>Email:</strong> {page.email}
+                  </p>
+                )}
+                <a
+                  href={page.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Mais informações
+                </a>
+                <br></br>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </section>
-
-      {/* Paginação */}
-      <div className="pagination">
-        {pages.map((_, index) => (
-          <button
-            key={index}
-            className={`pagination-dot ${
-              index === currentPage ? "active" : ""
-            }`}
-            onClick={() => handlePageChange(index)}
-          ></button>
-        ))}
-      </div>
     </div>
   );
 };
