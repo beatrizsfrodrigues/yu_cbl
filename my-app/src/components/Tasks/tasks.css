@@ -86,6 +86,10 @@
   font-size: 40px;
 }
 
+#newTask:active {
+  background-color: var(--purple-darker); /* Catarina a mexer */
+}
+
 #textBtn {
   position: fixed;
   bottom: 120px;
@@ -95,6 +99,10 @@
   background-color: var(--orange);
   color: var(--white);
   font-size: 40px;
+}
+
+#textBtn:active {
+  background-color: var(--orange-dark); /* Catarina a mexer */
 }
 
 #newTaskForm {
@@ -167,17 +175,18 @@
 }
 
 .inputMessage {
-  display: flex;
-  align-items: start;
-  justify-content: start;
-  padding-left: 16px;
-  height: 48px;
-  border: 1px solid var(--purple-darker);
+  border: 2px solid var(--purple-dark);
   border-radius: 16px;
-  font-size: 16px;
-  color: var(--purple-dark);
-  text-align: left;
   width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  font-family: "Quicksand", serif;
+  font-size: 16px;
+}
+
+.descriptionInput {
+  height: 140px;
+  resize: none;
 }
 
 .inputMessage p {

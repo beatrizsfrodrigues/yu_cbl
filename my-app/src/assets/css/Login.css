@@ -48,7 +48,7 @@ label {
   /* Maintain aspect ratio */
 }
 
-.form-container input{
+/*.form-container input{
   border-radius: 20px;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background: #fff;
@@ -56,8 +56,23 @@ label {
   height: 40px;
   flex-shrink: 0;
   z-index: 0;
-  /* Ensure it's above the bolas */
+  /* Ensure it's above the bolas 
   position: relative;
+}*/
+
+.form-input {
+  border: 2px solid var(--purple-dark);
+  border-radius: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  font-family: "Quicksand", serif;
+  font-size: 16px;
+}
+
+.descriptionInput {
+  height: 140px;
+  resize: none;
 }
 
 .buttonBig {

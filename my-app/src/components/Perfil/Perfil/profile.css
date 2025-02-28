@@ -99,12 +99,24 @@
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
+.award:active {
+  background-color: var(--green-dark); /* Catarina a mexer */
+}
+
 .award {
   background-color: var(--green);
 }
 
+.circle:active {
+  background-color: var(--blue-dark); /* Catarina a mexer */
+}
+
 .circle {
   background-color: var(--blue);
+}
+
+.dots:active {
+  background-color: var(--orange-dark); /* Catarina a mexer */
 }
 
 .dots {
