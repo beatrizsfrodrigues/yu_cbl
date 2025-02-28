@@ -6,9 +6,14 @@ import logo from "../../assets/imgs/YU_logo/YU.svg";
 const Welcome = () => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClickRegister = () => {
     console.log("Button clicked");
     navigate("/register");
+  };
+
+  const handleClickLogin = () => {
+    console.log("Button clicked");
+    navigate("/login");
   };
 
   return (
@@ -21,8 +26,11 @@ const Welcome = () => {
           Vamos iniciar esta jornada para <br></br> conquistares os teus
           objetivos.
         </div>
-        <button type="submit" className="start-button" onClick={handleClick}>
-          Começar
+        <button type="submit" className="start-button" onClick={handleClickRegister}>
+          Register
+        </button>
+        <button type="submit" className="start-button-light" onClick={handleClickLogin}>
+          Login
         </button>
       </div>
     </div>
