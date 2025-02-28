@@ -86,6 +86,10 @@
   font-size: 40px;
 }
 
+#newTask:active {
+  background-color: var(--purple-darker); /* Catarina a mexer */
+}
+
 #textBtn {
   position: fixed;
   bottom: 120px;
@@ -95,6 +99,10 @@
   background-color: var(--orange);
   color: var(--white);
   font-size: 40px;
+}
+
+#textBtn:active {
+  background-color: var(--orange-dark); /* Catarina a mexer */
 }
 
 #newTaskForm {
