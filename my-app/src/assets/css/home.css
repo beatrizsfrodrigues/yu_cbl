@@ -222,6 +222,18 @@
   line-height: 1.5;
 }
 
+.buttonsCloset:active {
+  background-color: var(--orange-dark); /* Catarina a mexer */
+}
+
+.dropdown.open:active {
+  background-color: var(--orange-dark);
+}
+
+.dropdown.open button:active {
+  background-color: var(--orange-dark);
+}
+
 .closetHeader {
   display: flex;
   align-items: center;
@@ -299,3 +311,8 @@
   justify-content: center;
   z-index: 1000;
 }
+
+.buttonRound.btnHomeActive:active,
+.buttonMid.btnHomeActive:active {
+  background-color: var(--purple-darker);
+} /* catarina a mexer */
