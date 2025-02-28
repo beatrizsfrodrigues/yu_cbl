@@ -87,6 +87,10 @@ label {
   color: red;
 }
 
+.password-info-button {
+  color: red;
+}
+
 .password-requirements {
   padding: 20px;
   margin: 0;
