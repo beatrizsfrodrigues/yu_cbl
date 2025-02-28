@@ -1,3 +1,7 @@
+#tasksBody {
+  position: relative;
+}
+
 .taskDivOp {
   display: flex;
   width: 100%;
@@ -12,6 +16,19 @@
   padding: 2px 8px;
   width: 100%;
   font-size: 16px;
+}
+
+.taskDiv {
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+}
+
+.taskDiv.swiped {
+  transform: translateX(-100px); /* Move left */
+}
+
+.taskDiv.reset {
+  transform: translateX(0); /* Move back */
 }
 
 .taskDone {
@@ -33,6 +50,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 40px;
 }
 
 .taskTitle {
@@ -40,14 +58,15 @@
   width: 80%;
 }
 
-#tasksBody {
-  position: relative;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0;
+}
+
+.header > h1 {
+  margin: 0px;
 }
 
 .sliders {
@@ -70,7 +89,9 @@
 #textBtn {
   position: fixed;
   bottom: 120px;
-  right: 60px;
+  left: calc(
+    50% + 32px + 60px
+  ); /* 32px is half the width of newTask, plus 10px gap */
   background-color: var(--orange);
   color: var(--white);
   font-size: 40px;
@@ -271,14 +292,15 @@
   gap: 8px;
   padding: 16px;
   border-radius: 24px;
-  width: 200px;
+  width: 160px;
   position: fixed;
-  top: 120px;
+  top: 90px;
   right: 24px;
 }
 
 #filter button {
   background-color: var(--purple-lighter);
+  font-size: 14px;
 }
 
 .activeFilter {

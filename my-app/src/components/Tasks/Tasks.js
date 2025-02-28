@@ -19,7 +19,6 @@ function Tasks() {
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
- // const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -36,6 +35,10 @@ function Tasks() {
   const [partnerUser, setPartnerUser] = useState(null);
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
+  const [swipedTask, setSwipedTask] = useState(null);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchMoveX, setTouchMoveX] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false); // Track actual swipe
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -91,7 +94,7 @@ function Tasks() {
         setShowVerifyTask(false);
       }
     }
-  }, [users, currentUserId]);
+  }, [users, currentUserId, dispatch]);
 
   const handleTaskClick = (index) => {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
@@ -159,6 +162,40 @@ function Tasks() {
     setIsRejectOpen(false);
   };
 
+  const handleTouchStart = (index, e) => {
+    setTouchStartX(e.touches[0].clientX);
+    setSwipedTask(index);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchMoveX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (swipedTask !== null) {
+      const swipeDistance = touchStartX - touchMoveX;
+      console.log(swipeDistance);
+      console.log(touchStartX);
+      console.log(touchMoveX);
+      const taskElement = document.getElementById(`task-${swipedTask}`);
+
+      if (swipeDistance > 50 && touchMoveX !== 0) {
+        // Swipe Left
+        taskElement.classList.add("swiped");
+        taskElement.classList.remove("reset");
+      } else if (swipeDistance < -50) {
+        // Swipe Right (Undo Swipe)
+        taskElement.classList.remove("swiped");
+        taskElement.classList.add("reset");
+      }
+
+      setTimeout(() => {
+        taskElement.classList.remove("reset"); // Ensure smooth transition
+      }, 300);
+    }
+    setSwipedTask(null);
+  };
+
   const filteredTasks = currentUser
     ? currentUser.tasks.filter((task) => {
         if (filterCriteria === "todas") {
@@ -170,6 +207,7 @@ function Tasks() {
         } else if (filterCriteria === "espera") {
           return task.completed && !task.verified;
         }
+        return false;
       })
     : [];
 
@@ -192,31 +230,41 @@ function Tasks() {
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) =>
             !task.completed && !task.verified ? (
-              <div className="taskDivOp" key={index}>
-                <div
-                  className={`taskDiv ${
-                    toggledTaskIndex === index ? "toggled" : ""
-                  }`}
-                  onClick={() => handleTaskClick(index)}
-                >
-                  <p className="taskTitle">
-                    {toggledTaskIndex === index ? (
-                      task.description
-                    ) : (
-                      <b>{task.title}</b>
-                    )}
-                  </p>
-                </div>
-                {!task.completed && !task.verified && (
-                  <button
-                    className="doneTask"
-                    onClick={() => handleOpenConcludeTaskModal(task)}
-                  >
-                    Concluir
-                  </button>
-                )}
+              <div
+                key={index}
+                id={`task-${index}`}
+                className="taskDiv"
+                onTouchStart={(e) => handleTouchStart(index, e)}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                <p className="taskTitle">{task.title}</p>
               </div>
             ) : (
+              // <div className="taskDivOp" key={index}>
+              //   <div
+              //     className={`taskDiv ${
+              //       toggledTaskIndex === index ? "toggled" : ""
+              //     }`}
+              //     onClick={() => handleTaskClick(index)}
+              //   >
+              //     <p className="taskTitle">
+              //       {toggledTaskIndex === index ? (
+              //         task.description
+              //       ) : (
+              //         <b>{task.title}</b>
+              //       )}
+              //     </p>
+              //   </div>
+              //   {!task.completed && !task.verified && (
+              //     <button
+              //       className="doneTask"
+              //       onClick={() => handleOpenConcludeTaskModal(task)}
+              //     >
+              //       Concluir
+              //     </button>
+              //   )}
+              // </div>
               <div className="taskDivOp " key={index}>
                 <div
                   className={`taskDiv taskDone ${
