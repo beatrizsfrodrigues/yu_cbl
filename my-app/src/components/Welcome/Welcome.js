@@ -1,7 +1,7 @@
 import React from "react";
 import "./welcome.css";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
+import logo from "../../assets/imgs/YU_logo/YU.svg";
 
 const Welcome = () => {
   const navigate = useNavigate();
