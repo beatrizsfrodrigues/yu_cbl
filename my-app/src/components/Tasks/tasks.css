@@ -78,24 +78,51 @@
 /** new task window */
 
 #newTask {
+  width: 65px; /* Ajusta o tamanho do botão */
+  height: 65px;
   position: fixed;
   bottom: 120px;
   left: calc(50% - 32px);
-  background-color: var(--purple-dark);
+  background-color: var(--green);
+  border: 1px solid rgb(179, 216, 142);
   color: var(--white);
   font-size: 40px;
 }
 
-#textBtn {
+/* Ícone dentro do botão */
+#newTask i {
+  font-size: 1.8rem; /* tamanho do ícone */
+  color: rgb(0, 0, 0); /* Ícone com contorno preto */
+}
+
+ #textBtn {
+  width: 65px; /* Ajusta o tamanho do botão */
+  height: 65px;
+  background-color: #f4a261; /* Cor de fundo */
+  border-radius: 50%; /* Torna o botão circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(229, 167, 110);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
   position: fixed;
   bottom: 120px;
   left: calc(
     50% + 32px + 60px
   ); /* 32px is half the width of newTask, plus 10px gap */
   background-color: var(--orange);
-  color: var(--white);
   font-size: 40px;
 }
+
+/* Ícone dentro do botão */
+#textBtn i {
+  font-size: 1.8rem; /* tamanho do ícone */
+  color: rgb(0, 0, 0); /* Ícone com contorno preto */
+}
+
+ 
+
 
 #newTaskForm {
   display: flex;

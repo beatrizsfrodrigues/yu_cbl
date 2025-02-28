@@ -94,21 +94,23 @@
   justify-content: center;
   color: var(--purple-darker);
   font-size: 2rem;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .award {
   background-color: var(--green);
+  border: 1px solid rgb(179, 216, 142);
 }
 
 .circle {
   background-color: var(--blue);
+  border: 1px solid rgb(118, 186, 171);
 }
 
 .dots {
   background-color: var(--orange);
+  border: 1px solid rgb(229, 167, 110);
 }
 
 .profile-button:hover {
