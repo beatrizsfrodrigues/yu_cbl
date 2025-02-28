@@ -1,3 +1,7 @@
+#tasksBody {
+  position: relative;
+}
+
 .taskDivOp {
   display: flex;
   width: 100%;
@@ -12,6 +16,19 @@
   padding: 2px 8px;
   width: 100%;
   font-size: 16px;
+}
+
+.taskDiv {
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+}
+
+.taskDiv.swiped {
+  transform: translateX(-100px); /* Move left */
+}
+
+.taskDiv.reset {
+  transform: translateX(0); /* Move back */
 }
 
 .taskDone {
@@ -33,6 +50,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 40px;
 }
 
 .taskTitle {
@@ -40,14 +58,15 @@
   width: 80%;
 }
 
-#tasksBody {
-  position: relative;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0;
+}
+
+.header > h1 {
+  margin: 0px;
 }
 
 .sliders {
@@ -59,21 +78,49 @@
 /** new task window */
 
 #newTask {
+  width: 65px; /* Ajusta o tamanho do botão */
+  height: 65px;
   position: fixed;
   bottom: 120px;
   left: calc(50% - 32px);
-  background-color: var(--purple-dark);
+  background-color: var(--green);
+  border: 1px solid rgb(179, 216, 142);
   color: var(--white);
   font-size: 40px;
 }
 
-#textBtn {
+
+#newTask i {
+  font-size: 1.8rem; /* tamanho do ícone */
+  color: rgb(0, 0, 0); /* Ícone com contorno preto */
+}
+
+ #textBtn {
+
+   
   position: fixed;
   bottom: 120px;
-  right: 60px;
+  left: calc(
+    50% + 32px + 60px
+  ); /* 32px is half the width of newTask, plus 10px gap */
   background-color: var(--orange);
   color: var(--white);
   font-size: 40px;
+}
+
+#newTask:active {
+  background-color: var(--purple-darker); /* Catarina a mexer */
+}
+
+/* Ícone dentro do botão */
+#textBtn i {
+  font-size: 1.8rem; /* tamanho do ícone */
+  color: rgb(0, 0, 0); /* Ícone com contorno preto */
+}
+
+
+#textBtn:active {
+  background-color: var(--orange-dark); /* Catarina a mexer */
 }
 
 #newTaskForm {
@@ -146,17 +193,18 @@
 }
 
 .inputMessage {
-  display: flex;
-  align-items: start;
-  justify-content: start;
-  padding-left: 16px;
-  height: 48px;
-  border: 1px solid var(--purple-darker);
+  border: 2px solid var(--purple-dark);
   border-radius: 16px;
-  font-size: 16px;
-  color: var(--purple-dark);
-  text-align: left;
   width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  font-family: "Quicksand", serif;
+  font-size: 16px;
+}
+
+.descriptionInput {
+  height: 140px;
+  resize: none;
 }
 
 .inputMessage p {
@@ -271,14 +319,15 @@
   gap: 8px;
   padding: 16px;
   border-radius: 24px;
-  width: 200px;
+  width: 160px;
   position: fixed;
-  top: 120px;
+  top: 90px;
   right: 24px;
 }
 
 #filter button {
   background-color: var(--purple-lighter);
+  font-size: 14px;
 }
 
 .activeFilter {

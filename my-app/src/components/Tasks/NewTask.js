@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { X } from "react-feather";
 import { addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";

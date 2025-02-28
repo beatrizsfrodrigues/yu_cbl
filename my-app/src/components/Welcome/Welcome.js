@@ -1,7 +1,7 @@
 import React from "react";
 import "./welcome.css";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
+import logo from "../../assets/imgs/YU_logo/YU.svg";
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const Welcome = () => {
   };
 
   return (
-    <div className="Welcome">
+    <div className="Welcome mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
       <img className="logo" src={logo} alt="YU Logo" width="300" />
       <div className="text-container">

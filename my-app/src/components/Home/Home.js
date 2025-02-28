@@ -235,7 +235,8 @@ const Home = () => {
                 className={`Yu `}
                 src={
                   closet.find(
-                    (item) => item.id === currentMascot.accessoriesEquipped.color
+                    (item) =>
+                      item.id === currentMascot.accessoriesEquipped.color
                   )?.src
                 }
                 alt="YU logo"
@@ -333,24 +334,29 @@ const Home = () => {
                   className="accessory"
                   alt={
                     closet.find(
-                      (item) => item.id === currentMascot.accessoriesEquipped.hat
+                      (item) =>
+                        item.id === currentMascot.accessoriesEquipped.hat
                     )?.name
                   }
                   style={{
                     width: closet.find(
-                      (item) => item.id === currentMascot.accessoriesEquipped.hat
+                      (item) =>
+                        item.id === currentMascot.accessoriesEquipped.hat
                     )?.width,
                     left: closet.find(
-                      (item) => item.id === currentMascot.accessoriesEquipped.hat
+                      (item) =>
+                        item.id === currentMascot.accessoriesEquipped.hat
                     )?.left,
                     bottom: closet.find(
-                      (item) => item.id === currentMascot.accessoriesEquipped.hat
+                      (item) =>
+                        item.id === currentMascot.accessoriesEquipped.hat
                     )?.bottom,
                     position: "absolute",
                   }}
                   src={
                     closet.find(
-                      (item) => item.id === currentMascot.accessoriesEquipped.hat
+                      (item) =>
+                        item.id === currentMascot.accessoriesEquipped.hat
                     )?.src
                   }
                 />

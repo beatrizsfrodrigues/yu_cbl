@@ -5,17 +5,22 @@ import "../assets/css/NavBar.css";
 
 function NavBar() {
   // Memoriza o array navItems para evitar recriações desnecessárias
-  const navItems = useMemo(() => [
-    { path: "/home", icon: <HomeIcon />, label: "Home" },
-    { path: "/tasks", icon: <Clipboard />, label: "Tarefas" },
-    { path: "/profile", icon: <User />, label: "Perfil" },
-  ], []);
+  const navItems = useMemo(
+    () => [
+      { path: "/home", icon: <HomeIcon />, label: "Home" },
+      { path: "/tasks", icon: <Clipboard />, label: "Tarefas" },
+      { path: "/profile", icon: <User />, label: "Perfil" },
+    ],
+    []
+  );
 
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const currentIndex = navItems.findIndex((item) => item.path === location.pathname);
+    const currentIndex = navItems.findIndex(
+      (item) => item.path === location.pathname
+    );
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
@@ -26,7 +31,7 @@ function NavBar() {
       <div
         className="indicator"
         style={{
-          transform: `translateX(${activeIndex * 80 + 5}px) translateY(-70%)`,
+          transform: `translateX(${activeIndex * 80 - 80}px) translateY(-70%)`,
         }}
       />
 
@@ -34,6 +39,7 @@ function NavBar() {
         <NavLink
           key={item.path}
           to={item.path}
+          size={60}
           className={`navItem ${activeIndex === index ? "active" : ""}`}
         >
           {item.icon}
