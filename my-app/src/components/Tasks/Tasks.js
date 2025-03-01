@@ -247,9 +247,10 @@ function Tasks() {
                 >
                   <p
                     className="taskTitle"
-                    onClick={() => handleTaskClick(index)}
+                    // onClick={() => handleTaskClick(index)}
                   >
-                    {toggledTaskIndex === index ? task.description : task.title}
+                    {task.title}
+                    {/* {toggledTaskIndex === index ? task.description : task.title} */}
                   </p>
                 </div>
               </div>
