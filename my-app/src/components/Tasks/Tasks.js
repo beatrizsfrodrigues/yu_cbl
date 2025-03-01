@@ -170,6 +170,7 @@ function Tasks() {
   const handleTouchMove = (e) => {
     setTouchMoveX(e.touches[0].clientX);
   };
+  // teste
 
   const handleTouchEnd = () => {
     if (swipedTask !== null) {
@@ -299,7 +300,6 @@ function Tasks() {
       >
         <i className="bi bi-chat-dots"></i>
       </button>
-
 
       {showVerifyTask && partnerUser && (
         <VerifyPopUp
