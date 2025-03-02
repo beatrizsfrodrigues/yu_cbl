@@ -170,6 +170,7 @@ function Tasks() {
   const handleTouchMove = (e) => {
     setTouchMoveX(e.touches[0].clientX);
   };
+  // teste
 
   const handleTouchEnd = () => {
     if (swipedTask !== null) {
@@ -230,15 +231,28 @@ function Tasks() {
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) =>
             !task.completed && !task.verified ? (
-              <div
-                key={index}
-                id={`task-${index}`}
-                className="taskDiv"
-                onTouchStart={(e) => handleTouchStart(index, e)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-              >
-                <p className="taskTitle">{task.title}</p>
+              <div key={index} className="taskWrapper">
+                {/* Buttons that appear when swiped */}
+                <div className="taskButtons">
+                  <button className="btnComplete">Concluir</button>
+                  <button className="btnDelete">Apagar</button>
+                </div>
+                <div
+                  key={index}
+                  id={`task-${index}`}
+                  className="taskDiv"
+                  onTouchStart={(e) => handleTouchStart(index, e)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <p
+                    className="taskTitle"
+                    // onClick={() => handleTaskClick(index)}
+                  >
+                    {task.title}
+                    {/* {toggledTaskIndex === index ? task.description : task.title} */}
+                  </p>
+                </div>
               </div>
             ) : (
               // <div className="taskDivOp" key={index}>
@@ -299,7 +313,6 @@ function Tasks() {
       >
         <i className="bi bi-chat-dots"></i>
       </button>
-
 
       {showVerifyTask && partnerUser && (
         <VerifyPopUp

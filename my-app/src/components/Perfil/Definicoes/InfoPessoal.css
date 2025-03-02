@@ -1,20 +1,22 @@
-input {
+input{
   width: 100%;
   padding: 8px;
   display: block;
-  margin: 4px 0;
+  margin: 4px 0 ;
   border-radius: 16px;
 }
 
-/* 
-  .window div{
+
+/* .window div{
     display: block !important;
     gap: 16px;
   } */
 
+
 /* Botão "Guardar" */
 .save-button {
-  margin-top: 20px; /* Move o botão para baixo */
+  margin-top: 20px;
+  /* Move o botão para baixo */
   background-color: var(--purple-light);
   color: #fff;
   border: none;
@@ -45,15 +47,21 @@ input {
   color: var(--purple-darker);
   display: flex;
   align-items: center;
-  margin-left: 5%; /* Define o deslocamento horizontal */
-  margin-top: 15%; /* Aumente este valor para mover o botão para baixo */
+  margin-left: 5%;
+  /* Define o deslocamento horizontal */
+  margin-top: 15%;
+  /* Aumente este valor para mover o botão para baixo */
 }
+
 
 .info-pessoal-page .info-header {
   display: flex;
   align-items: center;
   gap: 10px;
+
+
 }
+
 
 hr {
   margin: 15px 0;
@@ -66,7 +74,7 @@ hr {
   display: flex;
   flex-direction: column;
   margin-bottom: 2px;
-  gap: 16px;
+  gap: 16px
 }
 
 .form-group label {
@@ -117,6 +125,7 @@ hr {
 
 /* Modal principal */
 
+
 /* Conteúdo do modal */
 .info-pessoal-page .confirm-modal-content {
   display: flex;
@@ -153,6 +162,10 @@ hr {
   margin-top: 10px;
 }
 
+
+
+
+
 /* Botões */
 .info-pessoal-page .confirm-modal-buttons .confirm-button,
 .info-pessoal-page .confirm-modal-buttons .cancel-button {
@@ -171,6 +184,7 @@ hr {
   background-color: var(--purple-light);
   color: white;
 }
+
 .info-pessoal-page .confirm-modal-buttons .confirm-button:hover {
   background-color: var(--purple-darker);
   transform: scale(1.05);
@@ -182,6 +196,7 @@ hr {
   color: white;
   margin-left: 10%;
 }
+
 .info-pessoal-page .confirm-modal-buttons .cancel-button:hover {
   background-color: var(--orange-darker);
   transform: scale(1.05);
@@ -193,6 +208,7 @@ hr {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -212,7 +228,8 @@ hr {
   font-size: 16px;
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 2s ease-in-out, transform 2s ease-in-out; /* Controle suave */
+  transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+  /* Controle suave */
 }
 
 .notification.hidden {
