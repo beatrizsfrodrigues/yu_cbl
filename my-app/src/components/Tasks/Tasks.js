@@ -231,20 +231,31 @@ function Tasks() {
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) =>
             !task.completed && !task.verified ? (
-              <div
-                key={index}
-                id={`task-${index}`}
-                className="taskWrap"
-                onTouchStart={(e) => handleTouchStart(index, e)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-              >
-                <div className="taskDiv">
-                  <p className="taskTitle">{task.title}</p>{" "}
-                </div>
+              <div className="taskDivOp">
                 <div className="btnTaskGroup">
                   <button className="btnTask">Recusar</button>
                   <button className="btnTask">Concluir</button>
+                </div>
+                <div className="btnTaskGroup">
+                  <button className="btnTask">Recusar</button>
+                  <button
+                    className="btnTask"
+                    onClick={() => handleOpenConcludeTaskModal(task)}
+                  >
+                    Concluir
+                  </button>
+                </div>
+                <div
+                  key={index}
+                  id={`task-${index}`}
+                  className="taskWrap"
+                  onTouchStart={(e) => handleTouchStart(index, e)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <div className="taskDiv">
+                    <p className="taskTitle">{task.title}</p>{" "}
+                  </div>
                 </div>
               </div>
             ) : (
