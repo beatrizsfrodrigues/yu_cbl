@@ -7,10 +7,10 @@ input{
 }
 
 
-/* .window div{
+.window div{
     display: block !important;
     gap: 16px;
-  } */
+}
 
 
 /* Botão "Guardar" */
@@ -30,27 +30,23 @@ input{
 }
 
 .info-pessoal-page .back-button i {
-  font-size: 1.2rem;
-  color: var(--purple-darker);
-  cursor: pointer;
-  background-color: transparent;
+  font-size: 1.3rem;
   -webkit-text-stroke: 1px var(--purple-darker);
-  margin-left: 5%;
-  margin-top: 10%;
 }
 
 .info-pessoal-page .back-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   background: none;
-  border: none;
   cursor: pointer;
-  font-size: 1.2rem;
   color: var(--purple-darker);
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-left: 5%;
-  /* Define o deslocamento horizontal */
   margin-top: 15%;
-  /* Aumente este valor para mover o botão para baixo */
+  flex-shrink: 0;
 }
 
 
@@ -58,8 +54,6 @@ input{
   display: flex;
   align-items: center;
   gap: 10px;
-
-
 }
 
 

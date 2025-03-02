@@ -27,10 +27,10 @@ const Welcome = () => {
           objetivos.
         </div>
         <button type="submit" className="start-button" onClick={handleClickRegister}>
-          Register
+          Registar
         </button>
         <button type="submit" className="start-button-light" onClick={handleClickLogin}>
-          Login
+          Iniciar Sessão
         </button>
       </div>
     </div>
