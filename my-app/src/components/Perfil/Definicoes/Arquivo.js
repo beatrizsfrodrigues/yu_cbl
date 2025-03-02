@@ -37,7 +37,7 @@ const Arquivo = ({ show, onBack }) => {
 
 
   return (
-    <div className="modal ">
+    <div className="modal" style={{ display: "block" }}>
       <div className="info-pessoal-page">
         <div className="window ">
           <div className="header">

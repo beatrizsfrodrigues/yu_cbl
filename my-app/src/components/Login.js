@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/css/Login.css";
-import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
+import logo from "../assets/imgs/YU_logo/YU.svg";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -82,7 +82,7 @@ const Login = () => {
           type="submit"
           disabled={!isFormComplete} //O botão está inativo enquanto o formulário não é preenchido
         >
-          Login
+          Iniciar Sessão
         </button>
       </form>
     </div>
