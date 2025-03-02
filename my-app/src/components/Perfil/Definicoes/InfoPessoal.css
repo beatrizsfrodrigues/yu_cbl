@@ -7,8 +7,13 @@ input{
 }
 
 
-.window div{
+/* .window div{
     display: block !important;
+    gap: 16px;
+} */
+
+#window-infopessoal div{
+  display: block !important;
     gap: 16px;
 }
 
