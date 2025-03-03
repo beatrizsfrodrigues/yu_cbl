@@ -98,7 +98,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
       
         <div id="window-infopessoal" className="window" style={{ display: "block" }}>
           <div className="info-header info-pessoal-page">
-            <button className="back-button" style={{ marginTop: "5%" }}onClick={onBack}>
+            <button className="back-button" onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
             <h3>Os meus dados</h3>

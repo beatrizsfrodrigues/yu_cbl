@@ -81,6 +81,9 @@
   border-radius: 100%;
   box-shadow: 0px;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btnHomeActive {
