@@ -114,7 +114,7 @@ const Profile = () => {
       <div className="profile-avatar">
         <img
           src="/assets/YU_cores/YU-roxo.svg"
-          alt="Avatar"
+          alt="O teu Avatar YU"
           className="avatar-image"
         />
         <h2 className="profile-name">
