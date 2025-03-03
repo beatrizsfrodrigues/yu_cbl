@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../redux/usersSlice";
 import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Register.css";
-import logo from "../assets/imgs/YU_logo/YU_boneca_a_frente.svg";
+import logo from "../assets/imgs/YU_logo/YU.svg";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -269,7 +269,7 @@ const Register = () => {
 
         <div className="register-link">
           <p>
-            Já tens conta? <a href="/Login">Login</a>{" "}
+            Já tens conta? <a href="/Login">Iniciar Sessão</a>{" "}
           </p>
         </div>
         {message && <p>{message}</p>}

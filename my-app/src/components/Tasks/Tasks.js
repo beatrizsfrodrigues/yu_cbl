@@ -170,6 +170,7 @@ function Tasks() {
   const handleTouchMove = (e) => {
     setTouchMoveX(e.touches[0].clientX);
   };
+  // teste
 
   const handleTouchEnd = () => {
     if (swipedTask !== null) {
@@ -230,15 +231,32 @@ function Tasks() {
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) =>
             !task.completed && !task.verified ? (
-              <div
-                key={index}
-                id={`task-${index}`}
-                className="taskDiv"
-                onTouchStart={(e) => handleTouchStart(index, e)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-              >
-                <p className="taskTitle">{task.title}</p>
+              <div className="taskDivOp">
+                <div className="btnTaskGroup">
+                  <button className="btnTask">Recusar</button>
+                  <button className="btnTask">Concluir</button>
+                </div>
+                <div className="btnTaskGroup">
+                  <button className="btnTask">Recusar</button>
+                  <button
+                    className="btnTask"
+                    onClick={() => handleOpenConcludeTaskModal(task)}
+                  >
+                    Concluir
+                  </button>
+                </div>
+                <div
+                  key={index}
+                  id={`task-${index}`}
+                  className="taskWrap"
+                  onTouchStart={(e) => handleTouchStart(index, e)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <div className="taskDiv">
+                    <p className="taskTitle">{task.title}</p>{" "}
+                  </div>
+                </div>
               </div>
             ) : (
               // <div className="taskDivOp" key={index}>
@@ -299,7 +317,6 @@ function Tasks() {
       >
         <i className="bi bi-chat-dots"></i>
       </button>
-
 
       {showVerifyTask && partnerUser && (
         <VerifyPopUp

@@ -51,7 +51,7 @@ const Questions = () => {
 
   const handleOptionClick = (index) => {
     if (isMultiSelect) {
-      // Se já existir no array, remove; se não existir, adiciona
+      // Se já existir o array, remove
       if (selectedOptions.includes(index)) {
         setSelectedOptions(selectedOptions.filter((i) => i !== index));
       } else {
@@ -65,20 +65,39 @@ const Questions = () => {
 
   const handleNextQuestion = () => {
     if (selectedOptions.length === 0) {
-      return; // não avança se não houver nada selecionado
+      return; // Não avança se não houver nada selecionado
     }
 
-    // Pega as respostas selecionadas
-    const selectedAnswers = selectedOptions.map(
-      (i) => currentQuestion.options[i]
-    );
+    const selectedAnswers = selectedOptions.map((i) => currentQuestion.options[i]);
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (!loggedUser) {
+      console.error("Nenhum utilizador está autenticado.");
+      return;
+    }
+
+    // Encontrar o utilizador dentro do users array
+    const userIndex = users.findIndex((user) => user.id === loggedUser.id);
+
+    if (userIndex !== -1) {
+      // Atualizar as respostas do utilizador logado
+      users[userIndex].initialFormAnswers.push({
+        question: currentQuestion.question,
+        answers: selectedAnswers,
+      });
+
+      // Guardar os dados no localstorage
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("loggedInUser", JSON.stringify(users[userIndex])); // Atualizar o loggedUser também
+    } else {
+      console.error("Utilizador não encontrado.");
+    }
+
     console.log(
-      `Pergunta: ${
-        currentQuestion.question
-      } | Respostas: ${selectedAnswers.join(", ")}`
+      `Pergunta: ${currentQuestion.question} | Respostas: ${selectedAnswers.join(", ")}`
     );
 
-    // Avança a pergunta ou termina
     if (currentQuestionIndex < questionData.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOptions([]);
@@ -87,6 +106,7 @@ const Questions = () => {
       navigate("/connection");
     }
   };
+
 
   return (
     <div className="questions-container mainBody">
