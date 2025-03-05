@@ -239,7 +239,7 @@ const Home = () => {
                       item.id === currentMascot.accessoriesEquipped.color
                   )?.src
                 }
-                alt="YU logo"
+                alt="Imagem da tua mascote YU"
               />
             )}
 

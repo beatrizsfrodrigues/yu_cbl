@@ -120,7 +120,7 @@
 }
 
 #newTask:active {
-  background-color: var(--purple-darker); /* Catarina a mexer */
+  background-color: var(--green-dark); /* Catarina a mexer */
 }
 
 /* Ícone dentro do botão */
