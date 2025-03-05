@@ -24,6 +24,8 @@ const Questions = () => {
         "Jogar",
         "Ver vídeos ou séries",
         "Conversar com amigos",
+        "Ler",
+        "Tirar fotografias / vídeos",
       ],
     },
     {
