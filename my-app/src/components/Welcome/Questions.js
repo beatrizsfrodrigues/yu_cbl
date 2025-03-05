@@ -29,14 +29,56 @@ const Questions = () => {
       ],
     },
     {
-      question: "Que idade tens?",
+      question: "O que mais gostas de fazer no telemóvel?",
       options: [
-        "Menos de 13",
-        "14-17",
-        "18-24",
-        "25-32",
-        "33-40",
-        "Mais de 40",
+        "Estar nas redes sociais",
+        "Jogar",
+        "Ver vídeos ou séries",
+        "Conversar com amigos",
+      ],
+    },
+    {
+      question: "Já tentaste reduzir o tempo no telemóvel?",
+      options: ["Sim", "Não, é a primeira vez"],
+    },
+    {
+      question: "Se respondes-te sim, como correu?",
+      options: [
+        "Correu bastante bem, consegui reduzir",
+        "Correu bem mas foi difícil e voltei aos mesmos hábitos",
+        "Correu mal, não consegui reduzir",
+        "Respondi não à pergunta anterior",
+      ],
+    },
+    {
+      question: "Como te sentes quando não tens acesso ao teu telemóvel?",
+      options: [
+        "Ansioso/a ou frustrado/a",
+        "Aliviado/a e mais presente",
+        "Indiferente, não me afeta muito",
+        "Depende da situação",
+        "Não sei, nunca tentei",
+      ],
+    },
+    {
+      question: "O que gostarias de mudar no teu uso do telemóvel??",
+      options: [
+        "Passar menos tempo no telemóvel",
+        "Usá-lo de forma mais produtiva",
+        "Evitar comparar-me com os outros",
+        "Ter mais controlo sobre quando e como o uso",
+        "Estou satisfeito/a com o meu uso",
+      ],
+    },
+    {
+      question: "O que mais te motiva a usar o telemóvel?",
+      options: [
+        "Trabalho ou estudo",
+        "Entretenimento",
+        "Comunicação",
+        "Informação e notícias",
+        "FOMO (Fear of Missing Out)",
+        "Já se tornou um hábito",
       ],
     },
   ];
@@ -68,7 +110,9 @@ const Questions = () => {
       return; // Não avança se não houver nada selecionado
     }
 
-    const selectedAnswers = selectedOptions.map((i) => currentQuestion.options[i]);
+    const selectedAnswers = selectedOptions.map(
+      (i) => currentQuestion.options[i]
+    );
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
@@ -95,7 +139,9 @@ const Questions = () => {
     }
 
     console.log(
-      `Pergunta: ${currentQuestion.question} | Respostas: ${selectedAnswers.join(", ")}`
+      `Pergunta: ${
+        currentQuestion.question
+      } | Respostas: ${selectedAnswers.join(", ")}`
     );
 
     if (currentQuestionIndex < questionData.length - 1) {
@@ -106,7 +152,6 @@ const Questions = () => {
       navigate("/connection");
     }
   };
-
 
   return (
     <div className="questions-container mainBody">
