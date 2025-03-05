@@ -18,7 +18,28 @@ const Questions = () => {
       ],
     },
     {
-      question: "Que problemas encontras atualmente?",
+      question: "O que mais gostas de fazer no telemóvel?",
+      options: [
+        "Estar nas redes sociais",
+        "Jogar",
+        "Ver vídeos ou séries",
+        "Conversar com amigos",
+      ],
+    },
+    {
+      question: "O que mais te motiva a usar o telemóvel?",
+      options: [
+        "Trabalho ou estudo",
+        "Entretenimento",
+        "Comunicação",
+        "Informação e notícias",
+        "FOMO (Fear of Missing Out)",
+        "Já se tornou um hábito",
+      ],
+    },
+    {
+      question:
+        "Achas que algum destes problemas está relacionado com a forma como usas o teu telemóvel?",
       options: [
         "Fazer scroll sem pensar",
         "Recorrer ao telemóvel logo após acordar",
@@ -28,15 +49,7 @@ const Questions = () => {
         "Distrair-me das minhas tarefas",
       ],
     },
-    {
-      question: "O que mais gostas de fazer no telemóvel?",
-      options: [
-        "Estar nas redes sociais",
-        "Jogar",
-        "Ver vídeos ou séries",
-        "Conversar com amigos",
-      ],
-    },
+
     {
       question: "Já tentaste reduzir o tempo no telemóvel?",
       options: ["Sim", "Não, é a primeira vez"],
@@ -68,17 +81,6 @@ const Questions = () => {
         "Evitar comparar-me com os outros",
         "Ter mais controlo sobre quando e como o uso",
         "Estou satisfeito/a com o meu uso",
-      ],
-    },
-    {
-      question: "O que mais te motiva a usar o telemóvel?",
-      options: [
-        "Trabalho ou estudo",
-        "Entretenimento",
-        "Comunicação",
-        "Informação e notícias",
-        "FOMO (Fear of Missing Out)",
-        "Já se tornou um hábito",
       ],
     },
   ];
