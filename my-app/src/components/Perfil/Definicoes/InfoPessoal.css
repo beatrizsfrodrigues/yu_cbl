@@ -12,9 +12,9 @@ input{
     gap: 16px;
 } */
 
-#window-infopessoal div{
+#window-infopessoal div:nth-child(n+2) {
   display: block !important;
-    gap: 16px;
+  gap: 16px;
 }
 
 
@@ -37,6 +37,10 @@ input{
 .info-pessoal-page .back-button i {
   font-size: 1.3rem;
   -webkit-text-stroke: 1px var(--purple-darker);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .info-pessoal-page .back-button {
@@ -49,16 +53,20 @@ input{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 5%;
-  margin-top: 15%;
   flex-shrink: 0;
+  margin: 0;
 }
 
-
-.info-pessoal-page .info-header {
+.info-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+}
+
+.info-header h3 {
+  display: flex;
+  align-items: center;
 }
 
 

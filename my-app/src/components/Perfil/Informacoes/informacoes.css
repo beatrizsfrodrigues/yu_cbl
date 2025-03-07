@@ -34,6 +34,7 @@
 .bi-arrow-left {
   font-size: 1.3rem;
     -webkit-text-stroke: 1px var(--purple-darker);
+    color: var(--purple-darker);
 }
 
 .back-button:hover {
