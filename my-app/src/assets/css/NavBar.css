@@ -35,7 +35,7 @@ nav {
 }
 
 .navItem.active {
-  transform: scale(1.4) translateY(-10%);
+  transform: scale(1.4) translateY(-12%);
 }
 
 /********************************
