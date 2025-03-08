@@ -125,9 +125,16 @@
 
 /* Ícone dentro do botão */
 #textBtn i {
-  font-size: 1.8rem; /* tamanho do ícone */
+  font-size: 2rem; /* tamanho do ícone */
   color: var(--purple-darker); /* Ícone com contorno preto */
 }
+
+/* Ícone dentro do botão */
+#newTask i {
+  font-size: 2rem; /* tamanho do ícone */
+  color: var(--purple-darker); /* Ícone com contorno preto */
+}
+
 
 #textBtn:active {
   background-color: var(--orange-dark); /* Catarina a mexer */

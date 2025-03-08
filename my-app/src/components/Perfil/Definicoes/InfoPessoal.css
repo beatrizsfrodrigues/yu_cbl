@@ -12,7 +12,7 @@ input{
     gap: 16px;
 } */
 
-#window-infopessoal div:nth-child(n+2) {
+#window-infopessoal div:not(.info-header) {
   display: block !important;
   gap: 16px;
 }
