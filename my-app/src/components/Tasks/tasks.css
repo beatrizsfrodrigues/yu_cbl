@@ -97,8 +97,8 @@
   position: fixed;
   bottom: 120px;
   left: calc(50% - 32px);
-  background-color: var(--green);
-  border: 1px solid rgb(179, 216, 142);
+  background-color: var(--purple);
+  border: 0px solid var(--purple-dark);
   color: var(--white);
   font-size: 40px;
 }
@@ -132,7 +132,7 @@
 /* Ícone dentro do botão */
 #newTask i {
   font-size: 2rem; /* tamanho do ícone */
-  color: var(--purple-darker); /* Ícone com contorno preto */
+  color: var(--white); /* Ícone com contorno preto */
 }
 
 

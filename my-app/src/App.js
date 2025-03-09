@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,7 +13,7 @@ import Store from './components/Home/Store';
 import Login from "./components/Login";
 import Register from "./components/Register";
  
- 
+
 import Profile from "./components/Perfil/Perfil/Profile";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
 import InfoPessoal from "./components/Perfil/Definicoes/InfoPessoal";
@@ -24,15 +24,41 @@ import Arquivo from "./components/Perfil/Definicoes/Arquivo";
 import Welcome from "./components/Welcome/Welcome";
 import Connection from "./components/Welcome/Connection";
 import Apresentacao from "./components/Welcome/Apresentacao";
- 
+
 import Questions from "./components/Welcome/Questions";
- 
+
 import "./App.css";
 
 function AppContent() {
   const location = useLocation();
+
+  // Nomes das páginas (mudar à vontade)
+  const pageTitles = {
+    "/": "Início - YU",
+    "/home": "Home - YU",
+    "/closet": "Closet - YU",
+    "/store": "Store - YU",
+    "/tasks": "Tarefas - YU",
+    "/profile": "Perfil - YU",
+    "/login": "Login - YU",
+    "/register": "Registo - YU",
+    "/connection": "Conexão - YU",
+    "/questions": "Questionário - YU",
+    "/informacoes": "Informações - YU",
+    "/infoPessoal": "Dados pessoais - YU",
+    "/definicoes": "Definições - YU",
+    "/grafico": "Estatísticas - YU",
+    "/arquivo": "Arquivo - YU",
+    "/apresentacao": "Apresentação - YU",
+  };
+
+  useEffect(() => {
+    document.title = pageTitles[location.pathname] || "YU";
+  }, [location.pathname]);
+
   /* Só mostra a NavBar se a rota atual estiver em showNavRoutes , se quiserem adicionar
   outra pagina, basta meter o /nome no showNavRoutes como fiz no home, task e profile */
+
   const showNavRoutes = ["/home", "/tasks", "/profile"];
   const shouldShowNav = showNavRoutes.includes(location.pathname);
 
