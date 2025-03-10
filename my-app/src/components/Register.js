@@ -34,6 +34,7 @@ const Register = () => {
     password: false,
     confirmPassword: false,
   });
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();

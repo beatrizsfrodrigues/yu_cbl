@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser, fetchUsers } from "../../../redux/usersSlice";
@@ -24,15 +24,22 @@ const InfoPessoal = ({ show, onBack }) => {
     palavraChave: "",
   });
 
+  const [originalData, setOriginalData] = useState({
+    nome: "",
+    nomeUtilizador: "",
+    email: "",
+    palavraChave: "",
+  });
+
   useEffect(() => {
     if (activeUser) {
-      setFormData({
-        //nome: activeUser.name,
-        //nomeUtilizador: activeUser.username,
+      const userData = {
         nomeUtilizador: activeUser.username,
         email: activeUser.email,
         palavraChave: activeUser.password,
-      });
+      };
+      setFormData(userData);
+      setOriginalData(userData);
     }
   }, [activeUser]);
 
@@ -47,6 +54,22 @@ const InfoPessoal = ({ show, onBack }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const validatePassword = (password) => {
+    const minLength = 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(password);
+
+    return (
+      password.length >= minLength &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumbers &&
+      hasSpecialChar
+    );
+  };
+
   const handleSave = () => {
     // Verifica se o nome de utilizador já existe
     if (
@@ -58,6 +81,13 @@ const InfoPessoal = ({ show, onBack }) => {
       setAlert("Nome de utilizador já existente!");
       return;
     }
+
+    // Verifica se a palavra-passe atende aos requisitos mínimos
+    if (!validatePassword(formData.palavraChave)) {
+      setAlert("A palavra-passe não atende aos requisitos mínimos!");
+      return;
+    }
+
     setShowConfirmModal(true);
   };
 
@@ -80,13 +110,21 @@ const InfoPessoal = ({ show, onBack }) => {
         setShowNotification(false);
         onBack();
       }, 3000); // Oculta após 3 segundos
+
+      // Limpa as mensagens de erro
+      setAlert("");
     }
     setShowConfirmModal(false);
-    //onBack();
   };
 
   const cancelSave = () => {
     setShowConfirmModal(false); // Cancela e fecha o modal de confirmação
+  };
+
+  const handleBack = () => {
+    setFormData(originalData); // Restaura os dados originais
+    setAlert(""); // Limpa as mensagens de erro
+    onBack();
   };
 
   // Retorna null se o modal não estiver visível
@@ -115,7 +153,7 @@ const InfoPessoal = ({ show, onBack }) => {
           style={{ display: "block" }}
         >
           <div className="info-header info-pessoal-page">
-            <button className="back-button" onClick={onBack}>
+            <button className="back-button" onClick={handleBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
             <h3>Os meus dados</h3>
@@ -123,18 +161,6 @@ const InfoPessoal = ({ show, onBack }) => {
           <div className="line"></div>
           <div className="settings-section">
             <form>
-              {/*  <div className="form-group">
-                <label htmlFor="nome">Nome</label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  placeholder="nome"
-                  className="form-input"
-                />
-              </div>*/}
               {alert && <p className="alert">{alert}</p>}
               <div className="form-group">
                 <label htmlFor="nomeUtilizador">Nome do Utilizador</label>

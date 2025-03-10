@@ -110,12 +110,6 @@ label {
   box-sizing: border-box;
 }
 
-.password-input-container input {
-  width: 100%;
-  padding-right: 40px; /* Espaço para o ícone */
-  box-sizing: border-box;
-}
-
 .password-toggle-button {
   position: absolute;
   right: 10px;
