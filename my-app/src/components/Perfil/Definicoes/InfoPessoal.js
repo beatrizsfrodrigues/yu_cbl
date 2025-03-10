@@ -113,7 +113,6 @@ const InfoPessoal = ({ show, onBack }) => {
           id="window-infopessoal"
           className="window"
           style={{ display: "block" }}
-        >
           <div className="info-header info-pessoal-page">
             <button className="back-button" onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
@@ -137,7 +136,7 @@ const InfoPessoal = ({ show, onBack }) => {
               </div>*/}
               {alert && <p className="alert">{alert}</p>}
               <div className="form-group">
-                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
+                <label id="nomeUtilizador" htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
                   type="text"
                   id="nomeUtilizador"
