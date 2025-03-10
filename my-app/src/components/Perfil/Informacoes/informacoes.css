@@ -16,6 +16,8 @@
 }
 
 .back-button {
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,18 +25,16 @@
   cursor: pointer;
   border: none;
   transition: transform 0.2s ease;
-  width: 9%;
-  height: 9%;
-  margin-top: -5%;
+  margin-top: -6%;
   font-size: 2rem;
   color: var(--purple-darker);
   border-radius: 50%;
 }
 
 .bi-arrow-left {
-  content: "\f12f";
-  margin-bottom: 9%;
-  color: var(--purple-darker);
+  font-size: 1.3rem;
+    -webkit-text-stroke: 1px var(--purple-darker);
+    color: var(--purple-darker);
 }
 
 .back-button:hover {

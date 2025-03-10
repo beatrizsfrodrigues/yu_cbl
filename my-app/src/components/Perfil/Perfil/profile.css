@@ -85,17 +85,29 @@
 }
 
 .profile-button {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: none;
   color: var(--purple-darker);
   font-size: 2rem;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.profile-button i,
+.profile-button span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.circle {
+  text-decoration: none;
 }
 
 .award:active {

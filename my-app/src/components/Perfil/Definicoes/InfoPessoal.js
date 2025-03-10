@@ -96,9 +96,9 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     <div className="modal">
       
-        <div className="window" style={{ display: "block" }}>
-          <div className="info-header">
-            <button className="back-button" style={{ marginTop: "5%" }}onClick={onBack}>
+        <div id="window-infopessoal" className="window" style={{ /*display: "block" */}}>
+          <div className="info-header info-pessoal-page">
+            <button className="back-button" onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
             <h3>Os meus dados</h3>
@@ -119,7 +119,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
                 />
               </div>*/}
               <div className="form-group">
-                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
+                <label id="nomeUtilizador" htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
                   type="text"
                   id="nomeUtilizador"
@@ -143,7 +143,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="palavraChave">Palavra Chave</label>
+                <label htmlFor="palavraChave">Palavra-passe</label>
                 <input
                   type="password"
                   id="palavraChave"
