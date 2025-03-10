@@ -337,7 +337,6 @@ const Register = () => {
             Já tens conta? <a href="/Login">Iniciar Sessão</a>{" "}
           </p>
         </div>
-        {message && <p>{message}</p>}
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
