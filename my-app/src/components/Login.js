@@ -5,10 +5,13 @@ import { fetchUsers } from "../redux/usersSlice";
 import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.svg";
+import visibleIcon from "../assets/imgs/Icons/visible.png";
+import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Controla a visibilidade da palavra-passe
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
@@ -30,7 +33,7 @@ const Login = () => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    //Encontra utilizadores registados com o email ou username
+    // Encontra utilizadores registados com o email ou username
     const user = users.find(
       (user) =>
         user.email === emailOrUsername || user.username === emailOrUsername
@@ -40,7 +43,7 @@ const Login = () => {
       if (user.password === password) {
         // Se encontrar o utilizador inserido e caso a password inserida seja igual à registada, avança o login com sucesso
         setMessage("Login efetuado com sucesso!");
-        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); //Guarda o id do utilizador que fez login
+        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); // Guarda o id do utilizador que fez login
         setAlert("");
         navigate("/home");
       } else {
@@ -51,14 +54,13 @@ const Login = () => {
     }
   };
 
-  //Apenas deixa avançar com o login quando os campos de email/username e password forem preenchidos
+  // Apenas deixa avançar com o login quando os campos de email/username e password forem preenchidos
   const isFormComplete =
     emailOrUsername.trim() !== "" && password.trim() !== "";
 
   return (
     <div className="mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
-      {/* <h1>Login</h1> */}
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="logo-container">
@@ -77,13 +79,25 @@ const Login = () => {
           </div>
           <div className="pass-container">
             <label>Palavra-passe</label>
-            <input
-              type="password"
-              className="input"
-              placeholder="Inserir palavra-passe..."
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input"
+                placeholder="Inserir palavra-passe..."
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="password-toggle-button"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <img
+                  src={showPassword ? notVisibleIcon : visibleIcon}
+                  alt="Mostrar palavra-passe"
+                />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -96,7 +110,7 @@ const Login = () => {
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
-          disabled={!isFormComplete} //O botão está inativo enquanto o formulário não é preenchido
+          disabled={!isFormComplete} // O botão está inativo enquanto o formulário não é preenchido
         >
           Iniciar Sessão
         </button>
