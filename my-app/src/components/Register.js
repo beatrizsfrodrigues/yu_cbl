@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../redux/usersSlice";
 import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Register.css";
+import visibleIcon from "../assets/imgs/Icons/visible.png";
+import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.svg";
 
 const Register = () => {
@@ -22,7 +24,16 @@ const Register = () => {
     hasSpecialChar: false,
   });
   const [showPasswordRequirements, setShowPasswordRequirements] =
-    useState(false); // Estado para controlar a visibilidade do pop-up
+    useState(false); //Controla a visibilidade do pop-up de requisitos da password
+  const [showPassword, setShowPassword] = useState(false); //Controla a visibilidade da palavra-passe
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); //Controla a visibilidade da confirmação da palavra-passe
+
+  const [validationInputs, setValidationInputs] = useState({
+    username: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -47,7 +58,7 @@ const Register = () => {
     const generateRandomCode = () => {
       let result = "";
       for (let i = 0; i < 10; i++) {
-        code += characters.charAt(
+        result += characters.charAt(
           Math.floor(Math.random() * characters.length)
         );
       }
@@ -86,6 +97,20 @@ const Register = () => {
 
   const handleRegister = () => {
     const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
+
+    const inputErrors = {
+      username: username.trim() === "",
+      email: email.trim() === "",
+      password: password.trim() === "",
+      confirmPassword: confirmPassword.trim() === "",
+    };
+
+    setValidationInputs(inputErrors);
+
+    if (Object.values(inputErrors).some((input) => input)) {
+      setAlert("Por favor preencha todos os campos!");
+      return;
+    }
 
     if (invalidUsernameChars.test(username)) {
       setAlert("Nome de utilizador contem caracteres inválidos!");
@@ -176,33 +201,56 @@ const Register = () => {
             <label>Email</label>
             <input
               type="text"
-              className="input"
+              className={`input ${validationInputs.email ? "error" : ""}`}
               placeholder="Inserir email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
+            {validationInputs.email && (
+              <p className="alert">Por favor preencha este campo!</p>
+            )}
           </div>
           <div className="user-container">
             <label>Nome de Utilizador</label>
             <input
               type="text"
-              className="input"
+              className={`input ${validationInputs.username ? "error" : ""}`}
               placeholder="Inserir nome de utilizador..."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
+            {validationInputs.username && (
+              <p className="alert">Por favor preencha este campo!</p>
+            )}
           </div>
           {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
             <label>Palavra-passe</label>
-            <input
-              type="password"
-              className="input"
-              placeholder="Inserir uma palavra-passe..."
-              value={password}
-              onChange={handlePasswordChange}
-            />
-            <image
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                className={`input ${validationInputs.password ? "error" : ""}`}
+                placeholder="Inserir uma palavra-passe..."
+                value={password}
+                onChange={handlePasswordChange}
+              />
+              <button
+                type="button"
+                className="password-toggle-button"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <img
+                  src={showPassword ? notVisibleIcon : visibleIcon}
+                  alt="Mostrar palavra-passe"
+                />
+              </button>
+            </div>
+            {validationInputs.password && (
+              <p className="alert">Por favor preencha este campo!</p>
+            )}
+            <button
+              aria-label="Requisitos para password"
               type="button"
               className="password-info-button"
               onClick={() =>
@@ -210,7 +258,7 @@ const Register = () => {
               }
             >
               <i className="bi bi-question-circle"></i>
-            </image>
+            </button>
             {showPasswordRequirements && (
               <div className="password-requirements-popup">
                 <ul className="password-requirements">
@@ -256,13 +304,30 @@ const Register = () => {
           {password && (
             <div className="pass-container">
               <label>Confirmar Palavra-passe</label>
-              <input
-                type="password"
-                className="input"
-                placeholder="Confirmar palavra-passe..."
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div className="password-input-container">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  className={`input ${
+                    validationInputs.confirmPassword ? "error" : ""
+                  }`}
+                  placeholder="Confirmar palavra-passe..."
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  <img
+                    src={showConfirmPassword ? notVisibleIcon : visibleIcon}
+                    alt="Mostrar palavra-passe"
+                  />
+                </button>
+              </div>
+              {validationInputs.confirmPassword && (
+                <p className="alert">Por favor preencha este campo!</p>
+              )}
             </div>
           )}
         </div>

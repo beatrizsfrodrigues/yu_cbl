@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchUsers } from "../redux/usersSlice";
+import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.svg";
 
@@ -9,6 +12,19 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const usersStatus = useSelector((state) => state.users.status);
+  const mascotStatus = useSelector((state) => state.mascot.status);
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+    if (mascotStatus === "idle") {
+      dispatch(fetchMascot());
+    }
+  }, [usersStatus, mascotStatus, dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

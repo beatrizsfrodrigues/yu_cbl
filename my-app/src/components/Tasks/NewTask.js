@@ -33,6 +33,8 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
     }
   };
 
+  const isFormComplete = title.trim() !== "" && description.trim() !== "";
+
   return (
     <div className="modal">
       <div className="window">
@@ -57,7 +59,11 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
-          <button type="submit" className="button buttonBig">
+          <button
+            type="submit"
+            className="button buttonBig"
+            disabled={!isFormComplete}
+          >
             Criar
           </button>
         </form>

@@ -98,3 +98,44 @@ label {
 .password-requirements li.valid {
   color: green;
 }
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px; /* Espaço para o ícone */
+  box-sizing: border-box;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px; /* Espaço para o ícone */
+  box-sizing: border-box;
+}
+
+.password-toggle-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.password-toggle-button img {
+  width: 20px; /* Ajuste o tamanho conforme necessário */
+  height: 20px; /* Ajuste o tamanho conforme necessário */
+}
+
+.password-info-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  margin-left: 10px;
+}
