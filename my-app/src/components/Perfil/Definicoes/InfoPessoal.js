@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUser, fetchUsers } from "../../../redux/usersSlice"; 
+import { updateUser, fetchUsers } from "../../../redux/usersSlice";
 
 const InfoPessoal = ({ show, onBack }) => {
   const dispatch = useDispatch();
@@ -10,12 +10,12 @@ const InfoPessoal = ({ show, onBack }) => {
 
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
 
-  const activeUser = users?.find((user) => user.id === currentUserId); 
+  const activeUser = users?.find((user) => user.id === currentUserId);
 
+  const [alert, setAlert] = useState("");
 
-   
-const [showNotification, setShowNotification] = useState(false); 
-const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -42,15 +42,23 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
     }
   }, [dispatch, users]);
 
-
-   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSave = () => {
-    setShowConfirmModal(true); 
+    // Verifica se o nome de utilizador já existe
+    if (
+      users.some(
+        (user) =>
+          user.username === formData.nomeUtilizador && user.id !== activeUser.id
+      )
+    ) {
+      setAlert("Nome de utilizador já existente!");
+      return;
+    }
+    setShowConfirmModal(true);
   };
 
   const confirmSave = () => {
@@ -65,16 +73,16 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
 
       // Atualiza os dados no Redux
       dispatch(updateUser(updatedUser));
-    
+
       // Mostra a notificação de sucesso
       setShowNotification(true);
       setTimeout(() => {
-      setShowNotification(false);
-      onBack(); 
-    }, 3000); // Oculta após 3 segundos
-  }
+        setShowNotification(false);
+        onBack();
+      }, 3000); // Oculta após 3 segundos
+    }
     setShowConfirmModal(false);
-    //onBack(); 
+    //onBack();
   };
 
   const cancelSave = () => {
@@ -84,19 +92,27 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
   // Retorna null se o modal não estiver visível
   if (!show) return null;
 
+  const isFormComplete =
+    formData.nomeUtilizador.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    formData.palavraChave.trim() !== "";
+
   return (
     <>
-    {showNotification && (
-      <div className={`notification 
-         ${!showNotification ? "hidden" : ""}`}>
-        Dados alterados com sucesso!
-      </div>
-    )}
+      {showNotification && (
+        <div
+          className={`notification 
+         ${!showNotification ? "hidden" : ""}`}
+        >
+          Dados alterados com sucesso!
+        </div>
+      )}
 
-
-    <div className="modal">
-      
-        <div id="window-infopessoal" className="window" style={{ /*display: "block" */}}>
+      <div className="modal">
+        <div
+          id="window-infopessoal"
+          className="window"
+          style={{ display: "block" }}
           <div className="info-header info-pessoal-page">
             <button className="back-button" onClick={onBack}>
               <i className="bi bi-arrow-left"></i>
@@ -106,7 +122,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
           <div className="line"></div>
           <div className="settings-section">
             <form>
-             {/*  <div className="form-group">
+              {/*  <div className="form-group">
                 <label htmlFor="nome">Nome</label>
                 <input
                   type="text"
@@ -118,6 +134,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
                   className="form-input"
                 />
               </div>*/}
+              {alert && <p className="alert">{alert}</p>}
               <div className="form-group">
                 <label id="nomeUtilizador" htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
@@ -158,6 +175,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
                 type="button"
                 className="settings-button save-button"
                 onClick={handleSave}
+                disabled={!isFormComplete}
               >
                 Guardar
               </button>
@@ -166,33 +184,23 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
 
           {/* Modal de confirmação */}
           {showConfirmModal && (
-          <div className="info-pessoal-page confirm-modal">
-            <div className="confirm-modal-content">
-              <h3>Tens a certeza que queres alterar os teus dados?</h3> <br></br>
-              <div className="confirm-modal-buttons">
-                <button
-                  className="confirm-button"
-                  onClick={confirmSave}
-                >
-                  Sim
-                </button>
-                <button
-                  className="cancel-button"
-                  onClick={cancelSave}
-                >
-                  Não
-                </button>
+            <div className="info-pessoal-page confirm-modal">
+              <div className="confirm-modal-content">
+                <h3>Tens a certeza que queres alterar os teus dados?</h3>{" "}
+                <br></br>
+                <div className="confirm-modal-buttons">
+                  <button className="confirm-button" onClick={confirmSave}>
+                    Sim
+                  </button>
+                  <button className="cancel-button" onClick={cancelSave}>
+                    Não
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        
-
-        
-
+          )}
         </div>
-     
-    </div>
+      </div>
     </>
   );
 };
