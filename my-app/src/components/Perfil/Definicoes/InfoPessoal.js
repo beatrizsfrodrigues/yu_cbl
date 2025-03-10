@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser, fetchUsers } from "../../../redux/usersSlice";
@@ -11,6 +11,8 @@ const InfoPessoal = ({ show, onBack }) => {
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
 
   const activeUser = users?.find((user) => user.id === currentUserId);
+
+  const [alert, setAlert] = useState("");
 
   const [showNotification, setShowNotification] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -46,6 +48,16 @@ const InfoPessoal = ({ show, onBack }) => {
   };
 
   const handleSave = () => {
+    // Verifica se o nome de utilizador já existe
+    if (
+      users.some(
+        (user) =>
+          user.username === formData.nomeUtilizador && user.id !== activeUser.id
+      )
+    ) {
+      setAlert("Nome de utilizador já existente!");
+      return;
+    }
     setShowConfirmModal(true);
   };
 
@@ -80,6 +92,11 @@ const InfoPessoal = ({ show, onBack }) => {
   // Retorna null se o modal não estiver visível
   if (!show) return null;
 
+  const isFormComplete =
+    formData.nomeUtilizador.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    formData.palavraChave.trim() !== "";
+
   return (
     <>
       {showNotification && (
@@ -95,11 +112,7 @@ const InfoPessoal = ({ show, onBack }) => {
         <div
           id="window-infopessoal"
           className="window"
-          style={
-            {
-              /*display: "block" */
-            }
-          }
+          style={{ display: "block" }}
         >
           <div className="info-header info-pessoal-page">
             <button className="back-button" onClick={onBack}>
@@ -122,10 +135,9 @@ const InfoPessoal = ({ show, onBack }) => {
                   className="form-input"
                 />
               </div>*/}
+              {alert && <p className="alert">{alert}</p>}
               <div className="form-group">
-                <label id="nomeUtilizador" htmlFor="nomeUtilizador">
-                  Nome do Utilizador
-                </label>
+                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
                   type="text"
                   id="nomeUtilizador"
@@ -164,6 +176,7 @@ const InfoPessoal = ({ show, onBack }) => {
                 type="button"
                 className="settings-button save-button"
                 onClick={handleSave}
+                disabled={!isFormComplete}
               >
                 Guardar
               </button>
