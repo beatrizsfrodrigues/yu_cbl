@@ -138,15 +138,18 @@ const Apresentacao = () => {
       <header className="apresentacao-header">
         <h1 className="apresentacao-title">YU</h1>
         <Link to="/questions" className="button-link">
-          <button className="button-outside-slide">
+          <button
+            aria-label="Avançar para o formulário"
+            className="button-outside-slide"
+          >
             Passar para o Formulário...
           </button>
         </Link>
       </header>
       <section className="apresentacao-content">
         <div className="apresentacao-info">
-          <h3>{pages[currentPage].mainTitle}</h3>
-          <h2>{pages[currentPage].subTitle}</h2>
+          <h2>{pages[currentPage].mainTitle}</h2>
+          <h3>{pages[currentPage].subTitle}</h3>
           {currentPage === 1 && (
             <>
               <p>{pages[currentPage].description1}</p>
@@ -217,6 +220,7 @@ const Apresentacao = () => {
               <div style={{ marginTop: "20px", textAlign: "center" }}>
                 <Link to="/questions" className="comecar-button-link">
                   <button
+                    aria-label="Botão para começar"
                     className="comecar-button"
                     style={{
                       padding: "10px 20px",
@@ -238,6 +242,7 @@ const Apresentacao = () => {
       <div className="pagination">
         {pages.map((_, index) => (
           <button
+            aria-label="Botão de navegação"
             key={index}
             className={`pagination-dot ${
               index === currentPage ? "active" : ""
