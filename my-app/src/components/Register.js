@@ -227,82 +227,45 @@ const Register = () => {
           </div>
           {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
-            <label>Palavra-passe</label>
-            <div className="password-input-container">
-              <input
-                type={showPassword ? "text" : "password"}
-                className={`input ${validationInputs.password ? "error" : ""}`}
-                placeholder="Inserir uma palavra-passe..."
-                value={password}
-                onChange={handlePasswordChange}
-              />
-              <button
-                type="button"
-                className="password-toggle-button"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                <img
-                  src={showPassword ? notVisibleIcon : visibleIcon}
-                  alt="Mostrar palavra-passe"
-                />
-              </button>
-            </div>
-            {validationInputs.password && (
-              <p className="alert">Por favor preencha este campo!</p>
-            )}
-            <button
-              aria-label="Requisitos para password"
-              type="button"
-              className="password-info-button"
-              onClick={() =>
-                setShowPasswordRequirements(!showPasswordRequirements)
-              }
-            >
-              <i className="bi bi-question-circle"></i>
-            </button>
-            {showPasswordRequirements && (
-              <div className="password-requirements-popup">
-                <ul className="password-requirements">
-                  <li
-                    className={
-                      passwordRequirements.minLength ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos 6 caracteres
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasUpperCase ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos uma letra maiúscula
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasLowerCase ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos uma letra minúscula
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasNumbers ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos um número
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasSpecialChar ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos um caractere especial
-                  </li>
-                </ul>
+            {/*<label>Palavra-passe</label>*/}
+            <div className="password-input-wrapper">
+              <div className="password-label-container">
+                <button
+                  aria-label="Requisitos para password"
+                  type="button"
+                  className="password-info-button"
+                  onClick={() =>
+                    setShowPasswordRequirements(!showPasswordRequirements)
+                  }
+                >
+                  <i className="bi bi-question-circle"></i>
+                </button>
+                <label>Palavra-passe</label>
               </div>
-            )}
-          </div>
-          {password && (
+
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className={`input ${
+                    validationInputs.password ? "error" : ""
+                  }`}
+                  placeholder="Inserir uma palavra-passe..."
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-button"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <img
+                    src={showPassword ? notVisibleIcon : visibleIcon}
+                    alt="Mostrar palavra-passe"
+                  />
+                </button>
+              </div>
+            </div>
+
             <div className="pass-container">
               <label>Confirmar Palavra-passe</label>
               <div className="password-input-container">
@@ -329,6 +292,51 @@ const Register = () => {
               {validationInputs.confirmPassword && (
                 <p className="alert">Por favor preencha este campo!</p>
               )}
+            </div>
+          </div>
+
+          {validationInputs.password && (
+            <p className="alert">Por favor preencha este campo!</p>
+          )}
+          {showPasswordRequirements && (
+            <div className="password-requirements-popup">
+              <ul className="password-requirements">
+                <li
+                  className={
+                    passwordRequirements.minLength ? "valid" : "invalid"
+                  }
+                >
+                  Pelo menos 6 caracteres
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasUpperCase ? "valid" : "invalid"
+                  }
+                >
+                  Pelo menos uma letra maiúscula
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasLowerCase ? "valid" : "invalid"
+                  }
+                >
+                  Pelo menos uma letra minúscula
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasNumbers ? "valid" : "invalid"
+                  }
+                >
+                  Pelo menos um número
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasSpecialChar ? "valid" : "invalid"
+                  }
+                >
+                  Pelo menos um caractere especial
+                </li>
+              </ul>
             </div>
           )}
         </div>
