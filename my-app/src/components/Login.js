@@ -68,8 +68,9 @@ const Login = () => {
           </div>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
-            <label>Email / Utilizador</label>
+            <label for="input-email-utilizador">Email / Utilizador</label>
             <input
+              id="input-email-utilizador"
               type="text"
               className="input"
               placeholder="Email / Nome de Utilizador..."
@@ -78,9 +79,10 @@ const Login = () => {
             />
           </div>
           <div className="pass-container">
-            <label>Palavra-passe</label>
+            <label for="input-password">Palavra-passe</label>
             <div className="password-input-container">
               <input
+                id="input-password"
                 type={showPassword ? "text" : "password"}
                 className="input"
                 placeholder="Inserir palavra-passe..."

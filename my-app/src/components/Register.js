@@ -199,8 +199,9 @@ const Register = () => {
           </div>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
-            <label>Email</label>
+            <label for="input-email">Email</label>
             <input
+              id="input-email"
               type="text"
               className={`input ${validationInputs.email ? "error" : ""}`}
               placeholder="Inserir email..."
@@ -213,8 +214,9 @@ const Register = () => {
             )}
           </div>
           <div className="user-container">
-            <label>Nome de Utilizador</label>
+            <label for="input-utilizador">Nome de Utilizador</label>
             <input
+              id="input-utilizador"
               type="text"
               className={`input ${validationInputs.username ? "error" : ""}`}
               placeholder="Inserir nome de utilizador..."
@@ -227,9 +229,10 @@ const Register = () => {
           </div>
           {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
-            <label>Palavra-passe</label>
+            <label for="input-password1">Palavra-passe</label>
             <div className="password-input-container">
               <input
+                id="input-password1"
                 type={showPassword ? "text" : "password"}
                 className={`input ${validationInputs.password ? "error" : ""}`}
                 placeholder="Inserir uma palavra-passe..."
@@ -304,9 +307,10 @@ const Register = () => {
           </div>
           {password && (
             <div className="pass-container">
-              <label>Confirmar Palavra-passe</label>
+              <label for="input-password2">Confirmar Palavra-passe</label>
               <div className="password-input-container">
                 <input
+                  id="input-password2"
                   type={showConfirmPassword ? "text" : "password"}
                   className={`input ${
                     validationInputs.confirmPassword ? "error" : ""
