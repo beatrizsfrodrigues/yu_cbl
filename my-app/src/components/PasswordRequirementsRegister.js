@@ -1,5 +1,5 @@
 import React from "react";
-import "../../assets/css/Register.css"; // Adiciona os estilos necessários
+import "../assets/css/Register.css"; // Adds the necessary styles
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;

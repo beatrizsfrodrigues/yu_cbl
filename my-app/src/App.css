@@ -46,7 +46,7 @@ body {
   background-image: url("/public/assets/Fundos/background2.png");
 }
 
-title {
+h1 {
   font-family: "Sour Gummy", serif;
   font-size: 32px;
   margin-bottom: 40px;

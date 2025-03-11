@@ -7,7 +7,7 @@ import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.svg";
-import Modal from "./Welcome/PasswordRequirementsRegister";
+import Modal from "./PasswordRequirementsRegister";
 
 const Register = () => {
   const [username, setUsername] = useState("");
