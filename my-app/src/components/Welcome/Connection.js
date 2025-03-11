@@ -137,7 +137,7 @@ const Connection = () => {
       {/* Only show input section if not connected */}
       {!isConnected && (
         <div className="input-section">
-          <label className="input-label">
+          <label className="input-label" for="input-connection">
             {isCodeInputVisible
               ? "Este é o teu código:"
               : "Insere o código do teu parceiro"}
@@ -146,9 +146,11 @@ const Connection = () => {
           {isCodeInputVisible ? (
             <span className="generated-code">{userCode}</span>
           ) : (
-            <input
-              type="text"
-              className="code-input"
+              <input
+                id="input-connection"
+                type="text"
+                className="code-input"
+                placeholder="Insere o teu código..."
               value={partnerCode}
               onChange={(e) => setPartnerCode(e.target.value)}
             />

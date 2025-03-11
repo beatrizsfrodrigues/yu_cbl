@@ -4,19 +4,21 @@
 
   --blue-lighter: #d1eeed;
   --blue-light: #afe1df;
-  --blue: #8dd4d1;
+  /* --blue: #8dd4d1; */
+  --blue: #6dc5c0;
   --blue-dark: #639593;
   --blue-darker: #385554;
 
   --purple-lighter: #e1d7e9;
   --purple-light: #cab9d8;
-  --purple: #b49bc7;
+  /* --purple: #b49bc7; */
+  --purple: #a98bbf;
   --purple-dark: #7e6d8c;
   --purple-darker: #483e50;
 
   --green-lighter: #edf9ee;
   --green-light: #dff4e2;
-  --green: #d2efd5;
+  --green: #b0e4b5;
   --green-dark: #93a896;
   --green-darker: #546055;
 

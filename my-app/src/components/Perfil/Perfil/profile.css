@@ -116,28 +116,26 @@
 
 .award {
   background-color: var(--green);
-  border: 1px solid rgb(179, 216, 142);
 }
 
 .circle:active {
-  background-color: var(--blue-dark); /* Catarina a mexer */
-}
-
-.circle {
-  background-color: var(--blue);
-  border: 1px solid rgb(118, 186, 171);
-}
-
-.dots:active {
   background-color: var(--orange-dark); /* Catarina a mexer */
 }
 
-.dots {
+.circle {
   background-color: var(--orange);
-  border: 1px solid rgb(229, 167, 110);
+}
+
+.dots:active {
+  background-color: var(--blue-dark); /* Catarina a mexer */
+}
+
+.dots {
+  background-color: var(--blue);
 }
 
 .profile-button:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
+  transition: 0.1s;
   color: #fff;
 }
