@@ -136,7 +136,7 @@ const Apresentacao = () => {
       onTouchEnd={handleTouchEnd}
     >
       <header className="apresentacao-header">
-        <h1 className="apresentacao-title">YU</h1>
+        <title className="apresentacao-title">YU</title>
         <Link to="/questions" className="button-link">
           <button
             aria-label="Avançar para o formulário"

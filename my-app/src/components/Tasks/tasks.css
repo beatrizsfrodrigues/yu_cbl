@@ -79,7 +79,7 @@
   margin: 0;
 }
 
-.header > h1 {
+.header > title {
   margin: 0px;
 }
 
@@ -134,7 +134,6 @@
   font-size: 2rem; /* tamanho do ícone */
   color: var(--white); /* Ícone com contorno preto */
 }
-
 
 #textBtn:active {
   background-color: var(--orange-dark); /* Catarina a mexer */
