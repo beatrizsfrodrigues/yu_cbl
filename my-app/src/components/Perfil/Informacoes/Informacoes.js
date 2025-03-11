@@ -52,7 +52,7 @@ const Informacoes = () => {
           </Link>
         </button>
 
-        <title className="informacoes-title">Informações</title>
+        <h1 className="informacoes-title">Informações</h1>
       </header>
 
       {/* Secção principal */}
