@@ -39,13 +39,20 @@ const Informacoes = () => {
     <div className="informacoes-container mainBody">
       {/* Cabeçalho */}
       <header className="informacoes-header">
-        <button className="back-button">
-          <Link to="/profile" className="back-link">
+        <button
+          aria-label="Botão para voltar ao perfil"
+          className="back-button"
+        >
+          <Link
+            aria-label="Link do botão para voltar ao perfil"
+            to="/profile"
+            className="back-link"
+          >
             <i className="bi bi-arrow-left"></i>
           </Link>
         </button>
 
-        <h1 className="informacoes-title">Informações</h1>
+        <title className="informacoes-title">Informações</title>
       </header>
 
       {/* Secção principal */}
@@ -99,11 +106,7 @@ const Informacoes = () => {
                     <strong>Email:</strong> {page.email}
                   </p>
                 )}
-                <a
-                  href={page.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={page.link} target="_blank" rel="noopener noreferrer">
                   Mais informações
                 </a>
                 <br></br>
