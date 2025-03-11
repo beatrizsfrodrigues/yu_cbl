@@ -101,6 +101,12 @@
   border: 0px solid var(--purple-dark);
   color: var(--white);
   font-size: 40px;
+  cursor: pointer;
+}
+
+#newTask:hover {
+  transform: scale(1.1);
+  transition: 0.1s;
 }
 
 #newTask i {
@@ -114,13 +120,20 @@
   left: calc(
     50% + 32px + 60px
   ); /* 32px is half the width of newTask, plus 10px gap */
-  background-color: var(--orange);
+  background-color: var(--blue);
   color: var(--white);
   font-size: 40px;
+  cursor: pointer;
+}
+
+#textBtn:hover {
+  position: fixed;
+  transform: scale(1.1);
+  transition: 0.1s;
 }
 
 #newTask:active {
-  background-color: var(--green-dark); /* Catarina a mexer */
+  background-color: var(--purple-dark); /* Catarina a mexer */
 }
 
 /* Ícone dentro do botão */
@@ -136,7 +149,7 @@
 }
 
 #textBtn:active {
-  background-color: var(--orange-dark); /* Catarina a mexer */
+  background-color: var(--blue-dark); /* Catarina a mexer */
 }
 
 #newTaskForm {
