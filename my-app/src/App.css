@@ -67,7 +67,7 @@ p {
 
 .buttonBig {
   width: 100%;
-  background-color: var(--purple-light);
+  background-color: var(--purple);
   border-radius: 20px;
   height: 48px;
   box-shadow: 0px;
