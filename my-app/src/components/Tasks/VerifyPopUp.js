@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import VerifyTask from "./VerifyTask.js";
 
 function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {

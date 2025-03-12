@@ -304,6 +304,7 @@ function Tasks() {
       </div>
 
       <button
+        aria-label="Botão para adicionar nova tarefa"
         id="newTask"
         className="btnRound"
         onClick={handleOpenNewTaskModal}
@@ -312,6 +313,7 @@ function Tasks() {
       </button>
 
       <button
+        aria-label="Botão para abrir mensagens"
         id="textBtn"
         className="btnRound"
         onClick={handleOpenMessagesModal}

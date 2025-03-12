@@ -40,7 +40,7 @@
   height: 52px;
   margin-top: 20px;
   text-decoration: none;
-  color: white;
+  color: var(--white);
   outline: none;
   border: none;
   cursor: pointer;

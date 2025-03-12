@@ -36,6 +36,7 @@ body {
   position: fixed;
   z-index: -50;
   background-image: url("/public/assets/Fundos/background.png");
+  opacity: 70%;
   background-repeat: no-repeat;
   background-size: cover;
   top: 0px;
@@ -66,7 +67,7 @@ p {
 
 .buttonBig {
   width: 100%;
-  background-color: var(--purple-light);
+  background-color: var(--purple);
   border-radius: 20px;
   height: 48px;
   box-shadow: 0px;
