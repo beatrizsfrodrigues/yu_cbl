@@ -107,7 +107,7 @@ const Profile = () => {
     <div className="profile-container mainBody">
       <div className="backgroundDiv"></div>
       <header className="profile-header">
-        <h1 className="profile-title">Perfil</h1>
+        <h1 className="profile-title title">Perfil</h1>
         <span className="gear-icon bi bi-gear" onClick={toggleSettings}></span>
       </header>
 

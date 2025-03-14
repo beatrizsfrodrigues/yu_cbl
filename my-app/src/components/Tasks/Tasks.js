@@ -224,7 +224,7 @@ function Tasks() {
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
       <div className="header">
-        <h1>Lista de Tarefas</h1>
+        <h1 className=" title">Lista de Tarefas</h1>
         <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
       </div>
       <div id="tasks">
