@@ -201,6 +201,7 @@ const Home = () => {
                   alt="Closet"
                   onClick={openCloset}
                   className="closetIcon"
+                  aria-label="Abrir armário"
                 />
                 {/* Chevron Icon */}
                 <ChevronDown
@@ -212,7 +213,7 @@ const Home = () => {
               {showDropdown && (
                 <div className="dropdown open" ref={dropdownRef}>
                   <button onClick={openStore}>
-                    <img src={Storeicon} alt="Store" />
+                    <img src={Storeicon} alt="Store" aria-label="Abrir Loja" />
                   </button>
                 </div>
               )}

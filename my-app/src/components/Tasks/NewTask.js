@@ -44,7 +44,9 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
         </div>
         <div className="line"></div>
         <form id="newTaskForm" onSubmit={handleAddTask}>
-          <label className="label" for="input-titulo">Título</label>
+          <label className="label" for="input-titulo">
+            Título
+          </label>
           <input
             id="input-titulo"
             type="text"
@@ -53,7 +55,9 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <label className="label" for="input-descrição">Descrição</label>
+          <label className="label" for="input-descrição">
+            Descrição
+          </label>
           <textarea
             id="input-descrição"
             className="input descriptionInput"
@@ -65,6 +69,7 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
             type="submit"
             className="button buttonBig"
             disabled={!isFormComplete}
+            aria-label="Fechar janela"
           >
             Criar
           </button>

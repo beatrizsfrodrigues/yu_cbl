@@ -49,7 +49,11 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
       <div className="window">
         <div className="header">
           <h3>Concluir tarefa</h3>
-          <X className="closeWindow" onClick={onClose} />
+          <X
+            className="closeWindow"
+            onClick={onClose}
+            aria-label="Fechar janela"
+          />
         </div>
         <div className="line"></div>
         <div id="concludeTaskDiv">
@@ -88,7 +92,11 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
             )}
           </div>
 
-          <button className="submitBtn" onClick={handleSubmit}>
+          <button
+            className="submitBtn"
+            onClick={handleSubmit}
+            aria-label="Submeter prova de tarefa"
+          >
             Submeter
           </button>
         </div>

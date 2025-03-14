@@ -1,4 +1,4 @@
-import React, {} from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { validateTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
@@ -46,10 +46,18 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
           />
         </div>
         <div id="btnGroupDiv">
-          <button className="submitBtn" onClick={handleVerifyTask}>
+          <button
+            className="submitBtn"
+            onClick={handleVerifyTask}
+            aria-label="Aceitar tarefa"
+          >
             Aceitar
           </button>
-          <button className="submitBtn orangeBtn" onClick={handleRejectTask}>
+          <button
+            className="submitBtn orangeBtn"
+            onClick={handleRejectTask}
+            aria-label="Rejeitar tarefa"
+          >
             Rejeitar
           </button>
         </div>
