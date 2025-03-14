@@ -7,7 +7,7 @@
 }
 
 .taskDiv {
-  background-color: var(--orange-light);
+  background-color: var(--orange-lighter);
   border: 2px solid var(--orange-dark);
   border-radius: 24px;
   padding: 2px 8px;
@@ -38,7 +38,7 @@
 }
 
 .btnTask {
-  background-color: var(--orange);
+  background-color: var(--orange-light);
   border: var(--orange-dark) solid 2px;
   border-radius: 24px;
   padding: 12px 16px;
@@ -70,6 +70,7 @@
 .taskTitle {
   margin: 10px 0px;
   width: 80%;
+  font-weight: bold;
 }
 
 .header {
