@@ -52,7 +52,9 @@ const Informacoes = () => {
           </Link>
         </button>
 
-        <h1 className="informacoes-title">Informações</h1>
+        <h1 className="informacoes-title aria-label=Informações ">
+          Informações
+        </h1>
       </header>
 
       {/* Secção principal */}

@@ -27,6 +27,7 @@ function Filter({ filterCriteria, onFilterChange, onClose }) {
   return (
     <div id="filter" ref={popupRef}>
       <button
+        aria-label="Mostrar todas as tarefas"
         className={`submitBtn ${
           filterCriteria === "todas" ? "activeFilter" : ""
         }`}
@@ -35,6 +36,7 @@ function Filter({ filterCriteria, onFilterChange, onClose }) {
         Todas
       </button>
       <button
+        aria-label="Mostrar todas as tarefas por concluir"
         className={`submitBtn ${
           filterCriteria === "porConcluir" ? "activeFilter" : ""
         }`}
@@ -43,6 +45,7 @@ function Filter({ filterCriteria, onFilterChange, onClose }) {
         Por Concluir
       </button>
       <button
+        aria-label="Mostrar todas as tarefas concluidas"
         className={`submitBtn ${
           filterCriteria === "concluidas" ? "activeFilter" : ""
         }`}
@@ -52,6 +55,7 @@ function Filter({ filterCriteria, onFilterChange, onClose }) {
       </button>
 
       <button
+        aria-label="Mostrar todas as tarefas em lista de espera"
         className={`submitBtn ${
           filterCriteria === "espera" ? "activeFilter" : ""
         }`}

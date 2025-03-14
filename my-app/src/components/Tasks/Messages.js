@@ -173,6 +173,7 @@ function Messages({ onClose, currentUser }) {
           <button
             key={index}
             className="optionText"
+            aria-label={`Enviar mensagem: ${message.message}`}
             onClick={
               partnerUser ? () => handleAddMessage(message.message) : null
             }
@@ -213,7 +214,11 @@ function Messages({ onClose, currentUser }) {
             </p>
           )}
         </div>
-        <div className="inputMessage" onClick={handleOpenPresetMessages}>
+        <div
+          className="inputMessage"
+          onClick={handleOpenPresetMessages}
+          aria-label="Abrir opções de mensagens predefinidas"
+        >
           <p>Deixa uma mensagem</p>
         </div>
         {isPresetMessagesOpen && (

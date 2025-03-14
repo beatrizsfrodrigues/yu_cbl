@@ -27,7 +27,7 @@ function NavBar() {
   }, [location, navItems]);
 
   return (
-    <nav>
+    <nav aria-label="Menu de navegação principal">
       <div
         className="indicator"
         style={{
@@ -37,7 +37,7 @@ function NavBar() {
 
       {navItems.map((item, index) => (
         <NavLink
-          aria-label="Botão de navegação"
+          aria-label={`Ir para ${item.label}`}
           key={item.path}
           to={item.path}
           size={60}
