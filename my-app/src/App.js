@@ -41,7 +41,7 @@ function AppContent() {
     "/profile": "Perfil - YU",
     "/login": "Login - YU",
     "/register": "Registo - YU",
-    "/connection": "Conexão - YU",
+    "/connection": "Ligação - YU",
     "/questions": "Questionário - YU",
     "/informacoes": "Informações - YU",
     "/infoPessoal": "Dados pessoais - YU",

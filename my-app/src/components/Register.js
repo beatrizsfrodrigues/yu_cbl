@@ -7,6 +7,7 @@ import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.svg";
+import Modal from "./PasswordRequirementsRegister";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -23,6 +24,12 @@ const Register = () => {
     hasNumbers: false,
     hasSpecialChar: false,
   });
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const togglePasswordModal = () => {
+    setIsPasswordModalOpen(!isPasswordModalOpen);
+  };
+
   const [showPasswordRequirements, setShowPasswordRequirements] =
     useState(false); //Controla a visibilidade do pop-up de requisitos da password
   const [showPassword, setShowPassword] = useState(false); //Controla a visibilidade da palavra-passe
@@ -199,8 +206,9 @@ const Register = () => {
           </div>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
-            <label>Email</label>
+            <label for="input-email">Email</label>
             <input
+              id="input-email"
               type="text"
               className={`input ${validationInputs.email ? "error" : ""}`}
               placeholder="Inserir email..."
@@ -213,8 +221,9 @@ const Register = () => {
             )}
           </div>
           <div className="user-container">
-            <label>Nome de Utilizador</label>
+            <label for="input-utilizador">Nome de Utilizador</label>
             <input
+              id="input-utilizador"
               type="text"
               className={`input ${validationInputs.username ? "error" : ""}`}
               placeholder="Inserir nome de utilizador..."
@@ -227,86 +236,48 @@ const Register = () => {
           </div>
           {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
-            <label>Palavra-passe</label>
-            <div className="password-input-container">
-              <input
-                type={showPassword ? "text" : "password"}
-                className={`input ${validationInputs.password ? "error" : ""}`}
-                placeholder="Inserir uma palavra-passe..."
-                value={password}
-                onChange={handlePasswordChange}
-              />
-              <button
-                type="button"
-                className="password-toggle-button"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                <img
-                  src={showPassword ? notVisibleIcon : visibleIcon}
-                  alt="Mostrar palavra-passe"
-                />
-              </button>
-            </div>
-            {validationInputs.password && (
-              <p className="alert">Por favor preencha este campo!</p>
-            )}
-            <button
-              aria-label="Requisitos para password"
-              type="button"
-              className="password-info-button"
-              onClick={() =>
-                setShowPasswordRequirements(!showPasswordRequirements)
-              }
-            >
-              <i className="bi bi-question-circle"></i>
-            </button>
-            {showPasswordRequirements && (
-              <div className="password-requirements-popup">
-                <ul className="password-requirements">
-                  <li
-                    className={
-                      passwordRequirements.minLength ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos 6 caracteres
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasUpperCase ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos uma letra maiúscula
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasLowerCase ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos uma letra minúscula
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasNumbers ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos um número
-                  </li>
-                  <li
-                    className={
-                      passwordRequirements.hasSpecialChar ? "valid" : "invalid"
-                    }
-                  >
-                    Pelo menos um caractere especial
-                  </li>
-                </ul>
+          {/*<label>Palavra-passe</label>*/}
+            <div className="password-input-wrapper">
+              <div className="password-label-container">
+                <button
+                  aria-label="Requisitos para password"
+                  type="button"
+                  className="password-info-button"
+                  onClick={togglePasswordModal}
+                >
+                  <i className="bi bi-question-circle"></i>
+                </button>
+                <label>Palavra-passe</label>
               </div>
-            )}
-          </div>
-          {password && (
-            <div className="pass-container">
-              <label>Confirmar Palavra-passe</label>
+
               <div className="password-input-container">
                 <input
+                  type={showPassword ? "text" : "password"}
+                  className={`input ${
+                    validationInputs.password ? "error" : ""
+                  }`}
+                  placeholder="Inserir uma palavra-passe..."
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+                <button
+                  type="button"
+                  className="password-toggle-button"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <img
+                    src={showPassword ? notVisibleIcon : visibleIcon}
+                    alt="Mostrar palavra-passe"
+                  />
+                </button>
+              </div>
+            </div>
+
+            <div className="pass-container">
+              <label for="input-password2">Confirmar Palavra-passe</label>
+              <div className="password-input-container">
+                <input
+                  id="input-password2"
                   type={showConfirmPassword ? "text" : "password"}
                   className={`input ${
                     validationInputs.confirmPassword ? "error" : ""
@@ -330,9 +301,50 @@ const Register = () => {
                 <p className="alert">Por favor preencha este campo!</p>
               )}
             </div>
+          </div>{" "}
+          {/* Closing div tag for .form-container */}
+          {validationInputs.password && (
+            <p className="alert">Por favor preencha este campo!</p>
           )}
-        </div>
-
+          <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
+            <ul className="password-requirements">
+              <li
+                className={passwordRequirements.minLength ? "valid" : "invalid"}
+              >
+                Pelo menos 6 caracteres
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasUpperCase ? "valid" : "invalid"
+                }
+              >
+                Pelo menos uma letra maiúscula
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasLowerCase ? "valid" : "invalid"
+                }
+              >
+                Pelo menos uma letra minúscula
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasNumbers ? "valid" : "invalid"
+                }
+              >
+                Pelo menos um número
+              </li>
+              <li
+                className={
+                  passwordRequirements.hasSpecialChar ? "valid" : "invalid"
+                }
+              >
+                Pelo menos um caractere especial
+              </li>
+            </ul>
+          </Modal>
+        </div>{" "}
+        {/* Closing div tag for .mainBody */}
         <div className="register-link">
           <p>
             Já tens conta? <a href="/Login">Iniciar Sessão</a>{" "}
