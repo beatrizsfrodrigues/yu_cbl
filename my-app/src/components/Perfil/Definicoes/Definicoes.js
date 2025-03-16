@@ -3,10 +3,16 @@ import { Link } from "react-router-dom";
 import "../Definicoes/Definicoes.css";
 import { X } from "react-feather";
 
-const Definicoes = ({ show, onClose, onInfoPessoalClick, onArquivoClick, user }) => {
+const Definicoes = ({
+  show,
+  onClose,
+  onInfoPessoalClick,
+  onArquivoClick,
+  user,
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [partnerName, setPartnerName] = useState("");
-  const [partnerCode, setPartnerCode] = useState("");  
+  const [partnerCode, setPartnerCode] = useState("");
 
   useEffect(() => {
     console.log("Buscando dados do Local Storage...");
@@ -95,23 +101,27 @@ const Definicoes = ({ show, onClose, onInfoPessoalClick, onArquivoClick, user })
 
       {/* Modal para exibir informações da ligação */}
       {showModal && (
-      <div className="ligacao-overlay">
-        <div className="ligacao-content">
-          <div className="ligacao-header">
-            <h2>Já tens uma ligação feita</h2>
-            <button className="close-button" onClick={() => setShowModal(false)}>
-              ✕
-            </button>
+        <div className="ligacao-overlay">
+          <div className="ligacao-content">
+            <div className="ligacao-header">
+              <h2>Já tens uma ligação feita</h2>
+              <button
+                className="close-button"
+                onClick={() => setShowModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <p>
+              <strong>Parceiro:</strong> {partnerName || "Desconhecido"}
+            </p>
+            <p>
+              <strong>Código do Parceiro:</strong>{" "}
+              {partnerCode || "Código Desconhecido"}
+            </p>
           </div>
-          <p>
-            <strong>Parceiro:</strong> {partnerName || "Desconhecido"}
-          </p>
-          <p>
-            <strong>Código do Parceiro:</strong> {partnerCode || "Código Desconhecido"}
-          </p>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 };

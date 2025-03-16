@@ -33,6 +33,8 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
     }
   };
 
+  const isFormComplete = title.trim() !== "" && description.trim() !== "";
+
   return (
     <div className="modal">
       <div className="window">
@@ -42,16 +44,22 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
         </div>
         <div className="line"></div>
         <form id="newTaskForm" onSubmit={handleAddTask}>
-          <label className="label">Título</label>
+          <label className="label">
+            Título <span className="alert">*</span>
+          </label>
           <input
+            required
             type="text"
             className="input"
             placeholder="Dá um título à tarefa"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <label className="label">Descrição</label>
+          <label className="label">
+            Descrição <span className="alert">*</span>
+          </label>
           <textarea
+            required
             className="input descriptionInput"
             placeholder="Descreve a tarefa"
             value={description}

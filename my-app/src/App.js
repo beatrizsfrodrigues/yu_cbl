@@ -8,11 +8,10 @@ import {
 import NavBar from "./components/NavBar";
 import Tasks from "./components/Tasks/Tasks";
 import Home from "./components/Home/Home";
-import Closet from './components/Home/Closet';
-import Store from './components/Home/Store';
+import Closet from "./components/Home/Closet";
+import Store from "./components/Home/Store";
 import Login from "./components/Login";
 import Register from "./components/Register";
- 
 
 import Profile from "./components/Perfil/Perfil/Profile";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
@@ -42,7 +41,7 @@ function AppContent() {
     "/profile": "Perfil - YU",
     "/login": "Login - YU",
     "/register": "Registo - YU",
-    "/connection": "Conexão - YU",
+    "/connection": "Ligação - YU",
     "/questions": "Questionário - YU",
     "/informacoes": "Informações - YU",
     "/infoPessoal": "Dados pessoais - YU",

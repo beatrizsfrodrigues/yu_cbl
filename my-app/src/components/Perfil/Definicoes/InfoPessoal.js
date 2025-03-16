@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUser, fetchUsers } from "../../../redux/usersSlice"; 
+import { updateUser, fetchUsers } from "../../../redux/usersSlice";
 
 const InfoPessoal = ({ show, onBack }) => {
   const dispatch = useDispatch();
@@ -10,12 +10,12 @@ const InfoPessoal = ({ show, onBack }) => {
 
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
 
-  const activeUser = users?.find((user) => user.id === currentUserId); 
+  const activeUser = users?.find((user) => user.id === currentUserId);
 
+  const [alert, setAlert] = useState("");
 
-   
-const [showNotification, setShowNotification] = useState(false); 
-const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -24,15 +24,22 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
     palavraChave: "",
   });
 
+  const [originalData, setOriginalData] = useState({
+    nome: "",
+    nomeUtilizador: "",
+    email: "",
+    palavraChave: "",
+  });
+
   useEffect(() => {
     if (activeUser) {
-      setFormData({
-        //nome: activeUser.name,
-        //nomeUtilizador: activeUser.username,
+      const userData = {
         nomeUtilizador: activeUser.username,
         email: activeUser.email,
         palavraChave: activeUser.password,
-      });
+      };
+      setFormData(userData);
+      setOriginalData(userData);
     }
   }, [activeUser]);
 
@@ -42,15 +49,46 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
     }
   }, [dispatch, users]);
 
-
-   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const validatePassword = (password) => {
+    const minLength = 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(password);
+
+    return (
+      password.length >= minLength &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumbers &&
+      hasSpecialChar
+    );
+  };
+
   const handleSave = () => {
-    setShowConfirmModal(true); 
+    // Verifica se o nome de utilizador já existe
+    if (
+      users.some(
+        (user) =>
+          user.username === formData.nomeUtilizador && user.id !== activeUser.id
+      )
+    ) {
+      setAlert("Nome de utilizador já existente!");
+      return;
+    }
+
+    // Verifica se a palavra-passe atende aos requisitos mínimos
+    if (!validatePassword(formData.palavraChave)) {
+      setAlert("A palavra-passe não atende aos requisitos mínimos!");
+      return;
+    }
+
+    setShowConfirmModal(true);
   };
 
   const confirmSave = () => {
@@ -65,40 +103,57 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
 
       // Atualiza os dados no Redux
       dispatch(updateUser(updatedUser));
-    
+
       // Mostra a notificação de sucesso
       setShowNotification(true);
       setTimeout(() => {
-      setShowNotification(false);
-      onBack(); 
-    }, 3000); // Oculta após 3 segundos
-  }
+        setShowNotification(false);
+        onBack();
+      }, 3000); // Oculta após 3 segundos
+
+      // Limpa as mensagens de erro
+      setAlert("");
+    }
     setShowConfirmModal(false);
-    //onBack(); 
   };
 
   const cancelSave = () => {
     setShowConfirmModal(false); // Cancela e fecha o modal de confirmação
   };
 
+  const handleBack = () => {
+    setFormData(originalData); // Restaura os dados originais
+    setAlert(""); // Limpa as mensagens de erro
+    onBack();
+  };
+
   // Retorna null se o modal não estiver visível
   if (!show) return null;
 
+  const isFormComplete =
+    formData.nomeUtilizador.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    formData.palavraChave.trim() !== "";
+
   return (
     <>
-    {showNotification && (
-      <div className={`notification 
-         ${!showNotification ? "hidden" : ""}`}>
-        Dados alterados com sucesso!
-      </div>
-    )}
+      {showNotification && (
+        <div
+          className={`notification 
+         ${!showNotification ? "hidden" : ""}`}
+        >
+          Dados alterados com sucesso!
+        </div>
+      )}
 
-
-    <div className="modal">
-      
-        <div id="window-infopessoal" className="window" style={{ /*display: "block" */}}>
+      <div className="modal">
+        <div
+          id="window-infopessoal"
+          className="window"
+          style={{ display: "block" }}
+        >
           <div className="info-header info-pessoal-page">
-            <button className="back-button" onClick={onBack}>
+            <button className="back-button" onClick={handleBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
             <h3>Os meus dados</h3>
@@ -106,21 +161,11 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
           <div className="line"></div>
           <div className="settings-section">
             <form>
-             {/*  <div className="form-group">
-                <label htmlFor="nome">Nome</label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  placeholder="nome"
-                  className="form-input"
-                />
-              </div>*/}
+              {alert && <p className="alert">{alert}</p>}
               <div className="form-group">
-                <label id="nomeUtilizador" htmlFor="nomeUtilizador">Nome do Utilizador</label>
+                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
+                  required
                   type="text"
                   id="nomeUtilizador"
                   name="nomeUtilizador"
@@ -133,6 +178,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input
+                  required
                   type="email"
                   id="email"
                   name="email"
@@ -145,6 +191,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
               <div className="form-group">
                 <label htmlFor="palavraChave">Palavra-passe</label>
                 <input
+                  required
                   type="password"
                   id="palavraChave"
                   name="palavraChave"
@@ -158,6 +205,7 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
                 type="button"
                 className="settings-button save-button"
                 onClick={handleSave}
+                disabled={!isFormComplete}
               >
                 Guardar
               </button>
@@ -166,33 +214,23 @@ const [showConfirmModal, setShowConfirmModal] = useState(false);
 
           {/* Modal de confirmação */}
           {showConfirmModal && (
-          <div className="info-pessoal-page confirm-modal">
-            <div className="confirm-modal-content">
-              <h3>Tens a certeza que queres alterar os teus dados?</h3> <br></br>
-              <div className="confirm-modal-buttons">
-                <button
-                  className="confirm-button"
-                  onClick={confirmSave}
-                >
-                  Sim
-                </button>
-                <button
-                  className="cancel-button"
-                  onClick={cancelSave}
-                >
-                  Não
-                </button>
+            <div className="info-pessoal-page confirm-modal">
+              <div className="confirm-modal-content">
+                <h3>Tens a certeza que queres alterar os teus dados?</h3>{" "}
+                <br></br>
+                <div className="confirm-modal-buttons">
+                  <button className="confirm-button" onClick={confirmSave}>
+                    Sim
+                  </button>
+                  <button className="cancel-button" onClick={cancelSave}>
+                    Não
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        
-
-        
-
+          )}
         </div>
-     
-    </div>
+      </div>
     </>
   );
 };

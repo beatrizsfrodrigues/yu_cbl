@@ -111,12 +111,12 @@ hr {
 .save-button {
   display: block;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 25px;
   padding: 12px;
   font-size: 1rem;
   font-weight: bold;
   text-align: center;
-  background-color: var(--purple-light);
+  background-color: var(--purple);
   color: #fff;
   border: none;
   border-radius: 15px;
@@ -188,7 +188,7 @@ hr {
 
 /* Botão "Sim" */
 .info-pessoal-page .confirm-modal-buttons .confirm-button {
-  background-color: var(--purple-light);
+  background-color: var(--purple);
   color: white;
 }
 
@@ -199,7 +199,7 @@ hr {
 
 /* Botão "Não" */
 .info-pessoal-page .confirm-modal-buttons .cancel-button {
-  background-color: var(--orange-light);
+  background-color: var(--orange);
   color: white;
   margin-left: 10%;
 }

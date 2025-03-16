@@ -123,15 +123,23 @@ const Profile = () => {
       </div>
 
       <div className="profile-buttons">
-        <button className="profile-button award">
+        <button
+          aria-label="Botão para abrir gráficos"
+          className="profile-button award"
+        >
           <span className="bi bi-bar-chart-line" onClick={toggleGrafico}></span>
         </button>
 
-        <Link to="/informacoes" className="profile-button circle">
+        <Link
+          aria-label="Link para a página de informações"
+          to="/informacoes"
+          className="profile-button circle"
+        >
           <i className="bi bi-info-circle"></i>
         </Link>
 
         <button
+          aria-label="Botão para abrir mensagens"
           className="profile-button dots"
           onClick={handleOpenMessagesModal}
         >

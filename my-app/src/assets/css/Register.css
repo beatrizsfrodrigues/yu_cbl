@@ -86,40 +86,106 @@ label {
 }
 
 .password-requirements {
-  padding: 20px;
-  margin: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .password-requirements li {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
   color: red;
+}
+
+.password-requirements li i {
+  margin-right: 10px;
 }
 
 .password-requirements li.valid {
   color: green;
 }
 
-.birthdate-container {
+.password-input-wrapper {
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
+  width: 100%;
+  gap: 8px;
 }
 
-.birthdate-inputs {
-  /*border: 2px solid var(--purple-dark);*/
-  border-radius: 16px;
+.password-label-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
   width: 100%;
-  box-sizing: border-box;
-  padding: 12px 16px;
-  font-family: "Quicksand", serif;
-  font-size: 16px;
 }
 
-/*.birthdate-inputs input {
-  border: 2px solid var(--purple-dark);
-  border-radius: 16px;
+.password-input-container {
+  position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-info-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px; /* Espaço para o botão de visibilidade */
   box-sizing: border-box;
-  padding: 12px 16px;
-  font-family: "Quicksand", serif;
-  font-size: 16px;
-}*/
+}
+
+.password-toggle-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.password-toggle-button img {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-overlay {
+  position: fixed; /* Garante que o modal cobre todo o ecrã */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Certifica-te de que está acima de outros elementos */
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}

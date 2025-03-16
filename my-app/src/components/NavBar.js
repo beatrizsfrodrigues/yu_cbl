@@ -37,6 +37,7 @@ function NavBar() {
 
       {navItems.map((item, index) => (
         <NavLink
+          aria-label="Botão de navegação"
           key={item.path}
           to={item.path}
           size={60}
