@@ -165,6 +165,7 @@ const InfoPessoal = ({ show, onBack }) => {
               <div className="form-group">
                 <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
                 <input
+                  required
                   type="text"
                   id="nomeUtilizador"
                   name="nomeUtilizador"
@@ -177,6 +178,7 @@ const InfoPessoal = ({ show, onBack }) => {
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input
+                  required
                   type="email"
                   id="email"
                   name="email"
@@ -189,6 +191,7 @@ const InfoPessoal = ({ show, onBack }) => {
               <div className="form-group">
                 <label htmlFor="palavraChave">Palavra-passe</label>
                 <input
+                  required
                   type="password"
                   id="palavraChave"
                   name="palavraChave"

@@ -44,28 +44,28 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
         </div>
         <div className="line"></div>
         <form id="newTaskForm" onSubmit={handleAddTask}>
-          <label className="label" for="input-titulo">Título</label>
+          <label className="label">
+            Título <span className="alert">*</span>
+          </label>
           <input
-            id="input-titulo"
+            required
             type="text"
             className="input"
             placeholder="Dá um título à tarefa"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <label className="label" for="input-descrição">Descrição</label>
+          <label className="label">
+            Descrição <span className="alert">*</span>
+          </label>
           <textarea
-            id="input-descrição"
+            required
             className="input descriptionInput"
             placeholder="Descreve a tarefa"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
-          <button
-            type="submit"
-            className="button buttonBig"
-            disabled={!isFormComplete}
-          >
+          <button type="submit" className="button buttonBig">
             Criar
           </button>
         </form>
