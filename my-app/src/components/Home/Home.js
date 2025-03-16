@@ -79,6 +79,27 @@ const Home = () => {
   };
 
   const openCloset = () => {
+    setSelectedBackground(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.background
+      ) || ""
+    );
+    setSelectedShirt(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.shirt
+      ) || ""
+    );
+    setSelectedAcc(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.hat
+      ) || ""
+    );
+    setSelectedColor(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.color
+      ) || ""
+    );
+
     setShowCloset(true);
     setShowDropdown(false);
   };
@@ -147,10 +168,15 @@ const Home = () => {
   const saveOutfit = () => {
     dispatch(
       saveFit({
-        hat: selectedAcc.id || "",
-        shirt: selectedShirt.id || "",
-        color: selectedColor.id || 40,
-        background: selectedBackground.id || "",
+        hat: selectedAcc?.id || currentMascot.accessoriesEquipped.hat || null,
+        shirt:
+          selectedShirt?.id || currentMascot.accessoriesEquipped.shirt || null,
+        color:
+          selectedColor?.id || currentMascot.accessoriesEquipped.color || 40,
+        background:
+          selectedBackground?.id ||
+          currentMascot.accessoriesEquipped.background ||
+          null,
         id: currentMascot.id,
       })
     );

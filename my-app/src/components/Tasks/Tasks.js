@@ -175,9 +175,6 @@ function Tasks() {
   const handleTouchEnd = () => {
     if (swipedTask !== null) {
       const swipeDistance = touchStartX - touchMoveX;
-      console.log(swipeDistance);
-      console.log(touchStartX);
-      console.log(touchMoveX);
       const taskElement = document.getElementById(`task-${swipedTask}`);
 
       if (swipeDistance > 50 && touchMoveX !== 0) {
@@ -233,8 +230,12 @@ function Tasks() {
             !task.completed && !task.verified ? (
               <div className="taskDivOp">
                 <div className="btnTaskGroup">
-                  <button className="btnTask">Recusar</button>
-                  <button className="btnTask">Concluir</button>
+                  <button className="btnTask" disabled={!isSwiping}>
+                    Recusar
+                  </button>
+                  <button className="btnTask" disabled={!isSwiping}>
+                    Concluir
+                  </button>
                 </div>
                 <div className="btnTaskGroup">
                   <button className="btnTask">Recusar</button>
