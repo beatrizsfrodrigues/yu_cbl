@@ -223,6 +223,9 @@ const Register = () => {
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
+                <label>
+                  Palavra-passe <span className="alert">*</span>{" "}
+                </label>
                 <button
                   aria-label="Requisitos para password"
                   type="button"
@@ -231,9 +234,6 @@ const Register = () => {
                 >
                   <i className="bi bi-question-circle"></i>
                 </button>
-                <label>
-                  Palavra-passe <span className="alert">*</span>
-                </label>
               </div>
               <div className="password-input-container">
                 <input
