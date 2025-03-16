@@ -70,6 +70,7 @@ const Login = () => {
           <div className="label-container">
             <label for="input-email-utilizador">Email / Utilizador</label>
             <input
+              required
               id="input-email-utilizador"
               type="text"
               className="input"
@@ -82,6 +83,7 @@ const Login = () => {
             <label for="input-password">Palavra-passe</label>
             <div className="password-input-container">
               <input
+                required
                 id="input-password"
                 type={showPassword ? "text" : "password"}
                 className="input"
@@ -112,7 +114,6 @@ const Login = () => {
         <button
           className={`buttonBig ${isFormComplete ? "active" : ""}`}
           type="submit"
-          disabled={!isFormComplete} // O botão está inativo enquanto o formulário não é preenchido
         >
           Iniciar Sessão
         </button>

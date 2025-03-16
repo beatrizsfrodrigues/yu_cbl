@@ -86,13 +86,19 @@ label {
 }
 
 .password-requirements {
-  padding: 20px;
-  margin: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .password-requirements li {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
   color: red;
+}
+
+.password-requirements li i {
+  margin-right: 10px;
 }
 
 .password-requirements li.valid {
