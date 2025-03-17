@@ -136,10 +136,10 @@ const Apresentacao = () => {
       onTouchEnd={handleTouchEnd}
     >
       <header className="apresentacao-header">
-        <title className="apresentacao-title">YU</title>
+        <h1 className="apresentacao-title">YU</h1>
         <Link to="/questions" className="button-link">
           <button
-            aria-label="Avançar para o formulário"
+            aria-label="Passar para o Formulário... Avançar para o formulário"
             className="button-outside-slide"
           >
             Passar para o Formulário...
@@ -220,7 +220,7 @@ const Apresentacao = () => {
               <div style={{ marginTop: "20px", textAlign: "center" }}>
                 <Link to="/questions" className="comecar-button-link">
                   <button
-                    aria-label="Botão para começar"
+                    aria-label="Começar! Botão para começar"
                     className="comecar-button"
                     style={{
                       padding: "10px 20px",
@@ -242,7 +242,7 @@ const Apresentacao = () => {
       <div className="pagination">
         {pages.map((_, index) => (
           <button
-            aria-label="Botão de navegação"
+            aria-label={`Navegar para a página ${index + 1}`}
             key={index}
             className={`pagination-dot ${
               index === currentPage ? "active" : ""
