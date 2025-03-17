@@ -120,6 +120,11 @@ const Register = () => {
       setAlert("");
     }
 
+    if (!validatePassword(password)) {
+      setAlertPass("A palavra-passe não atende aos requisitos mínimos!");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setAlertPass("As palavras-passe não coincidem!");
       return;
@@ -176,12 +181,6 @@ const Register = () => {
     validatePassword(newPassword);
   };
 
-  const isFormComplete =
-    email.trim() !== "" &&
-    password.trim() !== "" &&
-    username.trim() !== "" &&
-    confirmPassword.trim() !== "";
-
   return (
     <div className="mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
@@ -220,7 +219,6 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
@@ -288,6 +286,7 @@ const Register = () => {
                 </button>
               </div>
             </div>
+            {alertPass && <p className="alert">{alertPass}</p>}
           </div>
           <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
             <ul className="password-requirements">
