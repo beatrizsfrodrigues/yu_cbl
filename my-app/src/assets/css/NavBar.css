@@ -28,7 +28,7 @@ nav {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: var(--purple-darker);
+  color: var(--white);
   font-size: 40px;
   transition: transform 0.3s ease;
   z-index: 1;
