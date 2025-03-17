@@ -1,8 +1,6 @@
 .apresentacao-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
 .apresentacao-content {
@@ -72,9 +70,18 @@
 }
 
 .image-container {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
 }
 
 .responsive-image {
