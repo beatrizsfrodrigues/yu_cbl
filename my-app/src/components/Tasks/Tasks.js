@@ -220,10 +220,11 @@ function Tasks() {
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-      <div className="header">
+      <header className="header">
         <h1>Lista de Tarefas</h1>
         <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
-      </div>
+      </header>
+
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) =>
