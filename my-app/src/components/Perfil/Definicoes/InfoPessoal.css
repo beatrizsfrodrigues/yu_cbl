@@ -227,3 +227,20 @@ hr {
   opacity: 0;
   transform: translateY(-50px);
 }
+
+.password-toggle-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0;
+}
+
+.password-toggle-button img {
+  width: 20px;
+  height: 20px;
+}

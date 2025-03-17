@@ -358,10 +358,7 @@ const Register = () => {
           </p>
         </div>
         {message && <p>{message}</p>}
-        <button
-          className={`buttonBig ${isFormComplete ? "active" : ""}`}
-          type="submit"
-        >
+        <button className="buttonBig" type="submit">
           Registar
         </button>
       </form>
