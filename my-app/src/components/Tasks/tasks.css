@@ -100,7 +100,7 @@
   left: calc(50% - 32px);
   background-color: var(--purple);
   border: 0px solid var(--purple-dark);
-  color: var(--white);
+  color: var(--purple-darker);
   font-size: 40px;
   cursor: pointer;
 }
@@ -112,6 +112,7 @@
 
 #newTask i {
   font-size: 1.8rem; /* tamanho do ícone */
+
   color: var(--purple-darker); /* Ícone com contorno preto */
 }
 
@@ -145,8 +146,8 @@
 
 /* Ícone dentro do botão */
 #newTask i {
-  font-size: 2rem; /* tamanho do ícone */
-  color: var(--white); /* Ícone com contorno preto */
+  font-size: 2.5rem; /* tamanho do ícone */
+  color: var(--purple-darker); /* Ícone com contorno preto */
 }
 
 #textBtn:active {
@@ -350,8 +351,8 @@
   padding: 16px;
   border-radius: 24px;
   width: 160px;
-  position: fixed;
-  top: 90px;
+  position: absolute;
+  top: 50px;
   right: 24px;
 }
 
