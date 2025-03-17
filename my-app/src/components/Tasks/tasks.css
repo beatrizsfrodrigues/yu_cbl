@@ -147,7 +147,7 @@
 /* Ícone dentro do botão */
 #newTask i {
   font-size: 2.5rem; /* tamanho do ícone */
-  color: var(--purple-darker); /* Ícone com contorno preto */
+  color: var(--white); /* Ícone com contorno preto */
 }
 
 #textBtn:active {

@@ -85,7 +85,7 @@ label {
 }
 
 .buttonBig.active {
-  background: #b49bc7;
+  background: var(--purple);
   cursor: pointer;
 }
 
