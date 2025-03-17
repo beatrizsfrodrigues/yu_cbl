@@ -202,10 +202,8 @@ const InfoPessoal = ({ show, onBack }) => {
                 />
               </div>
               <button
-                type="button"
-                className="settings-button save-button"
-                onClick={handleSave}
-                disabled={!isFormComplete}
+                className={`save-button ${isFormComplete ? "active" : ""}`}
+                type="submit"
               >
                 Guardar
               </button>
