@@ -84,7 +84,10 @@ const pages = [
   {
     mainTitle: "5.",
     subTitle: "Bem - Vindo à YU",
-    images: ["/assets/imgs_Apresentacao/YUtuga.svg"],
+    images: [
+      "/assets/imgs_Apresentacao/YUsaiaAMAR.svg",
+      "/assets/imgs_Apresentacao/YUtuga.svg",
+    ],
   },
 ];
 

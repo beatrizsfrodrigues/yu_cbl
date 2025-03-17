@@ -82,8 +82,10 @@
 
 .image {
   width: 100%;
+  max-width: 60%;
   height: auto;
   display: block;
+  align-items: center;
   object-fit: cover;
 }
 
