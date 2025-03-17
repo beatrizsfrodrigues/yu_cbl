@@ -153,28 +153,34 @@ const Apresentacao = () => {
           {currentPage === 1 && (
             <>
               <p>{pages[currentPage].description1}</p>
-              <img
-                src={pages[currentPage].image1}
-                alt="Ligação com amigo"
-                style={{ width: "300px", marginTop: "20px" }}
-              />
+              <div className="image-container">
+                <img
+                  src={pages[currentPage].image1}
+                  alt="Ligação com amigo"
+                  className="image"
+                />
+              </div>
               <p>{pages[currentPage].description2}</p>
-              <img
-                src={pages[currentPage].image2}
-                alt="Acesso mais tarde"
-                style={{ width: "300px", marginTop: "20px" }}
-              />
+              <div className="image-container">
+                <img
+                  src={pages[currentPage].image2}
+                  alt="Acesso mais tarde"
+                  className="image"
+                />
+              </div>
             </>
           )}
           {currentPage !== 1 && (
             <>
               <p>{pages[currentPage].description}</p>
               {pages[currentPage].image && (
-                <img
-                  src={pages[currentPage].image}
-                  alt="Prévia da atualização"
-                  style={{ width: "300px", marginTop: "20px" }}
-                />
+                <div className="image-container">
+                  <img
+                    src={pages[currentPage].image}
+                    alt="Prévia da atualização"
+                    className="image"
+                  />
+                </div>
               )}
             </>
           )}
@@ -182,38 +188,30 @@ const Apresentacao = () => {
             <>
               <p>{pages[currentPage].description1}</p>
               {pages[currentPage].video && (
-                <video
-                  src={pages[currentPage].video}
-                  autoPlay
-                  loop
-                  muted
-                  style={{ width: "300px", marginTop: "20px" }}
-                >
-                  O seu navegador não suporta o elemento de vídeo.
-                </video>
+                <div className="image-container">
+                  <video
+                    src={pages[currentPage].video}
+                    autoPlay
+                    loop
+                    muted
+                    className="image"
+                  >
+                    O seu navegador não suporta o elemento de vídeo.
+                  </video>
+                </div>
               )}
               <p>{pages[currentPage].description2}</p>
             </>
           )}
           {currentPage === 4 && (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  justifyContent: "center",
-                }}
-              >
+              <div className="image-container">
                 {pages[currentPage].images.map((image, index) => (
                   <img
                     key={index}
                     src={image}
                     alt={`Imagem ${index + 1}`}
-                    style={{
-                      width: "150px",
-                      height: "150px",
-                      objectFit: "cover",
-                    }}
+                    className="image"
                   />
                 ))}
               </div>
