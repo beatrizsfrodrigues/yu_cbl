@@ -26,10 +26,18 @@ const Welcome = () => {
           Vamos iniciar esta jornada para <br></br> conquistares os teus
           objetivos.
         </div>
-        <button type="submit" className="start-button" onClick={handleClickRegister}>
+        <button
+          type="submit"
+          className="start-button"
+          onClick={handleClickRegister}
+        >
           Registar
         </button>
-        <button type="submit" className="start-button-light" onClick={handleClickLogin}>
+        <button
+          type="submit"
+          className="start-button-light"
+          onClick={handleClickLogin}
+        >
           Iniciar Sessão
         </button>
       </div>
