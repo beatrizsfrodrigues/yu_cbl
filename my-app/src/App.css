@@ -78,6 +78,10 @@ p {
   background-color: var(--purple);
 }
 
+.buttonBig:disabled {
+  background-color: var(--purple-darker);
+}
+
 .btnRound {
   width: 64px;
   height: 64px;
