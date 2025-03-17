@@ -211,7 +211,7 @@ const Home = () => {
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
-          <div className="row">
+          <header className="row">
             {/* Star Section */}
             <div className="ClassStar">
               <img src={Star} alt="Star" />
@@ -243,7 +243,7 @@ const Home = () => {
                 </div>
               )}
             </div>
-          </div>
+          </header>
 
           {/* Mascot Section */}
           <div
