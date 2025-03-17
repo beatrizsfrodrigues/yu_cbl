@@ -82,7 +82,6 @@
 
 .image {
   width: 100%;
-  max-width: 230px;
   height: auto;
   display: block;
   object-fit: cover;
