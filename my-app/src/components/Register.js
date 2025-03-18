@@ -189,7 +189,9 @@ const Register = () => {
           <div className="logo-container">
             <img src={logo} alt="logo" className="logo" />
           </div>
-          <h1>Registo</h1>
+          <header>
+            <h1>Registo</h1>
+          </header>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
             <label htmlFor="input-email">

@@ -21,7 +21,7 @@ const Welcome = () => {
       <div className="backgroundDiv backgroundDiv2"></div>
       <img className="logo" src={logo} alt="YU Logo" width="300" />
       <div className="text-container">
-        <div className="title">Bem vindo à YU!</div>
+        <header className="title">Bem vindo à YU!</header>
         <div className="title-desc">
           Vamos iniciar esta jornada para <br></br> conquistares os teus
           objetivos.
