@@ -66,7 +66,9 @@ const Login = () => {
           <div className="logo-container">
             <img src={logo} alt="logo" className="logo" />
           </div>
-          <h1>Login</h1>
+          <header>
+            <h1>Login</h1>
+          </header>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
             <label for="input-email-utilizador">Email / Utilizador</label>
