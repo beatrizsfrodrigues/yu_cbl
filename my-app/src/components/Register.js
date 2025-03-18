@@ -200,7 +200,7 @@ const Register = () => {
             <input
               required
               id="input-email"
-              type="text"
+              type="email"
               className={`input ${validationInputs.email ? "error" : ""}`}
               placeholder="Inserir email..."
               value={email}
