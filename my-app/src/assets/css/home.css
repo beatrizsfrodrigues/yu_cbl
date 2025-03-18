@@ -98,6 +98,11 @@
   justify-content: space-between;
 }
 
+.btnHomeHeader {
+  background-color: var(--orange);
+  border: none;
+}
+
 .avatarcontent {
   padding-left: 5%;
   display: grid;
