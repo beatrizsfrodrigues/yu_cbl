@@ -106,7 +106,7 @@ const Connection = () => {
 
   return (
     <div className="connection-page mainBody">
-      <p className="page-title">Cria uma ligação mútua</p>
+      <h1>Cria uma ligação mútua</h1>
       <p className="page-desc">
         Nesta fase, cria uma ligação com alguém para atribuirem tarefas entre
         si.

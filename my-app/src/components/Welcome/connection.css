@@ -26,7 +26,8 @@ body {
   font-size: 15px;
   color: var(--purple-darker);
   font-weight: lighter;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
+  margin-top: -10px;
 }
 
 .connection-placeholder {
