@@ -106,20 +106,6 @@ const Register = () => {
   const handleRegister = () => {
     const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
 
-    const inputErrors = {
-      username: username.trim() === "",
-      email: email.trim() === "",
-      password: password.trim() === "",
-      confirmPassword: confirmPassword.trim() === "",
-    };
-
-    setValidationInputs(inputErrors);
-
-    if (Object.values(inputErrors).some((input) => input)) {
-      setAlert("Por favor preencha todos os campos!");
-      return;
-    }
-
     if (invalidUsernameChars.test(username)) {
       setAlert("Nome de utilizador contem caracteres inválidos!");
       setAlertPass("");
@@ -132,6 +118,11 @@ const Register = () => {
       return;
     } else {
       setAlert("");
+    }
+
+    if (!validatePassword(password)) {
+      setAlertPass("A palavra-passe não atende aos requisitos mínimos!");
+      return;
     }
 
     if (password !== confirmPassword) {
@@ -190,12 +181,6 @@ const Register = () => {
     validatePassword(newPassword);
   };
 
-  const isFormComplete =
-    email.trim() !== "" &&
-    password.trim() !== "" &&
-    username.trim() !== "" &&
-    confirmPassword.trim() !== "";
-
   return (
     <div className="mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
@@ -204,25 +189,30 @@ const Register = () => {
           <div className="logo-container">
             <img src={logo} alt="logo" className="logo" />
           </div>
+          <header>
+            <h1>Registo</h1>
+          </header>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
-            <label for="input-email">Email</label>
+            <label htmlFor="input-email">
+              Email <span className="alert">*</span>
+            </label>
             <input
+              required
               id="input-email"
               type="text"
               className={`input ${validationInputs.email ? "error" : ""}`}
               placeholder="Inserir email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
-            {validationInputs.email && (
-              <p className="alert">Por favor preencha este campo!</p>
-            )}
           </div>
           <div className="user-container">
-            <label for="input-utilizador">Nome de Utilizador</label>
+            <label htmlFor="input-utilizador">
+              Nome de Utilizador <span className="alert">*</span>
+            </label>
             <input
+              required
               id="input-utilizador"
               type="text"
               className={`input ${validationInputs.username ? "error" : ""}`}
@@ -230,15 +220,13 @@ const Register = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            {validationInputs.username && (
-              <p className="alert">Por favor preencha este campo!</p>
-            )}
           </div>
-          {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
-          {/*<label>Palavra-passe</label>*/}
             <div className="password-input-wrapper">
               <div className="password-label-container">
+                <label>
+                  Palavra-passe <span className="alert">*</span>{" "}
+                </label>
                 <button
                   aria-label="Requisitos para password"
                   type="button"
@@ -247,11 +235,10 @@ const Register = () => {
                 >
                   <i className="bi bi-question-circle"></i>
                 </button>
-                <label>Palavra-passe</label>
               </div>
-
               <div className="password-input-container">
                 <input
+                  required
                   type={showPassword ? "text" : "password"}
                   className={`input ${
                     validationInputs.password ? "error" : ""
@@ -274,9 +261,12 @@ const Register = () => {
             </div>
 
             <div className="pass-container">
-              <label for="input-password2">Confirmar Palavra-passe</label>
+              <label htmlFor="input-password2">
+                Confirmar Palavra-passe <span className="alert">*</span>
+              </label>
               <div className="password-input-container">
                 <input
+                  required
                   id="input-password2"
                   type={showConfirmPassword ? "text" : "password"}
                   className={`input ${
@@ -297,20 +287,19 @@ const Register = () => {
                   />
                 </button>
               </div>
-              {validationInputs.confirmPassword && (
-                <p className="alert">Por favor preencha este campo!</p>
-              )}
             </div>
-          </div>{" "}
-          {/* Closing div tag for .form-container */}
-          {validationInputs.password && (
-            <p className="alert">Por favor preencha este campo!</p>
-          )}
+            {alertPass && <p className="alert">{alertPass}</p>}
+          </div>
           <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
             <ul className="password-requirements">
               <li
                 className={passwordRequirements.minLength ? "valid" : "invalid"}
               >
+                {passwordRequirements.minLength ? (
+                  <i className="bi bi-check-circle"></i>
+                ) : (
+                  <i className="bi bi-x-circle"></i>
+                )}
                 Pelo menos 6 caracteres
               </li>
               <li
@@ -318,6 +307,11 @@ const Register = () => {
                   passwordRequirements.hasUpperCase ? "valid" : "invalid"
                 }
               >
+                {passwordRequirements.hasUpperCase ? (
+                  <i className="bi bi-check-circle"></i>
+                ) : (
+                  <i className="bi bi-x-circle"></i>
+                )}
                 Pelo menos uma letra maiúscula
               </li>
               <li
@@ -325,6 +319,11 @@ const Register = () => {
                   passwordRequirements.hasLowerCase ? "valid" : "invalid"
                 }
               >
+                {passwordRequirements.hasLowerCase ? (
+                  <i className="bi bi-check-circle"></i>
+                ) : (
+                  <i className="bi bi-x-circle"></i>
+                )}
                 Pelo menos uma letra minúscula
               </li>
               <li
@@ -332,6 +331,11 @@ const Register = () => {
                   passwordRequirements.hasNumbers ? "valid" : "invalid"
                 }
               >
+                {passwordRequirements.hasNumbers ? (
+                  <i className="bi bi-check-circle"></i>
+                ) : (
+                  <i className="bi bi-x-circle"></i>
+                )}
                 Pelo menos um número
               </li>
               <li
@@ -339,23 +343,23 @@ const Register = () => {
                   passwordRequirements.hasSpecialChar ? "valid" : "invalid"
                 }
               >
+                {passwordRequirements.hasSpecialChar ? (
+                  <i className="bi bi-check-circle"></i>
+                ) : (
+                  <i className="bi bi-x-circle"></i>
+                )}
                 Pelo menos um caractere especial
               </li>
             </ul>
           </Modal>
-        </div>{" "}
-        {/* Closing div tag for .mainBody */}
+        </div>
         <div className="register-link">
           <p>
             Já tens conta? <a href="/Login">Iniciar Sessão</a>{" "}
           </p>
         </div>
         {message && <p>{message}</p>}
-        <button
-          className={`buttonBig ${isFormComplete ? "active" : ""}`}
-          type="submit"
-          disabled={!isFormComplete}
-        >
+        <button className="buttonBig" type="submit">
           Registar
         </button>
       </form>
