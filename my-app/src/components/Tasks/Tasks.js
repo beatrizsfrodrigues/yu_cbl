@@ -175,9 +175,6 @@ function Tasks() {
   const handleTouchEnd = () => {
     if (swipedTask !== null) {
       const swipeDistance = touchStartX - touchMoveX;
-      console.log(swipeDistance);
-      console.log(touchStartX);
-      console.log(touchMoveX);
       const taskElement = document.getElementById(`task-${swipedTask}`);
 
       if (swipeDistance > 50 && touchMoveX !== 0) {
@@ -223,18 +220,23 @@ function Tasks() {
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-      <div className="header">
+      <header className="header">
         <h1>Lista de Tarefas</h1>
         <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
-      </div>
+      </header>
+
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) =>
             !task.completed && !task.verified ? (
               <div className="taskDivOp">
                 <div className="btnTaskGroup">
-                  <button className="btnTask">Recusar</button>
-                  <button className="btnTask">Concluir</button>
+                  <button className="btnTask" disabled={!isSwiping}>
+                    Recusar
+                  </button>
+                  <button className="btnTask" disabled={!isSwiping}>
+                    Concluir
+                  </button>
                 </div>
                 <div className="btnTaskGroup">
                   <button className="btnTask">Recusar</button>

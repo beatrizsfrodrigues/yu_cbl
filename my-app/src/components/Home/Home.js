@@ -79,6 +79,27 @@ const Home = () => {
   };
 
   const openCloset = () => {
+    setSelectedBackground(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.background
+      ) || ""
+    );
+    setSelectedShirt(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.shirt
+      ) || ""
+    );
+    setSelectedAcc(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.hat
+      ) || ""
+    );
+    setSelectedColor(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.color
+      ) || ""
+    );
+
     setShowCloset(true);
     setShowDropdown(false);
   };
@@ -147,10 +168,15 @@ const Home = () => {
   const saveOutfit = () => {
     dispatch(
       saveFit({
-        hat: selectedAcc.id || "",
-        shirt: selectedShirt.id || "",
-        color: selectedColor.id || 40,
-        background: selectedBackground.id || "",
+        hat: selectedAcc?.id || currentMascot.accessoriesEquipped.hat || null,
+        shirt:
+          selectedShirt?.id || currentMascot.accessoriesEquipped.shirt || null,
+        color:
+          selectedColor?.id || currentMascot.accessoriesEquipped.color || 40,
+        background:
+          selectedBackground?.id ||
+          currentMascot.accessoriesEquipped.background ||
+          null,
         id: currentMascot.id,
       })
     );
@@ -185,39 +211,43 @@ const Home = () => {
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
-          <div className="row">
+          <header className="row">
             {/* Star Section */}
-            <div className="ClassStar">
+            <div className="ClassStar ">
               <img src={Star} alt="Star" />
               <p>{currentUser.points}</p>
             </div>
 
             {/* ButtonsCloset Section */}
             <div className="buttonsCloset">
-              <div className="closetHeader">
+              <div className="closetHeader btnHomeHeader">
                 {/* Closet Icon */}
-                <img
-                  src={Closeticon}
-                  alt="Closet"
+                <button
+                  className="btnHomeHeader"
+                  aria-label="armario"
                   onClick={openCloset}
-                  className="closetIcon"
-                />
+                >
+                  <img src={Closeticon} alt="Closet" className="closetIcon" />
+                </button>
                 {/* Chevron Icon */}
-                <ChevronDown
-                  className="navIcon"
+                <button
+                  className="btnHomeHeader"
+                  aria-label="drop down menu"
                   onClick={() => setShowDropdown((prev) => !prev)}
-                />
+                >
+                  <ChevronDown className="navIcon" />
+                </button>
               </div>
 
               {showDropdown && (
                 <div className="dropdown open" ref={dropdownRef}>
-                  <button onClick={openStore}>
+                  <button onClick={openStore} aria-label="loja">
                     <img src={Storeicon} alt="Store" />
                   </button>
                 </div>
               )}
             </div>
-          </div>
+          </header>
 
           {/* Mascot Section */}
           <div

@@ -66,6 +66,9 @@ const Login = () => {
           <div className="logo-container">
             <img src={logo} alt="logo" className="logo" />
           </div>
+          <header>
+            <h1>Login</h1>
+          </header>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
             <label for="input-email-utilizador">Email / Utilizador</label>
@@ -111,10 +114,7 @@ const Login = () => {
           </p>
         </div>
         {message && <p>{message}</p>}
-        <button
-          className={`buttonBig ${isFormComplete ? "active" : ""}`}
-          type="submit"
-        >
+        <button className="buttonBig" type="submit">
           Iniciar Sessão
         </button>
       </form>

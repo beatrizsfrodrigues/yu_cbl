@@ -3,6 +3,9 @@ import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser, fetchUsers } from "../../../redux/usersSlice";
 
+import visibleIcon from "../../../assets/imgs/Icons/visible.png";
+import notVisibleIcon from "../../../assets/imgs/Icons/notvisible.png";
+
 const InfoPessoal = ({ show, onBack }) => {
   const dispatch = useDispatch();
 
@@ -11,6 +14,8 @@ const InfoPessoal = ({ show, onBack }) => {
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
 
   const activeUser = users?.find((user) => user.id === currentUserId);
+
+  const [showPassword, setShowPassword] = useState(false); // Controla a visibilidade da palavra-passe
 
   const [alert, setAlert] = useState("");
 
@@ -29,6 +34,12 @@ const InfoPessoal = ({ show, onBack }) => {
     nomeUtilizador: "",
     email: "",
     palavraChave: "",
+  });
+
+  const [validationErrors, setValidationErrors] = useState({
+    nomeUtilizador: false,
+    email: false,
+    palavraChave: false,
   });
 
   useEffect(() => {
@@ -52,6 +63,7 @@ const InfoPessoal = ({ show, onBack }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setValidationErrors({ ...validationErrors, [name]: false });
   };
 
   const validatePassword = (password) => {
@@ -70,7 +82,22 @@ const InfoPessoal = ({ show, onBack }) => {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    const errors = {
+      nomeUtilizador: formData.nomeUtilizador.trim() === "",
+      email: formData.email.trim() === "",
+      palavraChave: formData.palavraChave.trim() === "",
+    };
+
+    setValidationErrors(errors);
+
+    if (Object.values(errors).some((error) => error)) {
+      setAlert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     // Verifica se o nome de utilizador já existe
     if (
       users.some(
@@ -88,6 +115,7 @@ const InfoPessoal = ({ show, onBack }) => {
       return;
     }
 
+    setAlert(""); // Limpa os alertas corrigidos
     setShowConfirmModal(true);
   };
 
@@ -153,14 +181,14 @@ const InfoPessoal = ({ show, onBack }) => {
           style={{ display: "block" }}
         >
           <div className="info-header info-pessoal-page">
-            <button className="back-button" onClick={handleBack}>
+            <button className="back-button" aria-label="back-button" onClick={handleBack}>
               <i className="bi bi-arrow-left"></i>
             </button>
             <h3>Os meus dados</h3>
           </div>
           <div className="line"></div>
           <div className="settings-section">
-            <form>
+            <form onSubmit={handleSave}>
               {alert && <p className="alert">{alert}</p>}
               <div className="form-group">
                 <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
@@ -172,7 +200,9 @@ const InfoPessoal = ({ show, onBack }) => {
                   value={formData.nomeUtilizador}
                   onChange={handleChange}
                   placeholder="nome do utilizador"
-                  className="form-input"
+                  className={`form-input ${
+                    validationErrors.nomeUtilizador ? "error" : ""
+                  }`}
                 />
               </div>
               <div className="form-group">
@@ -185,28 +215,39 @@ const InfoPessoal = ({ show, onBack }) => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="email@gmail.com"
-                  className="form-input"
+                  className={`form-input ${
+                    validationErrors.email ? "error" : ""
+                  }`}
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="palavraChave">Palavra-passe</label>
-                <input
-                  required
-                  type="password"
-                  id="palavraChave"
-                  name="palavraChave"
-                  value={formData.palavraChave}
-                  onChange={handleChange}
-                  placeholder="****"
-                  className="form-input"
-                />
+                <div className="password-input-container">
+                  <input
+                    required
+                    type={showPassword ? "text" : "password"}
+                    id="palavraChave"
+                    name="palavraChave"
+                    value={formData.palavraChave}
+                    onChange={handleChange}
+                    placeholder="****"
+                    className={`form-input ${
+                      validationErrors.palavraChave ? "error" : ""
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle-button"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <img
+                      src={showPassword ? notVisibleIcon : visibleIcon}
+                      alt="Mostrar palavra-passe"
+                    />
+                  </button>
+                </div>
               </div>
-              <button
-                type="button"
-                className="settings-button save-button"
-                onClick={handleSave}
-                disabled={!isFormComplete}
-              >
+              <button className="save-button" type="submit">
                 Guardar
               </button>
             </form>

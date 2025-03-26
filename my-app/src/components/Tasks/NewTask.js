@@ -44,10 +44,11 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
         </div>
         <div className="line"></div>
         <form id="newTaskForm" onSubmit={handleAddTask}>
-          <label className="label">
+          <label className="label" for="input_titulo">
             Título <span className="alert">*</span>
           </label>
           <input
+            id="input_title"
             required
             type="text"
             className="input"
@@ -55,10 +56,11 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <label className="label">
+          <label className="label" for="textarea_description">
             Descrição <span className="alert">*</span>
           </label>
           <textarea
+            id="textarea_description"
             required
             className="input descriptionInput"
             placeholder="Descreve a tarefa"

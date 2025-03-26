@@ -75,32 +75,14 @@ label {
   resize: none;
 }
 
-.buttonBig {
-  margin-top: 98px;
-  border-radius: 20px;
-  color: white;
-  border: none;
-  cursor: not-allowed;
-  transition: background 0.3s ease;
-}
-
-.buttonBig.active {
-  background: #b49bc7;
-  cursor: pointer;
-}
-
-.buttonBig:disabled {
-  background-color: #bababa;
-  opacity: 0.7;
-}
-
 .register-link {
   font-size: 14px;
   text-align: center;
 }
 
 .register-link a {
-  color: #be77ee;
+  color: var(--purple);
+  font-weight: bold;
 }
 
 .password-input-container input {
@@ -122,6 +104,6 @@ label {
 }
 
 .password-toggle-button img {
-  width: 20px; /* Ajuste o tamanho conforme necessário */
-  height: 20px; /* Ajuste o tamanho conforme necessário */
+  width: 20px;
+  height: 20px;
 }

@@ -120,6 +120,11 @@ const Register = () => {
       setAlert("");
     }
 
+    if (!validatePassword(password)) {
+      setAlertPass("A palavra-passe não atende aos requisitos mínimos!");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setAlertPass("As palavras-passe não coincidem!");
       return;
@@ -176,12 +181,6 @@ const Register = () => {
     validatePassword(newPassword);
   };
 
-  const isFormComplete =
-    email.trim() !== "" &&
-    password.trim() !== "" &&
-    username.trim() !== "" &&
-    confirmPassword.trim() !== "";
-
   return (
     <div className="mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
@@ -190,6 +189,9 @@ const Register = () => {
           <div className="logo-container">
             <img src={logo} alt="logo" className="logo" />
           </div>
+          <header>
+            <h1>Registo</h1>
+          </header>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
             <label htmlFor="input-email">
@@ -198,7 +200,7 @@ const Register = () => {
             <input
               required
               id="input-email"
-              type="text"
+              type="email"
               className={`input ${validationInputs.email ? "error" : ""}`}
               placeholder="Inserir email..."
               value={email}
@@ -219,11 +221,10 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          {alertPass && <p className="alert">{alertPass}</p>}
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
-                <label>
+                <label for="password_input">
                   Palavra-passe <span className="alert">*</span>{" "}
                 </label>
                 <button
@@ -237,6 +238,7 @@ const Register = () => {
               </div>
               <div className="password-input-container">
                 <input
+                  id="password_input"
                   required
                   type={showPassword ? "text" : "password"}
                   className={`input ${
@@ -287,6 +289,7 @@ const Register = () => {
                 </button>
               </div>
             </div>
+            {alertPass && <p className="alert">{alertPass}</p>}
           </div>
           <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
             <ul className="password-requirements">
@@ -357,10 +360,7 @@ const Register = () => {
           </p>
         </div>
         {message && <p>{message}</p>}
-        <button
-          className={`buttonBig ${isFormComplete ? "active" : ""}`}
-          type="submit"
-        >
+        <button className="buttonBig" type="submit">
           Registar
         </button>
       </form>
