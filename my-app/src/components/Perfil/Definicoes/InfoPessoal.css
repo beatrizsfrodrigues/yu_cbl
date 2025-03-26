@@ -1,11 +1,10 @@
-input{
+input {
   width: 100%;
   padding: 8px;
   display: block;
-  margin: 4px 0 ;
+  margin: 4px 0;
   border-radius: 16px;
 }
-
 
 /* .window div{
     display: block !important;
@@ -17,7 +16,6 @@ input{
   gap: 16px;
 }
 
-
 /* Botão "Guardar" */
 .save-button {
   margin-top: 20px;
@@ -28,10 +26,6 @@ input{
   padding: 10px 15px;
   border-radius: 15px;
   cursor: pointer;
-}
-
-.save-button:hover {
-  background-color: var(--purple-darker);
 }
 
 .info-pessoal-page .back-button i {
@@ -69,7 +63,6 @@ input{
   align-items: center;
 }
 
-
 hr {
   margin: 15px 0;
   border: none;
@@ -81,7 +74,7 @@ hr {
   display: flex;
   flex-direction: column;
   margin-bottom: 2px;
-  gap: 16px
+  gap: 16px;
 }
 
 .form-group label {
@@ -124,14 +117,9 @@ hr {
   transition: background-color 0.3s ease;
 }
 
-.save-button:hover {
-  background-color: var(--purple-darker);
-}
-
 /* Modal de confirmação - página Info Pessoal */
 
 /* Modal principal */
-
 
 /* Conteúdo do modal */
 .info-pessoal-page .confirm-modal-content {
@@ -168,10 +156,6 @@ hr {
   gap: 15px;
   margin-top: 10px;
 }
-
-
-
-
 
 /* Botões */
 .info-pessoal-page .confirm-modal-buttons .confirm-button,
@@ -242,4 +226,21 @@ hr {
 .notification.hidden {
   opacity: 0;
   transform: translateY(-50px);
+}
+
+.password-toggle-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0;
+}
+
+.password-toggle-button img {
+  width: 20px;
+  height: 20px;
 }

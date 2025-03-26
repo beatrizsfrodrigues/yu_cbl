@@ -7,9 +7,13 @@ function NavBar() {
   // Memoriza o array navItems para evitar recriações desnecessárias
   const navItems = useMemo(
     () => [
-      { path: "/home", icon: <HomeIcon />, label: "Home" },
-      { path: "/tasks", icon: <Clipboard />, label: "Tarefas" },
-      { path: "/profile", icon: <User />, label: "Perfil" },
+      { path: "/home", icon: <HomeIcon strokeWidth={2.5} />, label: "Home" },
+      {
+        path: "/tasks",
+        icon: <Clipboard strokeWidth={2.5} />,
+        label: "Tarefas",
+      },
+      { path: "/profile", icon: <User strokeWidth={2.5} />, label: "Perfil" },
     ],
     []
   );

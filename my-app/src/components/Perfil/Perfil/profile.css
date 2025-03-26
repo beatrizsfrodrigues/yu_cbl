@@ -13,6 +13,11 @@
 /**********************************
  * Estilo do container principal
  **********************************/
+.mainBody {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
 .profile-container {
   display: flex;
   /* flex-direction: column; */
@@ -39,6 +44,8 @@
 }
 
 .gear-icon {
+  background: none;
+  border: none;
   font-size: 2rem;
   cursor: pointer;
   color: var(--purple-darker);

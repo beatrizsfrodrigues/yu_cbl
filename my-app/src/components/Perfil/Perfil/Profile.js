@@ -13,7 +13,6 @@ const Profile = () => {
   const navigate = useNavigate(); // Hook para redirecionar o user
   const loggedInUser = localStorage.getItem("loggedInUser");
   const currentUserId = loggedInUser ? JSON.parse(loggedInUser).id : null;
-  /*const activeUser = useSelector((state) => state.users.data?.find((user) => user.id === 2));*/
 
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.data);
@@ -28,7 +27,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!loggedInUser) {
-      //Quando o user tem login feito
+      // Quando o user não tem login feito
       navigate("/login");
     }
   }, [loggedInUser, navigate]);
@@ -79,7 +78,7 @@ const Profile = () => {
   };
 
   if (!loggedInUser) {
-    //mensagem de erro
+    // mensagem de erro
     return (
       <div className="error-message">
         <h2>Efetua login para poderes aceder à YU.</h2>
@@ -108,9 +107,12 @@ const Profile = () => {
       <div className="backgroundDiv"></div>
       <header className="profile-header">
         <h1 className="profile-title title" aria-label="Perfil">
-          Perfil
-        </h1>
-        <span className="gear-icon bi bi-gear" onClick={toggleSettings}></span>
+          Perfil </h1>
+        <button
+          aria-label="Abrir definições"
+          className="gear-icon bi bi-gear"
+          onClick={toggleSettings}
+        ></button>
       </header>
 
       <div className="profile-avatar">
@@ -128,8 +130,9 @@ const Profile = () => {
         <button
           aria-label="Botão para abrir gráficos"
           className="profile-button award"
+          onClick={toggleGrafico}
         >
-          <span className="bi bi-bar-chart-line" onClick={toggleGrafico}></span>
+          <span className="bi bi-bar-chart-line"></span>
         </button>
 
         <Link
