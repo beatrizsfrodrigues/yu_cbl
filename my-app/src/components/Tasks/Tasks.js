@@ -221,7 +221,7 @@ function Tasks() {
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
 
-      <div className="header">
+      <header className="header">
         <h1 className="title" aria-label="Lista de Tarefas">
           Lista de Tarefas
         </h1>
