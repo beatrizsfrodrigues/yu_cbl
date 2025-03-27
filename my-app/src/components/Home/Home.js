@@ -213,33 +213,36 @@ const Home = () => {
         >
           <header className="row">
             {/* Star Section */}
-            <div className="ClassStar">
+            <div className="ClassStar ">
               <img src={Star} alt="Star" />
               <p>{currentUser.points}</p>
             </div>
 
             {/* ButtonsCloset Section */}
             <div className="buttonsCloset">
-              <div className="closetHeader">
+              <div className="closetHeader btnHomeHeader">
                 {/* Closet Icon */}
-                <img
-                  src={Closeticon}
-                  alt="Closet"
+                <button
+                  className="btnHomeHeader"
+                  aria-label="armario"
                   onClick={openCloset}
-                  className="closetIcon"
-                  aria-label="Abrir armário"
-                />
+                >
+                  <img src={Closeticon} alt="Closet" className="closetIcon" />
+                </button>
                 {/* Chevron Icon */}
-                <ChevronDown
-                  className="navIcon"
+                <button
+                  className="btnHomeHeader"
+                  aria-label="drop down menu"
                   onClick={() => setShowDropdown((prev) => !prev)}
-                />
+                >
+                  <ChevronDown className="navIcon" />
+                </button>
               </div>
 
               {showDropdown && (
                 <div className="dropdown open" ref={dropdownRef}>
-                  <button onClick={openStore}>
-                    <img src={Storeicon} alt="Store" aria-label="Abrir Loja" />
+                  <button onClick={openStore} aria-label="loja">
+                    <img src={Storeicon} alt="Store" />
                   </button>
                 </div>
               )}

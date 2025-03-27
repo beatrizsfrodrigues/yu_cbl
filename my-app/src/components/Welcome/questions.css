@@ -43,8 +43,8 @@
 }
 
 .option.selected {
-  background-color: #e1d7e9;
-  outline: 3px solid #b49bc7;
+  background-color: var(--purple-lighter);
+  outline: 3px solid var(--purple);
 }
 
 .continue-button {
@@ -62,7 +62,7 @@
 }
 
 .continue-button:not(.disabled) {
-  background-color: #b49bc7;
+  background-color: var(--purple);
 }
 
 .continue-button.disabled {
