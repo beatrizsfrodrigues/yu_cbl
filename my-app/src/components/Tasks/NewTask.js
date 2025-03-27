@@ -59,6 +59,7 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
           <label className="label" for="textarea_description">
             Descrição <span className="alert">*</span>
           </label>
+
           <textarea
             id="textarea_description"
             required
@@ -67,7 +68,12 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
-          <button type="submit" className="button buttonBig">
+          <button
+            type="submit"
+            className="button buttonBig"
+            disabled={!isFormComplete}
+            aria-label="Fechar janela"
+          >
             Criar
           </button>
         </form>

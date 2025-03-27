@@ -220,8 +220,12 @@ function Tasks() {
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-      <header className="header">
-        <h1>Lista de Tarefas</h1>
+
+      <div className="header">
+        <h1 className="title" aria-label="Lista de Tarefas">
+          Lista de Tarefas
+        </h1>
+
         <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
       </header>
 

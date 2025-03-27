@@ -29,8 +29,9 @@ label {
 }
 
 .logo {
-  max-width: 277px;
-  max-height: 191px;
+  width: 277px; /*retirei max*/
+  height: 191px; /*retirei max*/
+  object-fit: contain; /* Para manter proporção */
   position: relative;
   /* Stays on top of the bolas */
   z-index: 2;
