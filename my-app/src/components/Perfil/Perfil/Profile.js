@@ -106,7 +106,8 @@ const Profile = () => {
     <div className="profile-container mainBody">
       <div className="backgroundDiv"></div>
       <header className="profile-header">
-        <h1 className="profile-title">Perfil</h1>
+        <h1 className="profile-title title" aria-label="Perfil">
+          Perfil </h1>
         <button
           aria-label="Abrir definições"
           className="gear-icon bi bi-gear"
@@ -156,6 +157,7 @@ const Profile = () => {
         onClose={closeSettings}
         onInfoPessoalClick={handleInfoPessoalClick}
         onArquivoClick={handleArquivoClick}
+        aria-label="Abrir definições"
       />
 
       <InfoPessoal show={showInfoPessoal} onBack={backToSettings} />
