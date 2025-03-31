@@ -1,4 +1,4 @@
-.container {
+/* .container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +20,6 @@ label {
 .logo-container {
   position: relative;
   width: 100%;
-  /* Ensure it spans the necessary width */
   height: auto;
   display: flex;
   justify-content: center;
@@ -32,7 +31,6 @@ label {
   max-width: 277px;
   max-height: 191px;
   position: relative;
-  /* Stays on top of the bolas */
   z-index: 2;
   display: block;
 }
@@ -41,24 +39,9 @@ label {
   margin-top: 50px;
   position: absolute;
   z-index: 1;
-  /* Behind the logo but above other elements */
   width: 100%;
-  /* Span the entire container */
   height: auto;
-  /* Maintain aspect ratio */
 }
-
-/*.form-container input{
-  border-radius: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background: #fff;
-  width: 100%;
-  height: 40px;
-  flex-shrink: 0;
-  z-index: 0;
-  /* Ensure it's above the bolas 
-  position: relative;
-}*/
 
 .form-input {
   border: 2px solid var(--purple-dark);
@@ -86,7 +69,7 @@ label {
 
 .password-input-container input {
   width: 100%;
-  padding-right: 40px; /* Espaço para o ícone */
+  padding-right: 40px;
   box-sizing: border-box;
 }
 
@@ -105,4 +88,4 @@ label {
 .password-toggle-button img {
   width: 20px;
   height: 20px;
-}
+} */
