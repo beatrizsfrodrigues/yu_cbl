@@ -73,6 +73,7 @@ const Login = () => {
         <div className="form-container">
           <div className="logo-container">
             <img
+              rel="preload"
               src={logo}
               alt="logo"
               className="logo"

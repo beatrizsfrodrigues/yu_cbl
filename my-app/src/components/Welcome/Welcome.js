@@ -3,18 +3,20 @@ import "./welcome.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/imgs/YU_logo/YU.webp";
 
+import { useCallback } from "react";
+
 const Welcome = () => {
   const navigate = useNavigate();
 
-  const handleClickRegister = () => {
-    console.log("Button clicked");
-    navigate("/register");
-  };
+  const handleClickRegister = useCallback(() => {
+  console.log("Register button clicked");
+  navigate("/register");
+}, [navigate]);
 
-  const handleClickLogin = () => {
-    console.log("Button clicked");
-    navigate("/login");
-  };
+const handleClickLogin = useCallback(() => {
+  console.log("Login button clicked");
+  navigate("/login");
+}, [navigate]);
 
   return (
     <div className="Welcome mainBody">

@@ -187,7 +187,7 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="logo-container">
-            <img src={logo} alt="logo" className="logo" />
+            <img rel="preload" src={logo} alt="logo" className="logo" />
           </div>
           <header>
             <h1>Registo</h1>
