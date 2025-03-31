@@ -33,7 +33,6 @@ label {
   height: auto;
   z-index: 2;
   display: block;
-  aspect-ratio: 1 / 1;
 }
 
 .bolas {

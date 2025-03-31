@@ -6,7 +6,7 @@ import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
-import logo from "../assets/imgs/YU_logo/YU.svg";
+import logo from "../assets/imgs/YU_logo/YU.webp";
 const Modal = lazy(() => import("./PasswordRequirementsRegister"));
 
 const Register = () => {

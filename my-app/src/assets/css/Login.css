@@ -28,9 +28,9 @@ label {
 }
 
 .logo {
-  width: 277px; /*retirei max*/
-  height: 191px; /*retirei max*/
-  object-fit: contain; /* Para manter proporção */
+  width: 277px;
+  height: 191px;
+  object-fit: contain;
   position: relative;
   z-index: 2;
   display: block;
