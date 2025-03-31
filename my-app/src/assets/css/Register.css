@@ -79,7 +79,7 @@ label {
 }
 
 .register-link a {
-  color: #be77ee;
+  color: var(--purple);
 }
 
 .alert {

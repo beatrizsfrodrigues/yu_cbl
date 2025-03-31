@@ -28,8 +28,9 @@ label {
 }
 
 .logo {
-  max-width: 277px;
-  max-height: 191px;
+  width: 277px; /*retirei max*/
+  height: 191px; /*retirei max*/
+  object-fit: contain; /* Para manter proporção */
   position: relative;
   z-index: 2;
   display: block;
@@ -64,7 +65,8 @@ label {
 }
 
 .register-link a {
-  color: #be77ee;
+  color: var(--purple);
+  font-weight: bold;
 }
 
 .password-input-container input {

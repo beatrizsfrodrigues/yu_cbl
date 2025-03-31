@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchUsers } from "../redux/usersSlice";
 import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Login.css";
-import logo from "../assets/imgs/YU_logo/YU.svg";
+import logo from "../assets/imgs/YU_logo/YU.webp";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 
@@ -28,6 +28,14 @@ const Login = () => {
       dispatch(fetchMascot());
     }
   }, [usersStatus, mascotStatus, dispatch]);
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = logo;
+    document.head.appendChild(link);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -64,7 +72,14 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="logo-container">
-            <img src={logo} alt="logo" className="logo" />
+            <img
+              src={logo}
+              alt="logo"
+              className="logo"
+              width="277"
+              height="191"
+              fetchPriority="high"
+            />
           </div>
           <header>
             <h1>Login</h1>

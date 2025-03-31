@@ -1,5 +1,5 @@
-import React, {useState } from "react";
-import { useDispatch} from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { rejectTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 
@@ -47,6 +47,7 @@ function Reject({ onClose, task, partnerUser, onShowPopUpInfo }) {
             className="submitBtn"
             id="sendReject"
             onClick={handleRejectTask}
+            aria-label="Enviar mensagem de rejeição"
           >
             Enviar
           </button>

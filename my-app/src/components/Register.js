@@ -232,7 +232,7 @@ const Register = () => {
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
-                <label>
+                <label for="password_input">
                   Palavra-passe <span className="alert">*</span>{" "}
                 </label>
                 <button
@@ -246,6 +246,7 @@ const Register = () => {
               </div>
               <div className="password-input-container">
                 <input
+                  id="password_input"
                   required
                   type={showPassword ? "text" : "password"}
                   className={`input ${
