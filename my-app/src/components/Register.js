@@ -206,6 +206,7 @@ const Register = () => {
               Email <span className="alert">*</span>
             </label>
             <input
+              rel="preload"
               required
               id="input-email"
               type="email"
