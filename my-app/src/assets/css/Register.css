@@ -24,13 +24,13 @@ label {
   justify-content: center;
   align-items: center;
   margin-bottom: 48px;
+  position: relative; /* Ensures better stacking behavior */
 }
 
 .logo {
-  max-width: 100%;
+  width: 80%; /* Adjusts dynamically */
+  max-width: 300px; /* Prevents it from getting too large */
   height: auto;
-  position: relative;
-  /* Stays on top of the bolas */
   z-index: 2;
   display: block;
 }
@@ -115,7 +115,7 @@ label {
 
 .password-label-container {
   display: flex;
-  align-items: center;
+  align-items: end;
   gap: 8px;
   align-self: flex-start;
   width: 100%;
@@ -136,6 +136,9 @@ label {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 6px;
 }
 
 .password-input-container input {
