@@ -1,17 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
 import { fetchMessages } from "../../redux/messagesSlice";
 import "./tasks.css";
-import NewTask from "./NewTask.js";
-import Messages from "./Messages.js";
-import ConcludeTask from "./ConcludeTask.js";
-import VerifyTask from "./VerifyTask.js";
-import VerifyPopUp from "./VerifyPopUp.js";
-import PopUpInfo from "../PopUpInfo.js";
-import Filter from "./Filter.js";
-import Reject from "./Reject.js";
 import { MessageCircle, Plus, Sliders } from "react-feather";
+
+// import NewTask from "./NewTask.js";
+// import Messages from "./Messages.js";
+// import ConcludeTask from "./ConcludeTask.js";
+// import VerifyTask from "./VerifyTask.js";
+// import VerifyPopUp from "./VerifyPopUp.js";
+// import PopUpInfo from "../PopUpInfo.js";
+// import Filter from "./Filter.js";
+// import Reject from "./Reject.js";
+
+const ConcludeTask = lazy(() => import("./ConcludeTask.js"));
+const VerifyTask = lazy(() => import("./VerifyTask.js"));
+const NewTask = lazy(() => import("./NewTask.js"));
+const Messages = lazy(() => import("./Messages.js"));
+const VerifyPopUp = lazy(() => import("./VerifyPopUp.js"));
+const PopUpInfo = lazy(() => import("../PopUpInfo.js"));
+const Filter = lazy(() => import("./Filter.js"));
+const Reject = lazy(() => import("./Reject.js"));
 
 function Tasks() {
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
@@ -20,6 +31,7 @@ function Tasks() {
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
   const messagesStatus = useSelector((state) => state.messages.status);
+  const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
@@ -226,7 +238,7 @@ function Tasks() {
           Lista de Tarefas
         </h1>
 
-        <Sliders onClick={() => setIsFilterOpen(true)} className="sliders" />
+        <Sliders onClick={openFilter} className="sliders" />
       </header>
 
       <div id="tasks">
