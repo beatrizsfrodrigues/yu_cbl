@@ -84,7 +84,7 @@ const pages = [
   {
     mainTitle: "5.",
     subTitle: "Bem - Vindo à YU",
-    images: ["/assets/imgs_Apresentacao/YUsaiaAMAR.svg"],
+    images: ["/assets/imgs_Apresentacao/YUsaiaAMAR.webp"],
   },
 ];
 
@@ -174,7 +174,7 @@ const Apresentacao = () => {
                 <div className="image-container">
                   <img
                     src={pages[currentPage].image}
-                    srcSet="/assets/imgs_Apresentacao/questionario-300.webp 300w, /assets/imgs_Apresentacao/questionario-600.webp 600w"
+                    srcSet="/assets/imgs_Apresentacao/questionario.webp 300w, /assets/imgs_Apresentacao/questionario.webp 600w"
                     sizes="(max-width: 600px) 300px, 600px"
                     alt="Prévia da atualização"
                     className="image"
