@@ -190,8 +190,8 @@ function Messages({ onClose, currentUser }) {
 
   //* modal
   return (
-    <div className="modal">
-      <div className="window">
+      <div className="modal" onClick={onClose}>
+        <div className="window" onClick={(e) => e.stopPropagation()}>
         <div className="header">
           {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>@parceiro</h3>}
           <X className="closeWindow" onClick={onClose} />

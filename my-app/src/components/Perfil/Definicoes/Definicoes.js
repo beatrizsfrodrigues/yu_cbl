@@ -64,8 +64,8 @@ const Definicoes = ({
   if (!show) return null;
 
   return (
-    <div className="modal">
-      <div className="window">
+    <div className="modal" onClick={onClose}>
+      <div className="window" onClick={(e) => e.stopPropagation()}>
         <div className="settings-header">
           <h3>Definições</h3>
           <X className="closeWindow" onClick={onClose} />
@@ -101,15 +101,14 @@ const Definicoes = ({
 
       {/* Modal para exibir informações da ligação */}
       {showModal && (
-        <div className="ligacao-overlay">
-          <div className="ligacao-content">
+        <div className="ligacao-overlay" onClick={(e) => { e.stopPropagation(); setShowModal(false); }}>
+          <div className="ligacao-content" onClick={(e) => e.stopPropagation()}>
             <div className="ligacao-header">
               <h2>Já tens uma ligação feita</h2>
               <button
                 className="close-button"
                 onClick={() => setShowModal(false)}
               >
-                ✕
               </button>
             </div>
             <p>

@@ -395,7 +395,7 @@ const Home = () => {
           </div>
 
           {/* Closet Overlay */}
-          {showCloset && (
+          {showCloset && ( 
             <div className="closetOverlay">
               <Closet
                 dressUp={dressUp}
