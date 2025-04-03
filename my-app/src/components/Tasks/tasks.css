@@ -379,3 +379,23 @@
   width: fit-content;
   align-self: center;
 }
+
+
+.flash {
+  animation: blink 0.3s ease-in-out;
+}
+
+@keyframes blink {
+  0% {
+    filter: brightness(100%);
+  }
+
+  50% {
+    filter: brightness(70%);
+    /* Escurece */
+  }
+
+  100% {
+    filter: brightness(100%);
+  }
+}
