@@ -45,9 +45,18 @@
       as="image"
     />
 
+    <link rel="manifest" href="manifest.json" />
     <title>YU</title>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js").then(
+          () => console.log("Service Worker registrado com sucesso."),
+          (err) => console.error("Erro ao registrar o Service Worker:", err)
+        );
+      }
+    </script>
   </body>
 </html>
