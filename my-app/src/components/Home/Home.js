@@ -184,6 +184,15 @@ const Home = () => {
     handleShowPopUpInfo("Alterações guardadas com sucesso!");
   };
 
+      const formatPoints = (points) => {
+      if (points >= 10_000_000) {
+          return (points / 1_000_000).toFixed(1).replace(".0", "") + "M+";
+      } else if (points >= 10_000) {
+          return (points / 1_000).toFixed(1).replace(".0", "") + "K+";
+      }
+      return points;
+  };
+
   return (
     <div className="homeContainer">
       {currentUser && currentMascot && (
@@ -215,7 +224,7 @@ const Home = () => {
             {/* Star Section */}
             <div className="ClassStar ">
               <img src={Star} alt="Star" />
-              <p>{currentUser.points}</p>
+              <p>{formatPoints(currentUser.points)}</p>
             </div>
 
             {/* ButtonsCloset Section */}
