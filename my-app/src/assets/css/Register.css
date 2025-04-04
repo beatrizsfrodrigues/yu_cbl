@@ -23,7 +23,8 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 48px;
+  margin-bottom: 28px;
+    margin-top: 20px;
   position: relative; /* Ensures better stacking behavior */
 }
 

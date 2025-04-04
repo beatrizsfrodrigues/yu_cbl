@@ -32,7 +32,7 @@ function NavBar() {
 
   return (
     <nav aria-label="Menu de navegação principal">
-      <div
+      <button
         className="indicator"
         style={{
           transform: `translateX(${activeIndex * 80 - 80}px) translateY(-70%)`,

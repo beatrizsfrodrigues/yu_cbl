@@ -58,6 +58,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0px 10px;
+  margin: 5% 0 0 0;
 }
 
 .buttonMid {
@@ -96,15 +97,20 @@
   text-align: center;
   display: flex;
   justify-content: space-between;
+  margin: 1% 0 2% 0;
+}
+
+.avatarheader button{
+    border: none;
+    background: none;
 }
 
 .btnHomeHeader {
-  background-color: var(--orange);
+  background-color: transparent;
   border: none;
 }
 
 .avatarcontent {
-  padding-left: 5%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
@@ -114,6 +120,13 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-behavior: smooth;
+  justify-items: center;
+}
+
+.avatarcontent button {
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .avatarItemDiv {
@@ -121,7 +134,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-right: 10%;
+}
+
+.avatarItemDiv button {
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  border: none;
 }
 
 .avatarcircle {
@@ -141,10 +160,10 @@
   background-color: var(--purple);
 }
 
-.activeFit {
+button.avatarcircle.activeFit {
   background-color: var(--purple-lighter);
-  border: 4px solid var(--purple-darker);
-  box-sizing: border-box;
+    border: 4px solid var(--purple-darker);
+    box-sizing: border-box;
 }
 
 /** Home Lock Animation (only the closet should be affected) */

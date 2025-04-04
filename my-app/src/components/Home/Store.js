@@ -69,14 +69,14 @@ const Store = ({
           {/* Header Icons */}
           <div className="avatarheader">
             {sectionsData.map((section, index) => (
-              <p
+              <button
                 key={section.label}
                 className={`icons ${activeSection === index ? "active" : ""}`}
                 onClick={() => setActiveSection(index)}
               >
                 {section.icon}
                 {activeSection === index && <span className="dot"></span>}
-              </p>
+              </button>
             ))}
           </div>
 
@@ -87,7 +87,7 @@ const Store = ({
           <div className="avatarcontent">
             {sectionsData[activeSection].items.map((item) => (
               <div className="avatarItemDiv" key={item.id}>
-                <div
+                <button
                   key={item.id}
                   className={`avatarcircle ${
                     selectedFit.id === item.id ? "activeFit" : ""
@@ -95,7 +95,7 @@ const Store = ({
                   onClick={() => addAccessory(item)}
                 >
                   <img src={item.src} alt={item.name} />
-                </div>
+                </button>
                 <p>{item.value}</p>
               </div>
             ))}
