@@ -70,14 +70,14 @@ const Closet = ({
           {/* Header Icons */}
           <div className="avatarheader">
             {sectionsData.map((section, index) => (
-              <p
+              <button
                 key={section.label}
                 className={`icons ${activeSection === index ? "active" : ""}`}
                 onClick={() => setActiveSection(index)}
               >
                 {section.icon}
                 {activeSection === index && <span className="dot"></span>}
-              </p>
+              </button>
             ))}
           </div>
 
@@ -87,7 +87,7 @@ const Closet = ({
           {/* Section Content */}
           <div className="avatarcontent">
             {sectionsData[activeSection].items.map((item) => (
-              <div
+              <button
                 key={item.id}
                 className={`avatarcircle ${
                   selectedBackground.id === item.id ||
@@ -100,7 +100,7 @@ const Closet = ({
                 onClick={() => dressUp(item)}
               >
                 <img src={item.src} alt={item.name} />
-              </div>
+              </button>
             ))}
           </div>
         </div>

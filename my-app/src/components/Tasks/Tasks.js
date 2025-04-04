@@ -238,7 +238,9 @@ function Tasks() {
           Lista de Tarefas
         </h1>
 
-        <Sliders onClick={openFilter} className="sliders" />
+        <button onClick={openFilter}  aria-label="Abrir filtro">
+          <Sliders className="sliders"/>
+        </button>
       </header>
 
       <div id="tasks">

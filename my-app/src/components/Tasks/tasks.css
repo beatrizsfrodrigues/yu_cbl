@@ -80,6 +80,11 @@
   margin: 0;
 }
 
+.header button{
+  border: none;
+  background-color: transparent;
+}
+
 .header > h1 {
   margin: 0px;
 }
