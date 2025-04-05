@@ -21,7 +21,6 @@ const Home = () => {
   //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
   //const closetStatus = useSelector((state) => state.closet.status);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -36,8 +35,6 @@ const Home = () => {
   const [selectedShirt, setSelectedShirt] = useState("");
   const [selectedAcc, setSelectedAcc] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,14 +96,12 @@ const Home = () => {
         (item) => item.id === currentMascot.accessoriesEquipped.color
       ) || ""
     );
-
     setShowCloset(true);
-    setShowDropdown(false);
   };
 
   const openStore = () => {
     setShowStore(true);
-    setShowDropdown(false);
+    setShowCloset(false);
   };
 
   if (!currentUser || !currentMascot || !closet) {
@@ -184,13 +179,13 @@ const Home = () => {
     handleShowPopUpInfo("Alterações guardadas com sucesso!");
   };
 
-      const formatPoints = (points) => {
-      if (points >= 10_000_000) {
-          return (points / 1_000_000).toFixed(1).replace(".0", "") + "M+";
-      } else if (points >= 10_000) {
-          return (points / 1_000).toFixed(1).replace(".0", "") + "K+";
-      }
-      return points;
+  const formatPoints = (points) => {
+    if (points >= 10_000_000) {
+      return (points / 1_000_000).toFixed(1).replace(".0", "") + "M+";
+    } else if (points >= 10_000) {
+      return (points / 1_000).toFixed(1).replace(".0", "") + "K+";
+    }
+    return points;
   };
 
   return (
@@ -220,17 +215,17 @@ const Home = () => {
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
-          <header className="row">
-            {/* Star Section */}
-            <div className="ClassStar ">
-              <img src={Star} alt="Star" />
-              <p>{formatPoints(currentUser.points)}</p>
-            </div>
+          <header className="topBar">
+            <div className="menu">
+              {/* Star Section */}
+              <div className="ClassStar">
+                <img src={Star} alt="Star" />
+                <p>{formatPoints(currentUser.points)}</p>
+              </div>
 
-            {/* ButtonsCloset Section */}
-            <div className="buttonsCloset">
-              <div className="closetHeader btnHomeHeader">
-                {/* Closet Icon */}
+              {/* Buttons Section */}
+              <div className="buttonsCloset">
+                {/* Closet Button */}
                 <button
                   className="btnHomeHeader"
                   aria-label="armario"
@@ -238,24 +233,19 @@ const Home = () => {
                 >
                   <img src={Closeticon} alt="Closet" className="closetIcon" />
                 </button>
-                {/* Chevron Icon */}
+
+                {/* Store Button */}
                 <button
                   className="btnHomeHeader"
-                  aria-label="drop down menu"
-                  onClick={() => setShowDropdown((prev) => !prev)}
+                  aria-label="loja"
+                  onClick={openStore}
                 >
-                  <ChevronDown className="navIcon" />
+                  <img src={Storeicon} alt="Store" className="navIcon" />
                 </button>
               </div>
-
-              {showDropdown && (
-                <div className="dropdown open" ref={dropdownRef}>
-                  <button onClick={openStore} aria-label="loja">
-                    <img src={Storeicon} alt="Store" />
-                  </button>
-                </div>
-              )}
             </div>
+            {/* User Photo Section */}
+            <div className="userPhoto"></div>
           </header>
 
           {/* Mascot Section */}
@@ -404,7 +394,7 @@ const Home = () => {
           </div>
 
           {/* Closet Overlay */}
-          {showCloset && ( 
+          {showCloset && (
             <div className="closetOverlay">
               <Closet
                 dressUp={dressUp}
