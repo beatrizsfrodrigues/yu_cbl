@@ -7,6 +7,7 @@ import Circle from "../../assets/imgs/Icons_closet/Circle.svg";
 import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
 import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
+import { buyItem, saveFit } from "../../redux/mascotSlice";
 import Star from "../../assets/imgs/Icons_closet/Star.svg";
 
 const Store = ({
@@ -62,6 +63,20 @@ const Store = ({
     },
   ];
 
+  const handleBuyItem = (item) => {
+    // Deduct points and dispatch the buyItem action
+    dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
+    dispatch(saveFit({
+      id: currentMascot.id,
+      hat: item.type === 'Decor' ? item.id : currentMascot.accessoriesEquipped.hat,
+      shirt: item.type === 'Shirts' ? item.id : currentMascot.accessoriesEquipped.shirt,
+      color: item.type === 'SkinColor' ? item.id : currentMascot.accessoriesEquipped.color,
+      background: item.type === 'Backgrounds' ? item.id : currentMascot.accessoriesEquipped.background
+    }));
+
+    buyItemBtn();
+  };
+
   return (
     <div className="storeOverlay">
       <div className="closetContainer">
@@ -88,7 +103,6 @@ const Store = ({
             {sectionsData[activeSection].items.map((item) => (
               <div className="avatarItemDiv" key={item.id}>
                 <button
-                  key={item.id}
                   className={`avatarcircle ${
                     selectedFit.id === item.id ? "activeFit" : ""
                   }`}
@@ -109,7 +123,7 @@ const Store = ({
             currentUser && currentUser.points >= selectedFit.value ? (
               <button
                 className="buttonMid btnHomeActive"
-                onClick={() => buyItemBtn()}
+                onClick={() => handleBuyItem(selectedFit)} // Updated to call handleBuyItem
               >
                 {selectedFit.value}
                 <svg
