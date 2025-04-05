@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Home as HomeIcon, Clipboard, User } from "react-feather";
+import {
+  Home as HomeIcon,
+  Clipboard,
+  User,
+  MessageCircle,
+} from "react-feather";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
@@ -12,6 +17,11 @@ function NavBar() {
         path: "/tasks",
         icon: <Clipboard strokeWidth={2.5} />,
         label: "Tarefas",
+      },
+      {
+        path: "/messages",
+        icon: <MessageCircle strokeWidth={2.5} />,
+        label: "Mensagens",
       },
       { path: "/profile", icon: <User strokeWidth={2.5} />, label: "Perfil" },
     ],
@@ -30,12 +40,17 @@ function NavBar() {
     }
   }, [location, navItems]);
 
+  const ITEM_WIDTH = 80;
+  const OFFSET = (navItems.length * ITEM_WIDTH) / 2;
+
   return (
     <nav aria-label="Menu de navegação principal">
       <button
         className="indicator"
         style={{
-          transform: `translateX(${activeIndex * 80 - 80}px) translateY(-70%)`,
+          transform: `translateX(${
+            activeIndex * ITEM_WIDTH - OFFSET + ITEM_WIDTH / 2
+          }px) translateY(-70%)`,
         }}
       />
 

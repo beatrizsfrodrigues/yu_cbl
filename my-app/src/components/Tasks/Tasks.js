@@ -34,7 +34,7 @@ function Tasks() {
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
-  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  // const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
   const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
@@ -59,11 +59,11 @@ function Tasks() {
   }, [usersStatus, dispatch]);
 
   //* fetch text messages
-  useEffect(() => {
-    if (messagesStatus === "idle") {
-      dispatch(fetchMessages());
-    }
-  }, [messagesStatus, dispatch]);
+  // useEffect(() => {
+  //   if (messagesStatus === "idle") {
+  //     dispatch(fetchMessages());
+  //   }
+  // }, [messagesStatus, dispatch]);
 
   useEffect(() => {
     const user =
@@ -121,14 +121,14 @@ function Tasks() {
     setIsNewTaskModalOpen(false);
   };
 
-  //* open and close messages window
-  const handleOpenMessagesModal = () => {
-    setIsMessagesModalOpen(true);
-  };
+  // //* open and close messages window
+  // const handleOpenMessagesModal = () => {
+  //   setIsMessagesModalOpen(true);
+  // };
 
-  const handleCloseMessagesModal = () => {
-    setIsMessagesModalOpen(false);
-  };
+  // const handleCloseMessagesModal = () => {
+  //   setIsMessagesModalOpen(false);
+  // };
 
   //* open and close conclude task window
   const handleOpenConcludeTaskModal = (task) => {
@@ -238,8 +238,8 @@ function Tasks() {
           Lista de Tarefas
         </h1>
 
-        <button onClick={openFilter}  aria-label="Abrir filtro">
-          <Sliders className="sliders"/>
+        <button onClick={openFilter} aria-label="Abrir filtro">
+          <Sliders className="sliders" />
         </button>
       </header>
 
@@ -331,14 +331,14 @@ function Tasks() {
         <i class="bi bi-plus"></i>
       </button>
 
-      <button
+      {/* <button
         aria-label="Botão para abrir mensagens"
         id="textBtn"
         className="btnRound"
         onClick={handleOpenMessagesModal}
       >
         <i className="bi bi-chat-dots"></i>
-      </button>
+      </button> */}
 
       {showVerifyTask && partnerUser && (
         <VerifyPopUp
@@ -364,12 +364,12 @@ function Tasks() {
           onShowPopUpInfo={handleShowPopUpInfo}
         />
       )}
-      {isMessagesModalOpen && (
+      {/* {isMessagesModalOpen && (
         <Messages
           onClose={handleCloseMessagesModal}
           currentUser={currentUser}
         />
-      )}
+      )} */}
       {isConcludeTaskOpen && (
         <ConcludeTask
           onClose={handleCloseConcludeTaskModal}

@@ -6,7 +6,7 @@ import Definicoes from "../Definicoes/Definicoes";
 import InfoPessoal from "../Definicoes/InfoPessoal";
 import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
-import Messages from "../../Tasks/Messages";
+// import Messages from "../../Tasks/Messages";
 import { fetchUsers } from "../../../redux/usersSlice.js";
 
 const Profile = () => {
@@ -23,7 +23,7 @@ const Profile = () => {
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
   const [showArquivo, setShowArquivo] = useState(false);
   const [showGrafico, setShowGrafico] = useState(false);
-  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  // const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -69,13 +69,13 @@ const Profile = () => {
     setShowSettings(true);
   };
 
-  const handleOpenMessagesModal = () => {
-    setIsMessagesModalOpen(true);
-  };
+  // const handleOpenMessagesModal = () => {
+  //   setIsMessagesModalOpen(true);
+  // };
 
-  const handleCloseMessagesModal = () => {
-    setIsMessagesModalOpen(false);
-  };
+  // const handleCloseMessagesModal = () => {
+  //   setIsMessagesModalOpen(false);
+  // };
 
   if (!loggedInUser) {
     // mensagem de erro
@@ -107,7 +107,8 @@ const Profile = () => {
       <div className="backgroundDiv"></div>
       <header className="profile-header">
         <h1 className="profile-title title" aria-label="Perfil">
-          Perfil </h1>
+          Perfil{" "}
+        </h1>
         <button
           aria-label="Abrir definições"
           className="gear-icon bi bi-gear"
@@ -143,13 +144,13 @@ const Profile = () => {
           <i className="bi bi-info-circle"></i>
         </Link>
 
-        <button
+        {/* <button
           aria-label="Botão para abrir mensagens"
           className="profile-button dots"
           onClick={handleOpenMessagesModal}
         >
           <i className="bi bi-chat-dots"></i>
-        </button>
+        </button> */}
       </div>
 
       <Definicoes
@@ -171,12 +172,12 @@ const Profile = () => {
         yearlyData={[100, 200, 300, 400, 500]}
       />
 
-      {isMessagesModalOpen && (
+      {/* {isMessagesModalOpen && (
         <Messages
           onClose={handleCloseMessagesModal}
           currentUser={currentUser}
         />
-      )}
+      )} */}
     </div>
   );
 };
