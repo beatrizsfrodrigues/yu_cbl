@@ -26,6 +26,7 @@
   height: 60vh;
   align-items: end;
   transition: transform 0.3s ease-in-out;
+  z-index: 0;
 }
 
 /*? Yu Mascot */
