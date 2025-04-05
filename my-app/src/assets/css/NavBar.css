@@ -15,7 +15,7 @@ nav {
   box-sizing: border-box;
   width: 70vw;
   max-width: 400px;
-  z-index: 9999;
+  z-index: 1;
 }
 
 /********************************
