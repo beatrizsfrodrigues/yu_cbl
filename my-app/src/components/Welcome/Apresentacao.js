@@ -174,13 +174,8 @@ const Apresentacao = () => {
                 <div className="image-container">
                   <img
                     src={pages[currentPage].image}
-                    srcSet="/assets/imgs_Apresentacao/questionario.webp 300w, /assets/imgs_Apresentacao/questionario.webp 600w"
-                    sizes="(max-width: 600px) 300px, 600px"
                     alt="Prévia da atualização"
                     className="image"
-                    width="300"
-                    height="auto"
-                    loading={currentPage === 0 ? "eager" : "lazy"}
                   />
                 </div>
               )}

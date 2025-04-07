@@ -7,6 +7,7 @@ import InfoPessoal from "../Definicoes/InfoPessoal";
 import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
 import Messages from "../../Tasks/Messages";
+import TopBar from "../../TopBar.js";
 import { fetchUsers } from "../../../redux/usersSlice.js";
 
 const Profile = () => {
@@ -105,15 +106,14 @@ const Profile = () => {
   return (
     <div className="profile-container mainBody">
       <div className="backgroundDiv"></div>
-      <header className="profile-header">
-        <h1 className="profile-title title" aria-label="Perfil">
-          Perfil </h1>
+
+      <TopBar title="Perfil">
         <button
           aria-label="Abrir definições"
           className="gear-icon bi bi-gear"
           onClick={toggleSettings}
         ></button>
-      </header>
+      </TopBar>
 
       <div className="profile-avatar">
         <img

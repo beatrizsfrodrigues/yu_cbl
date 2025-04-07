@@ -3,8 +3,9 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
 import { fetchMessages } from "../../redux/messagesSlice";
+import { FiSliders } from "react-icons/fi";
+import TopBar from "../TopBar.js";
 import "./tasks.css";
-import { MessageCircle, Plus, Sliders } from "react-feather";
 
 // import NewTask from "./NewTask.js";
 // import Messages from "./Messages.js";
@@ -51,6 +52,7 @@ function Tasks() {
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchMoveX, setTouchMoveX] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false); // Track actual swipe
+  const [filter, setFilter] = useState("recebidas");
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -161,7 +163,7 @@ function Tasks() {
   };
 
   //* change task filter
-  const handleFilterChange = (criteria) => {
+  const handleTaskFilterChange = (criteria) => {
     setFilterCriteria(criteria);
   };
 
@@ -229,19 +231,34 @@ function Tasks() {
     return <div>Error: {error}</div>;
   }
 
+  const handleFilterChange = (filterType) => {
+    setFilter(filterType);
+  };
+
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-
-      <header className="header">
-        <h1 className="title" aria-label="Lista de Tarefas">
-          Lista de Tarefas
-        </h1>
-
-        <button onClick={openFilter}  aria-label="Abrir filtro">
-          <Sliders className="sliders"/>
+      <TopBar title="Lista de tarefas">
+        <button onClick={openFilter} aria-label="Abrir filtro">
+          <FiSliders className="sliders" />
         </button>
-      </header>
+      </TopBar>
+
+      <div className="filter-buttons">
+        <button
+          className={`filter-button ${filter === "received" ? "active" : ""}`}
+          onClick={() => handleFilterChange("received")}
+        >
+          Recebidas
+        </button>
+        <span className="divider">|</span>
+        <button
+          className={`filter-button ${filter === "assigned" ? "active" : ""}`}
+          onClick={() => handleFilterChange("assigned")}
+        >
+          Atribuídas
+        </button>
+      </div>
 
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
@@ -384,7 +401,7 @@ function Tasks() {
       {isFilterOpen && (
         <Filter
           filterCriteria={filterCriteria}
-          onFilterChange={handleFilterChange}
+          onFilterChange={handleTaskFilterChange}
           onClose={() => setIsFilterOpen(false)}
         />
       )}
