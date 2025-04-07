@@ -304,23 +304,6 @@ button.avatarcircle.activeFit {
   background-color: var(--purple-darker);
 } /* catarina a mexer */
 
-/* Top Bar Styles */
-.topBar {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  width: 90%;
-}
-
-.menu {
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--purple-light);
-  border-radius: 10%;
-  width: 80%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 .ClassStar p {
   color: var(--purple-darker);
 }
@@ -331,11 +314,20 @@ button.avatarcircle.activeFit {
   height: 32px;
 }
 
-.userPhoto {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-left: auto;
-  text-align: right;
-  background-color: var(--purple-darker);
+.ClassStar {
+  display: flex;
+  text-align: left;
+}
+
+.buttonsCloset {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaçamento entre os botões */
+  margin-left: auto; /* Empurra os botões para a direita */
+}
+
+.btnHomeHeader {
+  background: none;
+  border: none;
+  cursor: pointer;
 }

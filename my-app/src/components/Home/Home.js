@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
-import { ChevronDown } from "react-feather";
 import PopUpInfo from "../PopUpInfo.js";
 import Closet from "./Closet";
 import Store from "./Store";
+import TopBar from "../TopBar";
 import Star from "../../assets/imgs/Icons_closet/Star.svg";
 import Closeticon from "../../assets/imgs/Icons_closet/Closeticon.svg";
 import Storeicon from "../../assets/imgs/Icons_closet/Storeicon.svg";
@@ -215,17 +215,13 @@ const Home = () => {
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
-          <header className="topBar">
-            <div className="menu">
-              {/* Star Section */}
+          <div className="home mainBody">
+            <TopBar>
               <div className="ClassStar">
                 <img src={Star} alt="Star" />
                 <p>{formatPoints(currentUser.points)}</p>
               </div>
-
-              {/* Buttons Section */}
               <div className="buttonsCloset">
-                {/* Closet Button */}
                 <button
                   className="btnHomeHeader"
                   aria-label="armario"
@@ -233,8 +229,6 @@ const Home = () => {
                 >
                   <img src={Closeticon} alt="Closet" className="closetIcon" />
                 </button>
-
-                {/* Store Button */}
                 <button
                   className="btnHomeHeader"
                   aria-label="loja"
@@ -243,11 +237,8 @@ const Home = () => {
                   <img src={Storeicon} alt="Store" className="navIcon" />
                 </button>
               </div>
-            </div>
-            {/* User Photo Section */}
-            <div className="userPhoto"></div>
-          </header>
-
+            </TopBar>
+          </div>
           {/* Mascot Section */}
           <div
             className={`mascotContainer ${
@@ -392,7 +383,6 @@ const Home = () => {
               )
             )}
           </div>
-
           {/* Closet Overlay */}
           {showCloset && (
             <div className="closetOverlay">
@@ -410,7 +400,6 @@ const Home = () => {
               />
             </div>
           )}
-
           {/* Store Overlay */}
           {showStore && (
             <div className="storeOverlay">
