@@ -93,7 +93,6 @@ const Definicoes = ({
           </button>
         </div>
         <div className="settings-section" style={{ display: "block" }}>
-          <h3>Saídas</h3>
           <Link
             to="/login"
             style={{ textDecoration: "none", color: "inherit" }}
