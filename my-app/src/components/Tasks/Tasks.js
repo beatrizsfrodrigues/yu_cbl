@@ -238,7 +238,7 @@ function Tasks() {
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-      <TopBar title="Lista de tarefas">
+      <TopBar title="Tarefas">
         <button onClick={openFilter} aria-label="Abrir filtro">
           <FiSliders className="sliders" />
         </button>

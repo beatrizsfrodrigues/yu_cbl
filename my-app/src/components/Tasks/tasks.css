@@ -400,7 +400,7 @@ button[aria-label="Abrir filtro"] .sliders {
 }
 
 .filter-button.active {
-  background-color: var(--purple-darker);
+  background-color: var(--purple-dark);
   color: white;
 }
 
