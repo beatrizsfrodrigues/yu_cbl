@@ -108,11 +108,9 @@ const Profile = () => {
       <div className="backgroundDiv"></div>
 
       <TopBar title="Perfil">
-        <button
-          aria-label="Abrir definições"
-          className="gear-icon bi bi-gear"
-          onClick={toggleSettings}
-        ></button>
+        <button aria-label="Abrir definições" onClick={toggleSettings}>
+          <ion-icon name="settings-outline" class="icons"></ion-icon>
+        </button>
       </TopBar>
 
       <div className="profile-avatar">
@@ -132,7 +130,7 @@ const Profile = () => {
           className="profile-button award"
           onClick={toggleGrafico}
         >
-          <span className="bi bi-bar-chart-line"></span>
+          <ion-icon name="podium-outline" class="icons"></ion-icon>
         </button>
 
         <Link
@@ -140,7 +138,7 @@ const Profile = () => {
           to="/informacoes"
           className="profile-button circle"
         >
-          <i className="bi bi-info-circle"></i>
+          <ion-icon name="information-outline" class="icons"></ion-icon>
         </Link>
 
         <button
@@ -148,7 +146,7 @@ const Profile = () => {
           className="profile-button dots"
           onClick={handleOpenMessagesModal}
         >
-          <i className="bi bi-chat-dots"></i>
+          <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
         </button>
       </div>
 

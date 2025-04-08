@@ -7,15 +7,6 @@ import { FiSliders } from "react-icons/fi";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
-// import NewTask from "./NewTask.js";
-// import Messages from "./Messages.js";
-// import ConcludeTask from "./ConcludeTask.js";
-// import VerifyTask from "./VerifyTask.js";
-// import VerifyPopUp from "./VerifyPopUp.js";
-// import PopUpInfo from "../PopUpInfo.js";
-// import Filter from "./Filter.js";
-// import Reject from "./Reject.js";
-
 const ConcludeTask = lazy(() => import("./ConcludeTask.js"));
 const VerifyTask = lazy(() => import("./VerifyTask.js"));
 const NewTask = lazy(() => import("./NewTask.js"));
@@ -46,13 +37,59 @@ function Tasks() {
   const [taskToVerify, setTaskToVerify] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [partnerUser, setPartnerUser] = useState(null);
+  const [partnerTasks, setPartnerTasks] = useState([]);
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
+  const [filter, setFilter] = useState("received");
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [swipedTask, setSwipedTask] = useState(null);
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchMoveX, setTouchMoveX] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false); // Track actual swipe
-  const [filter, setFilter] = useState("recebidas");
+
+  // Fetch data from localStorage
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find((u) => u.id === currentUserId);
+    setCurrentUser(user);
+
+    if (user) {
+      const partner = users.find((u) => u.id === user.partnerId);
+      setPartnerUser(partner);
+
+      if (partner) {
+        setPartnerTasks(partner.tasks); // Armazena as tarefas do parceiro
+      }
+    }
+  }, [currentUserId]);
+
+  // Update filtered tasks based on filter and criteria
+  useEffect(() => {
+    if (currentUser) {
+      const tasks = (
+        filter === "received" ? currentUser.tasks : partnerTasks
+      ).filter((task) => {
+        // Critérios adicionais
+        const matchesCriteria =
+          filterCriteria === "todas" ||
+          (filterCriteria === "concluidas" &&
+            task.completed &&
+            task.verified) ||
+          (filterCriteria === "porConcluir" &&
+            !task.completed &&
+            !task.verified) ||
+          (filterCriteria === "espera" && task.completed && !task.verified);
+
+        return matchesCriteria;
+      });
+
+      setFilteredTasks(tasks);
+    }
+  }, [currentUser, partnerTasks, filter, filterCriteria]);
+
+  const handleFilterChange = (filterType) => {
+    setFilter(filterType);
+  };
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -208,21 +245,6 @@ function Tasks() {
     setSwipedTask(null);
   };
 
-  const filteredTasks = currentUser
-    ? currentUser.tasks.filter((task) => {
-        if (filterCriteria === "todas") {
-          return true;
-        } else if (filterCriteria === "concluidas") {
-          return task.completed && task.verified;
-        } else if (filterCriteria === "porConcluir") {
-          return !task.completed && !task.verified;
-        } else if (filterCriteria === "espera") {
-          return task.completed && !task.verified;
-        }
-        return false;
-      })
-    : [];
-
   if (usersStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -230,10 +252,6 @@ function Tasks() {
   if (usersStatus === "failed") {
     return <div>Error: {error}</div>;
   }
-
-  const handleFilterChange = (filterType) => {
-    setFilter(filterType);
-  };
 
   return (
     <div className="mainBody" id="tasksBody">
@@ -296,30 +314,6 @@ function Tasks() {
                 </div>
               </div>
             ) : (
-              // <div className="taskDivOp" key={index}>
-              //   <div
-              //     className={`taskDiv ${
-              //       toggledTaskIndex === index ? "toggled" : ""
-              //     }`}
-              //     onClick={() => handleTaskClick(index)}
-              //   >
-              //     <p className="taskTitle">
-              //       {toggledTaskIndex === index ? (
-              //         task.description
-              //       ) : (
-              //         <b>{task.title}</b>
-              //       )}
-              //     </p>
-              //   </div>
-              //   {!task.completed && !task.verified && (
-              //     <button
-              //       className="doneTask"
-              //       onClick={() => handleOpenConcludeTaskModal(task)}
-              //     >
-              //       Concluir
-              //     </button>
-              //   )}
-              // </div>
               <div className="taskDivOp " key={index}>
                 <div
                   className={`taskDiv taskDone ${
@@ -335,7 +329,11 @@ function Tasks() {
             )
           )
         ) : (
-          <div>Não existem tarefas disponíveis.</div>
+          <div>
+            {filter === "received"
+              ? "Não existem tarefas recebidas."
+              : "Não existem tarefas atribuídas."}
+          </div>
         )}
       </div>
 
