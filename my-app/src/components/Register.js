@@ -262,10 +262,10 @@ const Register = () => {
                   className="password-toggle-button"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <img
-                    src={showPassword ? notVisibleIcon : visibleIcon}
-                    alt="Mostrar palavra-passe"
-                  />
+                  <ion-icon
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    class="icons"
+                  ></ion-icon>
                 </button>
               </div>
             </div>
@@ -291,10 +291,12 @@ const Register = () => {
                   className="password-toggle-button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <img
-                    src={showConfirmPassword ? notVisibleIcon : visibleIcon}
-                    alt="Mostrar palavra-passe"
-                  />
+                  <ion-icon
+                    name={
+                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
+                    }
+                    class="icons"
+                  ></ion-icon>
                 </button>
               </div>
             </div>

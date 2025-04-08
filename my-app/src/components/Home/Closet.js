@@ -105,8 +105,11 @@ const Closet = ({
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound btnHomeActive" onClick={closeCloset}>
-            <img src={X} alt="Exit" />
+          <button
+            className="profile-button btnHomeActive"
+            onClick={closeCloset}
+          >
+            <ion-icon name="close-outline" class="iconswhite"></ion-icon>{" "}
           </button>
           <button
             className="buttonMid btnHomeActive"
@@ -115,7 +118,7 @@ const Closet = ({
             Guardar
           </button>
           <button
-            className="buttonRound btnHomeActive"
+            className="profile-button btnHomeActive"
             onClick={() => resetClothes()}
           >
             <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>

@@ -130,8 +130,8 @@ const Store = ({
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound btnHomeActive" onClick={closeStore}>
-            <img src={X} alt="Exit" />
+          <button className="profile-button btnHomeActive" onClick={closeStore}>
+            <ion-icon name="close-outline" class="iconswhite"></ion-icon>{" "}
           </button>
           {selectedFit && selectedFit !== "" ? (
             currentUser && currentUser.points >= selectedFit.value ? (
@@ -167,7 +167,7 @@ const Store = ({
             <button className="buttonMid">Comprar</button>
           )}
           <button
-            className="buttonRound btnHomeActive"
+            className="profile-button btnHomeActive"
             onClick={() => resetFit()}
           >
             <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>

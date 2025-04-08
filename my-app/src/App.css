@@ -122,10 +122,7 @@ p {
 }
 
 .iconswhite {
-  font-size: 28px;
-  background: none;
-  border: none;
-  color: white;
+  color: var(--white);
 }
 
 .orangeBtn {

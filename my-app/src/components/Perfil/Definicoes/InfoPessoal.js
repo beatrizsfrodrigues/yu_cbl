@@ -188,8 +188,12 @@ const InfoPessoal = ({ show, onBack }) => {
           style={{ display: "block" }}
         >
           <div className="info-header info-pessoal-page">
-            <button className="back-button" aria-label="back-button" onClick={handleBack}>
-              <i className="bi bi-arrow-left"></i>
+            <button
+              className="back-button"
+              aria-label="back-button"
+              onClick={handleBack}
+            >
+              <ion-icon name="arrow-back-outline" class="icons"></ion-icon>
             </button>
             <h3>Os meus dados</h3>
           </div>
