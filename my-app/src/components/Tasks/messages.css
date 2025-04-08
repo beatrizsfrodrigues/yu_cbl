@@ -9,9 +9,10 @@ body .mainBodyMessages {
   margin: 0;
   font-size: 20px;
   color: var(--purple-darker);
+  align-items: flex-start;
 }
 
-.userPhotoMessages {
+.profilePic {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -95,6 +96,7 @@ div .line {
   border-radius: 16px;
   width: 100%;
   box-sizing: border-box;
+  flex-direction: column-reverse;
   padding: 12px 16px;
   font-family: "Quicksand", serif;
   font-size: 16px;
