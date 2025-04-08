@@ -49,11 +49,13 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
       <div className="window">
         <div className="header">
           <h3>Concluir tarefa</h3>
-          <X
+          <button
             className="closeWindow"
             onClick={onClose}
             aria-label="Fechar janela"
-          />
+          >
+            <X aria-label="Fechar janela" />
+          </button>
         </div>
         <div className="line"></div>
         <div id="concludeTaskDiv">
@@ -62,7 +64,8 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
             {preview ? (
               <div>
                 <img src={preview} alt="Proof" />
-                <label
+                <button
+                  aria-label="Recarregar imagem"
                   htmlFor="fileInput"
                   className="btnRound"
                   id="retakePhoto"
@@ -74,7 +77,7 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
                     onChange={handleFileChange}
                     style={{ display: "none" }}
                   />
-                </label>
+                </button>
               </div>
             ) : (
               <label htmlFor="fileInput" className="fileInputLabel">

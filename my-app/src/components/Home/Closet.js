@@ -43,22 +43,22 @@ const Closet = ({
   const sectionsData = [
     {
       label: "Skin Color",
-      icon: <img src={Circle} alt="Skin Color" />,
+      icon: <ion-icon name="color-palette-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "SkinColor"),
     },
     {
       label: "Shirts",
-      icon: <img src={Shirts} alt="Shirts" />,
+      icon: <ion-icon name="shirt-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "Shirts"),
     },
     {
       label: "Decor",
-      icon: <img src={Hat} alt="Decor" />,
+      icon: <ion-icon name="glasses-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "Decor"),
     },
     {
       label: "Backgrounds",
-      icon: <img src={Background} alt="Backgrounds" />,
+      icon: <ion-icon name="image-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "Backgrounds"),
     },
   ];
@@ -105,8 +105,11 @@ const Closet = ({
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound btnHomeActive" onClick={closeCloset}>
-            <img src={X} alt="Exit" />
+          <button
+            className="profile-button btnHomeActive"
+            onClick={closeCloset}
+          >
+            <ion-icon name="close-outline" class="iconswhite"></ion-icon>{" "}
           </button>
           <button
             className="buttonMid btnHomeActive"
@@ -115,10 +118,10 @@ const Closet = ({
             Guardar
           </button>
           <button
-            className="buttonRound btnHomeActive"
+            className="profile-button btnHomeActive"
             onClick={() => resetClothes()}
           >
-            <img src={Reset} alt="Reset" />
+            <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>
           </button>
         </div>
       </div>

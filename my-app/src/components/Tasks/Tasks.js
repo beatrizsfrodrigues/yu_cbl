@@ -3,17 +3,9 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
 import { fetchMessages } from "../../redux/messagesSlice";
+import { FiSliders } from "react-icons/fi";
+import TopBar from "../TopBar.js";
 import "./tasks.css";
-import { MessageCircle, Plus, Sliders } from "react-feather";
-
-// import NewTask from "./NewTask.js";
-// import Messages from "./Messages.js";
-// import ConcludeTask from "./ConcludeTask.js";
-// import VerifyTask from "./VerifyTask.js";
-// import VerifyPopUp from "./VerifyPopUp.js";
-// import PopUpInfo from "../PopUpInfo.js";
-// import Filter from "./Filter.js";
-// import Reject from "./Reject.js";
 
 const ConcludeTask = lazy(() => import("./ConcludeTask.js"));
 const VerifyTask = lazy(() => import("./VerifyTask.js"));
@@ -45,12 +37,59 @@ function Tasks() {
   const [taskToVerify, setTaskToVerify] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [partnerUser, setPartnerUser] = useState(null);
+  const [partnerTasks, setPartnerTasks] = useState([]);
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
+  const [filter, setFilter] = useState("received");
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [swipedTask, setSwipedTask] = useState(null);
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchMoveX, setTouchMoveX] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false); // Track actual swipe
+
+  // Fetch data from localStorage
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find((u) => u.id === currentUserId);
+    setCurrentUser(user);
+
+    if (user) {
+      const partner = users.find((u) => u.id === user.partnerId);
+      setPartnerUser(partner);
+
+      if (partner) {
+        setPartnerTasks(partner.tasks); // Armazena as tarefas do parceiro
+      }
+    }
+  }, [currentUserId]);
+
+  // Update filtered tasks based on filter and criteria
+  useEffect(() => {
+    if (currentUser) {
+      const tasks = (
+        filter === "received" ? currentUser.tasks : partnerTasks
+      ).filter((task) => {
+        // Critérios adicionais
+        const matchesCriteria =
+          filterCriteria === "todas" ||
+          (filterCriteria === "concluidas" &&
+            task.completed &&
+            task.verified) ||
+          (filterCriteria === "porConcluir" &&
+            !task.completed &&
+            !task.verified) ||
+          (filterCriteria === "espera" && task.completed && !task.verified);
+
+        return matchesCriteria;
+      });
+
+      setFilteredTasks(tasks);
+    }
+  }, [currentUser, partnerTasks, filter, filterCriteria]);
+
+  const handleFilterChange = (filterType) => {
+    setFilter(filterType);
+  };
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -161,7 +200,7 @@ function Tasks() {
   };
 
   //* change task filter
-  const handleFilterChange = (criteria) => {
+  const handleTaskFilterChange = (criteria) => {
     setFilterCriteria(criteria);
   };
 
@@ -206,21 +245,6 @@ function Tasks() {
     setSwipedTask(null);
   };
 
-  const filteredTasks = currentUser
-    ? currentUser.tasks.filter((task) => {
-        if (filterCriteria === "todas") {
-          return true;
-        } else if (filterCriteria === "concluidas") {
-          return task.completed && task.verified;
-        } else if (filterCriteria === "porConcluir") {
-          return !task.completed && !task.verified;
-        } else if (filterCriteria === "espera") {
-          return task.completed && !task.verified;
-        }
-        return false;
-      })
-    : [];
-
   if (usersStatus === "loading") {
     return <div>Loading...</div>;
   }
@@ -232,16 +256,27 @@ function Tasks() {
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-
-      <header className="header">
-        <h1 className="title" aria-label="Lista de Tarefas">
-          Lista de Tarefas
-        </h1>
-
+      <TopBar title="Tarefas">
         <button onClick={openFilter} aria-label="Abrir filtro">
-          <Sliders className="sliders" />
+          <ion-icon name="options-outline" class="icons"></ion-icon>
         </button>
-      </header>
+      </TopBar>
+
+      <div className="filter-buttons">
+        <button
+          className={`filter-button ${filter === "received" ? "active" : ""}`}
+          onClick={() => handleFilterChange("received")}
+        >
+          Recebidas
+        </button>
+        <span className="divider">|</span>
+        <button
+          className={`filter-button ${filter === "assigned" ? "active" : ""}`}
+          onClick={() => handleFilterChange("assigned")}
+        >
+          Atribuídas
+        </button>
+      </div>
 
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
@@ -279,30 +314,6 @@ function Tasks() {
                 </div>
               </div>
             ) : (
-              // <div className="taskDivOp" key={index}>
-              //   <div
-              //     className={`taskDiv ${
-              //       toggledTaskIndex === index ? "toggled" : ""
-              //     }`}
-              //     onClick={() => handleTaskClick(index)}
-              //   >
-              //     <p className="taskTitle">
-              //       {toggledTaskIndex === index ? (
-              //         task.description
-              //       ) : (
-              //         <b>{task.title}</b>
-              //       )}
-              //     </p>
-              //   </div>
-              //   {!task.completed && !task.verified && (
-              //     <button
-              //       className="doneTask"
-              //       onClick={() => handleOpenConcludeTaskModal(task)}
-              //     >
-              //       Concluir
-              //     </button>
-              //   )}
-              // </div>
               <div className="taskDivOp " key={index}>
                 <div
                   className={`taskDiv taskDone ${
@@ -318,27 +329,31 @@ function Tasks() {
             )
           )
         ) : (
-          <div>Não existem tarefas disponíveis.</div>
+          <div>
+            {filter === "received"
+              ? "Não existem tarefas recebidas."
+              : "Não existem tarefas atribuídas."}
+          </div>
         )}
       </div>
 
       <button
         aria-label="Botão para adicionar nova tarefa"
         id="newTask"
-        className="btnRound"
+        className="profile-button"
         onClick={handleOpenNewTaskModal}
       >
-        <i class="bi bi-plus"></i>
+        <ion-icon name="add-outline" class="iconswhite"></ion-icon>
       </button>
 
       {/* <button
         aria-label="Botão para abrir mensagens"
         id="textBtn"
-        className="btnRound"
+        className="profile-button"
         onClick={handleOpenMessagesModal}
       >
-        <i className="bi bi-chat-dots"></i>
-      </button> */}
+        <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
+      </button>
 
       {showVerifyTask && partnerUser && (
         <VerifyPopUp
@@ -384,7 +399,7 @@ function Tasks() {
       {isFilterOpen && (
         <Filter
           filterCriteria={filterCriteria}
-          onFilterChange={handleFilterChange}
+          onFilterChange={handleTaskFilterChange}
           onClose={() => setIsFilterOpen(false)}
         />
       )}

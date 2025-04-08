@@ -114,6 +114,17 @@ p {
   background-color: var(--blue);
 }
 
+.icons {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: var(--purple-darker);
+}
+
+.iconswhite {
+  color: var(--white);
+}
+
 .orangeBtn {
   background-color: var(--orange);
 }
@@ -187,6 +198,8 @@ p {
 
 .closeWindow {
   position: absolute;
+  background: none;
+  border: none;
   right: 0px;
   top: 18px;
   width: 40px;
@@ -218,4 +231,38 @@ p {
   font-size: 12px;
   text-decoration: underline;
   font-weight: bold;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1px 20px;
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.topBar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.menu {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--purple-lighter);
+  border-radius: 40px;
+  width: 80%;
+}
+
+.userPhoto {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-left: auto;
+  text-align: right;
+  background-color: var(--purple-darker);
 }

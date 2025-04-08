@@ -48,7 +48,7 @@ const Informacoes = () => {
             to="/profile"
             className="back-link"
           >
-            <i className="bi bi-arrow-left"></i>
+            <ion-icon name="arrow-back-outline" class="icons"></ion-icon>
           </Link>
         </button>
 

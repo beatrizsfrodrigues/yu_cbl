@@ -3,13 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
-import { ChevronDown } from "react-feather";
 import PopUpInfo from "../PopUpInfo.js";
 import Closet from "./Closet";
 import Store from "./Store";
-import Star from "../../assets/imgs/Icons_closet/Star.svg";
-import Closeticon from "../../assets/imgs/Icons_closet/Closeticon.svg";
-import Storeicon from "../../assets/imgs/Icons_closet/Storeicon.svg";
+import TopBar from "../TopBar";
 import "../../assets/css/home.css";
 
 const Home = () => {
@@ -21,7 +18,6 @@ const Home = () => {
   //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
   //const closetStatus = useSelector((state) => state.closet.status);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -36,8 +32,6 @@ const Home = () => {
   const [selectedShirt, setSelectedShirt] = useState("");
   const [selectedAcc, setSelectedAcc] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,14 +93,12 @@ const Home = () => {
         (item) => item.id === currentMascot.accessoriesEquipped.color
       ) || ""
     );
-
     setShowCloset(true);
-    setShowDropdown(false);
   };
 
   const openStore = () => {
     setShowStore(true);
-    setShowDropdown(false);
+    setShowCloset(false);
   };
 
   if (!currentUser || !currentMascot || !closet) {
@@ -184,13 +176,13 @@ const Home = () => {
     handleShowPopUpInfo("Alterações guardadas com sucesso!");
   };
 
-      const formatPoints = (points) => {
-      if (points >= 10_000_000) {
-          return (points / 1_000_000).toFixed(1).replace(".0", "") + "M+";
-      } else if (points >= 10_000) {
-          return (points / 1_000).toFixed(1).replace(".0", "") + "K+";
-      }
-      return points;
+  const formatPoints = (points) => {
+    if (points >= 10_000_000) {
+      return (points / 1_000_000).toFixed(1).replace(".0", "") + "M+";
+    } else if (points >= 10_000) {
+      return (points / 1_000).toFixed(1).replace(".0", "") + "K+";
+    }
+    return points;
   };
 
   return (
@@ -220,44 +212,30 @@ const Home = () => {
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
-          <header className="row">
-            {/* Star Section */}
-            <div className="ClassStar ">
-              <img src={Star} alt="Star" />
-              <p>{formatPoints(currentUser.points)}</p>
-            </div>
-
-            {/* ButtonsCloset Section */}
-            <div className="buttonsCloset">
-              <div className="closetHeader btnHomeHeader">
-                {/* Closet Icon */}
+          <div className="home mainBody">
+            <TopBar>
+              <div className="ClassStar">
+                <ion-icon name="star-outline" class="icons"></ion-icon>
+                <p>{formatPoints(currentUser.points)}</p>
+              </div>
+              <div className="buttonsCloset">
                 <button
                   className="btnHomeHeader"
                   aria-label="armario"
                   onClick={openCloset}
                 >
-                  <img src={Closeticon} alt="Closet" className="closetIcon" />
+                  <ion-icon name="brush-outline" class="icons"></ion-icon>
                 </button>
-                {/* Chevron Icon */}
                 <button
                   className="btnHomeHeader"
-                  aria-label="drop down menu"
-                  onClick={() => setShowDropdown((prev) => !prev)}
+                  aria-label="loja"
+                  onClick={openStore}
                 >
-                  <ChevronDown className="navIcon" />
+                  <ion-icon name="bag-outline" class="icons"></ion-icon>
                 </button>
               </div>
-
-              {showDropdown && (
-                <div className="dropdown open" ref={dropdownRef}>
-                  <button onClick={openStore} aria-label="loja">
-                    <img src={Storeicon} alt="Store" />
-                  </button>
-                </div>
-              )}
-            </div>
-          </header>
-
+            </TopBar>
+          </div>
           {/* Mascot Section */}
           <div
             className={`mascotContainer ${
@@ -402,9 +380,8 @@ const Home = () => {
               )
             )}
           </div>
-
           {/* Closet Overlay */}
-          {showCloset && ( 
+          {showCloset && (
             <div className="closetOverlay">
               <Closet
                 dressUp={dressUp}
@@ -420,7 +397,6 @@ const Home = () => {
               />
             </div>
           )}
-
           {/* Store Overlay */}
           {showStore && (
             <div className="storeOverlay">

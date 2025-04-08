@@ -93,6 +93,7 @@
   width: 32px;
   height: auto;
   margin-bottom: 10px;
+  background: none;
 }
 
 /** new task window */
@@ -251,6 +252,48 @@
   font-size: 14px;
 }
 
+/* Estilo para o botão de filtros */
+button[aria-label="Abrir filtro"] {
+  background: none; /* Remove o fundo */
+  border: none; /* Remove a borda */
+  cursor: pointer; /* Adiciona o cursor de ponteiro */
+  padding: 0; /* Remove o padding */
+  margin-left: auto;
+}
+
+button[aria-label="Abrir filtro"] .sliders {
+  font-size: 1rem; /* Ajuste o tamanho do ícone */
+  color: var(--purple-darker); /* Cor do ícone */
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  gap: 5%;
+}
+
+.filter-button {
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--purple-darker);
+  transition: background-color 0.3s ease;
+}
+
+.filter-button.active {
+  background-color: var(--purple-dark);
+  color: white;
+}
+
+.divider {
+  font-size: 1.5rem;
+  color: var(--purple-darker);
+}
+
 .activeFilter {
   background-color: var(--orange-lighter) !important;
 }
@@ -272,6 +315,12 @@
 
 .flash {
   animation: blink 0.3s ease-in-out;
+}
+
+.gear-icon {
+  margin-left: auto;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 @keyframes blink {

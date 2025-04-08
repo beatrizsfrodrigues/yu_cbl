@@ -43,17 +43,11 @@
   color: var(--purple-darker); */
 }
 
-.gear-icon {
+button[aria-label="Abrir definições"] {
   background: none;
   border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: var(--purple-darker);
-  transition: transform 0.2s ease;
-}
-
-.gear-icon:hover {
-  transform: rotate(45deg);
+  padding: 0;
+  margin-left: auto;
 }
 
 /**********************************
