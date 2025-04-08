@@ -258,7 +258,7 @@ function Tasks() {
       <div className="backgroundDiv"></div>
       <TopBar title="Tarefas">
         <button onClick={openFilter} aria-label="Abrir filtro">
-          <FiSliders className="sliders" />
+          <ion-icon name="options-outline" class="icons"></ion-icon>
         </button>
       </TopBar>
 
@@ -343,7 +343,7 @@ function Tasks() {
         className="btnRound"
         onClick={handleOpenNewTaskModal}
       >
-        <i class="bi bi-plus"></i>
+        <ion-icon name="add-outline" class="iconsWhite"></ion-icon>
       </button>
 
       <button
@@ -352,7 +352,10 @@ function Tasks() {
         className="btnRound"
         onClick={handleOpenMessagesModal}
       >
-        <i className="bi bi-chat-dots"></i>
+        <ion-icon
+          name="chatbubble-ellipses-outline"
+          class="iconsWhite"
+        ></ion-icon>
       </button>
 
       {showVerifyTask && partnerUser && (
