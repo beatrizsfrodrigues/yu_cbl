@@ -4,9 +4,12 @@ import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
+import "./messages.css";
 
-function Messages({ onClose, currentUser }) {
+function Messages({}) {
   const dispatch = useDispatch();
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+  const [currentUser, setCurrentUser] = useState(null);
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const messages = useSelector((state) => state.messages.data);
@@ -21,11 +24,20 @@ function Messages({ onClose, currentUser }) {
   const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
 
   //* fetch text messages
+
   useEffect(() => {
     if (messagesStatus === "idle") {
       dispatch(fetchMessages());
     }
   }, [messagesStatus, dispatch]);
+
+  useEffect(() => {
+    const user =
+      users && users.length > 0
+        ? users.find((user) => user.id === currentUserId)
+        : null;
+    setCurrentUser(user);
+  }, [users, currentUserId]);
 
   useEffect(() => {
     if (messages && messages.length > 0) {
@@ -74,13 +86,14 @@ function Messages({ onClose, currentUser }) {
     return <div>Error: {error}</div>;
   }
 
-  const partnerUser = currentUser.partnerId
-    ? users.find((user) => user.id === currentUser.partnerId)
-    : null;
+  const partnerUser =
+    currentUser && currentUser.partnerId
+      ? users.find((user) => user.id === currentUser.partnerId)
+      : null;
 
   //* text messages
   let messageContent;
-  if (currentUser.partnerId && messages && messages.length > 0) {
+  if (currentUser && currentUser.partnerId && messages && messages.length > 0) {
     const conversation = messages.find(
       (msg) =>
         msg.usersId.includes(currentUser.id) &&
@@ -188,47 +201,50 @@ function Messages({ onClose, currentUser }) {
     presetMsgs2 = <div>Não existem mensagens</div>;
   }
 
-  //* modal
   return (
-      <div className="modal" onClick={onClose}>
-        <div className="window" onClick={(e) => e.stopPropagation()}>
-        <div className="header">
-          {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>@parceiro</h3>}
-          <X className="closeWindow" onClick={onClose} />
-        </div>
-        <div className="line"></div>
-        <div
-          id="textSpace"
-          ref={textSpaceRef}
-          className={`${
-            isPresetMessagesOpen ? "textSpaceSmall" : ""
-          } windowBody`}
-          onClick={closePresetMessages}
-        >
-          {partnerUser ? (
-            messageContent
-          ) : (
-            <p>
-              Não tens parceiro para trocar mensagens! Cria uma ligação no
-              perfil.
-            </p>
-          )}
-        </div>
-        <div
-          className="inputMessage"
-          onClick={handleOpenPresetMessages}
-          aria-label="Abrir opções de mensagens predefinidas"
-        >
-          <p>Deixa uma mensagem</p>
-        </div>
-        {isPresetMessagesOpen && (
-          <div id="textOptions" ref={textOptionsRef}>
-            <div>{presetMsgs}</div>
-            <div>{presetMsgs2}</div>
-          </div>
+    <div className="mainBody mainBodyMessages">
+      <div className="backgroundDiv"></div>
+      {/* <div className="window"> */}
+      <div className="header">
+        {partnerUser && (
+          <img
+            // src={partnerUser.profilePictureUrl}
+            // alt={`Foto de ${partnerUser.username}`}
+            className="userPhotoMessages"
+          />
+        )}
+        {partnerUser ? <h3>{partnerUser.username}</h3> : <h3>parceiro</h3>}
+      </div>
+      <div className="line"></div>
+      <div
+        id="textSpace"
+        ref={textSpaceRef}
+        className={`${isPresetMessagesOpen ? "textSpaceSmall" : ""} windowBody`}
+        onClick={closePresetMessages}
+      >
+        {partnerUser ? (
+          messageContent
+        ) : (
+          <p>
+            Não tens parceiro para trocar mensagens! Cria uma ligação no perfil.
+          </p>
         )}
       </div>
+      <div
+        className="inputMessage"
+        onClick={handleOpenPresetMessages}
+        aria-label="Abrir opções de mensagens predefinidas"
+      >
+        <p>Deixa uma mensagem</p>
+      </div>
+      {isPresetMessagesOpen && (
+        <div id="textOptions" ref={textOptionsRef}>
+          <div>{presetMsgs}</div>
+          <div>{presetMsgs2}</div>
+        </div>
+      )}
     </div>
+    // </div>
   );
 }
 

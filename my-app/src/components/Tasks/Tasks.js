@@ -2,8 +2,8 @@ import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
-import { fetchMessages } from "../../redux/messagesSlice";
-import { FiSliders } from "react-icons/fi";
+// import { fetchMessages } from "../../redux/messagesSlice";
+// import { FiSliders } from "react-icons/fi";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -26,7 +26,7 @@ function Tasks() {
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
-  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  // const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
   const [isPopUpInfoOpen, setIsPopUpInfoOpen] = useState(false);
@@ -98,11 +98,11 @@ function Tasks() {
   }, [usersStatus, dispatch]);
 
   //* fetch text messages
-  useEffect(() => {
-    if (messagesStatus === "idle") {
-      dispatch(fetchMessages());
-    }
-  }, [messagesStatus, dispatch]);
+  // useEffect(() => {
+  //   if (messagesStatus === "idle") {
+  //     dispatch(fetchMessages());
+  //   }
+  // }, [messagesStatus, dispatch]);
 
   useEffect(() => {
     const user =
@@ -160,14 +160,14 @@ function Tasks() {
     setIsNewTaskModalOpen(false);
   };
 
-  //* open and close messages window
-  const handleOpenMessagesModal = () => {
-    setIsMessagesModalOpen(true);
-  };
+  // //* open and close messages window
+  // const handleOpenMessagesModal = () => {
+  //   setIsMessagesModalOpen(true);
+  // };
 
-  const handleCloseMessagesModal = () => {
-    setIsMessagesModalOpen(false);
-  };
+  // const handleCloseMessagesModal = () => {
+  //   setIsMessagesModalOpen(false);
+  // };
 
   //* open and close conclude task window
   const handleOpenConcludeTaskModal = (task) => {
@@ -346,7 +346,7 @@ function Tasks() {
         <ion-icon name="add-outline" class="iconswhite"></ion-icon>
       </button>
 
-      <button
+      {/* <button
         aria-label="Botão para abrir mensagens"
         id="textBtn"
         className="profile-button"
@@ -379,12 +379,12 @@ function Tasks() {
           onShowPopUpInfo={handleShowPopUpInfo}
         />
       )}
-      {isMessagesModalOpen && (
+      {/* {isMessagesModalOpen && (
         <Messages
           onClose={handleCloseMessagesModal}
           currentUser={currentUser}
         />
-      )}
+      )} */}
       {isConcludeTaskOpen && (
         <ConcludeTask
           onClose={handleCloseConcludeTaskModal}

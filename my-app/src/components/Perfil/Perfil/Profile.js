@@ -24,7 +24,7 @@ const Profile = () => {
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
   const [showArquivo, setShowArquivo] = useState(false);
   const [showGrafico, setShowGrafico] = useState(false);
-  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  // const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -70,13 +70,13 @@ const Profile = () => {
     setShowSettings(true);
   };
 
-  const handleOpenMessagesModal = () => {
-    setIsMessagesModalOpen(true);
-  };
+  // const handleOpenMessagesModal = () => {
+  //   setIsMessagesModalOpen(true);
+  // };
 
-  const handleCloseMessagesModal = () => {
-    setIsMessagesModalOpen(false);
-  };
+  // const handleCloseMessagesModal = () => {
+  //   setIsMessagesModalOpen(false);
+  // };
 
   if (!loggedInUser) {
     // mensagem de erro
@@ -141,13 +141,13 @@ const Profile = () => {
           <ion-icon name="information-outline" class="icons"></ion-icon>
         </Link>
 
-        <button
+        {/* <button
           aria-label="Botão para abrir mensagens"
           className="profile-button dots"
           onClick={handleOpenMessagesModal}
         >
           <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
-        </button>
+        </button> */}
       </div>
 
       <Definicoes
@@ -169,12 +169,12 @@ const Profile = () => {
         yearlyData={[100, 200, 300, 400, 500]}
       />
 
-      {isMessagesModalOpen && (
+      {/* {isMessagesModalOpen && (
         <Messages
           onClose={handleCloseMessagesModal}
           currentUser={currentUser}
         />
-      )}
+      )} */}
     </div>
   );
 };
