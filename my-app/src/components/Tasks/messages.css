@@ -2,7 +2,6 @@ body .mainBodyMessages {
   display: flex;
   margin-top: 0px;
   padding-top: 8px;
-  align-items: flex-start;
 }
 
 .header h3 {
