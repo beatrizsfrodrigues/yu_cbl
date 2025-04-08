@@ -147,7 +147,7 @@ const Profile = () => {
           onClick={handleOpenMessagesModal}
         >
           <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
-        </button>
+        </button> */}
       </div>
 
       <Definicoes

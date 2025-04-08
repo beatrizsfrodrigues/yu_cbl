@@ -2,8 +2,8 @@ import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
-import { fetchMessages } from "../../redux/messagesSlice";
-import { FiSliders } from "react-icons/fi";
+// import { fetchMessages } from "../../redux/messagesSlice";
+// import { FiSliders } from "react-icons/fi";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 

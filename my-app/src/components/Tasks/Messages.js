@@ -208,9 +208,9 @@ function Messages({}) {
       <div className="header">
         {partnerUser && (
           <img
-            src={partnerUser.profilePictureUrl}
-            alt={`Foto de ${partnerUser.username}`}
-            className="profilePic"
+            // src={partnerUser.profilePictureUrl}
+            // alt={`Foto de ${partnerUser.username}`}
+            className="userPhotoMessages"
           />
         )}
         {partnerUser ? <h3>{partnerUser.username}</h3> : <h3>parceiro</h3>}
