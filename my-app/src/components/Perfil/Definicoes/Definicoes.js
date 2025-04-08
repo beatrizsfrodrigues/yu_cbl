@@ -73,7 +73,7 @@ const Definicoes = ({
             onClick={onClose}
             aria-label="Fechar janela"
           >
-            <X aria-label="Fechar janela" />
+            <ion-icon name="close-outline" class="icons"></ion-icon>
           </button>
         </div>
         <div className="line"></div>

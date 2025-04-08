@@ -60,7 +60,7 @@ const Grafico = ({ show, onClose }) => {
       const monthly = new Array(31).fill(0);
       const yearly = new Array(12).fill(0);
 
-  // Função para converter a data no formato "yyyyMMddHHmmss" para um objeto Date válido
+      // Função para converter a data no formato "yyyyMMddHHmmss" para um objeto Date válido
       const parseCompletionDate = (dateString) => {
         if (!dateString || dateString.length !== 14) return null;
 
@@ -93,7 +93,6 @@ const Grafico = ({ show, onClose }) => {
         }
       });
 
-
       setHasCompletedTasks(true);
       setMonthlyData([...monthly]);
       setYearlyData([...yearly]);
@@ -109,7 +108,11 @@ const Grafico = ({ show, onClose }) => {
       <div className="window">
         <div className="grafico-header">
           <h3>Estatísticas</h3>
-          <X className="closeWindow" onClick={onClose} />
+          <ion-icon
+            name="close-outline"
+            onClick={onClose}
+            class="icons"
+          ></ion-icon>
         </div>
         <div className="line"></div>
 
@@ -141,7 +144,20 @@ const Grafico = ({ show, onClose }) => {
                 <div className="grafico-chart">
                   <Bar
                     data={{
-                      labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                      labels: [
+                        "Jan",
+                        "Fev",
+                        "Mar",
+                        "Abr",
+                        "Mai",
+                        "Jun",
+                        "Jul",
+                        "Ago",
+                        "Set",
+                        "Out",
+                        "Nov",
+                        "Dez",
+                      ],
                       datasets: [
                         {
                           label: "Tarefas Concluídas (Mensal)",
@@ -156,9 +172,6 @@ const Grafico = ({ show, onClose }) => {
                   />
                 </div>
               </div>
-
-
-              
             </>
           ) : (
             <div className="no-tasks-message">

@@ -115,10 +115,10 @@ const Login = () => {
                 className="password-toggle-button"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <img
-                  src={showPassword ? notVisibleIcon : visibleIcon}
-                  alt="Mostrar palavra-passe"
-                />
+                <ion-icon
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  class="icons"
+                ></ion-icon>
               </button>
             </div>
           </div>

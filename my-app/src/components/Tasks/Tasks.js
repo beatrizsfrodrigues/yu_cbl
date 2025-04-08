@@ -340,22 +340,19 @@ function Tasks() {
       <button
         aria-label="Botão para adicionar nova tarefa"
         id="newTask"
-        className="btnRound"
+        className="profile-button"
         onClick={handleOpenNewTaskModal}
       >
-        <ion-icon name="add-outline" class="iconsWhite"></ion-icon>
+        <ion-icon name="add-outline" class="iconswhite"></ion-icon>
       </button>
 
       <button
         aria-label="Botão para abrir mensagens"
         id="textBtn"
-        className="btnRound"
+        className="profile-button"
         onClick={handleOpenMessagesModal}
       >
-        <ion-icon
-          name="chatbubble-ellipses-outline"
-          class="iconsWhite"
-        ></ion-icon>
+        <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
       </button>
 
       {showVerifyTask && partnerUser && (
