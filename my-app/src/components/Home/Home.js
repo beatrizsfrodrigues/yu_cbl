@@ -7,9 +7,6 @@ import PopUpInfo from "../PopUpInfo.js";
 import Closet from "./Closet";
 import Store from "./Store";
 import TopBar from "../TopBar";
-import Star from "../../assets/imgs/Icons_closet/Star.svg";
-import Closeticon from "../../assets/imgs/Icons_closet/Closeticon.svg";
-import Storeicon from "../../assets/imgs/Icons_closet/Storeicon.svg";
 import "../../assets/css/home.css";
 
 const Home = () => {
@@ -218,7 +215,7 @@ const Home = () => {
           <div className="home mainBody">
             <TopBar>
               <div className="ClassStar">
-                <img src={Star} alt="Star" />
+                <ion-icon name="star-outline" class="icons"></ion-icon>
                 <p>{formatPoints(currentUser.points)}</p>
               </div>
               <div className="buttonsCloset">
@@ -227,14 +224,14 @@ const Home = () => {
                   aria-label="armario"
                   onClick={openCloset}
                 >
-                  <img src={Closeticon} alt="Closet" className="closetIcon" />
+                  <ion-icon name="brush-outline" class="icons"></ion-icon>
                 </button>
                 <button
                   className="btnHomeHeader"
                   aria-label="loja"
                   onClick={openStore}
                 >
-                  <img src={Storeicon} alt="Store" className="navIcon" />
+                  <ion-icon name="bag-outline" class="icons"></ion-icon>
                 </button>
               </div>
             </TopBar>

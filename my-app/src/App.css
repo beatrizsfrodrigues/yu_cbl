@@ -114,6 +114,20 @@ p {
   background-color: var(--blue);
 }
 
+.icons {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: var(--purple-darker);
+}
+
+.iconswhite {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+}
+
 .orangeBtn {
   background-color: var(--orange);
 }
