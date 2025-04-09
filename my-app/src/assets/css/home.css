@@ -317,13 +317,14 @@ button.avatarcircle.activeFit {
 
 .ClassStar {
   display: flex;
-  text-align: left;
+  text-align: center;
+  justify-content: flex-start;
+  margin-left: 0;
 }
 
 .buttonsCloset {
   display: flex;
   align-items: center;
-  gap: 10px; /* Espaçamento entre os botões */
   margin-left: auto; /* Empurra os botões para a direita */
 }
 

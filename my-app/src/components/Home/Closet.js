@@ -117,11 +117,12 @@ const Closet = ({
           >
             Guardar
           </button>
-          <button
-            className="profile-button btnHomeActive"
-            onClick={() => resetClothes()}
-          >
-            <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>
+          <button className="profile-button btnHomeActive">
+            <ion-icon
+              name="refresh-outline"
+              onClick={() => resetClothes()}
+              class="iconswhite"
+            ></ion-icon>
           </button>
         </div>
       </div>

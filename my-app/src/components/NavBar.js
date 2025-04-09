@@ -12,18 +12,31 @@ function NavBar() {
   // Memoriza o array navItems para evitar recriações desnecessárias
   const navItems = useMemo(
     () => [
-      { path: "/home", icon: <HomeIcon strokeWidth={2.5} />, label: "Home" },
+      {
+        path: "/home",
+        icon: <ion-icon name="home-outline" class="iconswhite"></ion-icon>,
+        label: "Home",
+      },
       {
         path: "/tasks",
-        icon: <Clipboard strokeWidth={2.5} />,
+        icon: <ion-icon name="clipboard-outline" class="iconswhite"></ion-icon>,
         label: "Tarefas",
       },
       {
         path: "/messages",
-        icon: <MessageCircle strokeWidth={2.5} />,
+        icon: (
+          <ion-icon
+            name="chatbubble-ellipses-outline"
+            class="iconwhite"
+          ></ion-icon>
+        ),
         label: "Mensagens",
       },
-      { path: "/profile", icon: <User strokeWidth={2.5} />, label: "Perfil" },
+      {
+        path: "/profile",
+        icon: <ion-icon name="person-outline" calss="iconswhite"></ion-icon>,
+        label: "Perfil",
+      },
     ],
     []
   );

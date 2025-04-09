@@ -166,11 +166,12 @@ const Store = ({
           ) : (
             <button className="buttonMid">Comprar</button>
           )}
-          <button
-            className="profile-button btnHomeActive"
-            onClick={() => resetFit()}
-          >
-            <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>
+          <button className="profile-button btnHomeActive">
+            <ion-icon
+              name="refresh-outline"
+              onClick={() => resetFit()}
+              class="iconswhite"
+            ></ion-icon>
           </button>
         </div>
       </div>
