@@ -1,6 +1,6 @@
 body .mainBodyMessages {
   display: flex;
-  margin-top: 0px;
+  margin-top: 5%;
   padding-top: 8px;
 }
 
@@ -12,9 +12,13 @@ body .mainBodyMessages {
   align-items: flex-start;
 }
 
+.headerMessages {
+  justify-content: start;
+}
+
 .profilePic {
-  width: 24px;
-  height: 24px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   object-fit: cover;
   margin: 0; /* sem margem */
@@ -25,6 +29,7 @@ body .mainBodyMessages {
 
 div .line {
   width: 100%;
+  margin-top: 1%;
   height: 2px;
 }
 
@@ -46,7 +51,7 @@ div .line {
 }
 
 #textSpace.windowBody {
-  height: calc(100vh - 220px);
+  height: calc(100vh - 250px);
 }
 
 .textMessage {
@@ -62,7 +67,6 @@ div .line {
   text-align: left;
   font-size: 14px;
   align-self: flex-start;
-  max-width: 60%;
   height: auto;
   word-wrap: break-word;
   white-space: normal;
@@ -72,10 +76,19 @@ div .line {
 .bubbleBlue {
   background-color: var(--blue-light);
   align-self: flex-end;
+  max-width: 60%;
 }
 
 .bubbleDotted {
-  border: 2px dashed var(--blue-dark);
+  display: inline-flex;
+  height: 68px;
+  padding: 10px 26px 10px 26px;
+  align-items: center;
+  border-radius: 15px;
+  border: 2px dashed var(--green-dark);
+  background: var(--green-light);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .textLeft {

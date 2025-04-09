@@ -122,10 +122,6 @@ p {
   color: var(--purple-darker);
 }
 
-.iconswhite {
-  color: var(--white);
-}
-
 .orangeBtn {
   background-color: var(--orange);
 }

@@ -205,10 +205,10 @@ function Messages({}) {
     <div className="mainBody mainBodyMessages">
       <div className="backgroundDiv"></div>
       {/* <div className="window"> */}
-      <div className="header">
-        {partnerUser && <div className="userPhoto"></div>}
-        {partnerUser ? <h3>{partnerUser.username}</h3> : <h3>parceiro</h3>}
-      </div>
+      <header className="header headerMessages">
+        {partnerUser && <div className="profilePic"></div>}
+        {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
+      </header>
       <div className="line"></div>
       <div
         id="textSpace"
