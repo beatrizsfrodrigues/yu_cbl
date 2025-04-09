@@ -206,13 +206,7 @@ function Messages({}) {
       <div className="backgroundDiv"></div>
       {/* <div className="window"> */}
       <div className="header">
-        {/* {partnerUser && (
-          <img
-            // src={partnerUser.profilePictureUrl}
-            // alt={`Foto de ${partnerUser.username}`}
-            className="userPhotoMessages"
-          />
-        )} */}
+        {partnerUser && <div className="userPhoto"></div>}
         {partnerUser ? <h3>{partnerUser.username}</h3> : <h3>parceiro</h3>}
       </div>
       <div className="line"></div>
