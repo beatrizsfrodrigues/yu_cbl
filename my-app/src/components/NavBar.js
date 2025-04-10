@@ -14,13 +14,23 @@ function NavBar() {
     () => [
       {
         path: "/home",
-        icon: <ion-icon name="home-outline" className="iconsNav"></ion-icon>,
+        icon: (
+          <ion-icon
+            name="home-outline"
+            className="iconsNav"
+            size="large"
+          ></ion-icon>
+        ),
         label: "Home",
       },
       {
         path: "/tasks",
         icon: (
-          <ion-icon name="clipboard-outline" className="iconsNav"></ion-icon>
+          <ion-icon
+            name="clipboard-outline"
+            className="iconsNav"
+            size="large"
+          ></ion-icon>
         ),
         label: "Tarefas",
       },
@@ -30,13 +40,20 @@ function NavBar() {
           <ion-icon
             name="chatbubble-ellipses-outline"
             className="iconsNav"
+            size="large"
           ></ion-icon>
         ),
         label: "Mensagens",
       },
       {
         path: "/profile",
-        icon: <ion-icon name="person-outline" className="iconsNav"></ion-icon>,
+        icon: (
+          <ion-icon
+            name="person-outline"
+            className="iconsNav"
+            size="large"
+          ></ion-icon>
+        ),
         label: "Perfil",
       },
     ],
