@@ -1,7 +1,10 @@
-body .mainBodyMessages {
+.mainBodyMessages {
   display: flex;
-  margin-top: 5%;
-  padding-top: 8px;
+  flex-direction: column;
+  height: 100vh;
+  padding: 8px;
+  box-sizing: border-box;
+  height: calc(100vh - 140px);
 }
 
 .header h3 {
@@ -33,7 +36,7 @@ div .line {
   height: 2px;
 }
 
-#textSpace {
+/* #textSpace {
   height: 60vh;
   display: flex;
   flex-direction: column;
@@ -44,17 +47,22 @@ div .line {
   scrollbar-width: none;
   scroll-behavior: smooth;
   margin: 0px 0px;
-  /* height: calc(140vh - 70px - 60vh);
-  overflow-y: auto;  ainda não está correto e respondivo*/
+  height: calc(140vh - 70px - 60vh);
+  overflow-y: auto;
+  flex: 1;
+} */
+
+#textSpace {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+  transition: height 0.3s ease;
 }
 
-/* #textSpace.textSpaceSmall {
-  height: 40vh;
-} */
-
-/* #textSpace.windowBody {
-  height: calc(100vh - 250px);
-} */
+.textSpaceSmall {
+  flex: 0.7; /* ou ajuste conforme preferir */
+}
 
 .textMessage {
   display: flex;
@@ -107,16 +115,13 @@ div .line {
 }
 
 .inputMessage {
-  border: 1px solid var(--purple-dark);
+  border: 2px solid var(--purple-dark);
   border-radius: 16px;
   width: 100%;
   box-sizing: border-box;
-  flex-direction: column-reverse;
   padding: 12px 16px;
   font-family: "Quicksand", serif;
   font-size: 16px;
-  /* position: relative;
-  top: 50px; */
 }
 
 .descriptionInput {
@@ -124,27 +129,62 @@ div .line {
   resize: none;
 }
 
-.inputMessage p {
-  text-align: left;
-  margin-left: 0px;
-  margin: 0;
-  padding: 0;
+.inputMessage {
+  border: 2px solid var(--purple-dark);
+  border-radius: 16px;
   width: 100%;
+  padding: 0px 16px;
+  font-size: 16px;
+  font-family: "Quicksand", serif;
   box-sizing: border-box;
 }
 
-#textOptions {
-  display: flex;
+/* #textOptions {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
   width: 100%;
   border-radius: 16px;
   border: 1px solid var(--purple-darker);
+  background-color: var(--white);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   padding: 16px;
-  align-items: start;
-  height: 20vh;
+  align-items: flex-start;
+  max-height: 20vh;
   overflow-y: auto;
   box-sizing: border-box;
   scrollbar-width: none;
+  transition: opacity 0.3s ease;
+  flex-wrap: wrap;
+} */
+
+#textOptions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  background-color: white;
+  border: 1px solid var(--purple-darker);
+  border-radius: 12px;
+  padding: 10px;
+  max-height: 30vh;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+#textOptions {
+  transform: translateY(-10px);
+  opacity: 0;
+  animation: slideIn 0.3s forwards;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 #textOptions div {
@@ -154,22 +194,21 @@ div .line {
   justify-content: start;
 }
 
-#textOptionsWrapper {
-  position: fixed;
-  bottom: 70px;
-  left: 0;
-  right: 0;
-  padding: 0 1rem;
-  z-index: 10;
+.inputMessageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .optionText {
-  width: 100%;
-  text-align: start;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid var(--purple-darker);
-  color: var(--purple-dark);
   background-color: var(--white);
-  font-weight: 400;
+  border: 1px solid var(--purple-dark);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }

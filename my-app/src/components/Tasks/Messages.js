@@ -40,9 +40,8 @@ function Messages({}) {
   }, [users, currentUserId]);
 
   useEffect(() => {
-    if (messages && messages.length > 0) {
-      const textSpace = textSpaceRef.current;
-      textSpace.scrollTop = textSpace.scrollHeight;
+    if (textSpaceRef.current && messages && messages.length > 0) {
+      textSpaceRef.current.scrollTop = textSpaceRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -204,16 +203,18 @@ function Messages({}) {
   return (
     <div className="mainBody mainBodyMessages">
       <div className="backgroundDiv"></div>
-      {/* <div className="window"> */}
+
       <header className="header headerMessages">
         {partnerUser && <div className="profilePic"></div>}
         {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
       </header>
+
       <div className="line"></div>
+
       <div
         id="textSpace"
         ref={textSpaceRef}
-        className={`${isPresetMessagesOpen ? "textSpaceSmall" : ""} windowBody`}
+        className="windowBody"
         onClick={closePresetMessages}
       >
         {partnerUser ? (
@@ -224,21 +225,43 @@ function Messages({}) {
           </p>
         )}
       </div>
-      <div
-        className="inputMessage"
-        onClick={handleOpenPresetMessages}
-        aria-label="Abrir opções de mensagens predefinidas"
-      >
-        <p>Deixa uma mensagem</p>
-      </div>
-      {isPresetMessagesOpen && (
-        <div id="textOptions" ref={textOptionsRef}>
-          <div>{presetMsgs}</div>
-          <div>{presetMsgs2}</div>
+
+      {/* Aqui o WRAPPER com opções acima do input */}
+      <div className="inputMessageWrapper">
+        {isPresetMessagesOpen && (
+          <div id="textOptions" ref={textOptionsRef}>
+            {presetMessages &&
+              presetMessages.map((message, index) => (
+                <button
+                  key={index}
+                  className="optionText"
+                  onClick={
+                    partnerUser ? () => handleAddMessage(message.message) : null
+                  }
+                >
+                  {message.message}
+                </button>
+              ))}
+          </div>
+        )}
+
+        {/* {isPresetMessagesOpen && (
+          <div id="textOptions" ref={textOptionsRef}>
+            <div>{presetMsgs}</div>
+            <div>{presetMsgs2}</div>
+          </div>
+        )} */}
+
+        {/* Input vira botão ou textarea */}
+        <div
+          className="inputMessage"
+          onClick={handleOpenPresetMessages}
+          aria-label="Abrir opções de mensagens predefinidas"
+        >
+          <p>Deixa uma mensagem</p>
         </div>
-      )}
+      </div>
     </div>
-    // </div>
   );
 }
 
