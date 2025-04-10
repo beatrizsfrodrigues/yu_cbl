@@ -18,6 +18,7 @@ const Home = () => {
   //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
   //const closetStatus = useSelector((state) => state.closet.status);
+  const [isClosetOpen, setIsClosetOpen] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -32,6 +33,11 @@ const Home = () => {
   const [selectedShirt, setSelectedShirt] = useState("");
   const [selectedAcc, setSelectedAcc] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+
+  const [originalBackground, setOriginalBackground] = useState(null);
+  const [originalShirt, setOriginalShirt] = useState(null);
+  const [originalAcc, setOriginalAcc] = useState(null);
+  const [originalColor, setOriginalColor] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,32 +79,60 @@ const Home = () => {
   };
 
   const openCloset = () => {
+    // Salva os valores originais
+    setOriginalBackground(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.background
+      ) || null
+    );
+    setOriginalShirt(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.shirt
+      ) || null
+    );
+    setOriginalAcc(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.hat
+      ) || null
+    );
+    setOriginalColor(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.color
+      ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
+    );
+
+    // Inicializa os estados locais
     setSelectedBackground(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.background
-      ) || ""
+      ) || null
     );
     setSelectedShirt(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.shirt
-      ) || ""
+      ) || null
     );
     setSelectedAcc(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.hat
-      ) || ""
+      ) || null
     );
     setSelectedColor(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.color
-      ) || ""
+      ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
     );
+
     setShowCloset(true);
   };
 
   const openStore = () => {
+    setOriginalBackground(selectedBackground);
+    setOriginalShirt(selectedShirt);
+    setOriginalAcc(selectedAcc);
+    setOriginalColor(selectedColor);
+
     setShowStore(true);
-    setShowCloset(false);
   };
 
   if (!currentUser || !currentMascot || !closet) {
@@ -106,23 +140,44 @@ const Home = () => {
   }
 
   const closeCloset = () => {
-    setSelectedBackground("");
-    setSelectedShirt("");
-    setSelectedAcc("");
-    setSelectedColor("");
+    // Restaura os valores originais
+    setSelectedBackground(originalBackground);
+    setSelectedShirt(originalShirt);
+    setSelectedAcc(originalAcc);
+    setSelectedColor(originalColor);
+
+    // Atualiza o estado da mascote para refletir os valores originais
+    setCurrentMascot((prevMascot) => ({
+      ...prevMascot,
+      accessoriesEquipped: {
+        hat: originalAcc?.id || null,
+        shirt: originalShirt?.id || null,
+        color: originalColor?.id || "/assets/YU_cores/YU-roxo.svg",
+        background: originalBackground?.id || null,
+      },
+    }));
+
     setShowCloset(false);
+    setIsClosetOpen(false); // Fecha o closet
   };
+
   const closeStore = () => {
-    setSelectedFit("");
-    setShowStore(false);
+    setSelectedBackground(originalBackground);
+    setSelectedShirt(originalShirt);
+    setSelectedAcc(originalAcc);
+    setSelectedColor(originalColor);
+
+    setSelectedFit(""); // Limpa o item temporário selecionado
+    setShowStore(false); // Fecha a loja
   };
 
   const addAccessory = (item) => {
-    setSelectedFit(item);
+    setSelectedFit(item); // Atualiza o item temporário selecionado
+    dressUp(item); // Aplica o item temporariamente na mascote para visualização
   };
 
   const dressUp = (item) => {
-    console.log(item.type);
+    console.log("Aplicando item:", item);
     if (item.type === "Backgrounds") {
       setSelectedBackground(item);
     } else if (item.type === "Shirts") {
@@ -151,29 +206,77 @@ const Home = () => {
   };
 
   const resetClothes = () => {
-    setSelectedBackground("");
-    setSelectedShirt("");
-    setSelectedAcc("");
-    setSelectedColor("");
+    console.log("Resetando roupas...");
+
+    // Define a cor padrão e remove todos os itens
+    const defaultColor = {
+      type: "SkinColor",
+      src: "/assets/YU_cores/YU-roxo.svg",
+    }; // Cor padrão
+    dressUp(defaultColor);
+    dressUp({ type: "Background", id: null }); // Remove o fundo
+    dressUp({ type: "Shirts", id: null }); // Remove a camisa
+    dressUp({ type: "Decor", id: null }); // Remove os acessórios
+
+    // Atualiza os estados locais
+    setSelectedBackground(null);
+    setSelectedShirt(null);
+    setSelectedAcc(null);
+    setSelectedColor(defaultColor);
+
+    // Atualiza o estado da mascote localmente para refletir as alterações
+    setCurrentMascot((prevMascot) => ({
+      ...prevMascot,
+      accessoriesEquipped: {
+        hat: null,
+        shirt: null,
+        color: "/assets/YU_cores/YU-roxo.svg",
+        background: null,
+      },
+    }));
   };
 
-  const saveOutfit = () => {
-    dispatch(
-      saveFit({
-        hat: selectedAcc?.id || currentMascot.accessoriesEquipped.hat || null,
-        shirt:
-          selectedShirt?.id || currentMascot.accessoriesEquipped.shirt || null,
-        color:
-          selectedColor?.id || currentMascot.accessoriesEquipped.color || 40,
-        background:
-          selectedBackground?.id ||
-          currentMascot.accessoriesEquipped.background ||
-          null,
+  const saveOutfit = async () => {
+    try {
+      const payload = {
+        hat: selectedAcc?.id || null,
+        shirt: selectedShirt?.id || null,
+        color: selectedColor?.id || 40, // Valor padrão para a cor
+        background: selectedBackground?.id || null,
         id: currentMascot.id,
-      })
-    );
+      };
 
-    handleShowPopUpInfo("Alterações guardadas com sucesso!");
+      console.log("Payload enviado para salvar:", payload);
+
+      await dispatch(saveFit(payload));
+
+      // Atualiza o estado da mascote localmente para refletir as alterações
+      setCurrentMascot((prevMascot) => ({
+        ...prevMascot,
+        accessoriesEquipped: {
+          hat: payload.hat,
+          shirt: payload.shirt,
+          color: payload.color,
+          background: payload.background,
+        },
+      }));
+
+      // Atualiza os valores originais para refletir o novo estado
+      setOriginalBackground(selectedBackground);
+      setOriginalShirt(selectedShirt);
+      setOriginalAcc(selectedAcc);
+      setOriginalColor(selectedColor);
+
+      // Exibe o popup de confirmação
+      if (handleShowPopUpInfo) {
+        handleShowPopUpInfo("Alterações guardadas com sucesso!");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar as alterações:", error);
+      if (handleShowPopUpInfo) {
+        handleShowPopUpInfo("Erro ao salvar as alterações. Tente novamente.");
+      }
+    }
   };
 
   const formatPoints = (points) => {
@@ -243,7 +346,7 @@ const Home = () => {
               showCloset || showStore ? "moveUp" : ""
             }`}
           >
-            {/*dress up yu color  */}
+            {/* Renderização da mascote */}
             {selectedColor ? (
               <img className={`Yu `} src={selectedColor.src} alt="YU" />
             ) : selectedFit && selectedFit.type === "SkinColor" ? (
@@ -261,7 +364,8 @@ const Home = () => {
               />
             )}
 
-            {/*dress up yu shirt  */}
+            {/* Outros acessórios */}
+            {/* Camisa */}
             {selectedShirt ? (
               <img
                 className="accessory"
@@ -321,7 +425,7 @@ const Home = () => {
               )
             )}
 
-            {/*dress up yu accessories  */}
+            {/* Acessórios */}
             {selectedAcc ? (
               <img
                 className="accessory"
@@ -410,6 +514,7 @@ const Home = () => {
                 buyItemBtn={buyItemBtn}
                 resetFit={resetFit}
                 onShowPopUpInfo={handleShowPopUpInfo}
+                dressUp={dressUp}
               />
             </div>
           )}
