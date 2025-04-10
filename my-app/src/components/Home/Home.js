@@ -127,8 +127,12 @@ const Home = () => {
   };
 
   const openStore = () => {
+    setOriginalBackground(selectedBackground);
+    setOriginalShirt(selectedShirt);
+    setOriginalAcc(selectedAcc);
+    setOriginalColor(selectedColor);
+
     setShowStore(true);
-    setShowCloset(false);
   };
 
   if (!currentUser || !currentMascot || !closet) {
@@ -158,16 +162,22 @@ const Home = () => {
   };
 
   const closeStore = () => {
-    setSelectedFit("");
-    setShowStore(false);
+    setSelectedBackground(originalBackground);
+    setSelectedShirt(originalShirt);
+    setSelectedAcc(originalAcc);
+    setSelectedColor(originalColor);
+
+    setSelectedFit(""); // Limpa o item temporário selecionado
+    setShowStore(false); // Fecha a loja
   };
 
   const addAccessory = (item) => {
-    setSelectedFit(item);
+    setSelectedFit(item); // Atualiza o item temporário selecionado
+    dressUp(item); // Aplica o item temporariamente na mascote para visualização
   };
 
   const dressUp = (item) => {
-    console.log(item.type);
+    console.log("Aplicando item:", item);
     if (item.type === "Backgrounds") {
       setSelectedBackground(item);
     } else if (item.type === "Shirts") {
@@ -336,7 +346,7 @@ const Home = () => {
               showCloset || showStore ? "moveUp" : ""
             }`}
           >
-            {/*dress up yu color  */}
+            {/* Renderização da mascote */}
             {selectedColor ? (
               <img className={`Yu `} src={selectedColor.src} alt="YU" />
             ) : selectedFit && selectedFit.type === "SkinColor" ? (
@@ -354,7 +364,8 @@ const Home = () => {
               />
             )}
 
-            {/*dress up yu shirt  */}
+            {/* Outros acessórios */}
+            {/* Camisa */}
             {selectedShirt ? (
               <img
                 className="accessory"
@@ -414,7 +425,7 @@ const Home = () => {
               )
             )}
 
-            {/*dress up yu accessories  */}
+            {/* Acessórios */}
             {selectedAcc ? (
               <img
                 className="accessory"
@@ -503,6 +514,7 @@ const Home = () => {
                 buyItemBtn={buyItemBtn}
                 resetFit={resetFit}
                 onShowPopUpInfo={handleShowPopUpInfo}
+                dressUp={dressUp}
               />
             </div>
           )}
