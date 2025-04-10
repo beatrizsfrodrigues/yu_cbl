@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../redux/usersSlice";
@@ -7,7 +7,7 @@ import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.webp";
-import Modal from "./PasswordRequirementsRegister";
+const Modal = lazy(() => import("./PasswordRequirementsRegister"));
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -187,7 +187,15 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="logo-container">
-            <img src={logo} alt="logo" className="logo" />
+            <img
+              rel="preload"
+              as="image"
+              src={logo}
+              alt="logo"
+              className="logo"
+              width="300"
+              height="300" /* Set explicit height */
+            />
           </div>
           <header>
             <h1>Registo</h1>
@@ -198,6 +206,7 @@ const Register = () => {
               Email <span className="alert">*</span>
             </label>
             <input
+              rel="preload"
               required
               id="input-email"
               type="email"
@@ -253,10 +262,10 @@ const Register = () => {
                   className="password-toggle-button"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <img
-                    src={showPassword ? notVisibleIcon : visibleIcon}
-                    alt="Mostrar palavra-passe"
-                  />
+                  <ion-icon
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    class="icons"
+                  ></ion-icon>
                 </button>
               </div>
             </div>
@@ -282,77 +291,83 @@ const Register = () => {
                   className="password-toggle-button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <img
-                    src={showConfirmPassword ? notVisibleIcon : visibleIcon}
-                    alt="Mostrar palavra-passe"
-                  />
+                  <ion-icon
+                    name={
+                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
+                    }
+                    class="icons"
+                  ></ion-icon>
                 </button>
               </div>
             </div>
             {alertPass && <p className="alert">{alertPass}</p>}
           </div>
-          <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
-            <ul className="password-requirements">
-              <li
-                className={passwordRequirements.minLength ? "valid" : "invalid"}
-              >
-                {passwordRequirements.minLength ? (
-                  <i className="bi bi-check-circle"></i>
-                ) : (
-                  <i className="bi bi-x-circle"></i>
-                )}
-                Pelo menos 6 caracteres
-              </li>
-              <li
-                className={
-                  passwordRequirements.hasUpperCase ? "valid" : "invalid"
-                }
-              >
-                {passwordRequirements.hasUpperCase ? (
-                  <i className="bi bi-check-circle"></i>
-                ) : (
-                  <i className="bi bi-x-circle"></i>
-                )}
-                Pelo menos uma letra maiúscula
-              </li>
-              <li
-                className={
-                  passwordRequirements.hasLowerCase ? "valid" : "invalid"
-                }
-              >
-                {passwordRequirements.hasLowerCase ? (
-                  <i className="bi bi-check-circle"></i>
-                ) : (
-                  <i className="bi bi-x-circle"></i>
-                )}
-                Pelo menos uma letra minúscula
-              </li>
-              <li
-                className={
-                  passwordRequirements.hasNumbers ? "valid" : "invalid"
-                }
-              >
-                {passwordRequirements.hasNumbers ? (
-                  <i className="bi bi-check-circle"></i>
-                ) : (
-                  <i className="bi bi-x-circle"></i>
-                )}
-                Pelo menos um número
-              </li>
-              <li
-                className={
-                  passwordRequirements.hasSpecialChar ? "valid" : "invalid"
-                }
-              >
-                {passwordRequirements.hasSpecialChar ? (
-                  <i className="bi bi-check-circle"></i>
-                ) : (
-                  <i className="bi bi-x-circle"></i>
-                )}
-                Pelo menos um caractere especial
-              </li>
-            </ul>
-          </Modal>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
+              <ul className="password-requirements">
+                <li
+                  className={
+                    passwordRequirements.minLength ? "valid" : "invalid"
+                  }
+                >
+                  {passwordRequirements.minLength ? (
+                    <i className="bi bi-check-circle"></i>
+                  ) : (
+                    <i className="bi bi-x-circle"></i>
+                  )}
+                  Pelo menos 6 caracteres
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasUpperCase ? "valid" : "invalid"
+                  }
+                >
+                  {passwordRequirements.hasUpperCase ? (
+                    <i className="bi bi-check-circle"></i>
+                  ) : (
+                    <i className="bi bi-x-circle"></i>
+                  )}
+                  Pelo menos uma letra maiúscula
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasLowerCase ? "valid" : "invalid"
+                  }
+                >
+                  {passwordRequirements.hasLowerCase ? (
+                    <i className="bi bi-check-circle"></i>
+                  ) : (
+                    <i className="bi bi-x-circle"></i>
+                  )}
+                  Pelo menos uma letra minúscula
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasNumbers ? "valid" : "invalid"
+                  }
+                >
+                  {passwordRequirements.hasNumbers ? (
+                    <i className="bi bi-check-circle"></i>
+                  ) : (
+                    <i className="bi bi-x-circle"></i>
+                  )}
+                  Pelo menos um número
+                </li>
+                <li
+                  className={
+                    passwordRequirements.hasSpecialChar ? "valid" : "invalid"
+                  }
+                >
+                  {passwordRequirements.hasSpecialChar ? (
+                    <i className="bi bi-check-circle"></i>
+                  ) : (
+                    <i className="bi bi-x-circle"></i>
+                  )}
+                  Pelo menos um caractere especial
+                </li>
+              </ul>
+            </Modal>
+          </Suspense>
         </div>
         <div className="register-link">
           <p>

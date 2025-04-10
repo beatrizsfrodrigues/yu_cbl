@@ -8,7 +8,7 @@ const pages = [
     subTitle: "Responder a um pequeno Questionário",
     description:
       "Antes de entrares nesta aventura connosco precisamos que respondas a 3 perguntas.",
-    image: "/assets/imgs_Apresentacao/questionario.png",
+    image: "/assets/imgs_Apresentacao/questionario.webp",
   },
   {
     mainTitle: "2.",
@@ -21,7 +21,7 @@ const pages = [
         </p>
       </>
     ),
-    image1: "/assets/imgs_Apresentacao/amigo.png",
+    image1: "/assets/imgs_Apresentacao/amigo.webp",
     description2: (
       <>
         <p>
@@ -38,7 +38,7 @@ const pages = [
         </p>
       </>
     ),
-    image2: "/assets/imgs_Apresentacao/maisTarde.png",
+    image2: "/assets/imgs_Apresentacao/maisTarde.webp",
   },
   {
     mainTitle: "3.",
@@ -55,7 +55,7 @@ const pages = [
         <p>Na área de perfil tens acesso aos teus dados e às defenições.</p>
       </>
     ),
-    image: "/assets/imgs_Apresentacao/menu.png",
+    image: "/assets/imgs_Apresentacao/menu.webp",
   },
   {
     mainTitle: "4.",
@@ -84,10 +84,7 @@ const pages = [
   {
     mainTitle: "5.",
     subTitle: "Bem - Vindo à YU",
-    images: [
-      "/assets/imgs_Apresentacao/YUsaiaAMAR.svg",
-      "/assets/imgs_Apresentacao/YUtuga.svg",
-    ],
+    images: ["/assets/imgs_Apresentacao/YUsaiaAMAR.webp"],
   },
 ];
 

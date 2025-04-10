@@ -7,6 +7,7 @@ import InfoPessoal from "../Definicoes/InfoPessoal";
 import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
 import Messages from "../../Tasks/Messages";
+import TopBar from "../../TopBar.js";
 import { fetchUsers } from "../../../redux/usersSlice.js";
 
 const Profile = () => {
@@ -23,7 +24,7 @@ const Profile = () => {
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
   const [showArquivo, setShowArquivo] = useState(false);
   const [showGrafico, setShowGrafico] = useState(false);
-  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  // const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -69,13 +70,13 @@ const Profile = () => {
     setShowSettings(true);
   };
 
-  const handleOpenMessagesModal = () => {
-    setIsMessagesModalOpen(true);
-  };
+  // const handleOpenMessagesModal = () => {
+  //   setIsMessagesModalOpen(true);
+  // };
 
-  const handleCloseMessagesModal = () => {
-    setIsMessagesModalOpen(false);
-  };
+  // const handleCloseMessagesModal = () => {
+  //   setIsMessagesModalOpen(false);
+  // };
 
   if (!loggedInUser) {
     // mensagem de erro
@@ -105,15 +106,12 @@ const Profile = () => {
   return (
     <div className="profile-container mainBody">
       <div className="backgroundDiv"></div>
-      <header className="profile-header">
-        <h1 className="profile-title title" aria-label="Perfil">
-          Perfil </h1>
-        <button
-          aria-label="Abrir definições"
-          className="gear-icon bi bi-gear"
-          onClick={toggleSettings}
-        ></button>
-      </header>
+
+      <TopBar title="Perfil">
+        <button aria-label="Abrir definições" onClick={toggleSettings}>
+          <ion-icon name="settings-outline" class="icons"></ion-icon>
+        </button>
+      </TopBar>
 
       <div className="profile-avatar">
         <img
@@ -132,7 +130,7 @@ const Profile = () => {
           className="profile-button award"
           onClick={toggleGrafico}
         >
-          <span className="bi bi-bar-chart-line"></span>
+          <ion-icon name="podium-outline" class="icons"></ion-icon>
         </button>
 
         <Link
@@ -140,16 +138,16 @@ const Profile = () => {
           to="/informacoes"
           className="profile-button circle"
         >
-          <i className="bi bi-info-circle"></i>
+          <ion-icon name="information-outline" class="icons"></ion-icon>
         </Link>
 
-        <button
+        {/* <button
           aria-label="Botão para abrir mensagens"
           className="profile-button dots"
           onClick={handleOpenMessagesModal}
         >
-          <i className="bi bi-chat-dots"></i>
-        </button>
+          <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
+        </button> */}
       </div>
 
       <Definicoes
@@ -171,12 +169,12 @@ const Profile = () => {
         yearlyData={[100, 200, 300, 400, 500]}
       />
 
-      {isMessagesModalOpen && (
+      {/* {isMessagesModalOpen && (
         <Messages
           onClose={handleCloseMessagesModal}
           currentUser={currentUser}
         />
-      )}
+      )} */}
     </div>
   );
 };

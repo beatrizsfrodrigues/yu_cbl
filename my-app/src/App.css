@@ -8,6 +8,8 @@ body {
   font-size: 20px;
   font-weight: 500;
   color: var(--purple-darker);
+  font-display: swap;
+  background-repeat: no-repeat;
 }
 
 #root {
@@ -49,16 +51,16 @@ body {
 
 h1 {
   font-family: "Sour Gummy", serif;
+  padding-left: 16px;
   font-size: 32px;
   margin-bottom: 40px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 button {
   font-family: "Quicksand", serif;
   font-size: 16px;
   color: var(--purple-darker);
-  font-weight: 600;
 }
 
 p {
@@ -111,6 +113,17 @@ p {
 
 .submitBtn:active {
   background-color: var(--blue);
+}
+
+.icons {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: var(--purple-darker);
+}
+
+.iconswhite {
+  color: var(--white);
 }
 
 .orangeBtn {
@@ -186,6 +199,8 @@ p {
 
 .closeWindow {
   position: absolute;
+  background: none;
+  border: none;
   right: 0px;
   top: 18px;
   width: 40px;
@@ -217,4 +232,35 @@ p {
   font-size: 12px;
   text-decoration: underline;
   font-weight: bold;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1px 20px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.topBar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.menu {
+  display: flex;
+  padding: 10px;
+  background-color: var(--purple-lighter);
+  border-radius: 40px;
+  width: 100%;
+}
+
+.userPhoto {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--purple-darker);
 }

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Shirts from "../../assets/imgs/Icons_closet/Shirt.svg";
-import Hat from "../../assets/imgs/Icons_closet/TallHat.svg";
-import Background from "../../assets/imgs/Icons_closet/Background.svg";
-import Circle from "../../assets/imgs/Icons_closet/Circle.svg";
-import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
-import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 
 const Closet = ({
@@ -43,25 +37,47 @@ const Closet = ({
   const sectionsData = [
     {
       label: "Skin Color",
-      icon: <img src={Circle} alt="Skin Color" />,
+      icon: <ion-icon name="color-palette-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "SkinColor"),
     },
     {
       label: "Shirts",
-      icon: <img src={Shirts} alt="Shirts" />,
+      icon: <ion-icon name="shirt-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "Shirts"),
     },
     {
       label: "Decor",
-      icon: <img src={Hat} alt="Decor" />,
+      icon: <ion-icon name="glasses-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "Decor"),
     },
     {
       label: "Backgrounds",
-      icon: <img src={Background} alt="Backgrounds" />,
+      icon: <ion-icon name="image-outline" class="icons"></ion-icon>,
       items: ownedItems.filter((item) => item.type === "Backgrounds"),
     },
   ];
+
+  const handleItemClick = (item) => {
+    // Verifica se o item já está selecionado
+    const isSelected =
+      selectedBackground?.id === item.id ||
+      selectedShirt?.id === item.id ||
+      selectedAcc?.id === item.id ||
+      selectedColor?.id === item.id;
+
+    if (isSelected) {
+      // Remove o item se já estiver selecionado
+      if (item.type === "SkinColor") {
+        // Define a cor original ao remover a cor
+        dressUp({ type: "SkinColor", src: "/assets/YU_cores/YU-roxo.svg" }); // Substitua 40 pelo ID da cor original
+      } else {
+        dressUp({ type: item.type, id: null });
+      }
+    } else {
+      // Aplica o item se não estiver selecionado
+      dressUp(item);
+    }
+  };
 
   return (
     <div className="closetOverlay">
@@ -70,14 +86,14 @@ const Closet = ({
           {/* Header Icons */}
           <div className="avatarheader">
             {sectionsData.map((section, index) => (
-              <p
+              <button
                 key={section.label}
                 className={`icons ${activeSection === index ? "active" : ""}`}
                 onClick={() => setActiveSection(index)}
               >
                 {section.icon}
                 {activeSection === index && <span className="dot"></span>}
-              </p>
+              </button>
             ))}
           </div>
 
@@ -87,38 +103,46 @@ const Closet = ({
           {/* Section Content */}
           <div className="avatarcontent">
             {sectionsData[activeSection].items.map((item) => (
-              <div
+              <button
                 key={item.id}
                 className={`avatarcircle ${
-                  selectedBackground.id === item.id ||
-                  selectedAcc.id === item.id ||
-                  selectedColor.id === item.id ||
-                  selectedShirt.id === item.id
+                  selectedBackground?.id === item.id ||
+                  selectedShirt?.id === item.id ||
+                  selectedAcc?.id === item.id ||
+                  selectedColor?.id === item.id
                     ? "activeFit"
                     : ""
                 }`}
-                onClick={() => dressUp(item)}
+                onClick={() => handleItemClick(item)}
               >
                 <img src={item.src} alt={item.name} />
-              </div>
+              </button>
             ))}
           </div>
         </div>
         <div className="closetFooter">
-          <button className="buttonRound btnHomeActive" onClick={closeCloset}>
-            <img src={X} alt="Exit" />
+          <button
+            className="profile-button btnHomeActive"
+            onClick={() => {
+              closeCloset(); // Apenas fecha o modal
+            }}
+          >
+            <ion-icon name="close-outline" class="iconswhite"></ion-icon>
           </button>
           <button
             className="buttonMid btnHomeActive"
-            onClick={() => saveOutfit()}
+            onClick={() => {
+              saveOutfit(); // Salva as alterações
+            }}
           >
             Guardar
           </button>
-          <button
-            className="buttonRound btnHomeActive"
-            onClick={() => resetClothes()}
-          >
-            <img src={Reset} alt="Reset" />
+          <button className="profile-button btnHomeActive">
+            <ion-icon
+              name="refresh-outline"
+              onClick={() => resetClothes()}
+              class="iconswhite"
+            ></ion-icon>
           </button>
         </div>
       </div>

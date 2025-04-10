@@ -73,6 +73,7 @@ const Login = () => {
         <div className="form-container">
           <div className="logo-container">
             <img
+              rel="preload"
               src={logo}
               alt="logo"
               className="logo"
@@ -114,10 +115,10 @@ const Login = () => {
                 className="password-toggle-button"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <img
-                  src={showPassword ? notVisibleIcon : visibleIcon}
-                  alt="Mostrar palavra-passe"
-                />
+                <ion-icon
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  class="icons"
+                ></ion-icon>
               </button>
             </div>
           </div>

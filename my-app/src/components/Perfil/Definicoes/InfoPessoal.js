@@ -60,6 +60,12 @@ const InfoPessoal = ({ show, onBack }) => {
     }
   }, [dispatch, users]);
 
+  const handleClickOutside = (e) => {
+    if (e.target.classList.contains("modal")) {
+      onBack(); // Fecha o modal ao clicar fora da janela
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -174,15 +180,20 @@ const InfoPessoal = ({ show, onBack }) => {
         </div>
       )}
 
-      <div className="modal">
+      <div className="modal" onClick={handleClickOutside}>
         <div
+          onClick={(e) => e.stopPropagation()}
           id="window-infopessoal"
           className="window"
           style={{ display: "block" }}
         >
           <div className="info-header info-pessoal-page">
-            <button className="back-button" aria-label="back-button" onClick={handleBack}>
-              <i className="bi bi-arrow-left"></i>
+            <button
+              className="back-button"
+              aria-label="back-button"
+              onClick={handleBack}
+            >
+              <ion-icon name="arrow-back-outline" class="icons"></ion-icon>
             </button>
             <h3>Os meus dados</h3>
           </div>

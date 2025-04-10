@@ -1,19 +1,44 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Home as HomeIcon, Clipboard, User } from "react-feather";
+import {
+  Home as HomeIcon,
+  Clipboard,
+  User,
+  MessageCircle,
+} from "react-feather";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
   // Memoriza o array navItems para evitar recriações desnecessárias
   const navItems = useMemo(
     () => [
-      { path: "/home", icon: <HomeIcon strokeWidth={2.5} />, label: "Home" },
+      {
+        path: "/home",
+        icon: <ion-icon name="home-outline" className="iconsNav"></ion-icon>,
+        label: "Home",
+      },
       {
         path: "/tasks",
-        icon: <Clipboard strokeWidth={2.5} />,
+        icon: (
+          <ion-icon name="clipboard-outline" className="iconsNav"></ion-icon>
+        ),
         label: "Tarefas",
       },
-      { path: "/profile", icon: <User strokeWidth={2.5} />, label: "Perfil" },
+      {
+        path: "/messages",
+        icon: (
+          <ion-icon
+            name="chatbubble-ellipses-outline"
+            className="iconsNav"
+          ></ion-icon>
+        ),
+        label: "Mensagens",
+      },
+      {
+        path: "/profile",
+        icon: <ion-icon name="person-outline" className="iconsNav"></ion-icon>,
+        label: "Perfil",
+      },
     ],
     []
   );
@@ -30,12 +55,17 @@ function NavBar() {
     }
   }, [location, navItems]);
 
+  const ITEM_WIDTH = 80;
+  const OFFSET = (navItems.length * ITEM_WIDTH) / 2;
+
   return (
     <nav aria-label="Menu de navegação principal">
-      <div
+      <button
         className="indicator"
         style={{
-          transform: `translateX(${activeIndex * 80 - 80}px) translateY(-70%)`,
+          transform: `translateX(${
+            activeIndex * ITEM_WIDTH - OFFSET + ITEM_WIDTH / 2
+          }px) translateY(-70%)`,
         }}
       />
 
