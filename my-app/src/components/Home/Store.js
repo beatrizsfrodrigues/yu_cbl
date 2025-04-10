@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Shirts from "../../assets/imgs/Icons_closet/Shirt.svg";
-import Hat from "../../assets/imgs/Icons_closet/TallHat.svg";
-import Background from "../../assets/imgs/Icons_closet/Background.svg";
-import Circle from "../../assets/imgs/Icons_closet/Circle.svg";
-import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
-import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
 import { buyItem, saveFit } from "../../redux/mascotSlice";
-import Star from "../../assets/imgs/Icons_closet/Star.svg";
 
 const Store = ({
   addAccessory,

@@ -60,7 +60,6 @@ button {
   font-family: "Quicksand", serif;
   font-size: 16px;
   color: var(--purple-darker);
-  font-weight: 600;
 }
 
 p {
@@ -239,8 +238,7 @@ p {
   justify-content: space-between;
   align-items: center;
   padding: 1px 20px;
-  width: 90%;
-  max-width: 600px;
+  width: 100%;
   margin: 0 auto;
 }
 

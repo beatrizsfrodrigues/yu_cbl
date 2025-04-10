@@ -187,6 +187,7 @@ const Home = () => {
 
   return (
     <div className="homeContainer">
+      <div className="backgroundDiv"></div>
       {currentUser && currentMascot && (
         <div
           style={{
@@ -213,7 +214,6 @@ const Home = () => {
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
           <div className="home mainBody">
-            <div className="backgroundDiv"></div>
             <TopBar>
               <div className="ClassStar">
                 <ion-icon name="star-outline" class="icons"></ion-icon>
