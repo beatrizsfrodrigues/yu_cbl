@@ -57,6 +57,28 @@ const Closet = ({
     },
   ];
 
+  const handleItemClick = (item) => {
+    // Verifica se o item já está selecionado
+    const isSelected =
+      selectedBackground?.id === item.id ||
+      selectedShirt?.id === item.id ||
+      selectedAcc?.id === item.id ||
+      selectedColor?.id === item.id;
+
+    if (isSelected) {
+      // Remove o item se já estiver selecionado
+      if (item.type === "SkinColor") {
+        // Define a cor original ao remover a cor
+        dressUp({ type: "SkinColor", src: "/assets/YU_cores/YU-roxo.svg" }); // Substitua 40 pelo ID da cor original
+      } else {
+        dressUp({ type: item.type, id: null });
+      }
+    } else {
+      // Aplica o item se não estiver selecionado
+      dressUp(item);
+    }
+  };
+
   return (
     <div className="closetOverlay">
       <div className="closetContainer">
@@ -84,14 +106,14 @@ const Closet = ({
               <button
                 key={item.id}
                 className={`avatarcircle ${
-                  selectedBackground.id === item.id ||
-                  selectedAcc.id === item.id ||
-                  selectedColor.id === item.id ||
-                  selectedShirt.id === item.id
+                  selectedBackground?.id === item.id ||
+                  selectedShirt?.id === item.id ||
+                  selectedAcc?.id === item.id ||
+                  selectedColor?.id === item.id
                     ? "activeFit"
                     : ""
                 }`}
-                onClick={() => dressUp(item)}
+                onClick={() => handleItemClick(item)}
               >
                 <img src={item.src} alt={item.name} />
               </button>
@@ -101,13 +123,17 @@ const Closet = ({
         <div className="closetFooter">
           <button
             className="profile-button btnHomeActive"
-            onClick={closeCloset}
+            onClick={() => {
+              closeCloset(); // Apenas fecha o modal
+            }}
           >
             <ion-icon name="close-outline" class="iconswhite"></ion-icon>
           </button>
           <button
             className="buttonMid btnHomeActive"
-            onClick={() => saveOutfit()}
+            onClick={() => {
+              saveOutfit(); // Salva as alterações
+            }}
           >
             Guardar
           </button>
