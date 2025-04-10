@@ -9,6 +9,7 @@ body {
   font-weight: 500;
   color: var(--purple-darker);
   font-display: swap;
+  background-repeat: no-repeat;
 }
 
 #root {

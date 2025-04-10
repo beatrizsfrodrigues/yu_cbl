@@ -34,6 +34,11 @@ const Home = () => {
   const [selectedAcc, setSelectedAcc] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
+  const [originalBackground, setOriginalBackground] = useState(null);
+  const [originalShirt, setOriginalShirt] = useState(null);
+  const [originalAcc, setOriginalAcc] = useState(null);
+  const [originalColor, setOriginalColor] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchUsers());
@@ -74,26 +79,50 @@ const Home = () => {
   };
 
   const openCloset = () => {
+    // Salva os valores originais
+    setOriginalBackground(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.background
+      ) || null
+    );
+    setOriginalShirt(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.shirt
+      ) || null
+    );
+    setOriginalAcc(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.hat
+      ) || null
+    );
+    setOriginalColor(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.color
+      ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
+    );
+
+    // Inicializa os estados locais
     setSelectedBackground(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.background
-      ) || ""
+      ) || null
     );
     setSelectedShirt(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.shirt
-      ) || ""
+      ) || null
     );
     setSelectedAcc(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.hat
-      ) || ""
+      ) || null
     );
     setSelectedColor(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.color
-      ) || ""
+      ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
     );
+
     setShowCloset(true);
   };
 
@@ -107,10 +136,23 @@ const Home = () => {
   }
 
   const closeCloset = () => {
-    setSelectedBackground("");
-    setSelectedShirt("");
-    setSelectedAcc("");
-    setSelectedColor("");
+    // Restaura os valores originais
+    setSelectedBackground(originalBackground);
+    setSelectedShirt(originalShirt);
+    setSelectedAcc(originalAcc);
+    setSelectedColor(originalColor);
+
+    // Atualiza o estado da mascote para refletir os valores originais
+    setCurrentMascot((prevMascot) => ({
+      ...prevMascot,
+      accessoriesEquipped: {
+        hat: originalAcc?.id || null,
+        shirt: originalShirt?.id || null,
+        color: originalColor?.id || "/assets/YU_cores/YU-roxo.svg",
+        background: originalBackground?.id || null,
+      },
+    }));
+
     setShowCloset(false);
     setIsClosetOpen(false); // Fecha o closet
   };
@@ -154,10 +196,34 @@ const Home = () => {
   };
 
   const resetClothes = () => {
-    setSelectedBackground("");
-    setSelectedShirt("");
-    setSelectedAcc("");
-    setSelectedColor("");
+    console.log("Resetando roupas...");
+
+    // Define a cor padrão e remove todos os itens
+    const defaultColor = {
+      type: "SkinColor",
+      src: "/assets/YU_cores/YU-roxo.svg",
+    }; // Cor padrão
+    dressUp(defaultColor);
+    dressUp({ type: "Background", id: null }); // Remove o fundo
+    dressUp({ type: "Shirts", id: null }); // Remove a camisa
+    dressUp({ type: "Decor", id: null }); // Remove os acessórios
+
+    // Atualiza os estados locais
+    setSelectedBackground(null);
+    setSelectedShirt(null);
+    setSelectedAcc(null);
+    setSelectedColor(defaultColor);
+
+    // Atualiza o estado da mascote localmente para refletir as alterações
+    setCurrentMascot((prevMascot) => ({
+      ...prevMascot,
+      accessoriesEquipped: {
+        hat: null,
+        shirt: null,
+        color: "/assets/YU_cores/YU-roxo.svg",
+        background: null,
+      },
+    }));
   };
 
   const saveOutfit = async () => {
@@ -185,7 +251,13 @@ const Home = () => {
         },
       }));
 
-      // Exibe o popup de confirmação apenas uma vez
+      // Atualiza os valores originais para refletir o novo estado
+      setOriginalBackground(selectedBackground);
+      setOriginalShirt(selectedShirt);
+      setOriginalAcc(selectedAcc);
+      setOriginalColor(selectedColor);
+
+      // Exibe o popup de confirmação
       if (handleShowPopUpInfo) {
         handleShowPopUpInfo("Alterações guardadas com sucesso!");
       }
