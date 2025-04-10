@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
-import Definicoes from "../Definicoes/Definicoes";
 import InfoPessoal from "../Definicoes/InfoPessoal";
 import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
-import Messages from "../../Tasks/Messages";
+import Definicoes from "../Definicoes/Definicoes.js";
+// import Messages from "../../Tasks/Messages";
 import TopBar from "../../TopBar.js";
 import { fetchUsers } from "../../../redux/usersSlice.js";
 
@@ -20,15 +20,14 @@ const Profile = () => {
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
 
-  const [showSettings, setShowSettings] = useState(false);
   const [showInfoPessoal, setShowInfoPessoal] = useState(false);
   const [showArquivo, setShowArquivo] = useState(false);
   const [showGrafico, setShowGrafico] = useState(false);
-  // const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     if (!loggedInUser) {
-      // Quando o user não tem login feito
       navigate("/login");
     }
   }, [loggedInUser, navigate]);
@@ -42,44 +41,34 @@ const Profile = () => {
   useEffect(() => {
     const root = document.getElementById("root");
     root.classList.add("profile-background");
-
     return () => {
       root.classList.remove("profile-background");
     };
   }, []);
 
-  const toggleSettings = () => setShowSettings(!showSettings);
   const toggleGrafico = () => setShowGrafico(!showGrafico);
 
   const handleInfoPessoalClick = () => {
     setShowInfoPessoal(true);
-    setShowSettings(false);
   };
 
   const handleArquivoClick = () => {
     setShowArquivo(true);
-    setShowSettings(false);
   };
 
-  const closeSettings = () => setShowSettings(false);
   const closeGrafico = () => setShowGrafico(false);
 
   const backToSettings = () => {
     setShowInfoPessoal(false);
     setShowArquivo(false);
-    setShowSettings(true);
   };
 
-  // const handleOpenMessagesModal = () => {
-  //   setIsMessagesModalOpen(true);
-  // };
-
-  // const handleCloseMessagesModal = () => {
-  //   setIsMessagesModalOpen(false);
-  // };
+  const openSettings = () => {
+    setShowSettings(true);
+    navigate("/definicoes");
+  };
 
   if (!loggedInUser) {
-    // mensagem de erro
     return (
       <div className="error-message">
         <h2>Efetua login para poderes aceder à YU.</h2>
@@ -108,8 +97,8 @@ const Profile = () => {
       <div className="backgroundDiv"></div>
 
       <TopBar title="Perfil">
-        <button aria-label="Abrir definições" onClick={toggleSettings}>
-          <ion-icon name="settings-outline" class="icons"></ion-icon>
+        <button aria-label="Abrir definições" onClick={openSettings}>
+          <ion-icon name="settings-outline" className="icons"></ion-icon>
         </button>
       </TopBar>
 
@@ -140,41 +129,23 @@ const Profile = () => {
         >
           <ion-icon name="information-outline" class="icons"></ion-icon>
         </Link>
-
-        {/* <button
-          aria-label="Botão para abrir mensagens"
-          className="profile-button dots"
-          onClick={handleOpenMessagesModal}
-        >
-          <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
-        </button> */}
       </div>
 
-      <Definicoes
-        show={showSettings}
-        onClose={closeSettings}
-        onInfoPessoalClick={handleInfoPessoalClick}
-        onArquivoClick={handleArquivoClick}
-        aria-label="Abrir definições"
-      />
-
-      <InfoPessoal show={showInfoPessoal} onBack={backToSettings} />
-
-      <Arquivo show={showArquivo} onBack={backToSettings} />
-
-      <Grafico
-        show={showGrafico}
-        onClose={closeGrafico}
-        monthlyData={[5, 10, 15, 20, 25]}
-        yearlyData={[100, 200, 300, 400, 500]}
-      />
-
-      {/* {isMessagesModalOpen && (
-        <Messages
-          onClose={handleCloseMessagesModal}
-          currentUser={currentUser}
+      {showGrafico && (
+        <Grafico
+          show={showGrafico}
+          onClose={closeGrafico}
+          monthlyData={[5, 10, 15, 20, 25]}
+          yearlyData={[100, 200, 300, 400, 500]}
         />
-      )} */}
+      )}
+      {showSettings && (
+        <Definicoes
+          onClose={() => setShowSettings(false)}
+          onInfoPessoalClick={handleInfoPessoalClick}
+          onArquivoClick={handleArquivoClick}
+        />
+      )}
     </div>
   );
 };
