@@ -18,6 +18,7 @@ const Home = () => {
   //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
   //const closetStatus = useSelector((state) => state.closet.status);
+  const [isClosetOpen, setIsClosetOpen] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -111,7 +112,9 @@ const Home = () => {
     setSelectedAcc("");
     setSelectedColor("");
     setShowCloset(false);
+    setIsClosetOpen(false); // Fecha o closet
   };
+
   const closeStore = () => {
     setSelectedFit("");
     setShowStore(false);
@@ -157,23 +160,41 @@ const Home = () => {
     setSelectedColor("");
   };
 
-  const saveOutfit = () => {
-    dispatch(
-      saveFit({
-        hat: selectedAcc?.id || currentMascot.accessoriesEquipped.hat || null,
-        shirt:
-          selectedShirt?.id || currentMascot.accessoriesEquipped.shirt || null,
-        color:
-          selectedColor?.id || currentMascot.accessoriesEquipped.color || 40,
-        background:
-          selectedBackground?.id ||
-          currentMascot.accessoriesEquipped.background ||
-          null,
+  const saveOutfit = async () => {
+    try {
+      const payload = {
+        hat: selectedAcc?.id || null,
+        shirt: selectedShirt?.id || null,
+        color: selectedColor?.id || 40, // Valor padrão para a cor
+        background: selectedBackground?.id || null,
         id: currentMascot.id,
-      })
-    );
+      };
 
-    handleShowPopUpInfo("Alterações guardadas com sucesso!");
+      console.log("Payload enviado para salvar:", payload);
+
+      await dispatch(saveFit(payload));
+
+      // Atualiza o estado da mascote localmente para refletir as alterações
+      setCurrentMascot((prevMascot) => ({
+        ...prevMascot,
+        accessoriesEquipped: {
+          hat: payload.hat,
+          shirt: payload.shirt,
+          color: payload.color,
+          background: payload.background,
+        },
+      }));
+
+      // Exibe o popup de confirmação apenas uma vez
+      if (handleShowPopUpInfo) {
+        handleShowPopUpInfo("Alterações guardadas com sucesso!");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar as alterações:", error);
+      if (handleShowPopUpInfo) {
+        handleShowPopUpInfo("Erro ao salvar as alterações. Tente novamente.");
+      }
+    }
   };
 
   const formatPoints = (points) => {
