@@ -10,7 +10,7 @@ import "./tasks.css";
 const ConcludeTask = lazy(() => import("./ConcludeTask.js"));
 const VerifyTask = lazy(() => import("./VerifyTask.js"));
 const NewTask = lazy(() => import("./NewTask.js"));
-const Messages = lazy(() => import("./Messages.js"));
+// const Messages = lazy(() => import("./Messages.js"));
 const VerifyPopUp = lazy(() => import("./VerifyPopUp.js"));
 const PopUpInfo = lazy(() => import("../PopUpInfo.js"));
 const Filter = lazy(() => import("./Filter.js"));
@@ -280,54 +280,48 @@ function Tasks() {
 
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
-          filteredTasks.map((task, index) =>
-            !task.completed && !task.verified ? (
-              <div className="taskDivOp">
-                <div className="btnTaskGroup">
-                  <button className="btnTask" disabled={!isSwiping}>
-                    Recusar
-                  </button>
-                  <button className="btnTask" disabled={!isSwiping}>
-                    Concluir
-                  </button>
-                </div>
-                <div className="btnTaskGroup">
-                  <button className="btnTask">Recusar</button>
-                  <button
-                    className="btnTask"
-                    onClick={() => handleOpenConcludeTaskModal(task)}
-                  >
-                    Concluir
-                  </button>
-                </div>
-                <div
-                  key={index}
-                  id={`task-${index}`}
-                  className="taskWrap"
-                  onTouchStart={(e) => handleTouchStart(index, e)}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                >
-                  <div className="taskDiv">
-                    <p className="taskTitle">{task.title}</p>{" "}
+          filteredTasks.map((task, index) => (
+            <div className="taskDivOp" key={index}>
+              {!task.completed && !task.verified ? (
+                <>
+                  <div className="btnTaskGroup">
+                    <button className="btnTask" disabled={!isSwiping}>
+                      Recusar
+                    </button>
+                    <button
+                      className="btnTask"
+                      disabled={!isSwiping}
+                      onClick={() => handleOpenConcludeTaskModal(task)}
+                    >
+                      Concluir
+                    </button>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <div className="taskDivOp " key={index}>
+                  <div
+                    id={`task-${index}`}
+                    className="taskWrap"
+                    onTouchStart={(e) => handleTouchStart(index, e)}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                  >
+                    <div className="taskDiv">
+                      <p className="taskTitle">{task.title}</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <div
                   className={`taskDiv taskDone ${
                     toggledTaskIndex === index ? "toggled" : ""
                   }`}
                   onClick={() => handleTaskClick(index)}
                 >
-                  <p className="taskTitle ">
+                  <p className="taskTitle">
                     {toggledTaskIndex === index ? task.description : task.title}
                   </p>
                 </div>
-              </div>
-            )
-          )
+              )}
+            </div>
+          ))
         ) : (
           <div>
             {filter === "received"
@@ -353,31 +347,37 @@ function Tasks() {
         onClick={handleOpenMessagesModal}
       >
         <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
-      </button>
+      </button> */}
 
       {showVerifyTask && partnerUser && (
-        <VerifyPopUp
-          task={taskToVerify}
-          partnerUser={partnerUser}
-          onClose={() => setShowVerifyTask(false)}
-          onVerify={handleOpenVerifyTaskModal}
-        />
+        <Suspense fallback={<div>Loading rejeição...</div>}>
+          <VerifyPopUp
+            task={taskToVerify}
+            partnerUser={partnerUser}
+            onClose={() => setShowVerifyTask(false)}
+            onVerify={handleOpenVerifyTaskModal}
+          />
+        </Suspense>
       )}
       {isVerifyTaskOpen && (
-        <VerifyTask
-          onClose={handleCloseVerifyTaskModal}
-          partnerUser={partnerUser}
-          task={taskToVerify}
-          onShowPopUpInfo={handleShowPopUpInfo}
-          onReject={handleOpenRejectModal}
-        />
+        <Suspense fallback={<div>Loading nova tarefa...</div>}>
+          <VerifyTask
+            onClose={handleCloseVerifyTaskModal}
+            partnerUser={partnerUser}
+            task={taskToVerify}
+            onShowPopUpInfo={handleShowPopUpInfo}
+            onReject={handleOpenRejectModal}
+          />
+        </Suspense>
       )}
       {isNewTaskModalOpen && (
-        <NewTask
-          onClose={handleCloseNewTaskModal}
-          currentUser={currentUser}
-          onShowPopUpInfo={handleShowPopUpInfo}
-        />
+        <Suspense fallback={<div>Loading nova tarefa...</div>}>
+          <NewTask
+            onClose={handleCloseNewTaskModal}
+            currentUser={currentUser}
+            onShowPopUpInfo={handleShowPopUpInfo}
+          />
+        </Suspense>
       )}
       {/* {isMessagesModalOpen && (
         <Messages
@@ -386,30 +386,38 @@ function Tasks() {
         />
       )} */}
       {isConcludeTaskOpen && (
-        <ConcludeTask
-          onClose={handleCloseConcludeTaskModal}
-          currentUser={currentUser}
-          task={selectedTask}
-          onShowPopUpInfo={handleShowPopUpInfo}
-        />
+        <Suspense fallback={<div>Loading nova tarefa...</div>}>
+          <ConcludeTask
+            onClose={handleCloseConcludeTaskModal}
+            currentUser={currentUser}
+            task={selectedTask}
+            onShowPopUpInfo={handleShowPopUpInfo}
+          />
+        </Suspense>
       )}
       {isPopUpInfoOpen && (
-        <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
+        <Suspense fallback={<div>Loading rejeição...</div>}>
+          <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
+        </Suspense>
       )}
       {isFilterOpen && (
-        <Filter
-          filterCriteria={filterCriteria}
-          onFilterChange={handleTaskFilterChange}
-          onClose={() => setIsFilterOpen(false)}
-        />
+        <Suspense fallback={<div>Loading rejeição...</div>}>
+          <Filter
+            filterCriteria={filterCriteria}
+            onFilterChange={handleTaskFilterChange}
+            onClose={() => setIsFilterOpen(false)}
+          />
+        </Suspense>
       )}
       {isRejectOpen && (
-        <Reject
-          onClose={handleCloseRejectModal}
-          task={taskToVerify}
-          partnerUser={partnerUser}
-          onShowPopUpInfo={handleShowPopUpInfo}
-        />
+        <Suspense fallback={<div>Loading rejeição...</div>}>
+          <Reject
+            onClose={handleCloseRejectModal}
+            task={taskToVerify}
+            partnerUser={partnerUser}
+            onShowPopUpInfo={handleShowPopUpInfo}
+          />
+        </Suspense>
       )}
     </div>
   );
