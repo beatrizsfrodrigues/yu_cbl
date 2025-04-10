@@ -56,7 +56,6 @@ nav {
 }
 
 .iconsNav {
-  font-size: 28px;
   background: none;
   border: none;
   --ionicon-stroke-width: 5px !important; /* ou qualquer valor */
