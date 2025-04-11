@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
+import { fetchUsers} from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import PopUpInfo from "../PopUpInfo.js";
@@ -192,7 +192,6 @@ const Home = () => {
   const buyItemBtn = () => {
     dispatch(buyItem({ itemId: selectedFit.id, userId: currentUserId }));
 
-    dispatch(buyAcc({ price: selectedFit.value, userId: currentUserId }));
 
     setSelectedFit("");
 
