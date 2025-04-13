@@ -98,7 +98,7 @@ const Profile = () => {
 
       <TopBar title="Perfil">
         <button aria-label="Abrir definições" onClick={openSettings}>
-          <ion-icon name="settings-outline" className="icons"></ion-icon>
+          <ion-icon name="settings-outline" class="icons"></ion-icon>
         </button>
       </TopBar>
 
