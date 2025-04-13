@@ -1,50 +1,152 @@
-import React from "react";
-import "./welcome.css";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/imgs/YU_logo/YU.webp";
+import { fetchUsers } from "../redux/usersSlice";
+import { fetchMascot } from "../redux/mascotSlice";
+import "../assets/css/Login.css";
+import logo from "../assets/imgs/YU_logo/YU.webp";
+import visibleIcon from "../assets/imgs/Icons/visible.png";
+import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 
-import { useCallback } from "react";
-
-const Welcome = () => {
+const Login = () => {
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Controla a visibilidade da palavra-passe
+  const [message, setMessage] = useState("");
+  const [alert, setAlert] = useState("");
   const navigate = useNavigate();
 
-  const handleClickRegister = useCallback(() => {
-  console.log("Register button clicked");
-  navigate("/register");
-}, [navigate]);
+  const dispatch = useDispatch();
+  const usersStatus = useSelector((state) => state.users.status);
+  const mascotStatus = useSelector((state) => state.mascot.status);
 
-const handleClickLogin = useCallback(() => {
-  console.log("Login button clicked");
-  navigate("/login");
-}, [navigate]);
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (loggedInUser && loggedInUser.id) {
+      navigate("/home"); // Redireciona para a homepage se o usuário já estiver logado
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+    if (mascotStatus === "idle") {
+      dispatch(fetchMascot());
+    }
+  }, [usersStatus, mascotStatus, dispatch]);
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = logo;
+    document.head.appendChild(link);
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Encontra utilizadores registados com o email ou username
+    const user = users.find(
+      (user) =>
+        user.email === emailOrUsername || user.username === emailOrUsername
+    );
+
+    if (user) {
+      if (user.password === password) {
+        setMessage("Login efetuado com sucesso!");
+        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); // Salva o ID do usuário logado
+        setAlert("");
+        navigate("/home"); // Redireciona para a homepage
+      } else {
+        setAlert("Palavra-passe incorreta.");
+      }
+    } else {
+      setAlert("Utilizador não encontrado.");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedInUser"); // Remove o estado de login
+    navigate("/login"); // Redireciona para a página de login
+  };
+
+  // Apenas deixa avançar com o login quando os campos de email/username e password forem preenchidos
+  const isFormComplete =
+    emailOrUsername.trim() !== "" && password.trim() !== "";
 
   return (
-    <div className="Welcome mainBody">
+    <div className="mainBody">
       <div className="backgroundDiv backgroundDiv2"></div>
-      <img className="logo" src={logo} alt="YU Logo" width="300" />
-      <div className="text-container">
-        <header className="title">Bem vindo à YU!</header>
-        <div className="title-desc">
-          Vamos iniciar esta jornada para <br></br> conquistares os teus
-          objetivos.
+      <form onSubmit={handleSubmit}>
+        <div className="form-container">
+          <div className="logo-container">
+            <img
+              rel="preload"
+              src={logo}
+              alt="logo"
+              className="logo"
+              width="277"
+              height="191"
+              fetchPriority="high"
+            />
+          </div>
+          <header>
+            <h1>Login</h1>
+          </header>
+          {alert && <p className="alert">{alert}</p>}
+          <div className="label-container">
+            <label for="input-email-utilizador">Email / Utilizador</label>
+            <input
+              required
+              id="input-email-utilizador"
+              type="text"
+              className="input"
+              placeholder="Email / Nome de Utilizador..."
+              value={emailOrUsername}
+              onChange={(e) => setEmailOrUsername(e.target.value)}
+            />
+          </div>
+          <div className="pass-container">
+            <label for="input-password">Palavra-passe</label>
+            <div className="password-input-container">
+              <input
+                required
+                id="input-password"
+                type={showPassword ? "text" : "password"}
+                className="input"
+                placeholder="Inserir palavra-passe..."
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="password-toggle-button"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <ion-icon
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  class="icons"
+                ></ion-icon>
+              </button>
+            </div>
+          </div>
         </div>
-        <button
-          type="submit"
-          className="start-button"
-          onClick={handleClickRegister}
-        >
-          Registar
-        </button>
-        <button
-          type="submit"
-          className="start-button-light"
-          onClick={handleClickLogin}
-        >
+
+        <div className="register-link">
+          <p>
+            Ainda não tens conta? <a href="/Register">Registar</a>
+          </p>
+        </div>
+        {message && <p>{message}</p>}
+        <button className="buttonBig" type="submit">
           Iniciar Sessão
         </button>
-      </div>
+      </form>
     </div>
   );
 };
 
-export default Welcome;
+export default Login;
