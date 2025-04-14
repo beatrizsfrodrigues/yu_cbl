@@ -1,15 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-// import {
-//   Home as HomeIcon,
-//   Clipboard,
-//   User,
-//   MessageCircle,
-// } from "react-feather";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
-  // Memoriza o array navItems para evitar recriações desnecessárias
   const navItems = useMemo(
     () => [
       {
@@ -76,30 +69,34 @@ function NavBar() {
   useEffect(() => {
     const updateItemWidth = () => {
       if (window.innerWidth <= 768) {
-        setItemWidth(80); // Mobile
+        setItemWidth(70); // Mobile
       } else {
         setItemWidth(80); // Desktop
       }
     };
 
     updateItemWidth(); // Set initial value
-    window.addEventListener("resize", updateItemWidth); // Listen for resize events
+    window.addEventListener("resize", updateItemWidth);
 
     return () => {
-      window.removeEventListener("resize", updateItemWidth); // Cleanup listener
+      window.removeEventListener("resize", updateItemWidth);
     };
   }, []);
 
-  const OFFSET = (navItems.length * itemWidth) / 2;
+  const indicatorTransform = useMemo(() => {
+    const totalItems = navItems.length;
+    const navWidth = totalItems * itemWidth;
+    const centerOffset = navWidth / 2 - itemWidth / 2;
+    const targetX = activeIndex * itemWidth - centerOffset;
+    return `translateX(${targetX}px) translateY(-70%)`;
+  }, [activeIndex, itemWidth, navItems.length]);
 
   return (
     <nav aria-label="Menu de navegação principal">
       <button
         className="indicator"
         style={{
-          transform: `translateX(${
-            activeIndex * itemWidth - OFFSET + itemWidth / 2
-          }px) translateY(-70%)`,
+          transform: indicatorTransform,
         }}
       />
 
@@ -108,7 +105,6 @@ function NavBar() {
           aria-label={`Ir para ${item.label}`}
           key={item.path}
           to={item.path}
-          size={60}
           className={`navItem ${activeIndex === index ? "active" : ""}`}
         >
           {item.icon}
