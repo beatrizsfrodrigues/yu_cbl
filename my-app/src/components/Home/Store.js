@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"; // Adicione useState
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCloset } from "../../redux/closetSlice";
 import { buyItem, saveFit } from "../../redux/mascotSlice";
+import { buyMultipleItems } from "../../redux/usersSlice";
 
 const Store = ({
   addAccessory,
@@ -21,6 +22,10 @@ const Store = ({
   // Estado para controlar a seção ativa
   const [activeSection, setActiveSection] = useState(0);
 
+  // Estado para ver os itens selecionados
+  const [selectedItems, setSelectedItems] = useState({});
+
+
   const unownedItems = closet.filter(
     (item) => !currentMascot.accessoriesOwned.includes(item.id)
   );
@@ -35,36 +40,33 @@ const Store = ({
     return <div>Loading...</div>;
   }
 
-  const handleBuyItem = (item) => {
-    // Deduz pontos e despacha a ação de compra
+  const handleBuyItem = () => {
+  Object.values(selectedItems).forEach((item) => {
     dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
-    dispatch(
-      saveFit({
-        id: currentMascot.id,
-        hat:
-          item.type === "Decor"
-            ? item.id
-            : currentMascot.accessoriesEquipped.hat,
-        shirt:
-          item.type === "Shirts"
-            ? item.id
-            : currentMascot.accessoriesEquipped.shirt,
-        color:
-          item.type === "SkinColor"
-            ? item.id
-            : currentMascot.accessoriesEquipped.color,
-        background:
-          item.type === "Backgrounds"
-            ? item.id
-            : currentMascot.accessoriesEquipped.background,
-      })
-    );
+  });
 
-    buyItemBtn();
-    onShowPopUpInfo(
-      "Item comprado com sucesso! Acede ao teu armário para ver!"
-    );
-  };
+  dispatch(
+    buyMultipleItems({
+      totalPrice,
+      userId: currentUser.id,
+    })
+  );
+
+  dispatch(
+    saveFit({
+      id: currentMascot.id,
+      hat: selectedItems["Decor"]?.id || currentMascot.accessoriesEquipped.hat,
+      shirt: selectedItems["Shirts"]?.id || currentMascot.accessoriesEquipped.shirt,
+      color: selectedItems["SkinColor"]?.id || currentMascot.accessoriesEquipped.color,
+      background: selectedItems["Backgrounds"]?.id || currentMascot.accessoriesEquipped.background,
+    })
+  );
+
+  buyItemBtn();
+    onShowPopUpInfo("Itens comprados com sucesso! Acede ao teu armário para ver!");
+    
+    setSelectedItems({});
+};
 
   const sectionsData = [
     {
@@ -88,6 +90,12 @@ const Store = ({
       items: unownedItems.filter((item) => item.type === "Backgrounds"),
     },
   ];
+
+    const totalPrice = Object.values(selectedItems).reduce(
+    (acc, item) => acc + (item?.value || 0),
+    0
+  );
+
 
   return (
     <div className="storeOverlay">
@@ -121,6 +129,10 @@ const Store = ({
                   onClick={() => {
                     addAccessory(item); // Atualiza o item selecionado
                     dressUp(item); // Aplica o item na mascote para visualização
+                    setSelectedItems((prev) => ({
+                      ...prev,
+                      [item.type]: item,
+                    })); // Atualiza o estado de itens selecionados 
                   }}
                 >
                   <img src={item.src} alt={item.name} />
@@ -134,18 +146,15 @@ const Store = ({
           <button className="profile-button btnHomeActive" onClick={closeStore}>
             <ion-icon name="close-outline" class="iconswhite"></ion-icon>
           </button>
-          {selectedFit && selectedFit !== "" ? (
-            currentUser && currentUser.points >= selectedFit.value ? (
-              <button
-                className="buttonMid btnHomeActive"
-                onClick={() => handleBuyItem(selectedFit)}
-              >
-                {selectedFit.value}
+          {Object.keys(selectedItems).length > 0 ? (
+            currentUser && currentUser.points >= totalPrice ? (
+              <button className="buttonMid btnHomeActive" onClick={handleBuyItem}>
+                {totalPrice}
                 <ion-icon name="star-outline" class="iconswhite"></ion-icon>
                 Comprar
               </button>
             ) : (
-              <button className="buttonMid">{selectedFit.value}</button>
+              <button className="buttonMid">{totalPrice}</button>
             )
           ) : (
             <button className="buttonMid">Comprar</button>

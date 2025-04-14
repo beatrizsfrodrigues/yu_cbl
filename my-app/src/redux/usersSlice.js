@@ -123,16 +123,7 @@ const usersSlice = createSlice({
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
-    buyAcc: (state, action) => {
-      const { price, userId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      console.log("User points before:", user.points);
-      console.log("Price:", price, "Converted to number:", Number(price));
-      if (user) {
-        user.points = (user.points || 0) - Number(price);
-      }
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
+    
     updateUser: (state, action) => {
       const updatedUser = action.payload;
       const index = state.data.findIndex((user) => user.id === updatedUser.id);
@@ -143,6 +134,14 @@ const usersSlice = createSlice({
         };
         localStorage.setItem("users", JSON.stringify(state.data));
       }
+    },
+    buyMultipleItems: (state, action) => {
+      const { totalPrice, userId } = action.payload;
+      const user = state.data.find((u) => u.id === userId);
+      if (user) {
+        user.points = (user.points || 0) - Number(totalPrice);
+      }
+      localStorage.setItem("users", JSON.stringify(state.data));
     },
   },
   extraReducers: (builder) => {
@@ -169,6 +168,6 @@ export const {
   validateTask,
   rejectTask,
   clearRejectMessage,
-  buyAcc,
+  buyMultipleItems,
 } = usersSlice.actions;
 export default usersSlice.reducer;

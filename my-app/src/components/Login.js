@@ -1,34 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchUsers } from "../redux/usersSlice";
-import { fetchMascot } from "../redux/mascotSlice";
+import axios from "axios";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.webp";
-import visibleIcon from "../assets/imgs/Icons/visible.png";
-import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Controla a visibilidade da palavra-passe
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const usersStatus = useSelector((state) => state.users.status);
-  const mascotStatus = useSelector((state) => state.mascot.status);
-
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-    if (mascotStatus === "idle") {
-      dispatch(fetchMascot());
-    }
-  }, [usersStatus, mascotStatus, dispatch]);
-
+  // Pré-carregar o logo
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "preload";
@@ -37,32 +21,50 @@ const Login = () => {
     document.head.appendChild(link);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Encontra utilizadores registados com o email ou username
-    const user = users.find(
-      (user) =>
-        user.email === emailOrUsername || user.username === emailOrUsername
-    );
+    try {
+      // Envia a requisição POST para a API de login
+      const response = await axios.post("http://localhost:3000/users/login", {
+        emailOrUsername,
+        password,
+      });
 
-    if (user) {
-      if (user.password === password) {
-        // Se encontrar o utilizador inserido e caso a password inserida seja igual à registada, avança o login com sucesso
-        setMessage("Login efetuado com sucesso!");
-        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); // Guarda o id do utilizador que fez login
-        setAlert("");
-        navigate("/home");
+      // A resposta deve conter o token e o objeto user
+      if (response.data && response.data.token) {
+        // Exibe a mensagem de sucesso, se houver
+        setMessage(response.data.message);
+
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("loggedInUser", JSON.stringify(response.data.user));
+
+     
+        document.cookie = `token=${response.data.token}; path=/;`;
+        document.cookie = `loggedInUser=${encodeURIComponent(JSON.stringify(response.data.user))}; path=/;`;
+
+
+        // Redireciona conforme o role do usuário
+        if (response.data.user.role === "admin") {
+          window.location.href = "http://localhost:3001/";
+        } else {
+          navigate("/home");
+        }
       } else {
-        setAlert("Palavra-passe incorreta.");
+        setAlert("Resposta inesperada da API.");
       }
-    } else {
-      setAlert("Utilizador não encontrado.");
+    } catch (error) {
+      console.error("Erro no login:", error);
+      // Se a API retornar uma mensagem de erro, exiba-a; caso contrário, uma mensagem genérica.
+      if (error.response && error.response.data && error.response.data.message) {
+        setAlert(error.response.data.message);
+      } else {
+        setAlert("Erro ao fazer login.");
+      }
     }
   };
 
-  // Apenas deixa avançar com o login quando os campos de email/username e password forem preenchidos
+  // Apenas permite submeter o formulário se ambos os campos estiverem preenchidos
   const isFormComplete =
     emailOrUsername.trim() !== "" && password.trim() !== "";
 
@@ -87,7 +89,7 @@ const Login = () => {
           </header>
           {alert && <p className="alert">{alert}</p>}
           <div className="label-container">
-            <label for="input-email-utilizador">Email / Utilizador</label>
+            <label htmlFor="input-email-utilizador">Email / Utilizador</label>
             <input
               required
               id="input-email-utilizador"
@@ -99,7 +101,7 @@ const Login = () => {
             />
           </div>
           <div className="pass-container">
-            <label for="input-password">Palavra-passe</label>
+            <label htmlFor="input-password">Palavra-passe</label>
             <div className="password-input-container">
               <input
                 required
@@ -117,7 +119,7 @@ const Login = () => {
               >
                 <ion-icon
                   name={showPassword ? "eye-off-outline" : "eye-outline"}
-                  class="icons"
+                  className="icons"
                 ></ion-icon>
               </button>
             </div>
@@ -130,7 +132,7 @@ const Login = () => {
           </p>
         </div>
         {message && <p>{message}</p>}
-        <button className="buttonBig" type="submit">
+        <button className="buttonBig" type="submit" disabled={!isFormComplete}>
           Iniciar Sessão
         </button>
       </form>
