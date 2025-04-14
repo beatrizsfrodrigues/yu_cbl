@@ -1,22 +1,28 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import "./welcome.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/imgs/YU_logo/YU.webp";
 
-import { useCallback } from "react";
-
 const Welcome = () => {
   const navigate = useNavigate();
 
-  const handleClickRegister = useCallback(() => {
-  console.log("Register button clicked");
-  navigate("/register");
-}, [navigate]);
+  // Verifica se o usuário está logado e redireciona para a Home
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (loggedInUser && loggedInUser.id) {
+      navigate("/home"); // Redireciona para a página Home
+    }
+  }, [navigate]);
 
-const handleClickLogin = useCallback(() => {
-  console.log("Login button clicked");
-  navigate("/login");
-}, [navigate]);
+  const handleClickRegister = useCallback(() => {
+    console.log("Register button clicked");
+    navigate("/register");
+  }, [navigate]);
+
+  const handleClickLogin = useCallback(() => {
+    console.log("Login button clicked");
+    navigate("/login");
+  }, [navigate]);
 
   return (
     <div className="Welcome mainBody">
