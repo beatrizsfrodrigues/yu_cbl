@@ -62,6 +62,7 @@ function NavBar() {
 
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [itemWidth, setItemWidth] = useState(80); // Default for desktop
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(
@@ -72,8 +73,24 @@ function NavBar() {
     }
   }, [location, navItems]);
 
-  const ITEM_WIDTH = 70;
-  const OFFSET = (navItems.length * ITEM_WIDTH) / 2;
+  useEffect(() => {
+    const updateItemWidth = () => {
+      if (window.innerWidth <= 768) {
+        setItemWidth(80); // Mobile
+      } else {
+        setItemWidth(80); // Desktop
+      }
+    };
+
+    updateItemWidth(); // Set initial value
+    window.addEventListener("resize", updateItemWidth); // Listen for resize events
+
+    return () => {
+      window.removeEventListener("resize", updateItemWidth); // Cleanup listener
+    };
+  }, []);
+
+  const OFFSET = (navItems.length * itemWidth) / 2;
 
   return (
     <nav aria-label="Menu de navegação principal">
@@ -81,7 +98,7 @@ function NavBar() {
         className="indicator"
         style={{
           transform: `translateX(${
-            activeIndex * ITEM_WIDTH - OFFSET + ITEM_WIDTH / 2
+            activeIndex * itemWidth - OFFSET + itemWidth / 2
           }px) translateY(-70%)`,
         }}
       />
