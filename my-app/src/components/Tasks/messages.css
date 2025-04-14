@@ -95,8 +95,8 @@ div .line {
   padding: 10px 26px 10px 26px;
   align-items: center;
   border-radius: 15px;
-  border: 2px dashed var(--green-dark);
-  background: var(--green-light);
+  border: 2px dashed var(--purple-dark);
+  background: var(--purple-lighter);
   width: 100%;
   box-sizing: border-box;
 }

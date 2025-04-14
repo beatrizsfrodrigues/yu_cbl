@@ -124,6 +124,19 @@
   justify-items: center;
 }
 
+.avatarcontentEmpty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.empty-category-message {
+  text-align: center;
+}
+
 .avatarcontent button {
   border: none;
   margin: 0;
@@ -332,4 +345,23 @@ button.avatarcircle.activeFit {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+.flash {
+  animation: blink 0.3s ease-in-out;
+}
+
+@keyframes flashAnimation {
+  0% {
+    filter: brightness(100%);
+  }
+
+  50% {
+    filter: brightness(70%);
+    /* Escurece */
+  }
+
+  100% {
+    filter: brightness(100%);
+  }
 }
