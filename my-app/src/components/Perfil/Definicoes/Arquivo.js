@@ -47,7 +47,7 @@ const Arquivo = ({ show, onBack }) => {
             {completedTasks?.length > 0 ? (
               <ul className="task-list">
                 {completedTasks.map((task) => (
-                  <li key={task.id} className="task-item animated-task">
+                  <li key={task.id} className="task-item-old animated-task">
                     <h3>{task.title}</h3>
                     <p>{task.description}</p>
                     <p>
