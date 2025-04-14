@@ -71,6 +71,7 @@
   margin: 10px 0px;
   width: 80%;
   font-weight: bold;
+  text-align: left;
 }
 
 .header {
@@ -363,6 +364,7 @@ button[aria-label="Abrir filtro"] .sliders {
   margin: 10px 0;
   padding: 0 0 0 15px;
   border-radius: 30px;
+  border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
@@ -372,6 +374,7 @@ button[aria-label="Abrir filtro"] .sliders {
 
 .taskDescription{
   margin-top: 0px;
+  text-align:left
 }
 
 .task-item.expanded {
@@ -420,16 +423,18 @@ button[aria-label="Abrir filtro"] .sliders {
 }
 
 .btnTaskCircle {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btnTaskCircle.reject {
   background-color: var(--purple);
-  background-image: url('data:image/svg+xml;utf8,<svg fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 50%;
@@ -437,8 +442,11 @@ button[aria-label="Abrir filtro"] .sliders {
 
 .btnTaskCircle.conclude {
   background-color: var(--green);
-  background-image: url('data:image/svg+xml;utf8,<svg fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 50%;
+}
+
+.btnTaskCircle .icons {
+  color: var(--purple-darker);
 }

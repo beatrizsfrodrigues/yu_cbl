@@ -303,7 +303,7 @@ function Tasks() {
       <div className="taskDivOp" key={index}>
         {!task.completed && !task.verified ? (
           <div className="taskItemContainer">
-            <div
+            <button
               className={`task-item ${expandedTaskIndex === index ? "expanded" : ""}`}
               onClick={() => handleToggleTaskExpand(index)}
             >
@@ -313,7 +313,7 @@ function Tasks() {
               {expandedTaskIndex === index && (
                 <p className="taskDescription">Descrição:<br></br>{task.description}</p>
               )}
-            </div>
+            </button>
 
             {expandedTaskIndex === index && (
               <div className="btnTaskGroupVertical">
@@ -324,7 +324,8 @@ function Tasks() {
                     handleOpenRejectModal(task);
                   }}
                   aria-label="Recusar tarefa"
-                />
+                  
+                ><ion-icon name="close" class="icons"></ion-icon></button>
                 <button
                   className="btnTaskCircle conclude"
                   onClick={(e) => {
@@ -332,7 +333,7 @@ function Tasks() {
                     handleOpenConcludeTaskModal(task);
                   }}
                   aria-label="Concluir tarefa"
-                />
+                ><ion-icon name="checkmark" class="icons"></ion-icon></button>
               </div>
             )}
           </div>
