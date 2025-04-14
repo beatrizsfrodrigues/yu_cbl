@@ -274,158 +274,167 @@ function Tasks() {
 
   return (
     <div className="mainBody" id="tasksBody">
-      <div className="backgroundDiv"></div>
-      <TopBar title="Tarefas">
-        <button onClick={openFilter} aria-label="Abrir filtro">
-          <ion-icon name="options-outline" class="icons"></ion-icon>
-        </button>
-      </TopBar>
+    <div className="backgroundDiv"></div>
+    <TopBar title="Tarefas">
+      <button onClick={openFilter} aria-label="Abrir filtro">
+        <ion-icon name="options-outline" class="icons"></ion-icon>
+      </button>
+    </TopBar>
 
-      <div className="filter-buttons">
-        <button
-          className={`filter-button ${filter === "received" ? "active" : ""}`}
-          onClick={() => handleFilterChange("received")}
-        >
-          Recebidas
-        </button>
-        <span className="divider">|</span>
-        <button
-          className={`filter-button ${filter === "assigned" ? "active" : ""}`}
-          onClick={() => handleFilterChange("assigned")}
-        >
-          Atribuídas
-        </button>
-      </div>
+    <div className="filter-buttons">
+      <button
+        className={`filter-button ${filter === "received" ? "active" : ""}`}
+        onClick={() => handleFilterChange("received")}
+      >
+        Recebidas
+      </button>
+      <span className="divider">|</span>
+      <button
+        className={`filter-button ${filter === "assigned" ? "active" : ""}`}
+        onClick={() => handleFilterChange("assigned")}
+      >
+        Atribuídas
+      </button>
+    </div>
 
-      <div id="tasks">
-        {currentUser && filteredTasks.length > 0 ? (
-          filteredTasks.map((task, index) => (
-            <div className="taskDivOp" key={index}>
-              {!task.completed && !task.verified ? (
-                <>
-                  <div
-                    className={`taskDiv ${
-                      expandedTaskIndex === index ? "expanded" : ""
-                    }`}
-                    onClick={() => handleToggleTaskExpand(index)}
-                  >
-                    <p className="taskTitle">{task.title}</p>
-                  </div>
+    <div id="tasks">
+  {currentUser && filteredTasks.length > 0 ? (
+    filteredTasks.map((task, index) => (
+      <div className="taskDivOp" key={index}>
+        {!task.completed && !task.verified ? (
+          <div className="taskItemContainer">
+            <div
+              className={`task-item ${expandedTaskIndex === index ? "expanded" : ""}`}
+              onClick={() => handleToggleTaskExpand(index)}
+            >
+              <p className="taskTitle">{task.title}</p>
 
-                  {expandedTaskIndex === index && (
-                    <div className="btnTaskGroup">
-                      <button
-                        className="btnTask"
-                        onClick={() => handleOpenRejectModal(task)}
-                      >
-                        Recusar
-                      </button>
-                      <button
-                        className="btnTask"
-                        onClick={() => handleOpenConcludeTaskModal(task)}
-                      >
-                        Concluir
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div
-                  className={`taskDiv taskDone ${
-                    toggledTaskIndex === index ? "toggled" : ""
-                  }`}
-                  onClick={() => handleTaskClick(index)}
-                >
-                  <p className="taskTitle">
-                    {toggledTaskIndex === index ? task.description : task.title}
-                  </p>
-                </div>
+              {/* ✅ Mostra a descrição abaixo do título quando expandido */}
+              {expandedTaskIndex === index && (
+                <p className="taskDescription">Descrição:<br></br>{task.description}</p>
               )}
             </div>
-          ))
+
+            {expandedTaskIndex === index && (
+              <div className="btnTaskGroupVertical">
+                <button
+                  className="btnTaskCircle reject"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenRejectModal(task);
+                  }}
+                  aria-label="Recusar tarefa"
+                />
+                <button
+                  className="btnTaskCircle conclude"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenConcludeTaskModal(task);
+                  }}
+                  aria-label="Concluir tarefa"
+                />
+              </div>
+            )}
+          </div>
         ) : (
-          <div>
-            {filter === "received"
-              ? "Não existem tarefas recebidas."
-              : "Não existem tarefas atribuídas."}
+          <div
+            className={`taskDiv taskDone ${
+              toggledTaskIndex === index ? "toggled" : ""
+            }`}
+            onClick={() => handleTaskClick(index)}
+          >
+            <p className="taskTitle">
+              {toggledTaskIndex === index ? task.description : task.title}
+            </p>
           </div>
         )}
       </div>
-
-      <button
-        aria-label="Botão para adicionar nova tarefa"
-        id="newTask"
-        className="profile-button"
-        onClick={handleOpenNewTaskModal}
-      >
-        <ion-icon name="add-outline" class="iconswhite"></ion-icon>
-      </button>
-
-      {showVerifyTask && partnerUser && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
-          <VerifyPopUp
-            task={taskToVerify}
-            partnerUser={partnerUser}
-            onClose={() => setShowVerifyTask(false)}
-            onVerify={handleOpenVerifyTaskModal}
-          />
-        </Suspense>
-      )}
-      {isVerifyTaskOpen && (
-        <Suspense fallback={<div>Loading nova tarefa...</div>}>
-          <VerifyTask
-            onClose={handleCloseVerifyTaskModal}
-            partnerUser={partnerUser}
-            task={taskToVerify}
-            onShowPopUpInfo={handleShowPopUpInfo}
-            onReject={handleOpenRejectModal}
-          />
-        </Suspense>
-      )}
-      {isNewTaskModalOpen && (
-        <Suspense fallback={<div>Loading nova tarefa...</div>}>
-          <NewTask
-            onClose={handleCloseNewTaskModal}
-            currentUser={currentUser}
-            onShowPopUpInfo={handleShowPopUpInfo}
-          />
-        </Suspense>
-      )}
-      {isConcludeTaskOpen && (
-        <Suspense fallback={<div>Loading nova tarefa...</div>}>
-          <ConcludeTask
-            onClose={handleCloseConcludeTaskModal}
-            currentUser={currentUser}
-            task={selectedTask}
-            onShowPopUpInfo={handleShowPopUpInfo}
-          />
-        </Suspense>
-      )}
-      {isPopUpInfoOpen && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
-          <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
-        </Suspense>
-      )}
-      {isFilterOpen && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
-          <Filter
-            filterCriteria={filterCriteria}
-            onFilterChange={handleTaskFilterChange}
-            onClose={() => setIsFilterOpen(false)}
-          />
-        </Suspense>
-      )}
-      {isRejectOpen && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
-          <Reject
-            onClose={handleCloseRejectModal}
-            task={taskToVerify}
-            partnerUser={partnerUser}
-            onShowPopUpInfo={handleShowPopUpInfo}
-          />
-        </Suspense>
-      )}
+    ))
+  ) : (
+    <div>
+      {filter === "received"
+        ? "Não existem tarefas recebidas."
+        : "Não existem tarefas atribuídas."}
     </div>
+  )}
+</div>
+
+
+    <button
+      aria-label="Botão para adicionar nova tarefa"
+      id="newTask"
+      className="profile-button"
+      onClick={handleOpenNewTaskModal}
+    >
+      <ion-icon name="add-outline" class="iconswhite"></ion-icon>
+    </button>
+
+    {/* Modais (sem alterações) */}
+    {showVerifyTask && partnerUser && (
+      <Suspense fallback={<div>Loading rejeição...</div>}>
+        <VerifyPopUp
+          task={taskToVerify}
+          partnerUser={partnerUser}
+          onClose={() => setShowVerifyTask(false)}
+          onVerify={handleOpenVerifyTaskModal}
+        />
+      </Suspense>
+    )}
+    {isVerifyTaskOpen && (
+      <Suspense fallback={<div>Loading nova tarefa...</div>}>
+        <VerifyTask
+          onClose={handleCloseVerifyTaskModal}
+          partnerUser={partnerUser}
+          task={taskToVerify}
+          onShowPopUpInfo={handleShowPopUpInfo}
+          onReject={handleOpenRejectModal}
+        />
+      </Suspense>
+    )}
+    {isNewTaskModalOpen && (
+      <Suspense fallback={<div>Loading nova tarefa...</div>}>
+        <NewTask
+          onClose={handleCloseNewTaskModal}
+          currentUser={currentUser}
+          onShowPopUpInfo={handleShowPopUpInfo}
+        />
+      </Suspense>
+    )}
+    {isConcludeTaskOpen && (
+      <Suspense fallback={<div>Loading nova tarefa...</div>}>
+        <ConcludeTask
+          onClose={handleCloseConcludeTaskModal}
+          currentUser={currentUser}
+          task={selectedTask}
+          onShowPopUpInfo={handleShowPopUpInfo}
+        />
+      </Suspense>
+    )}
+    {isPopUpInfoOpen && (
+      <Suspense fallback={<div>Loading rejeição...</div>}>
+        <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
+      </Suspense>
+    )}
+    {isFilterOpen && (
+      <Suspense fallback={<div>Loading rejeição...</div>}>
+        <Filter
+          filterCriteria={filterCriteria}
+          onFilterChange={handleTaskFilterChange}
+          onClose={() => setIsFilterOpen(false)}
+        />
+      </Suspense>
+    )}
+    {isRejectOpen && (
+      <Suspense fallback={<div>Loading rejeição...</div>}>
+        <Reject
+          onClose={handleCloseRejectModal}
+          task={taskToVerify}
+          partnerUser={partnerUser}
+          onShowPopUpInfo={handleShowPopUpInfo}
+        />
+      </Suspense>
+    )}
+  </div>
   );
 }
 

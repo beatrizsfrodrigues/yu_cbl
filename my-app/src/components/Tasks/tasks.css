@@ -353,3 +353,92 @@ button[aria-label="Abrir filtro"] .sliders {
 .slide-up {
   animation: slideUp 0.4s ease-out forwards;
 }
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--orange-lighter);
+  outline: 2px solid var(--orange-dark);
+  margin: 10px 0;
+  padding: 0 0 0 15px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+}
+
+.taskDescription{
+  margin-top: 0px;
+}
+
+.task-item.expanded {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 80%;
+  /* Encolhe horizontalmente */
+  height: 120px;
+  /* Expande verticalmente */
+  background-color: var(--orange-lighter);
+  position: relative;
+}
+
+.task-buttons {
+  display: none;
+  gap: 12px;
+  margin-left: auto;
+  margin-right: 16px;
+}
+
+.task-item.expanded .task-buttons {
+  display: flex;
+}
+
+.task-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--orange-lighter);
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.taskItemContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btnTaskGroupVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.btnTaskCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.btnTaskCircle.reject {
+  background-color: var(--purple);
+  background-image: url('data:image/svg+xml;utf8,<svg fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+}
+
+.btnTaskCircle.conclude {
+  background-color: var(--green);
+  background-image: url('data:image/svg+xml;utf8,<svg fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50%;
+}
