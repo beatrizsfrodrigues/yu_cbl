@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import {
-  Home as HomeIcon,
-  Clipboard,
-  User,
-  MessageCircle,
-} from "react-feather";
+// import {
+//   Home as HomeIcon,
+//   Clipboard,
+//   User,
+//   MessageCircle,
+// } from "react-feather";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
@@ -72,7 +72,7 @@ function NavBar() {
     }
   }, [location, navItems]);
 
-  const ITEM_WIDTH = 80;
+  const ITEM_WIDTH = 70;
   const OFFSET = (navItems.length * ITEM_WIDTH) / 2;
 
   return (
