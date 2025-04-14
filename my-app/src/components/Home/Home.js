@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers} from "../../redux/usersSlice.js";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import PopUpInfo from "../PopUpInfo.js";
@@ -27,6 +27,7 @@ const Home = () => {
   const [popUpMessage, setPopUpMessage] = useState("");
   //& things to buy
   const [selectedFit, setSelectedFit] = useState("");
+  const [selectedItems, setSelectedItems] = useState({});
 
   //& things in your closet to wear
   const [selectedBackground, setSelectedBackground] = useState("");
@@ -123,7 +124,7 @@ const Home = () => {
       ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
     );
 
-    setShowCloset(true);
+    setShowCloset(true); // Abre o closet
   };
 
   const openStore = () => {
@@ -162,46 +163,74 @@ const Home = () => {
   };
 
   const closeStore = () => {
-    setSelectedBackground(originalBackground);
-    setSelectedShirt(originalShirt);
-    setSelectedAcc(originalAcc);
-    setSelectedColor(originalColor);
-
-    setSelectedFit(""); // Limpa o item temporário selecionado
-    setShowStore(false); // Fecha a loja
+    setSelectedItems({}); // Limpa os itens selecionados
+    dressUp(null, "all"); // Remove todos os itens temporários da mascote
+    setShowStore(false);
   };
 
   const addAccessory = (item) => {
-    setSelectedFit(item); // Atualiza o item temporário selecionado
-    dressUp(item); // Aplica o item temporariamente na mascote para visualização
+    if (selectedItems[item.type]?.id === item.id) {
+      // Se o item já estiver selecionado, remove-o
+      setSelectedItems((prev) => {
+        const updatedItems = { ...prev };
+        delete updatedItems[item.type];
+        return updatedItems;
+      });
+      dressUp(null, item.type); // Remove o item da mascote
+    } else {
+      // Caso contrário, adiciona o item
+      setSelectedItems((prev) => ({
+        ...prev,
+        [item.type]: item,
+      }));
+      dressUp(item); // Aplica o item na mascote
+    }
   };
 
-  const dressUp = (item) => {
-    console.log("Aplicando item:", item);
-    if (item.type === "Backgrounds") {
-      setSelectedBackground(item);
-    } else if (item.type === "Shirts") {
-      setSelectedShirt(item);
-    } else if (item.type === "Decor") {
-      setSelectedAcc(item);
-    } else if (item.type === "SkinColor") {
-      setSelectedColor(item);
+  const dressUp = (item, type) => {
+    if (!item) {
+      // Remove o item da mascote com base no tipo
+      if (type === "Backgrounds") {
+        setSelectedBackground(null);
+      } else if (type === "Shirts") {
+        setSelectedShirt(null);
+      } else if (type === "Decor") {
+        setSelectedAcc(null);
+      } else if (type === "SkinColor") {
+        setSelectedColor(null);
+      } else if (type === "all") {
+        // Remove todos os itens
+        setSelectedBackground(null);
+        setSelectedShirt(null);
+        setSelectedAcc(null);
+        setSelectedColor(null);
+      }
+    } else {
+      // Aplica o item na mascote
+      if (item.type === "Backgrounds") {
+        setSelectedBackground(item);
+      } else if (item.type === "Shirts") {
+        setSelectedShirt(item);
+      } else if (item.type === "Decor") {
+        setSelectedAcc(item);
+      } else if (item.type === "SkinColor") {
+        setSelectedColor(item);
+      }
     }
   };
 
   const buyItemBtn = () => {
     dispatch(buyItem({ itemId: selectedFit.id, userId: currentUserId }));
 
-
     setSelectedFit("");
 
-    handleShowPopUpInfo(
-      "Item comprado com sucesso! Acede ao teu armário para ver!"
-    );
+    // Use a função já definida
+    handleShowPopUpInfo("Item comprado com sucesso!");
   };
 
   const resetFit = () => {
-    setSelectedFit("");
+    setSelectedItems({}); // Limpa os itens selecionados
+    dressUp(null, "all"); // Remove todos os itens da mascote
   };
 
   const resetClothes = () => {
@@ -497,7 +526,7 @@ const Home = () => {
                 selectedColor={selectedColor}
                 saveOutfit={saveOutfit}
                 resetClothes={resetClothes}
-                onShowPopUpInfo={handleShowPopUpInfo}
+                handleShowPopUpInfo={handleShowPopUpInfo}
               />
             </div>
           )}
@@ -512,8 +541,10 @@ const Home = () => {
                 selectedFit={selectedFit}
                 buyItemBtn={buyItemBtn}
                 resetFit={resetFit}
-                onShowPopUpInfo={handleShowPopUpInfo}
+                handleShowPopUpInfo={handleShowPopUpInfo}
                 dressUp={dressUp}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
               />
             </div>
           )}

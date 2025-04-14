@@ -46,6 +46,7 @@ function Tasks() {
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchMoveX, setTouchMoveX] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false); // Track actual swipe
+  const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
 
   // Fetch data from localStorage
   useEffect(() => {
@@ -205,12 +206,14 @@ function Tasks() {
   };
 
   //* open and close reject task window
-  const handleOpenRejectModal = () => {
+  const handleOpenRejectModal = (task) => {
+    setTaskToVerify(task);
     setIsRejectOpen(true);
   };
 
   const handleCloseRejectModal = () => {
     setIsRejectOpen(false);
+    setTaskToVerify(null);
   };
 
   const handleTouchStart = (index, e) => {
@@ -253,6 +256,22 @@ function Tasks() {
     return <div>Error: {error}</div>;
   }
 
+  const handleRequestNewTask = () => {
+    setIsNewTaskModalOpen(true);
+  };
+
+  <Reject
+    onClose={handleCloseRejectModal}
+    task={taskToVerify}
+    partnerUser={partnerUser}
+    onShowPopUpInfo={handleShowPopUpInfo}
+    onRequestNewTask={handleRequestNewTask}
+  />;
+
+  const handleToggleTaskExpand = (index) => {
+    setExpandedTaskIndex((prev) => (prev === index ? null : index));
+  };
+
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
@@ -284,29 +303,31 @@ function Tasks() {
             <div className="taskDivOp" key={index}>
               {!task.completed && !task.verified ? (
                 <>
-                  <div className="btnTaskGroup">
-                    <button className="btnTask" disabled={!isSwiping}>
-                      Recusar
-                    </button>
-                    <button
-                      className="btnTask"
-                      disabled={!isSwiping}
-                      onClick={() => handleOpenConcludeTaskModal(task)}
-                    >
-                      Concluir
-                    </button>
-                  </div>
                   <div
-                    id={`task-${index}`}
-                    className="taskWrap"
-                    onTouchStart={(e) => handleTouchStart(index, e)}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
+                    className={`taskDiv ${
+                      expandedTaskIndex === index ? "expanded" : ""
+                    }`}
+                    onClick={() => handleToggleTaskExpand(index)}
                   >
-                    <div className="taskDiv">
-                      <p className="taskTitle">{task.title}</p>
-                    </div>
+                    <p className="taskTitle">{task.title}</p>
                   </div>
+
+                  {expandedTaskIndex === index && (
+                    <div className="btnTaskGroup">
+                      <button
+                        className="btnTask"
+                        onClick={() => handleOpenRejectModal(task)}
+                      >
+                        Recusar
+                      </button>
+                      <button
+                        className="btnTask"
+                        onClick={() => handleOpenConcludeTaskModal(task)}
+                      >
+                        Concluir
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div
@@ -340,15 +361,6 @@ function Tasks() {
         <ion-icon name="add-outline" class="iconswhite"></ion-icon>
       </button>
 
-      {/* <button
-        aria-label="Botão para abrir mensagens"
-        id="textBtn"
-        className="profile-button"
-        onClick={handleOpenMessagesModal}
-      >
-        <ion-icon name="chatbubble-ellipses-outline" class="icons"></ion-icon>
-      </button> */}
-
       {showVerifyTask && partnerUser && (
         <Suspense fallback={<div>Loading rejeição...</div>}>
           <VerifyPopUp
@@ -379,12 +391,6 @@ function Tasks() {
           />
         </Suspense>
       )}
-      {/* {isMessagesModalOpen && (
-        <Messages
-          onClose={handleCloseMessagesModal}
-          currentUser={currentUser}
-        />
-      )} */}
       {isConcludeTaskOpen && (
         <Suspense fallback={<div>Loading nova tarefa...</div>}>
           <ConcludeTask

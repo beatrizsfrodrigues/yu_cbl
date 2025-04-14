@@ -248,7 +248,7 @@ p {
 }
 
 .laterLink {
-  color: var(--orange-dark);
+  color: #ff6060;
   font-size: 12px;
   text-decoration: underline;
   font-weight: bold;

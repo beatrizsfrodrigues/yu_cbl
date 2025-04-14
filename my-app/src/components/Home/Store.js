@@ -14,17 +14,17 @@ const Store = ({
   resetFit,
   onShowPopUpInfo,
   dressUp,
+  selectedItems, // Recebe o estado como prop
+  setSelectedItems, // Recebe a função de atualização como prop
 }) => {
+  // Remova a definição local de selectedItems e setSelectedItems
+  // const [selectedItems, setSelectedItems] = useState({});
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
   // Estado para controlar a seção ativa
   const [activeSection, setActiveSection] = useState(0);
-
-  // Estado para ver os itens selecionados
-  const [selectedItems, setSelectedItems] = useState({});
-
 
   const unownedItems = closet.filter(
     (item) => !currentMascot.accessoriesOwned.includes(item.id)
@@ -41,32 +41,41 @@ const Store = ({
   }
 
   const handleBuyItem = () => {
-  Object.values(selectedItems).forEach((item) => {
-    dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
-  });
+    Object.values(selectedItems).forEach((item) => {
+      dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
+    });
 
-  dispatch(
-    buyMultipleItems({
-      totalPrice,
-      userId: currentUser.id,
-    })
-  );
+    dispatch(
+      buyMultipleItems({
+        totalPrice,
+        userId: currentUser.id,
+      })
+    );
 
-  dispatch(
-    saveFit({
-      id: currentMascot.id,
-      hat: selectedItems["Decor"]?.id || currentMascot.accessoriesEquipped.hat,
-      shirt: selectedItems["Shirts"]?.id || currentMascot.accessoriesEquipped.shirt,
-      color: selectedItems["SkinColor"]?.id || currentMascot.accessoriesEquipped.color,
-      background: selectedItems["Backgrounds"]?.id || currentMascot.accessoriesEquipped.background,
-    })
-  );
+    dispatch(
+      saveFit({
+        id: currentMascot.id,
+        hat:
+          selectedItems["Decor"]?.id || currentMascot.accessoriesEquipped.hat,
+        shirt:
+          selectedItems["Shirts"]?.id ||
+          currentMascot.accessoriesEquipped.shirt,
+        color:
+          selectedItems["SkinColor"]?.id ||
+          currentMascot.accessoriesEquipped.color,
+        background:
+          selectedItems["Backgrounds"]?.id ||
+          currentMascot.accessoriesEquipped.background,
+      })
+    );
 
-  buyItemBtn();
-    onShowPopUpInfo("Itens comprados com sucesso! Acede ao teu armário para ver!");
-    
+    buyItemBtn();
+    onShowPopUpInfo(
+      "Itens comprados com sucesso! Acede ao teu armário para ver!"
+    );
+
     setSelectedItems({});
-};
+  };
 
   const sectionsData = [
     {
@@ -91,11 +100,10 @@ const Store = ({
     },
   ];
 
-    const totalPrice = Object.values(selectedItems).reduce(
+  const totalPrice = Object.values(selectedItems).reduce(
     (acc, item) => acc + (item?.value || 0),
     0
   );
-
 
   return (
     <div className="storeOverlay">
@@ -124,16 +132,9 @@ const Store = ({
               <div className="avatarItemDiv" key={item.id}>
                 <button
                   className={`avatarcircle ${
-                    selectedFit?.id === item.id ? "activeFit" : ""
+                    selectedItems[item.type]?.id === item.id ? "activeFit" : ""
                   }`}
-                  onClick={() => {
-                    addAccessory(item); // Atualiza o item selecionado
-                    dressUp(item); // Aplica o item na mascote para visualização
-                    setSelectedItems((prev) => ({
-                      ...prev,
-                      [item.type]: item,
-                    })); // Atualiza o estado de itens selecionados 
-                  }}
+                  onClick={() => addAccessory(item)}
                 >
                   <img src={item.src} alt={item.name} />
                 </button>
@@ -148,7 +149,10 @@ const Store = ({
           </button>
           {Object.keys(selectedItems).length > 0 ? (
             currentUser && currentUser.points >= totalPrice ? (
-              <button className="buttonMid btnHomeActive" onClick={handleBuyItem}>
+              <button
+                className="buttonMid btnHomeActive"
+                onClick={handleBuyItem}
+              >
                 {totalPrice}
                 <ion-icon name="star-outline" class="iconswhite"></ion-icon>
                 Comprar
@@ -159,12 +163,8 @@ const Store = ({
           ) : (
             <button className="buttonMid">Comprar</button>
           )}
-          <button className="profile-button btnHomeActive">
-            <ion-icon
-              name="refresh-outline"
-              onClick={() => resetFit()}
-              class="iconswhite"
-            ></ion-icon>
+          <button className="profile-button btnHomeActive" onClick={resetFit}>
+            <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>
           </button>
         </div>
       </div>
