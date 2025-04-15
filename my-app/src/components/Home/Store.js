@@ -83,9 +83,9 @@ const Store = ({
     );
 
     buyItemBtn();
-    onShowPopUpInfo(
-      "Itens comprados com sucesso! Acede ao teu armário para ver!"
-    );
+    // onShowPopUpInfo(
+    //   "Itens comprados com sucesso! Acede ao teu armário para ver!"
+    // );
 
     setSelectedItems({});
   };
