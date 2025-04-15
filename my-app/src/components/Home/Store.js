@@ -165,12 +165,22 @@ const Store = ({
                         : ""
                     }`}
                     onClick={() => {
-                      addAccessory(item);
-                      dressUp(item);
-                      setSelectedItems((prev) => ({
-                        ...prev,
-                        [item.type]: item,
-                      }));
+                      if (selectedItems[item.type]?.id === item.id) {
+                        // Remove o item se já estiver selecionado
+                        setSelectedItems((prev) => {
+                          const updatedItems = { ...prev };
+                          delete updatedItems[item.type];
+                          return updatedItems;
+                        });
+                        dressUp(null, item.type); // Remove o item da mascote
+                      } else {
+                        // Adiciona o item se não estiver selecionado
+                        setSelectedItems((prev) => ({
+                          ...prev,
+                          [item.type]: item,
+                        }));
+                        dressUp(item); // Aplica o item na mascote
+                      }
                     }}
                   >
                     <img src={item.src} alt={item.name} />
