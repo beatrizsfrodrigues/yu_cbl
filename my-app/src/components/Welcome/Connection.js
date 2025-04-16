@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchMessages, newConversation } from "../../redux/messagesSlice";
 import "./connection.css";
 import yu_icon from "../../assets/imgs/YU_icon/Group 48.svg";
+import { QRCodeCanvas } from "qrcode.react";
 
 const Connection = () => {
   const dispatch = useDispatch();
@@ -144,13 +145,23 @@ const Connection = () => {
           </label>
 
           {isCodeInputVisible ? (
-            <span className="generated-code">{userCode}</span>
+            <div className="qr-section">
+              <span className="generated-code">{userCode}</span>
+              <QRCodeCanvas
+                value={userCode}
+                size={180}
+                bgColor="#ffffff"
+                fgColor="#000000"
+                level="H"
+                includeMargin={true}
+              />
+            </div>
           ) : (
-              <input
-                id="input-connection"
-                type="text"
-                className="code-input"
-                placeholder="Insere o teu código..."
+            <input
+              id="input-connection"
+              type="text"
+              className="code-input"
+              placeholder="Insere o teu código..."
               value={partnerCode}
               onChange={(e) => setPartnerCode(e.target.value)}
             />
