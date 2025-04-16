@@ -9,6 +9,7 @@ body {
   font-weight: 500;
   color: var(--purple-darker);
   font-display: swap;
+  background-repeat: no-repeat;
 }
 
 #root {
@@ -50,16 +51,16 @@ body {
 
 h1 {
   font-family: "Sour Gummy", serif;
+  padding-left: 16px;
   font-size: 32px;
   margin-bottom: 40px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 button {
   font-family: "Quicksand", serif;
   font-size: 16px;
   color: var(--purple-darker);
-  font-weight: 600;
 }
 
 p {
@@ -112,6 +113,17 @@ p {
 
 .submitBtn:active {
   background-color: var(--blue);
+}
+
+.icons {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: var(--purple-darker);
+}
+
+.iconswhite {
+  color: var(--white);
 }
 
 .orangeBtn {
@@ -187,6 +199,8 @@ p {
 
 .closeWindow {
   position: absolute;
+  background: none;
+  border: none;
   right: 0px;
   top: 18px;
   width: 40px;
@@ -200,6 +214,26 @@ p {
 }
 
 /** popups  */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.popup-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
 .popup {
   background-color: var(--white);
   border-radius: 32px;
@@ -214,8 +248,54 @@ p {
 }
 
 .laterLink {
-  color: var(--orange-dark);
+  color: #ff6060;
   font-size: 12px;
   text-decoration: underline;
   font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
+
+.confirmExitBtn {
+  background-color: var(--purple);
+  color: var(--white);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 2px 0 7px 0;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.topBar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.menu {
+  display: flex;
+  padding: 10px;
+  background-color: var(--purple-lighter);
+  border-radius: 40px;
+  width: 100%;
+}
+
+.userPhoto {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--purple-darker);
+}
+
+

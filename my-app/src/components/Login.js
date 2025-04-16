@@ -21,6 +21,13 @@ const Login = () => {
   const mascotStatus = useSelector((state) => state.mascot.status);
 
   useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (loggedInUser && loggedInUser.id) {
+      navigate("/home"); // Redireciona para a homepage se o usuário já estiver logado
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     if (usersStatus === "idle") {
       dispatch(fetchUsers());
     }
@@ -49,17 +56,21 @@ const Login = () => {
 
     if (user) {
       if (user.password === password) {
-        // Se encontrar o utilizador inserido e caso a password inserida seja igual à registada, avança o login com sucesso
         setMessage("Login efetuado com sucesso!");
-        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); // Guarda o id do utilizador que fez login
+        localStorage.setItem("loggedInUser", JSON.stringify({ id: user.id })); // Salva o ID do usuário logado
         setAlert("");
-        navigate("/home");
+        navigate("/home"); // Redireciona para a homepage
       } else {
         setAlert("Palavra-passe incorreta.");
       }
     } else {
       setAlert("Utilizador não encontrado.");
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedInUser"); // Remove o estado de login
+    navigate("/login"); // Redireciona para a página de login
   };
 
   // Apenas deixa avançar com o login quando os campos de email/username e password forem preenchidos
@@ -73,6 +84,7 @@ const Login = () => {
         <div className="form-container">
           <div className="logo-container">
             <img
+              rel="preload"
               src={logo}
               alt="logo"
               className="logo"
@@ -114,10 +126,10 @@ const Login = () => {
                 className="password-toggle-button"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <img
-                  src={showPassword ? notVisibleIcon : visibleIcon}
-                  alt="Mostrar palavra-passe"
-                />
+                <ion-icon
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  class="icons"
+                ></ion-icon>
               </button>
             </div>
           </div>

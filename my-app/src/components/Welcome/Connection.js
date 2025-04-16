@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchMessages, newConversation } from "../../redux/messagesSlice";
 import "./connection.css";
-import yu_icon from "../../assets/imgs/YU_icon/Group 48.svg";
 import { QRCodeCanvas } from "qrcode.react";
+import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
 
 const Connection = () => {
   const dispatch = useDispatch();
@@ -15,7 +15,6 @@ const Connection = () => {
   const [partnerCode, setPartnerCode] = useState("");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  //const messages = useSelector((state) => state.messages.data);
   const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
 
@@ -117,7 +116,12 @@ const Connection = () => {
         <div className="profile-images">
           <div className="profile-item">
             <span className="profile-label">{userName}</span>
-            <img src={yu_icon} alt="User Profile" className="profile-img" />
+            <img
+              src={yu_icon}
+              alt="User Profile"
+              className="profile-img"
+              loading="lazy"
+            />
           </div>
           <div className="profile-item">
             <span className="profile-label">
@@ -127,6 +131,7 @@ const Connection = () => {
               src={yu_icon}
               alt="Connected User Profile"
               className={`profile-img ${!connectedUserName ? "grayscale" : ""}`}
+              loading="lazy"
             />
           </div>
         </div>

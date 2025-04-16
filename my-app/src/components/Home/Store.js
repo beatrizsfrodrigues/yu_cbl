@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react"; // Adicione useState
 import { useDispatch, useSelector } from "react-redux";
-import Shirts from "../../assets/imgs/Icons_closet/Shirt.svg";
-import Hat from "../../assets/imgs/Icons_closet/TallHat.svg";
-import Background from "../../assets/imgs/Icons_closet/Background.svg";
-import Circle from "../../assets/imgs/Icons_closet/Circle.svg";
-import Reset from "../../assets/imgs/Icons_closet/Reset.svg";
-import X from "../../assets/imgs/Icons_closet/Exit.svg";
 import { fetchCloset } from "../../redux/closetSlice";
-import Star from "../../assets/imgs/Icons_closet/Star.svg";
+import { buyItem, saveFit } from "../../redux/mascotSlice";
+import { buyMultipleItems } from "../../redux/usersSlice";
 
 const Store = ({
   addAccessory,
@@ -18,16 +13,35 @@ const Store = ({
   selectedFit,
   resetFit,
   onShowPopUpInfo,
+  dressUp,
+  selectedItems, // Recebe o estado como prop
+  setSelectedItems, // Recebe a função de atualização como prop
 }) => {
+  // Remova a definição local de selectedItems e setSelectedItems
+  // const [selectedItems, setSelectedItems] = useState({});
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
 
+  // Estado para controlar a seção ativa
   const [activeSection, setActiveSection] = useState(0);
 
   const unownedItems = closet.filter(
     (item) => !currentMascot.accessoriesOwned.includes(item.id)
   );
+
+  // Estado para ver a confirmação de saída
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+
+  // Estado para ver o efeito de flash
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  const handleOutsideClick = (e) => {
+    if (!e.target.closest(".popup")) {
+      setIsFlashing(true);
+      setTimeout(() => setIsFlashing(false), 300);
+    }
+  };
 
   useEffect(() => {
     if (closetStatus === "idle") {
@@ -39,28 +53,78 @@ const Store = ({
     return <div>Loading...</div>;
   }
 
+  const handleBuyItem = () => {
+    Object.values(selectedItems).forEach((item) => {
+      dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
+    });
+
+    dispatch(
+      buyMultipleItems({
+        totalPrice,
+        userId: currentUser.id,
+      })
+    );
+
+    dispatch(
+      saveFit({
+        id: currentMascot.id,
+        hat:
+          selectedItems["Decor"]?.id || currentMascot.accessoriesEquipped.hat,
+        shirt:
+          selectedItems["Shirts"]?.id ||
+          currentMascot.accessoriesEquipped.shirt,
+        color:
+          selectedItems["SkinColor"]?.id ||
+          currentMascot.accessoriesEquipped.color,
+        background:
+          selectedItems["Backgrounds"]?.id ||
+          currentMascot.accessoriesEquipped.background,
+      })
+    );
+
+    buyItemBtn();
+    // onShowPopUpInfo(
+    //   "Itens comprados com sucesso! Acede ao teu armário para ver!"
+    // );
+
+    setSelectedItems({});
+  };
+
   const sectionsData = [
     {
       label: "Skin Color",
-      icon: <img src={Circle} alt="Skin Color" />,
+      icon: <ion-icon name="color-palette-outline" class="icons"></ion-icon>,
       items: unownedItems.filter((item) => item.type === "SkinColor"),
     },
     {
       label: "Shirts",
-      icon: <img src={Shirts} alt="Shirts" />,
+      icon: <ion-icon name="shirt-outline" class="icons"></ion-icon>,
       items: unownedItems.filter((item) => item.type === "Shirts"),
     },
     {
       label: "Decor",
-      icon: <img src={Hat} alt="Decor" />,
+      icon: <ion-icon name="glasses-outline" class="icons"></ion-icon>,
       items: unownedItems.filter((item) => item.type === "Decor"),
     },
     {
       label: "Backgrounds",
-      icon: <img src={Background} alt="Backgrounds" />,
+      icon: <ion-icon name="image-outline" class="icons"></ion-icon>,
       items: unownedItems.filter((item) => item.type === "Backgrounds"),
     },
   ];
+
+  const totalPrice = Object.values(selectedItems).reduce(
+    (acc, item) => acc + (item?.value || 0),
+    0
+  );
+
+  const handleCloseStore = () => {
+    if (Object.keys(selectedItems).length > 0) {
+      setShowExitConfirmation(true);
+    } else {
+      closeStore();
+    }
+  };
 
   return (
     <div className="storeOverlay">
@@ -69,14 +133,14 @@ const Store = ({
           {/* Header Icons */}
           <div className="avatarheader">
             {sectionsData.map((section, index) => (
-              <p
+              <button
                 key={section.label}
                 className={`icons ${activeSection === index ? "active" : ""}`}
                 onClick={() => setActiveSection(index)}
               >
                 {section.icon}
                 {activeSection === index && <span className="dot"></span>}
-              </p>
+              </button>
             ))}
           </div>
 
@@ -84,82 +148,103 @@ const Store = ({
           <div className="divider"></div>
 
           {/* Section Content */}
-          <div className="avatarcontent">
-            {sectionsData[activeSection].items.map((item) => (
-              <div className="avatarItemDiv" key={item.id}>
-                <div
-                  key={item.id}
-                  className={`avatarcircle ${
-                    selectedFit.id === item.id ? "activeFit" : ""
-                  }`}
-                  onClick={() => addAccessory(item)}
-                >
-                  <img src={item.src} alt={item.name} />
+          {sectionsData[activeSection].items.length === 0 ? (
+            <div className="avatarcontentEmpty">
+              <p className="empty-category-message">
+                Não há mais itens nesta categoria para comprar!
+              </p>
+            </div>
+          ) : (
+            <div className="avatarcontent">
+              {sectionsData[activeSection].items.map((item) => (
+                <div className="avatarItemDiv" key={item.id}>
+                  <button
+                    className={`avatarcircle ${
+                      selectedItems[item.type]?.id === item.id
+                        ? "activeFit"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      if (selectedItems[item.type]?.id === item.id) {
+                        // Remove o item se já estiver selecionado
+                        setSelectedItems((prev) => {
+                          const updatedItems = { ...prev };
+                          delete updatedItems[item.type];
+                          return updatedItems;
+                        });
+                        dressUp(null, item.type); // Remove o item da mascote
+                      } else {
+                        // Adiciona o item se não estiver selecionado
+                        setSelectedItems((prev) => ({
+                          ...prev,
+                          [item.type]: item,
+                        }));
+                        dressUp(item); // Aplica o item na mascote
+                      }
+                    }}
+                  >
+                    <img src={item.src} alt={item.name} />
+                  </button>
+                  <p>{item.value}</p>
                 </div>
-                <p>{item.value}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="closetFooter">
-          <button className="buttonRound btnHomeActive" onClick={closeStore}>
-            <img src={X} alt="Exit" />
+          <button
+            className="profile-button btnHomeActive"
+            onClick={handleCloseStore}
+          >
+            <ion-icon name="close-outline" class="iconswhite"></ion-icon>
           </button>
-          {selectedFit && selectedFit !== "" ? (
-            currentUser && currentUser.points >= selectedFit.value ? (
+          {Object.keys(selectedItems).length > 0 ? (
+            currentUser && currentUser.points >= totalPrice ? (
               <button
                 className="buttonMid btnHomeActive"
-                onClick={() => buyItemBtn()}
+                onClick={handleBuyItem}
               >
-                {selectedFit.value}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M8 5H2M5 19H2M3 12H2M15.39 5.21L16.8 8.02999C16.99 8.41999 17.5 8.78999 17.93 8.86999L20.48 9.28999C22.11 9.55999 22.49 10.74 21.32 11.92L19.33 13.91C19 14.24 18.81 14.89 18.92 15.36L19.49 17.82C19.94 19.76 18.9 20.52 17.19 19.5L14.8 18.08C14.37 17.82 13.65 17.82 13.22 18.08L10.83 19.5C9.12 20.51 8.08001 19.76 8.53001 17.82L9.10002 15.36C9.21002 14.9 9.02001 14.25 8.69001 13.91L6.70002 11.92C5.53002 10.75 5.91002 9.56999 7.54002 9.28999L10.09 8.86999C10.52 8.79999 11.03 8.41999 11.22 8.02999L12.63 5.21C13.38 3.68 14.62 3.68 15.39 5.21Z"
-                    stroke="#FBFBFB"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                {totalPrice}
+                <ion-icon name="star-outline" class="iconswhite"></ion-icon>
                 Comprar
               </button>
             ) : (
-              <button className="buttonMid">
-                {selectedFit.value}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M8 5H2M5 19H2M3 12H2M15.39 5.21L16.8 8.02999C16.99 8.41999 17.5 8.78999 17.93 8.86999L20.48 9.28999C22.11 9.55999 22.49 10.74 21.32 11.92L19.33 13.91C19 14.24 18.81 14.89 18.92 15.36L19.49 17.82C19.94 19.76 18.9 20.52 17.19 19.5L14.8 18.08C14.37 17.82 13.65 17.82 13.22 18.08L10.83 19.5C9.12 20.51 8.08001 19.76 8.53001 17.82L9.10002 15.36C9.21002 14.9 9.02001 14.25 8.69001 13.91L6.70002 11.92C5.53002 10.75 5.91002 9.56999 7.54002 9.28999L10.09 8.86999C10.52 8.79999 11.03 8.41999 11.22 8.02999L12.63 5.21C13.38 3.68 14.62 3.68 15.39 5.21Z"
-                    stroke="#FBFBFB"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
+              <button className="buttonMid">{totalPrice}</button>
             )
           ) : (
             <button className="buttonMid">Comprar</button>
           )}
-          <button
-            className="buttonRound btnHomeActive"
-            onClick={() => resetFit()}
-          >
-            <img src={Reset} alt="Reset" />
+          <button className="profile-button btnHomeActive" onClick={resetFit}>
+            <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>
           </button>
         </div>
       </div>
+      {showExitConfirmation && (
+        <div className="popupOverlay" onClick={handleOutsideClick}>
+          <div className={`popup ${isFlashing ? "flash" : ""}`}>
+            <h2 className="topBar-title">Sair da loja?</h2>
+            <p>Tens itens não comprados. De certeza que queres sair?</p>
+            <div className="popup-buttons">
+              <button
+                className="confirmExitBtn"
+                onClick={() => {
+                  setShowExitConfirmation(false);
+                  setSelectedItems({});
+                  closeStore();
+                }}
+              >
+                Sair sem comprar
+              </button>
+              <button
+                className="laterLink"
+                onClick={() => setShowExitConfirmation(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

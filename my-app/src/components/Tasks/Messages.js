@@ -4,9 +4,12 @@ import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
+import "./messages.css";
 
-function Messages({ onClose, currentUser }) {
+function Messages({}) {
   const dispatch = useDispatch();
+  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+  const [currentUser, setCurrentUser] = useState(null);
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const messages = useSelector((state) => state.messages.data);
@@ -21,6 +24,7 @@ function Messages({ onClose, currentUser }) {
   const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
 
   //* fetch text messages
+
   useEffect(() => {
     if (messagesStatus === "idle") {
       dispatch(fetchMessages());
@@ -28,9 +32,16 @@ function Messages({ onClose, currentUser }) {
   }, [messagesStatus, dispatch]);
 
   useEffect(() => {
-    if (messages && messages.length > 0) {
-      const textSpace = textSpaceRef.current;
-      textSpace.scrollTop = textSpace.scrollHeight;
+    const user =
+      users && users.length > 0
+        ? users.find((user) => user.id === currentUserId)
+        : null;
+    setCurrentUser(user);
+  }, [users, currentUserId]);
+
+  useEffect(() => {
+    if (textSpaceRef.current && messages && messages.length > 0) {
+      textSpaceRef.current.scrollTop = textSpaceRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -74,13 +85,14 @@ function Messages({ onClose, currentUser }) {
     return <div>Error: {error}</div>;
   }
 
-  const partnerUser = currentUser.partnerId
-    ? users.find((user) => user.id === currentUser.partnerId)
-    : null;
+  const partnerUser =
+    currentUser && currentUser.partnerId
+      ? users.find((user) => user.id === currentUser.partnerId)
+      : null;
 
   //* text messages
   let messageContent;
-  if (currentUser.partnerId && messages && messages.length > 0) {
+  if (currentUser && currentUser.partnerId && messages && messages.length > 0) {
     const conversation = messages.find(
       (msg) =>
         msg.usersId.includes(currentUser.id) &&
@@ -188,32 +200,59 @@ function Messages({ onClose, currentUser }) {
     presetMsgs2 = <div>Não existem mensagens</div>;
   }
 
-  //* modal
   return (
-    <div className="modal">
-      <div className="window">
-        <div className="header">
-          {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>@parceiro</h3>}
-          <X className="closeWindow" onClick={onClose} />
-        </div>
-        <div className="line"></div>
-        <div
-          id="textSpace"
-          ref={textSpaceRef}
-          className={`${
-            isPresetMessagesOpen ? "textSpaceSmall" : ""
-          } windowBody`}
-          onClick={closePresetMessages}
-        >
-          {partnerUser ? (
-            messageContent
-          ) : (
-            <p>
-              Não tens parceiro para trocar mensagens! Cria uma ligação no
-              perfil.
-            </p>
-          )}
-        </div>
+    <div className="mainBody mainBodyMessages">
+      <div className="backgroundDiv"></div>
+
+      <header className="header headerMessages">
+        {partnerUser && <div className="profilePic"></div>}
+        {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
+      </header>
+
+      <div className="line"></div>
+
+      <div
+        id="textSpace"
+        ref={textSpaceRef}
+        className="windowBody"
+        onClick={closePresetMessages}
+      >
+        {partnerUser ? (
+          messageContent
+        ) : (
+          <p>
+            Não tens parceiro para trocar mensagens! Cria uma ligação no perfil.
+          </p>
+        )}
+      </div>
+
+      {/* Aqui o WRAPPER com opções acima do input */}
+      <div className="inputMessageWrapper">
+        {isPresetMessagesOpen && (
+          <div id="textOptions" ref={textOptionsRef}>
+            {presetMessages &&
+              presetMessages.map((message, index) => (
+                <button
+                  key={index}
+                  className="optionText"
+                  onClick={
+                    partnerUser ? () => handleAddMessage(message.message) : null
+                  }
+                >
+                  {message.message}
+                </button>
+              ))}
+          </div>
+        )}
+
+        {/* {isPresetMessagesOpen && (
+          <div id="textOptions" ref={textOptionsRef}>
+            <div>{presetMsgs}</div>
+            <div>{presetMsgs2}</div>
+          </div>
+        )} */}
+
+        {/* Input vira botão ou textarea */}
         <div
           className="inputMessage"
           onClick={handleOpenPresetMessages}
@@ -221,12 +260,6 @@ function Messages({ onClose, currentUser }) {
         >
           <p>Deixa uma mensagem</p>
         </div>
-        {isPresetMessagesOpen && (
-          <div id="textOptions" ref={textOptionsRef}>
-            <div>{presetMsgs}</div>
-            <div>{presetMsgs2}</div>
-          </div>
-        )}
       </div>
     </div>
   );

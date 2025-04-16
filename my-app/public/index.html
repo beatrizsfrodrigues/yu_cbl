@@ -6,16 +6,26 @@
     <meta name="theme-color" content="#000000" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link
+    <!-- <link
       rel="icon"
-      type="image/svg+xml"
-      href="/assets/img/Logo/YU-principal.svg"
-    />
+      type="image/x-icon"
+      href="/assets/imgs/YU_icon/YU_Fav.ico"
+    /> -->
+    <!-- <link rel="icon" type="image/png" href="/assets/imgs/YU_icon/YU_Fav.png" /> -->
+    <link rel="icon" type="image/svg+xml" href="/assets/YU_icon/Group 48.svg" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preload"
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
       as="style"
       href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
@@ -28,9 +38,34 @@
       onload="this.rel='stylesheet'"
     />
 
+    <link
+      rel="preload"
+      href="/assets/imgs_Apresentacao/questionario.webp"
+      as="image"
+    />
+
+    <!-- Dentro do <head> -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <link rel="manifest" href="manifest.json" />
     <title>YU</title>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js").then(
+          () => console.log("Service Worker registrado com sucesso."),
+          (err) => console.error("Erro ao registrar o Service Worker:", err)
+        );
+      }
+    </script>
   </body>
 </html>

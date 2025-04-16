@@ -12,6 +12,7 @@ import Closet from "./components/Home/Closet";
 import Store from "./components/Home/Store";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Messages from "./components/Tasks/Messages";
 
 import Profile from "./components/Perfil/Perfil/Profile";
 import Informacoes from "./components/Perfil/Informacoes/Informacoes";
@@ -26,10 +27,27 @@ import Apresentacao from "./components/Welcome/Apresentacao";
 
 import Questions from "./components/Welcome/Questions";
 
+
+
 import "./App.css";
 
 function AppContent() {
-  const location = useLocation();
+
+    const location = useLocation();
+
+    useEffect(() => {
+      const lastTime = localStorage.getItem("lastQuestionTime");
+      if (lastTime) {
+        const now = Date.now();
+        const diffInMilliseconds = now - Number(lastTime);
+        const diffInSeconds = diffInMilliseconds / 1000;
+
+        if (diffInSeconds >= 2592000) { // 30 dias em segundos
+          console.log("Novo questionário disponível.");
+        }
+      }
+    }, [location.pathname]);
+  
 
   // Nomes das páginas (mudar à vontade)
   const pageTitles = {
@@ -49,6 +67,7 @@ function AppContent() {
     "/grafico": "Estatísticas - YU",
     "/arquivo": "Arquivo - YU",
     "/apresentacao": "Apresentação - YU",
+    "/messages": "Mensagens - YU",
   };
 
   useEffect(() => {
@@ -58,7 +77,7 @@ function AppContent() {
   /* Só mostra a NavBar se a rota atual estiver em showNavRoutes , se quiserem adicionar
   outra pagina, basta meter o /nome no showNavRoutes como fiz no home, task e profile */
 
-  const showNavRoutes = ["/home", "/tasks", "/profile"];
+  const showNavRoutes = ["/home", "/tasks", "/messages", "/profile"];
   const shouldShowNav = showNavRoutes.includes(location.pathname);
 
   return (
@@ -71,6 +90,7 @@ function AppContent() {
           <Route path="/closet" element={<Closet />} />
           <Route path="/store" element={<Store />} />
           <Route path="/tasks" element={<Tasks />} />
+          <Route path="/messages" element={<Messages />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { updateUser, fetchUsers } from "../../../redux/usersSlice";
 
 import visibleIcon from "../../../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../../../assets/imgs/Icons/notvisible.png";
 
-const InfoPessoal = ({ show, onBack }) => {
+const InfoPessoal = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const users = useSelector((state) => state.users.data);
-
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
-
   const activeUser = users?.find((user) => user.id === currentUserId);
 
-  const [showPassword, setShowPassword] = useState(false); // Controla a visibilidade da palavra-passe
-
+  const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState("");
-
   const [showNotification, setShowNotification] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -55,7 +53,7 @@ const InfoPessoal = ({ show, onBack }) => {
   }, [activeUser]);
 
   useEffect(() => {
-    if (!users) {
+    if (!users || users.length === 0) {
       dispatch(fetchUsers());
     }
   }, [dispatch, users]);
@@ -98,7 +96,6 @@ const InfoPessoal = ({ show, onBack }) => {
       return;
     }
 
-    // Verifica se o nome de utilizador já existe
     if (
       users.some(
         (user) =>
@@ -109,13 +106,12 @@ const InfoPessoal = ({ show, onBack }) => {
       return;
     }
 
-    // Verifica se a palavra-passe atende aos requisitos mínimos
     if (!validatePassword(formData.palavraChave)) {
       setAlert("A palavra-passe não atende aos requisitos mínimos!");
       return;
     }
 
-    setAlert(""); // Limpa os alertas corrigidos
+    setAlert("");
     setShowConfirmModal(true);
   };
 
@@ -129,136 +125,124 @@ const InfoPessoal = ({ show, onBack }) => {
         password: formData.palavraChave,
       };
 
-      // Atualiza os dados no Redux
       dispatch(updateUser(updatedUser));
-
-      // Mostra a notificação de sucesso
       setShowNotification(true);
       setTimeout(() => {
         setShowNotification(false);
-        onBack();
-      }, 3000); // Oculta após 3 segundos
-
-      // Limpa as mensagens de erro
+        navigate("/definicoes"); // ✅ voltar para definições
+      }, 3000);
       setAlert("");
     }
     setShowConfirmModal(false);
   };
 
   const cancelSave = () => {
-    setShowConfirmModal(false); // Cancela e fecha o modal de confirmação
+    setShowConfirmModal(false);
   };
 
   const handleBack = () => {
-    setFormData(originalData); // Restaura os dados originais
-    setAlert(""); // Limpa as mensagens de erro
-    onBack();
+    setFormData(originalData);
+    setAlert("");
+    navigate("/definicoes"); // ✅ voltar para definições
   };
-
-  // Retorna null se o modal não estiver visível
-  if (!show) return null;
-
-  const isFormComplete =
-    formData.nomeUtilizador.trim() !== "" &&
-    formData.email.trim() !== "" &&
-    formData.palavraChave.trim() !== "";
 
   return (
     <>
       {showNotification && (
-        <div
-          className={`notification 
-         ${!showNotification ? "hidden" : ""}`}
-        >
-          Dados alterados com sucesso!
-        </div>
+        <div className="notification">Dados alterados com sucesso!</div>
       )}
 
-      <div className="modal">
-        <div
-          id="window-infopessoal"
-          className="window"
-          style={{ display: "block" }}
-        >
-          <div className="info-header info-pessoal-page">
-            <button className="back-button" aria-label="back-button" onClick={handleBack}>
-              <i className="bi bi-arrow-left"></i>
-            </button>
-            <h3>Os meus dados</h3>
-          </div>
-          <div className="line"></div>
-          <div className="settings-section">
-            <form onSubmit={handleSave}>
-              {alert && <p className="alert">{alert}</p>}
-              <div className="form-group">
-                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
-                <input
-                  required
-                  type="text"
-                  id="nomeUtilizador"
-                  name="nomeUtilizador"
-                  value={formData.nomeUtilizador}
-                  onChange={handleChange}
-                  placeholder="nome do utilizador"
-                  className={`form-input ${
-                    validationErrors.nomeUtilizador ? "error" : ""
-                  }`}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  required
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="email@gmail.com"
-                  className={`form-input ${
-                    validationErrors.email ? "error" : ""
-                  }`}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="palavraChave">Palavra-passe</label>
-                <div className="password-input-container">
+      <div className="info-pessoal-page">
+        <div className="info-header">
+          <button
+            className="back-button"
+            aria-label="Voltar"
+            onClick={handleBack}
+          >
+            <ion-icon name="arrow-back-outline" className="icons"></ion-icon>
+          </button>
+          <h3>Os meus dados</h3>
+        </div>
+        <div className="line"></div>
+        <div className="settings-section">
+          <div>
+            <div className="form-wrapper">
+              <form onSubmit={handleSave}>
+                {alert && <p className="alert">{alert}</p>}
+
+                <div className="form-group">
+                  <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
                   <input
                     required
-                    type={showPassword ? "text" : "password"}
-                    id="palavraChave"
-                    name="palavraChave"
-                    value={formData.palavraChave}
+                    type="text"
+                    id="nomeUtilizador"
+                    name="nomeUtilizador"
+                    value={formData.nomeUtilizador}
                     onChange={handleChange}
-                    placeholder="****"
+                    placeholder="nome do utilizador"
                     className={`form-input ${
-                      validationErrors.palavraChave ? "error" : ""
+                      validationErrors.nomeUtilizador ? "error" : ""
                     }`}
                   />
-                  <button
-                    type="button"
-                    className="password-toggle-button"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    <img
-                      src={showPassword ? notVisibleIcon : visibleIcon}
-                      alt="Mostrar palavra-passe"
-                    />
-                  </button>
                 </div>
-              </div>
-              <button className="save-button" type="submit">
-                Guardar
-              </button>
-            </form>
+
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    required
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="email@gmail.com"
+                    className={`form-input ${
+                      validationErrors.email ? "error" : ""
+                    }`}
+                  />
+                </div>
+
+                <div className="info-inner">
+                  <div className="form-group">
+                    <label htmlFor="palavraChave">Palavra-passe</label>
+                    <div className="password-input-container">
+                      <input
+                        required
+                        type={showPassword ? "text" : "password"}
+                        id="palavraChave"
+                        name="palavraChave"
+                        value={formData.palavraChave}
+                        onChange={handleChange}
+                        placeholder="****"
+                        className={`form-input ${
+                          validationErrors.palavraChave ? "error" : ""
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle-button"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <img
+                          src={showPassword ? notVisibleIcon : visibleIcon}
+                          alt="Mostrar palavra-passe"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="save-button" type="submit">
+                  Guardar
+                </button>
+              </form>
+            </div>
           </div>
 
-          {/* Modal de confirmação */}
           {showConfirmModal && (
-            <div className="info-pessoal-page confirm-modal">
+            <div className="confirm-modal">
               <div className="confirm-modal-content">
-                <h3>Tens a certeza que queres alterar os teus dados?</h3>{" "}
-                <br></br>
+                <h3>Tens a certeza que queres alterar os teus dados?</h3>
                 <div className="confirm-modal-buttons">
                   <button className="confirm-button" onClick={confirmSave}>
                     Sim
@@ -275,5 +259,4 @@ const InfoPessoal = ({ show, onBack }) => {
     </>
   );
 };
-
 export default InfoPessoal;

@@ -76,7 +76,7 @@ const Questions = () => {
       ],
     },
     {
-      question: "O que gostarias de mudar no teu uso do telemóvel??",
+      question: "O que gostarias de mudar no teu uso do telemóvel?",
       options: [
         "Passar menos tempo no telemóvel",
         "Usá-lo de forma mais produtiva",
@@ -153,6 +153,13 @@ const Questions = () => {
       setSelectedOptions([]);
     } else {
       console.log("Fim do questionário");
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (loggedInUser?.id) {
+          const questionTimes = JSON.parse(localStorage.getItem("questionTimes")) || {};
+          questionTimes[loggedInUser.id] = Date.now();
+          localStorage.setItem("questionTimes", JSON.stringify(questionTimes));
+        }
+
       navigate("/connection");
     }
   };

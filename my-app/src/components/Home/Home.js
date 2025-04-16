@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, buyAcc } from "../../redux/usersSlice.js";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
-import { ChevronDown } from "react-feather";
 import PopUpInfo from "../PopUpInfo.js";
 import Closet from "./Closet";
 import Store from "./Store";
-import Star from "../../assets/imgs/Icons_closet/Star.svg";
-import Closeticon from "../../assets/imgs/Icons_closet/Closeticon.svg";
-import Storeicon from "../../assets/imgs/Icons_closet/Storeicon.svg";
+import TopBar from "../TopBar";
 import "../../assets/css/home.css";
 
 const Home = () => {
@@ -21,7 +18,7 @@ const Home = () => {
   //const mascotsStatus = useSelector((state) => state.mascot.status);
   const closet = useSelector((state) => state.closet.data);
   //const closetStatus = useSelector((state) => state.closet.status);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [isClosetOpen, setIsClosetOpen] = useState(false);
   const [showCloset, setShowCloset] = useState(false);
   const [showStore, setShowStore] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -30,6 +27,7 @@ const Home = () => {
   const [popUpMessage, setPopUpMessage] = useState("");
   //& things to buy
   const [selectedFit, setSelectedFit] = useState("");
+  const [selectedItems, setSelectedItems] = useState({});
 
   //& things in your closet to wear
   const [selectedBackground, setSelectedBackground] = useState("");
@@ -37,7 +35,10 @@ const Home = () => {
   const [selectedAcc, setSelectedAcc] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
-  const dropdownRef = useRef(null);
+  const [originalBackground, setOriginalBackground] = useState(null);
+  const [originalShirt, setOriginalShirt] = useState(null);
+  const [originalAcc, setOriginalAcc] = useState(null);
+  const [originalColor, setOriginalColor] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,34 +80,60 @@ const Home = () => {
   };
 
   const openCloset = () => {
+    // Salva os valores originais
+    setOriginalBackground(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.background
+      ) || null
+    );
+    setOriginalShirt(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.shirt
+      ) || null
+    );
+    setOriginalAcc(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.hat
+      ) || null
+    );
+    setOriginalColor(
+      closet.find(
+        (item) => item.id === currentMascot.accessoriesEquipped.color
+      ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
+    );
+
+    // Inicializa os estados locais
     setSelectedBackground(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.background
-      ) || ""
+      ) || null
     );
     setSelectedShirt(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.shirt
-      ) || ""
+      ) || null
     );
     setSelectedAcc(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.hat
-      ) || ""
+      ) || null
     );
     setSelectedColor(
       closet.find(
         (item) => item.id === currentMascot.accessoriesEquipped.color
-      ) || ""
+      ) || { src: "/assets/YU_cores/YU-roxo.svg" } // Cor padrão
     );
 
-    setShowCloset(true);
-    setShowDropdown(false);
+    setShowCloset(true); // Abre o closet
   };
 
   const openStore = () => {
+    setOriginalBackground(selectedBackground);
+    setOriginalShirt(selectedShirt);
+    setOriginalAcc(selectedAcc);
+    setOriginalColor(selectedColor);
+
     setShowStore(true);
-    setShowDropdown(false);
   };
 
   if (!currentUser || !currentMascot || !closet) {
@@ -114,78 +141,184 @@ const Home = () => {
   }
 
   const closeCloset = () => {
-    setSelectedBackground("");
-    setSelectedShirt("");
-    setSelectedAcc("");
-    setSelectedColor("");
+    // Restaura os valores originais
+    setSelectedBackground(originalBackground);
+    setSelectedShirt(originalShirt);
+    setSelectedAcc(originalAcc);
+    setSelectedColor(originalColor);
+
+    // Atualiza o estado da mascote para refletir os valores originais
+    setCurrentMascot((prevMascot) => ({
+      ...prevMascot,
+      accessoriesEquipped: {
+        hat: originalAcc?.id || null,
+        shirt: originalShirt?.id || null,
+        color: originalColor?.id || "/assets/YU_cores/YU-roxo.svg",
+        background: originalBackground?.id || null,
+      },
+    }));
+
     setShowCloset(false);
+    setIsClosetOpen(false); // Fecha o closet
   };
+
   const closeStore = () => {
-    setSelectedFit("");
+    setSelectedItems({}); // Limpa os itens selecionados
+    dressUp(null, "all"); // Remove todos os itens temporários da mascote
     setShowStore(false);
   };
 
   const addAccessory = (item) => {
-    setSelectedFit(item);
+    if (selectedItems[item.type]?.id === item.id) {
+      // Se o item já estiver selecionado, remove-o
+      setSelectedItems((prev) => {
+        const updatedItems = { ...prev };
+        delete updatedItems[item.type];
+        return updatedItems;
+      });
+      dressUp(null, item.type); // Remove o item da mascote
+    } else {
+      // Caso contrário, adiciona o item
+      setSelectedItems((prev) => ({
+        ...prev,
+        [item.type]: item,
+      }));
+      dressUp(item); // Aplica o item na mascote
+    }
   };
 
-  const dressUp = (item) => {
-    console.log(item.type);
-    if (item.type === "Backgrounds") {
-      setSelectedBackground(item);
-    } else if (item.type === "Shirts") {
-      setSelectedShirt(item);
-    } else if (item.type === "Decor") {
-      setSelectedAcc(item);
-    } else if (item.type === "SkinColor") {
-      setSelectedColor(item);
+  const dressUp = (item, type) => {
+    if (!item) {
+      // Remove o item da mascote com base no tipo
+      if (type === "Backgrounds") {
+        setSelectedBackground(null);
+      } else if (type === "Shirts") {
+        setSelectedShirt(null);
+      } else if (type === "Decor") {
+        setSelectedAcc(null);
+      } else if (type === "SkinColor") {
+        setSelectedColor(null);
+      } else if (type === "all") {
+        // Remove todos os itens
+        setSelectedBackground(null);
+        setSelectedShirt(null);
+        setSelectedAcc(null);
+        setSelectedColor(null);
+      }
+    } else {
+      // Aplica o item na mascote
+      if (item.type === "Backgrounds") {
+        setSelectedBackground(item);
+      } else if (item.type === "Shirts") {
+        setSelectedShirt(item);
+      } else if (item.type === "Decor") {
+        setSelectedAcc(item);
+      } else if (item.type === "SkinColor") {
+        setSelectedColor(item);
+      }
     }
   };
 
   const buyItemBtn = () => {
     dispatch(buyItem({ itemId: selectedFit.id, userId: currentUserId }));
 
-    dispatch(buyAcc({ price: selectedFit.value, userId: currentUserId }));
-
     setSelectedFit("");
 
-    handleShowPopUpInfo(
-      "Item comprado com sucesso! Acede ao teu armário para ver!"
-    );
+    // Use a função já definida
+    handleShowPopUpInfo("Item comprado com sucesso!");
   };
 
   const resetFit = () => {
-    setSelectedFit("");
+    setSelectedItems({}); // Limpa os itens selecionados
+    dressUp(null, "all"); // Remove todos os itens da mascote
   };
 
   const resetClothes = () => {
-    setSelectedBackground("");
-    setSelectedShirt("");
-    setSelectedAcc("");
-    setSelectedColor("");
+    console.log("Resetando roupas...");
+
+    // Define a cor padrão e remove todos os itens
+    const defaultColor = {
+      type: "SkinColor",
+      src: "/assets/YU_cores/YU-roxo.svg",
+    }; // Cor padrão
+    dressUp(defaultColor);
+    dressUp({ type: "Background", id: null }); // Remove o fundo
+    dressUp({ type: "Shirts", id: null }); // Remove a camisa
+    dressUp({ type: "Decor", id: null }); // Remove os acessórios
+
+    // Atualiza os estados locais
+    setSelectedBackground(null);
+    setSelectedShirt(null);
+    setSelectedAcc(null);
+    setSelectedColor(defaultColor);
+
+    // Atualiza o estado da mascote localmente para refletir as alterações
+    setCurrentMascot((prevMascot) => ({
+      ...prevMascot,
+      accessoriesEquipped: {
+        hat: null,
+        shirt: null,
+        color: "/assets/YU_cores/YU-roxo.svg",
+        background: null,
+      },
+    }));
   };
 
-  const saveOutfit = () => {
-    dispatch(
-      saveFit({
-        hat: selectedAcc?.id || currentMascot.accessoriesEquipped.hat || null,
-        shirt:
-          selectedShirt?.id || currentMascot.accessoriesEquipped.shirt || null,
-        color:
-          selectedColor?.id || currentMascot.accessoriesEquipped.color || 40,
-        background:
-          selectedBackground?.id ||
-          currentMascot.accessoriesEquipped.background ||
-          null,
+  const saveOutfit = async () => {
+    try {
+      const payload = {
+        hat: selectedAcc?.id || null,
+        shirt: selectedShirt?.id || null,
+        color: selectedColor?.id || 40, // Valor padrão para a cor
+        background: selectedBackground?.id || null,
         id: currentMascot.id,
-      })
-    );
+      };
 
-    handleShowPopUpInfo("Alterações guardadas com sucesso!");
+      console.log("Payload enviado para salvar:", payload);
+
+      await dispatch(saveFit(payload));
+
+      // Atualiza o estado da mascote localmente para refletir as alterações
+      setCurrentMascot((prevMascot) => ({
+        ...prevMascot,
+        accessoriesEquipped: {
+          hat: payload.hat,
+          shirt: payload.shirt,
+          color: payload.color,
+          background: payload.background,
+        },
+      }));
+
+      // Atualiza os valores originais para refletir o novo estado
+      setOriginalBackground(selectedBackground);
+      setOriginalShirt(selectedShirt);
+      setOriginalAcc(selectedAcc);
+      setOriginalColor(selectedColor);
+
+      // Exibe o popup de confirmação
+      if (handleShowPopUpInfo) {
+        handleShowPopUpInfo("Alterações guardadas com sucesso!");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar as alterações:", error);
+      if (handleShowPopUpInfo) {
+        handleShowPopUpInfo("Erro ao salvar as alterações. Tente novamente.");
+      }
+    }
+  };
+
+  const formatPoints = (points) => {
+    if (points >= 10_000_000) {
+      return (points / 1_000_000).toFixed(1).replace(".0", "") + "M+";
+    } else if (points >= 10_000) {
+      return (points / 1_000).toFixed(1).replace(".0", "") + "K+";
+    }
+    return points;
   };
 
   return (
     <div className="homeContainer">
+      <div className="backgroundDiv"></div>
       {currentUser && currentMascot && (
         <div
           style={{
@@ -211,51 +344,37 @@ const Home = () => {
         <div
           className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
         >
-          <header className="row">
-            {/* Star Section */}
-            <div className="ClassStar ">
-              <img src={Star} alt="Star" />
-              <p>{currentUser.points}</p>
-            </div>
-
-            {/* ButtonsCloset Section */}
-            <div className="buttonsCloset">
-              <div className="closetHeader btnHomeHeader">
-                {/* Closet Icon */}
+          <div className="home mainBody">
+            <TopBar>
+              <div className="ClassStar">
+                <ion-icon name="star-outline" class="icons"></ion-icon>
+                <p>{formatPoints(currentUser.points)}</p>
+              </div>
+              <div className="buttonsCloset">
                 <button
                   className="btnHomeHeader"
                   aria-label="armario"
                   onClick={openCloset}
                 >
-                  <img src={Closeticon} alt="Closet" className="closetIcon" />
+                  <ion-icon name="brush-outline" class="icons"></ion-icon>
                 </button>
-                {/* Chevron Icon */}
                 <button
                   className="btnHomeHeader"
-                  aria-label="drop down menu"
-                  onClick={() => setShowDropdown((prev) => !prev)}
+                  aria-label="loja"
+                  onClick={openStore}
                 >
-                  <ChevronDown className="navIcon" />
+                  <ion-icon name="bag-outline" class="icons"></ion-icon>
                 </button>
               </div>
-
-              {showDropdown && (
-                <div className="dropdown open" ref={dropdownRef}>
-                  <button onClick={openStore} aria-label="loja">
-                    <img src={Storeicon} alt="Store" />
-                  </button>
-                </div>
-              )}
-            </div>
-          </header>
-
+            </TopBar>
+          </div>
           {/* Mascot Section */}
           <div
             className={`mascotContainer ${
               showCloset || showStore ? "moveUp" : ""
             }`}
           >
-            {/*dress up yu color  */}
+            {/* Renderização da mascote */}
             {selectedColor ? (
               <img className={`Yu `} src={selectedColor.src} alt="YU" />
             ) : selectedFit && selectedFit.type === "SkinColor" ? (
@@ -273,7 +392,8 @@ const Home = () => {
               />
             )}
 
-            {/*dress up yu shirt  */}
+            {/* Outros acessórios */}
+            {/* Camisa */}
             {selectedShirt ? (
               <img
                 className="accessory"
@@ -333,7 +453,7 @@ const Home = () => {
               )
             )}
 
-            {/*dress up yu accessories  */}
+            {/* Acessórios */}
             {selectedAcc ? (
               <img
                 className="accessory"
@@ -393,7 +513,6 @@ const Home = () => {
               )
             )}
           </div>
-
           {/* Closet Overlay */}
           {showCloset && (
             <div className="closetOverlay">
@@ -407,11 +526,10 @@ const Home = () => {
                 selectedColor={selectedColor}
                 saveOutfit={saveOutfit}
                 resetClothes={resetClothes}
-                onShowPopUpInfo={handleShowPopUpInfo}
+                handleShowPopUpInfo={handleShowPopUpInfo}
               />
             </div>
           )}
-
           {/* Store Overlay */}
           {showStore && (
             <div className="storeOverlay">
@@ -423,7 +541,10 @@ const Home = () => {
                 selectedFit={selectedFit}
                 buyItemBtn={buyItemBtn}
                 resetFit={resetFit}
-                onShowPopUpInfo={handleShowPopUpInfo}
+                handleShowPopUpInfo={handleShowPopUpInfo}
+                dressUp={dressUp}
+                selectedItems={selectedItems}
+                setSelectedItems={setSelectedItems}
               />
             </div>
           )}

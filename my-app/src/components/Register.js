@@ -206,6 +206,7 @@ const Register = () => {
               Email <span className="alert">*</span>
             </label>
             <input
+              rel="preload"
               required
               id="input-email"
               type="email"
@@ -232,7 +233,7 @@ const Register = () => {
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
-                <label for="password_input">
+                <label htmlFor="password_input">
                   Palavra-passe <span className="alert">*</span>{" "}
                 </label>
                 <button
@@ -261,10 +262,10 @@ const Register = () => {
                   className="password-toggle-button"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <img
-                    src={showPassword ? notVisibleIcon : visibleIcon}
-                    alt="Mostrar palavra-passe"
-                  />
+                  <ion-icon
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    className="icons"
+                  ></ion-icon>
                 </button>
               </div>
             </div>
@@ -290,10 +291,12 @@ const Register = () => {
                   className="password-toggle-button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <img
-                    src={showConfirmPassword ? notVisibleIcon : visibleIcon}
-                    alt="Mostrar palavra-passe"
-                  />
+                  <ion-icon
+                    name={
+                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
+                    }
+                    className="icons"
+                  ></ion-icon>
                 </button>
               </div>
             </div>
