@@ -30,6 +30,19 @@ const Store = ({
     (item) => !currentMascot.accessoriesOwned.includes(item.id)
   );
 
+  // Estado para ver a confirmação de saída
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+
+  // Estado para ver o efeito de flash
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  const handleOutsideClick = (e) => {
+    if (!e.target.closest(".popup")) {
+      setIsFlashing(true);
+      setTimeout(() => setIsFlashing(false), 300);
+    }
+  };
+
   useEffect(() => {
     if (closetStatus === "idle") {
       dispatch(fetchCloset());
@@ -70,9 +83,9 @@ const Store = ({
     );
 
     buyItemBtn();
-    onShowPopUpInfo(
-      "Itens comprados com sucesso! Acede ao teu armário para ver!"
-    );
+    // onShowPopUpInfo(
+    //   "Itens comprados com sucesso! Acede ao teu armário para ver!"
+    // );
 
     setSelectedItems({});
   };
@@ -105,6 +118,14 @@ const Store = ({
     0
   );
 
+  const handleCloseStore = () => {
+    if (Object.keys(selectedItems).length > 0) {
+      setShowExitConfirmation(true);
+    } else {
+      closeStore();
+    }
+  };
+
   return (
     <div className="storeOverlay">
       <div className="closetContainer">
@@ -127,24 +148,54 @@ const Store = ({
           <div className="divider"></div>
 
           {/* Section Content */}
-          <div className="avatarcontent">
-            {sectionsData[activeSection].items.map((item) => (
-              <div className="avatarItemDiv" key={item.id}>
-                <button
-                  className={`avatarcircle ${
-                    selectedItems[item.type]?.id === item.id ? "activeFit" : ""
-                  }`}
-                  onClick={() => addAccessory(item)}
-                >
-                  <img src={item.src} alt={item.name} />
-                </button>
-                <p>{item.value}</p>
-              </div>
-            ))}
-          </div>
+          {sectionsData[activeSection].items.length === 0 ? (
+            <div className="avatarcontentEmpty">
+              <p className="empty-category-message">
+                Não há mais itens nesta categoria para comprar!
+              </p>
+            </div>
+          ) : (
+            <div className="avatarcontent">
+              {sectionsData[activeSection].items.map((item) => (
+                <div className="avatarItemDiv" key={item.id}>
+                  <button
+                    className={`avatarcircle ${
+                      selectedItems[item.type]?.id === item.id
+                        ? "activeFit"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      if (selectedItems[item.type]?.id === item.id) {
+                        // Remove o item se já estiver selecionado
+                        setSelectedItems((prev) => {
+                          const updatedItems = { ...prev };
+                          delete updatedItems[item.type];
+                          return updatedItems;
+                        });
+                        dressUp(null, item.type); // Remove o item da mascote
+                      } else {
+                        // Adiciona o item se não estiver selecionado
+                        setSelectedItems((prev) => ({
+                          ...prev,
+                          [item.type]: item,
+                        }));
+                        dressUp(item); // Aplica o item na mascote
+                      }
+                    }}
+                  >
+                    <img src={item.src} alt={item.name} />
+                  </button>
+                  <p>{item.value}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="closetFooter">
-          <button className="profile-button btnHomeActive" onClick={closeStore}>
+          <button
+            className="profile-button btnHomeActive"
+            onClick={handleCloseStore}
+          >
             <ion-icon name="close-outline" class="iconswhite"></ion-icon>
           </button>
           {Object.keys(selectedItems).length > 0 ? (
@@ -168,6 +219,32 @@ const Store = ({
           </button>
         </div>
       </div>
+      {showExitConfirmation && (
+        <div className="popupOverlay" onClick={handleOutsideClick}>
+          <div className={`popup ${isFlashing ? "flash" : ""}`}>
+            <h2 className="topBar-title">Sair da loja?</h2>
+            <p>Tens itens não comprados. De certeza que queres sair?</p>
+            <div className="popup-buttons">
+              <button
+                className="confirmExitBtn"
+                onClick={() => {
+                  setShowExitConfirmation(false);
+                  setSelectedItems({});
+                  closeStore();
+                }}
+              >
+                Sair sem comprar
+              </button>
+              <button
+                className="laterLink"
+                onClick={() => setShowExitConfirmation(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
