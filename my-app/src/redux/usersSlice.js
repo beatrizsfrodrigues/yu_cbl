@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { sendNotification } from "./messagesSlice"; // garante que este import está correto
 
 //* Fetch users from local storage or JSON
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
@@ -22,6 +23,45 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   }
 });
 
+//* Fluxo completo: rejeita + notifica + cria nova tarefa + notifica
+export const createNewTaskAfterRejection = createAsyncThunk(
+  "users/createNewTaskAfterRejection",
+  async (
+    { userId, partnerId, task, message, newTaskTitle, newTaskDescription },
+    { dispatch }
+  ) => {
+    // Rejeita tarefa
+    dispatch(rejectTask({ userId, task, message }));
+
+    // Notifica parceiro da rejeição
+    dispatch(
+      sendNotification({
+        senderId: partnerId,
+        receiverId: userId,
+        text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
+      })
+    );
+
+    // Cria nova tarefa
+    dispatch(
+      addTask({
+        title: newTaskTitle,
+        description: newTaskDescription,
+        partnerId,
+      })
+    );
+
+    // Notifica o utilizador principal sobre nova tarefa
+    dispatch(
+      sendNotification({
+        senderId: userId,
+        receiverId: partnerId,
+        text: `Recebeste uma nova tarefa: <b>${newTaskTitle}</b>.`,
+      })
+    );
+  }
+);
+
 const usersSlice = createSlice({
   name: "users",
   initialState: {
@@ -32,13 +72,12 @@ const usersSlice = createSlice({
   reducers: {
     addTask: (state, action) => {
       const { title, description, partnerId } = action.payload;
-
       const user = state.data.find((u) => u.id === partnerId);
 
       const newTask = {
         id: state.data.length + 1,
-        title: title,
-        description: description,
+        title,
+        description,
         picture: "",
         completed: false,
         verified: false,
@@ -48,8 +87,6 @@ const usersSlice = createSlice({
 
       if (user) {
         user.tasks.push(newTask);
-      } else {
-        state.data.push(newTask);
       }
 
       localStorage.setItem("users", JSON.stringify(state.data));
@@ -69,19 +106,16 @@ const usersSlice = createSlice({
     },
     completeTask: (state, action) => {
       const { taskId, proofImage, userId } = action.payload;
-
       const user = state.data.find((u) => u.id === userId);
 
       function getFormattedDate() {
         const now = new Date();
-
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, "0");
         const day = String(now.getDate()).padStart(2, "0");
         const hours = String(now.getHours()).padStart(2, "0");
         const minutes = String(now.getMinutes()).padStart(2, "0");
         const seconds = String(now.getSeconds()).padStart(2, "0");
-
         return `${year}${month}${day}${hours}${minutes}${seconds}`;
       }
 
@@ -123,7 +157,6 @@ const usersSlice = createSlice({
 
       localStorage.setItem("users", JSON.stringify(state.data));
     },
-    
     updateUser: (state, action) => {
       const updatedUser = action.payload;
       const index = state.data.findIndex((user) => user.id === updatedUser.id);
@@ -170,4 +203,5 @@ export const {
   clearRejectMessage,
   buyMultipleItems,
 } = usersSlice.actions;
+
 export default usersSlice.reducer;

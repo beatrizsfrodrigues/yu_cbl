@@ -115,3 +115,73 @@
   background-color: #ffc4a3;
   color: white;
 }
+
+/* Overlay do popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Certifique-se de que está acima de outros elementos */
+}
+
+/* Conteúdo do popup */
+.popup-content {
+  background-color: var(--white);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: fadeIn 0.3s ease; /* Animação de entrada */
+}
+
+/* Título do popup */
+.popup-content h3 {
+  font-size: 1.5rem;
+  color: var(--purple-darker);
+  margin-bottom: 16px;
+}
+
+/* Texto do popup */
+.popup-content p {
+  font-size: 1rem;
+  color: var(--gray-dark);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Botão de fechar */
+.close-popup-button {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: var(--purple-light);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.close-popup-button:hover {
+  background-color: var(--purple-darker);
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

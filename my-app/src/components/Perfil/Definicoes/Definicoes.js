@@ -8,20 +8,22 @@ const Definicoes = () => {
   const [partnerName, setPartnerName] = useState("");
   const [partnerCode, setPartnerCode] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(""); // To store the time remaining in readable format
+  const [showPopup, setShowPopup] = useState(false); // Estado para controlar o popup
   const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const questionTimes = JSON.parse(localStorage.getItem("questionTimes")) || {};
+    const questionTimes =
+      JSON.parse(localStorage.getItem("questionTimes")) || {};
     const lastTime = loggedInUser?.id ? questionTimes[loggedInUser.id] : null;
 
     if (lastTime) {
       const now = Date.now();
       const diffInMilliseconds = now - Number(lastTime);
-      
+
       // Calculate time remaining in seconds
       const diffInSeconds = diffInMilliseconds / 1000;
-      const remainingTime = Math.max(2592000 - diffInSeconds, 0);  // Ensures no negative time
+      const remainingTime = Math.max(2592000 - diffInSeconds, 0); // Ensures no negative time
 
       if (remainingTime <= 0) {
         setCanAccessQuestions(true);
@@ -36,15 +38,14 @@ const Definicoes = () => {
 
         let formattedTime = "";
         if (days > 0) {
-          formattedTime += `${days} dia${days > 1 ? 's' : ''}, `;
+          formattedTime += `${days} dia${days > 1 ? "s" : ""}, `;
         }
         if (hours > 0) {
-          formattedTime += `${hours} hora${hours > 1 ? 's' : ''}, `;
+          formattedTime += `${hours} hora${hours > 1 ? "s" : ""}, `;
         }
         if (minutes > 0 || (hours === 0 && days === 0)) {
-          formattedTime += `${minutes} minuto${minutes > 1 ? 's' : ''}`;
+          formattedTime += `${minutes} minuto${minutes > 1 ? "s" : ""}`;
         }
-
 
         setTimeRemaining(formattedTime);
       }
@@ -77,12 +78,14 @@ const Definicoes = () => {
     const currentUser = storedUsers.find((u) => u.id === loggedInUser?.id);
 
     if (currentUser?.partnerId) {
-      alert(
-        `Já tens uma ligação com:\n\nParceiro: ${partnerName}\nCódigo do Parceiro: ${partnerCode}`
-      );
+      setShowPopup(true); // Mostra o popup
     } else {
       navigate("/connection");
     }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false); // Fecha o popup
   };
 
   const handleClose = () => {
@@ -119,22 +122,48 @@ const Definicoes = () => {
               Fazer Ligação
             </button>
 
+            {/* Popup */}
+            {showPopup && (
+              <div className="popup-overlay" onClick={closePopup}>
+                <div
+                  className="popup-content"
+                  onClick={(e) => e.stopPropagation()} // Evita fechar ao clicar no conteúdo
+                >
+                  <h3>Ligação Existente</h3>
+                  <p>
+                    Já tens uma ligação com:
+                    <br />
+                    <strong>Parceiro:</strong> {partnerName}
+                    <br />
+                    <strong>Código do Parceiro:</strong> {partnerCode}
+                  </p>
+                  <button className="close-popup-button" onClick={closePopup}>
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            )}
+
             <button
               className="settings-button"
               disabled={!canAccessQuestions}
-              onClick={canAccessQuestions ? () => navigate("/questions") : undefined}
+              onClick={
+                canAccessQuestions ? () => navigate("/questions") : undefined
+              }
               style={{
                 opacity: canAccessQuestions ? 1 : 0.5,
                 cursor: canAccessQuestions ? "pointer" : "not-allowed",
               }}
             >
-              {canAccessQuestions
-                ? "Refazer questionário"
-                : <>
-                    Próximo questionário em:<br />
-                    {timeRemaining}
-                  </>
-}
+              {canAccessQuestions ? (
+                "Refazer questionário"
+              ) : (
+                <>
+                  Próximo questionário em:
+                  <br />
+                  {timeRemaining}
+                </>
+              )}
             </button>
           </div>
 

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { rejectTask } from "../../redux/usersSlice";
+import {
+  rejectTask,
+  createNewTaskAfterRejection,
+} from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
 
 function Reject({
@@ -14,11 +17,16 @@ function Reject({
   const [message, setMessage] = useState("");
   const [rejected, setRejected] = useState(false);
 
-  const handleRejectTask = (e) => {
+  const handleRejectTask = async (e) => {
     e.preventDefault();
 
+    // 1. Rejeita a tarefa
     dispatch(rejectTask({ userId: partnerUser.id, task, message }));
 
+    // 2. Cria nova tarefa automaticamente
+    await dispatch(createNewTaskAfterRejection({ userId: partnerUser.id }));
+
+    // 3. Envia notificação ao parceiro
     dispatch(
       sendNotification({
         senderId: partnerUser.partnerId,
@@ -27,7 +35,16 @@ function Reject({
       })
     );
 
+    // 4. Mostra popup de confirmação
     onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi rejeitada.`);
+
+    // 5. (Opcional) Pede nova tarefa manualmente
+    onRequestNewTask?.();
+
+    // 6. Fecha modal
+    onClose();
+
+    // 7. Atualiza estado
     setRejected(true);
   };
 
@@ -35,7 +52,6 @@ function Reject({
     <div
       className="modal"
       onClick={(e) => {
-        // Fecha se clicar fora da window
         if (e.target.classList.contains("modal")) {
           onClose();
         }
@@ -67,15 +83,10 @@ function Reject({
               <input
                 type="text"
                 className="input"
+                value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
-              <button
-                className="submitBtn"
-                onClick={() => {
-                  onRequestNewTask?.();
-                  onClose();
-                }}
-              >
+              <button className="submitBtn" type="submit">
                 Pedir nova tarefa
               </button>
             </form>
