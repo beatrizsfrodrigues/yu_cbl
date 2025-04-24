@@ -1,13 +1,13 @@
 [
   {
-    "id": 1,
+    "id": "67e32d4848cb2b149a899fa0",
     "code": "8g6QE3uHT9",
     "username": "beatriz",
     "email": "beatriz.sfrodrigues@ua.pt",
     "password": "123",
     "age": 21,
     "points": 1800,
-    "partnerId": 2,
+    "partnerId": "67e32d4848cb2b149a899fa1",
     "tasks": [
       {
         "id": 1,
@@ -33,14 +33,14 @@
     "initialFormAnswers": []
   },
   {
-    "id": 2,
+    "id": "67e32d4848cb2b149a899fa1",
     "code": "QhJmffSpaU",
     "username": "catarina",
     "email": "catarinaseemann@ua.pt",
     "password": "123",
     "age": 22,
     "points": 200000,
-    "partnerId": 1,
+    "partnerId": "67e32d4848cb2b149a899fa0",
     "tasks": [
       {
         "id": 1,
