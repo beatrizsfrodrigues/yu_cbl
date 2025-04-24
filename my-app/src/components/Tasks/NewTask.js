@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { X } from "react-feather";
-import { addTask } from "../../redux/usersSlice";
+// import { addTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import { addTask } from "../../redux/taskSlice.js";
 
 function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
   const dispatch = useDispatch();
@@ -13,8 +14,8 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
     e.preventDefault();
     if (currentUser.partnerId) {
       const partnerId = currentUser.partnerId;
-
-      dispatch(addTask({ title, description, partnerId }));
+      console.log("ok");
+      dispatch(addTask({ title, description }));
 
       dispatch(
         sendNotification({

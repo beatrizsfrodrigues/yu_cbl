@@ -1,27 +1,72 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-//* Fetch tasks from API
-export const getTasks = createAsyncThunk("tasks/getTasks", async () => {
-  const res = await axios.get("http://localhost:3002/tasks");
-  localStorage.setItem("tasks", JSON.stringify(res.data));
-  return res.data;
-});
+const API_URL = process.env.REACT_APP_API_URL;
 
-export const addTask = createAsyncThunk("tasks/addTask", async (taskData) => {
-  const res = await axios.post("http://localhost:3000/tasks", taskData);
-  return res.data;
-});
+export const getTasks = createAsyncThunk(
+  "tasks/getTasks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
 
-export const deleteTask = createAsyncThunk("tasks/deleteTask", async (id) => {
-  const res = await axios.delete(`http://localhost:3000/tasks/${id}`);
-  return res.data;
-});
+      const res = await axios.get(`${API_URL}/tasks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data);
+      return res.data.tasks;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const addTask = createAsyncThunk(
+  "tasks/addTask",
+  async ({ title, description }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `${API_URL}/tasks`,
+        { title, description },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  "tasks/deleteTask",
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.delete(`${API_URL}/tasks/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 export const updateTask = createAsyncThunk(
   "tasks/updateTask",
   async ({ id, updates }) => {
-    const res = await axios.put(`http://localhost:3000/tasks/${id}`, updates);
+    const res = await axios.put(`${API_URL}/tasks/${id}`, updates);
     return res.data;
   }
 );
@@ -29,28 +74,28 @@ export const updateTask = createAsyncThunk(
 export const completeTask = createAsyncThunk(
   "tasks/completeTask",
   async (id) => {
-    const res = await axios.patch(`http://localhost:3000/tasks/${id}/complete`);
+    const res = await axios.patch(`${API_URL}/tasks/${id}/complete`);
     return res.data;
   }
 );
 
 export const verifyTask = createAsyncThunk("tasks/verifyTask", async (id) => {
-  const res = await axios.patch(`http://localhost:3000/tasks/${id}/verify`);
+  const res = await axios.patch(`${API_URL}/tasks/${id}/verify`);
   return res.data;
 });
 
 export const removeRejectMessage = createAsyncThunk(
-  "tasks/remove-reject-message",
+  "tasks/removeRejectMessage",
   async (id) => {
-    const res = await axios.patch(`http://localhost:3000/tasks/${id}/verify`);
+    const res = await axios.patch(
+      `${API_URL}/tasks/${id}/remove-reject-message`
+    );
     return res.data;
   }
 );
 
 export const notifyTasks = createAsyncThunk("tasks/notifyTasks", async (id) => {
-  const res = await axios.patch(
-    `http://localhost:3000/tasks/${id}/notification`
-  );
+  const res = await axios.patch(`${API_URL}/tasks/${id}/notification`);
   return res.data;
 });
 
