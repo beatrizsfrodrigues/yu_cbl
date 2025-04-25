@@ -5,11 +5,11 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const getTasks = createAsyncThunk(
   "tasks/getTasks",
-  async (_, { rejectWithValue }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get(`${API_URL}/tasks`, {
+      const res = await axios.get(`${API_URL}/tasks?userId=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,17 +44,21 @@ export const addTask = createAsyncThunk(
   }
 );
 
-export const deleteTask = createAsyncThunk(
-  "tasks/deleteTask",
-  async (id, { rejectWithValue }) => {
+export const completeTask = createAsyncThunk(
+  "tasks/completeTask",
+  async ({ picture, id }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.delete(`${API_URL}/tasks/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.patch(
+        `${API_URL}/tasks/${id}/complete`,
+        { picture },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log(res.data);
       return res.data;
     } catch (error) {
@@ -63,41 +67,74 @@ export const deleteTask = createAsyncThunk(
   }
 );
 
-export const updateTask = createAsyncThunk(
-  "tasks/updateTask",
-  async ({ id, updates }) => {
-    const res = await axios.put(`${API_URL}/tasks/${id}`, updates);
-    return res.data;
+export const verifyTask = createAsyncThunk(
+  "tasks/verifyTask",
+  async ({ id, rejectMessage, verify }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.patch(
+        `${API_URL}/tasks/${id}/verify`,
+        { rejectMessage, verify },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
-
-export const completeTask = createAsyncThunk(
-  "tasks/completeTask",
-  async (id) => {
-    const res = await axios.patch(`${API_URL}/tasks/${id}/complete`);
-    return res.data;
-  }
-);
-
-export const verifyTask = createAsyncThunk("tasks/verifyTask", async (id) => {
-  const res = await axios.patch(`${API_URL}/tasks/${id}/verify`);
-  return res.data;
-});
 
 export const removeRejectMessage = createAsyncThunk(
   "tasks/removeRejectMessage",
-  async (id) => {
-    const res = await axios.patch(
-      `${API_URL}/tasks/${id}/remove-reject-message`
-    );
-    return res.data;
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.patch(
+        `${API_URL}/tasks/${id}/remove-reject-message`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 
-export const notifyTasks = createAsyncThunk("tasks/notifyTasks", async (id) => {
-  const res = await axios.patch(`${API_URL}/tasks/${id}/notification`);
-  return res.data;
-});
+export const notifyTasks = createAsyncThunk(
+  "tasks/notifyTasks",
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.patch(
+        `${API_URL}/tasks/${id}/notification`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const setLoading = (state) => {
   state.status = "loading";
@@ -149,10 +186,6 @@ const tasksSlice = createSlice({
       .addCase(addTask.rejected, setError)
 
       // update-related thunks
-      .addCase(updateTask.pending, setLoading)
-      .addCase(updateTask.fulfilled, updateTaskInState)
-      .addCase(updateTask.rejected, setError)
-
       .addCase(completeTask.pending, setLoading)
       .addCase(completeTask.fulfilled, updateTaskInState)
       .addCase(completeTask.rejected, setError)
@@ -167,15 +200,7 @@ const tasksSlice = createSlice({
 
       .addCase(notifyTasks.pending, setLoading)
       .addCase(notifyTasks.fulfilled, updateTaskInState)
-      .addCase(notifyTasks.rejected, setError)
-
-      // deleteTask
-      .addCase(deleteTask.pending, setLoading)
-      .addCase(deleteTask.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.data = state.data.filter((task) => task.id !== action.payload);
-      })
-      .addCase(deleteTask.rejected, setError);
+      .addCase(notifyTasks.rejected, setError);
   },
 });
 

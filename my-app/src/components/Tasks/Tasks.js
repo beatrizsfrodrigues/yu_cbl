@@ -2,7 +2,7 @@ import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
-import { getTasks } from "../../redux/taskSlice.js";
+import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -36,19 +36,14 @@ function Tasks() {
   const [taskToVerify, setTaskToVerify] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [partnerUser, setPartnerUser] = useState(null);
-  const [partnerTasks, setPartnerTasks] = useState([]);
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
   const [filter, setFilter] = useState("received");
   const [filteredTasks, setFilteredTasks] = useState([]);
-  const [swipedTask, setSwipedTask] = useState(null);
-  const [touchStartX, setTouchStartX] = useState(0);
-  const [touchMoveX, setTouchMoveX] = useState(0);
-  const [isSwiping, setIsSwiping] = useState(false); // Track actual swipe
   const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
 
   useEffect(() => {
-    dispatch(getTasks());
+    dispatch(getTasks(currentUserId));
   }, [dispatch]);
 
   useEffect(() => {
@@ -80,6 +75,11 @@ function Tasks() {
 
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
+    if (filterType === "received") {
+      dispatch(getTasks(currentUserId));
+    } else if (filterType === "assigned" && partnerUser) {
+      dispatch(getTasks(partnerUser.id));
+    }
   };
 
   useEffect(() => {
@@ -96,17 +96,15 @@ function Tasks() {
     setCurrentUser(user);
 
     const rejectedTask =
-      users && users.length > 0
-        ? user.tasks.find((task) => task.rejectMessage !== "")
+      tasks && tasks.length > 0
+        ? tasks.find((task) => task.rejectMessage !== "")
         : null;
     if (rejectedTask) {
       handleShowPopUpInfo(
         `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
       );
 
-      dispatch(
-        clearRejectMessage({ userId: user.id, taskId: rejectedTask.id })
-      );
+      dispatch(removeRejectMessage(rejectedTask._id));
     }
 
     const partner =
@@ -117,17 +115,27 @@ function Tasks() {
     if (partner) {
       setPartnerUser(partner);
 
-      const task = partner.tasks.find(
-        (task) => task.completed && !task.verified
-      );
-      if (task) {
-        setTaskToVerify(task);
-        if (partner) {
-          setShowVerifyTask(true);
+      const fetchPartnerTasks = async () => {
+        try {
+          const resultAction = await dispatch(getTasks(partner.id));
+          const partnerTasks = resultAction.payload;
+
+          const taskToVerify = partnerTasks.find(
+            (task) => task.completed && !task.verified
+          );
+
+          if (taskToVerify && taskToVerify.notification == true) {
+            setTaskToVerify(taskToVerify);
+            setShowVerifyTask(true);
+          } else {
+            setShowVerifyTask(false);
+          }
+        } catch (err) {
+          console.error("Failed to fetch partner tasks:", err);
         }
-      } else {
-        setShowVerifyTask(false);
-      }
+      };
+
+      fetchPartnerTasks();
     }
   }, [users, currentUserId, dispatch]);
 

@@ -5,6 +5,7 @@ import {
   createNewTaskAfterRejection,
 } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import { verifyTask } from "../../redux/taskSlice.js";
 
 function Reject({
   onClose,
@@ -20,11 +21,9 @@ function Reject({
   const handleRejectTask = async (e) => {
     e.preventDefault();
 
-    // 1. Rejeita a tarefa
-    dispatch(rejectTask({ userId: partnerUser.id, task, message }));
-
-    // 2. Cria nova tarefa automaticamente
-    await dispatch(createNewTaskAfterRejection({ userId: partnerUser.id }));
+    dispatch(
+      verifyTask({ id: task.task._id, rejectMessage: message, verify: false })
+    );
 
     // 3. Envia notificação ao parceiro
     dispatch(
