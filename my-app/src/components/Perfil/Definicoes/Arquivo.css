@@ -19,7 +19,7 @@
     padding: 0;
   }
   
-  .task-item {
+  .task-item-old {
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -31,13 +31,13 @@
     animation: slideIn 0.5s forwards;
   }
   
-  .task-item h3 {
+  .task-item-old h3 {
     margin: 0;
     font-size: 1.2rem;
     color: #333;
   }
   
-  .task-item p {
+  .task-item-old p {
     margin: 5px 0;
     color: #666;
   }

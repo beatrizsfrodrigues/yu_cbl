@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import VerifyTask from "./VerifyTask.js";
+import { useDispatch } from "react-redux";
+import { notifyTasks } from "../../redux/taskSlice.js";
 
 function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
+  const dispatch = useDispatch();
 
   const handleOpenVerifyTaskModal = () => {
     onClose();
@@ -16,9 +19,13 @@ function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {
 
   const handleOutsideClick = (e) => {
     if (!e.target.closest(".popup")) {
-      setIsFlashing(true);
-      setTimeout(() => setIsFlashing(false), 300); // Remove o efeito após 300ms
+      onClose();
     }
+  };
+
+  const handleClosePopUp = (task) => {
+    onClose();
+    dispatch(notifyTasks(task._id));
   };
 
   return (
@@ -33,7 +40,7 @@ function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {
         >
           Verificar
         </button>
-        <p className="laterLink" onClick={onClose}>
+        <p className="laterLink" onClick={() => handleClosePopUp(task)}>
           Lembrar mais tarde
         </p>
       </div>

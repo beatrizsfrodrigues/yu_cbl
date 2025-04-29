@@ -27,10 +27,27 @@ import Apresentacao from "./components/Welcome/Apresentacao";
 
 import Questions from "./components/Welcome/Questions";
 
+
+
 import "./App.css";
 
 function AppContent() {
-  const location = useLocation();
+
+    const location = useLocation();
+
+    useEffect(() => {
+      const lastTime = localStorage.getItem("lastQuestionTime");
+      if (lastTime) {
+        const now = Date.now();
+        const diffInMilliseconds = now - Number(lastTime);
+        const diffInSeconds = diffInMilliseconds / 1000;
+
+        if (diffInSeconds >= 2592000) { // 30 dias em segundos
+          console.log("Novo questionário disponível.");
+        }
+      }
+    }, [location.pathname]);
+  
 
   // Nomes das páginas (mudar à vontade)
   const pageTitles = {

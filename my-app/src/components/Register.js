@@ -233,7 +233,7 @@ const Register = () => {
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
-                <label for="password_input">
+                <label htmlFor="password_input">
                   Palavra-passe <span className="alert">*</span>{" "}
                 </label>
                 <button
@@ -264,7 +264,7 @@ const Register = () => {
                 >
                   <ion-icon
                     name={showPassword ? "eye-off-outline" : "eye-outline"}
-                    class="icons"
+                    className="icons"
                   ></ion-icon>
                 </button>
               </div>
@@ -295,7 +295,7 @@ const Register = () => {
                     name={
                       showConfirmPassword ? "eye-off-outline" : "eye-outline"
                     }
-                    class="icons"
+                    className="icons"
                   ></ion-icon>
                 </button>
               </div>

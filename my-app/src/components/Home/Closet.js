@@ -101,24 +101,32 @@ const Closet = ({
           <div className="divider"></div>
 
           {/* Section Content */}
-          <div className="avatarcontent">
-            {sectionsData[activeSection].items.map((item) => (
-              <button
-                key={item.id}
-                className={`avatarcircle ${
-                  selectedBackground?.id === item.id ||
-                  selectedShirt?.id === item.id ||
-                  selectedAcc?.id === item.id ||
-                  selectedColor?.id === item.id
-                    ? "activeFit"
-                    : ""
-                }`}
-                onClick={() => handleItemClick(item)}
-              >
-                <img src={item.src} alt={item.name} />
-              </button>
-            ))}
-          </div>
+          {sectionsData[activeSection].items.length === 0 ? (
+            <div className="avatarcontentEmpty">
+              <p className="empty-category-message">
+                Ainda não tens acessórios nesta categoria!
+              </p>
+            </div>
+          ) : (
+            <div className="avatarcontent">
+              {sectionsData[activeSection].items.map((item) => (
+                <button
+                  key={item.id}
+                  className={`avatarcircle ${
+                    selectedBackground?.id === item.id ||
+                    selectedShirt?.id === item.id ||
+                    selectedAcc?.id === item.id ||
+                    selectedColor?.id === item.id
+                      ? "activeFit"
+                      : ""
+                  }`}
+                  onClick={() => handleItemClick(item)}
+                >
+                  <img src={item.src} alt={item.name} />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="closetFooter">
           <button

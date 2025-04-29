@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"; // Adicione useState
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCloset } from "../../redux/closetSlice";
 import { buyItem, saveFit } from "../../redux/mascotSlice";
+import { buyMultipleItems } from "../../redux/usersSlice";
 
 const Store = ({
   addAccessory,
@@ -13,7 +14,11 @@ const Store = ({
   resetFit,
   onShowPopUpInfo,
   dressUp,
+  selectedItems, // Recebe o estado como prop
+  setSelectedItems, // Recebe a função de atualização como prop
 }) => {
+  // Remova a definição local de selectedItems e setSelectedItems
+  // const [selectedItems, setSelectedItems] = useState({});
   const dispatch = useDispatch();
   const closet = useSelector((state) => state.closet.data);
   const closetStatus = useSelector((state) => state.closet.status);
@@ -25,6 +30,19 @@ const Store = ({
     (item) => !currentMascot.accessoriesOwned.includes(item.id)
   );
 
+  // Estado para ver a confirmação de saída
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+
+  // Estado para ver o efeito de flash
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  const handleOutsideClick = (e) => {
+    if (!e.target.closest(".popup")) {
+      setIsFlashing(true);
+      setTimeout(() => setIsFlashing(false), 300);
+    }
+  };
+
   useEffect(() => {
     if (closetStatus === "idle") {
       dispatch(fetchCloset());
@@ -35,35 +53,41 @@ const Store = ({
     return <div>Loading...</div>;
   }
 
-  const handleBuyItem = (item) => {
-    // Deduz pontos e despacha a ação de compra
-    dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
+  const handleBuyItem = () => {
+    Object.values(selectedItems).forEach((item) => {
+      dispatch(buyItem({ itemId: item.id, userId: currentUser.id }));
+    });
+
+    dispatch(
+      buyMultipleItems({
+        totalPrice,
+        userId: currentUser.id,
+      })
+    );
+
     dispatch(
       saveFit({
         id: currentMascot.id,
         hat:
-          item.type === "Decor"
-            ? item.id
-            : currentMascot.accessoriesEquipped.hat,
+          selectedItems["Decor"]?.id || currentMascot.accessoriesEquipped.hat,
         shirt:
-          item.type === "Shirts"
-            ? item.id
-            : currentMascot.accessoriesEquipped.shirt,
+          selectedItems["Shirts"]?.id ||
+          currentMascot.accessoriesEquipped.shirt,
         color:
-          item.type === "SkinColor"
-            ? item.id
-            : currentMascot.accessoriesEquipped.color,
+          selectedItems["SkinColor"]?.id ||
+          currentMascot.accessoriesEquipped.color,
         background:
-          item.type === "Backgrounds"
-            ? item.id
-            : currentMascot.accessoriesEquipped.background,
+          selectedItems["Backgrounds"]?.id ||
+          currentMascot.accessoriesEquipped.background,
       })
     );
 
     buyItemBtn();
-    onShowPopUpInfo(
-      "Item comprado com sucesso! Acede ao teu armário para ver!"
-    );
+    // onShowPopUpInfo(
+    //   "Itens comprados com sucesso! Acede ao teu armário para ver!"
+    // );
+
+    setSelectedItems({});
   };
 
   const sectionsData = [
@@ -89,6 +113,19 @@ const Store = ({
     },
   ];
 
+  const totalPrice = Object.values(selectedItems).reduce(
+    (acc, item) => acc + (item?.value || 0),
+    0
+  );
+
+  const handleCloseStore = () => {
+    if (Object.keys(selectedItems).length > 0) {
+      setShowExitConfirmation(true);
+    } else {
+      closeStore();
+    }
+  };
+
   return (
     <div className="storeOverlay">
       <div className="closetContainer">
@@ -111,54 +148,103 @@ const Store = ({
           <div className="divider"></div>
 
           {/* Section Content */}
-          <div className="avatarcontent">
-            {sectionsData[activeSection].items.map((item) => (
-              <div className="avatarItemDiv" key={item.id}>
-                <button
-                  className={`avatarcircle ${
-                    selectedFit?.id === item.id ? "activeFit" : ""
-                  }`}
-                  onClick={() => {
-                    addAccessory(item); // Atualiza o item selecionado
-                    dressUp(item); // Aplica o item na mascote para visualização
-                  }}
-                >
-                  <img src={item.src} alt={item.name} />
-                </button>
-                <p>{item.value}</p>
-              </div>
-            ))}
-          </div>
+          {sectionsData[activeSection].items.length === 0 ? (
+            <div className="avatarcontentEmpty">
+              <p className="empty-category-message">
+                Não há mais itens nesta categoria para comprar!
+              </p>
+            </div>
+          ) : (
+            <div className="avatarcontent">
+              {sectionsData[activeSection].items.map((item) => (
+                <div className="avatarItemDiv" key={item.id}>
+                  <button
+                    className={`avatarcircle ${
+                      selectedItems[item.type]?.id === item.id
+                        ? "activeFit"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      if (selectedItems[item.type]?.id === item.id) {
+                        // Remove o item se já estiver selecionado
+                        setSelectedItems((prev) => {
+                          const updatedItems = { ...prev };
+                          delete updatedItems[item.type];
+                          return updatedItems;
+                        });
+                        dressUp(null, item.type); // Remove o item da mascote
+                      } else {
+                        // Adiciona o item se não estiver selecionado
+                        setSelectedItems((prev) => ({
+                          ...prev,
+                          [item.type]: item,
+                        }));
+                        dressUp(item); // Aplica o item na mascote
+                      }
+                    }}
+                  >
+                    <img src={item.src} alt={item.name} />
+                  </button>
+                  <p>{item.value}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="closetFooter">
-          <button className="profile-button btnHomeActive" onClick={closeStore}>
+          <button
+            className="profile-button btnHomeActive"
+            onClick={handleCloseStore}
+          >
             <ion-icon name="close-outline" class="iconswhite"></ion-icon>
           </button>
-          {selectedFit && selectedFit !== "" ? (
-            currentUser && currentUser.points >= selectedFit.value ? (
+          {Object.keys(selectedItems).length > 0 ? (
+            currentUser && currentUser.points >= totalPrice ? (
               <button
                 className="buttonMid btnHomeActive"
-                onClick={() => handleBuyItem(selectedFit)}
+                onClick={handleBuyItem}
               >
-                {selectedFit.value}
+                {totalPrice}
                 <ion-icon name="star-outline" class="iconswhite"></ion-icon>
                 Comprar
               </button>
             ) : (
-              <button className="buttonMid">{selectedFit.value}</button>
+              <button className="buttonMid">{totalPrice}</button>
             )
           ) : (
             <button className="buttonMid">Comprar</button>
           )}
-          <button className="profile-button btnHomeActive">
-            <ion-icon
-              name="refresh-outline"
-              onClick={() => resetFit()}
-              class="iconswhite"
-            ></ion-icon>
+          <button className="profile-button btnHomeActive" onClick={resetFit}>
+            <ion-icon name="refresh-outline" class="iconswhite"></ion-icon>
           </button>
         </div>
       </div>
+      {showExitConfirmation && (
+        <div className="popupOverlay" onClick={handleOutsideClick}>
+          <div className={`popup ${isFlashing ? "flash" : ""}`}>
+            <h2 className="topBar-title">Sair da loja?</h2>
+            <p>Tens itens não comprados. De certeza que queres sair?</p>
+            <div className="popup-buttons">
+              <button
+                className="confirmExitBtn"
+                onClick={() => {
+                  setShowExitConfirmation(false);
+                  setSelectedItems({});
+                  closeStore();
+                }}
+              >
+                Sair sem comprar
+              </button>
+              <button
+                className="laterLink"
+                onClick={() => setShowExitConfirmation(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

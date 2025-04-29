@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { validateTask } from "../../redux/usersSlice";
 import { sendNotification } from "../../redux/messagesSlice";
+import { verifyTask } from "../../redux/taskSlice.js";
 
 function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
   const dispatch = useDispatch();
@@ -9,7 +9,7 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
   const handleVerifyTask = (e) => {
     e.preventDefault();
 
-    dispatch(validateTask({ userId: partnerUser.id, task }));
+    dispatch(verifyTask({ id: task._id, rejectMessage: "", verify: true }));
 
     dispatch(
       sendNotification({

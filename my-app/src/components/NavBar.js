@@ -1,26 +1,29 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import {
-  Home as HomeIcon,
-  Clipboard,
-  User,
-  MessageCircle,
-} from "react-feather";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
-  // Memoriza o array navItems para evitar recriações desnecessárias
   const navItems = useMemo(
     () => [
       {
         path: "/home",
-        icon: <ion-icon name="home-outline" className="iconsNav"></ion-icon>,
+        icon: (
+          <ion-icon
+            name="home-outline"
+            className="iconsNav"
+            size="large"
+          ></ion-icon>
+        ),
         label: "Home",
       },
       {
         path: "/tasks",
         icon: (
-          <ion-icon name="clipboard-outline" className="iconsNav"></ion-icon>
+          <ion-icon
+            name="clipboard-outline"
+            className="iconsNav"
+            size="large"
+          ></ion-icon>
         ),
         label: "Tarefas",
       },
@@ -30,13 +33,20 @@ function NavBar() {
           <ion-icon
             name="chatbubble-ellipses-outline"
             className="iconsNav"
+            size="large"
           ></ion-icon>
         ),
         label: "Mensagens",
       },
       {
         path: "/profile",
-        icon: <ion-icon name="person-outline" className="iconsNav"></ion-icon>,
+        icon: (
+          <ion-icon
+            name="person-outline"
+            className="iconsNav"
+            size="large"
+          ></ion-icon>
+        ),
         label: "Perfil",
       },
     ],
@@ -45,6 +55,7 @@ function NavBar() {
 
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [itemWidth, setItemWidth] = useState(80); // Default for desktop
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(
@@ -55,17 +66,37 @@ function NavBar() {
     }
   }, [location, navItems]);
 
-  const ITEM_WIDTH = 80;
-  const OFFSET = (navItems.length * ITEM_WIDTH) / 2;
+  useEffect(() => {
+    const updateItemWidth = () => {
+      if (window.innerWidth <= 768) {
+        setItemWidth(70); // Mobile
+      } else {
+        setItemWidth(80); // Desktop
+      }
+    };
+
+    updateItemWidth(); // Set initial value
+    window.addEventListener("resize", updateItemWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateItemWidth);
+    };
+  }, []);
+
+  const indicatorTransform = useMemo(() => {
+    const totalItems = navItems.length;
+    const navWidth = totalItems * itemWidth;
+    const centerOffset = navWidth / 2 - itemWidth / 2;
+    const targetX = activeIndex * itemWidth - centerOffset;
+    return `translateX(${targetX}px) translateY(-70%)`;
+  }, [activeIndex, itemWidth, navItems.length]);
 
   return (
     <nav aria-label="Menu de navegação principal">
       <button
         className="indicator"
         style={{
-          transform: `translateX(${
-            activeIndex * ITEM_WIDTH - OFFSET + ITEM_WIDTH / 2
-          }px) translateY(-70%)`,
+          transform: indicatorTransform,
         }}
       />
 
@@ -74,7 +105,6 @@ function NavBar() {
           aria-label={`Ir para ${item.label}`}
           key={item.path}
           to={item.path}
-          size={60}
           className={`navItem ${activeIndex === index ? "active" : ""}`}
         >
           {item.icon}
