@@ -1,8 +1,9 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
+import { fetchUsers } from "../../redux/usersSlice.js";
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
+import { getAuthUser } from "../../utils/cookieUtils";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -14,15 +15,17 @@ const PopUpInfo = lazy(() => import("../PopUpInfo.js"));
 const Filter = lazy(() => import("./Filter.js"));
 const Reject = lazy(() => import("./Reject.js"));
 
+// ! polling
 function Tasks() {
   const dispatch = useDispatch();
-  const { data: tasks, status } = useSelector((state) => state.tasks); // Ensure `state.tasks` matches the key used in the store configuration.
+  const { data: tasks, status } = useSelector((state) => state.tasks);
 
-  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+  const authUser = getAuthUser();
+  const currentUserId = authUser?._id;
+
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
-  const messagesStatus = useSelector((state) => state.messages.status);
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -44,13 +47,28 @@ function Tasks() {
 
   useEffect(() => {
     dispatch(getTasks(currentUserId));
-  }, [dispatch]);
+  }, [dispatch, currentUserId]);
 
   useEffect(() => {
-    if (currentUser && tasks) {
+    const rejectedTask =
+      tasks && tasks.length > 0
+        ? tasks.find((task) => task.rejectMessage !== "")
+        : null;
+
+    if (rejectedTask && rejectedTask.userId === currentUserId) {
+      handleShowPopUpInfo(
+        `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
+      );
+
+      dispatch(removeRejectMessage(rejectedTask._id));
+    }
+  }, [tasks, currentUserId, dispatch]);
+
+  useEffect(() => {
+    if (currentUserId && tasks) {
       const filtered = tasks.filter((task) => {
         const isReceived =
-          filter === "received" && task.userId === currentUser.id;
+          filter === "received" && task.userId === currentUserId;
         const isAssigned =
           filter === "assigned" &&
           partnerUser &&
@@ -71,7 +89,7 @@ function Tasks() {
 
       setFilteredTasks(filtered);
     }
-  }, [tasks, filter, filterCriteria, currentUser, partnerUser]);
+  }, [tasks, filter, filterCriteria, currentUserId, partnerUser]);
 
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
@@ -93,20 +111,9 @@ function Tasks() {
       users && users.length > 0
         ? users.find((user) => user.id === currentUserId)
         : null;
-    setCurrentUser(user);
+    setCurrentUser(authUser);
 
-    const rejectedTask =
-      tasks && tasks.length > 0
-        ? tasks.find((task) => task.rejectMessage !== "")
-        : null;
-    if (rejectedTask) {
-      handleShowPopUpInfo(
-        `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
-      );
-
-      dispatch(removeRejectMessage(rejectedTask._id));
-    }
-
+    // ! getPartner
     const partner =
       users && users.length > 0
         ? users.find((u) => u.id === user.partnerId)

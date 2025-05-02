@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { X } from "react-feather";
-// import { addTask } from "../../redux/usersSlice";
-import { sendNotification } from "../../redux/messagesSlice";
 import { addTask } from "../../redux/taskSlice.js";
 
 function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
@@ -16,14 +14,6 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
       const partnerId = currentUser.partnerId;
       console.log("ok");
       dispatch(addTask({ title, description }));
-
-      dispatch(
-        sendNotification({
-          senderId: currentUser.id,
-          receiverId: currentUser.partnerId,
-          text: `Tarefa <b>${title}</b> foi criada.`,
-        })
-      );
 
       setTitle("");
       setDescription("");

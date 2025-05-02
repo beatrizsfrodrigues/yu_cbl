@@ -1,10 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  rejectTask,
-  createNewTaskAfterRejection,
-} from "../../redux/usersSlice";
-import { sendNotification } from "../../redux/messagesSlice";
 import { verifyTask } from "../../redux/taskSlice.js";
 
 function Reject({
@@ -23,15 +18,6 @@ function Reject({
 
     dispatch(
       verifyTask({ id: task.task._id, rejectMessage: message, verify: false })
-    );
-
-    // 3. Envia notificação ao parceiro
-    dispatch(
-      sendNotification({
-        senderId: partnerUser.partnerId,
-        receiverId: partnerUser.id,
-        text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
-      })
     );
 
     // 4. Mostra popup de confirmação
