@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
+import { getAuthUser } from "../../utils/cookieUtils";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -18,7 +19,9 @@ function Tasks() {
   const dispatch = useDispatch();
   const { data: tasks, status } = useSelector((state) => state.tasks); // Ensure `state.tasks` matches the key used in the store configuration.
 
-  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+  const authUser = getAuthUser();
+  const currentUserId = authUser?.id;
+
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
