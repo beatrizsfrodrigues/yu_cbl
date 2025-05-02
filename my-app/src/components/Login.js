@@ -25,32 +25,42 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3000/users/login", {
-        emailOrUsername,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:3002/users/login",
+        {
+          emailOrUsername,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.data && response.data.token) {
         const user = response.data.user;
         const token = response.data.token;
-      
+
         document.cookie = `token=${token}; Path=/; SameSite=Lax;`;
-        document.cookie = `loggedInUser=${encodeURIComponent(JSON.stringify(user))}; Path=/; SameSite=Lax;`;
-      
-     
+        document.cookie = `loggedInUser=${encodeURIComponent(
+          JSON.stringify(user)
+        )}; Path=/; SameSite=Lax;`;
+
         if (user.role === "admin") {
           window.location.href = "http://localhost:3001/";
         } else {
           navigate("/home");
         }
-
       } else {
         setAlert("Resposta inesperada da API.");
       }
     } catch (error) {
       console.error("Erro no login:", error);
       // Se a API retornar uma mensagem de erro, exiba-a; caso contrário, uma mensagem genérica.
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         setAlert(error.response.data.message);
       } else {
         setAlert("Erro ao fazer login.");
