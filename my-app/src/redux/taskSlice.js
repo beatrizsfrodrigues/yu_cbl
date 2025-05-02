@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAuthToken, getAuthUser } from "../utils/cookieUtils";
+import { getAuthToken } from "../utils/cookieUtils";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -15,7 +15,7 @@ export const getTasks = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data);
+
       return res.data.tasks;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -37,7 +37,7 @@ export const addTask = createAsyncThunk(
           },
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -60,7 +60,7 @@ export const completeTask = createAsyncThunk(
           },
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -83,7 +83,7 @@ export const verifyTask = createAsyncThunk(
           },
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -96,7 +96,7 @@ export const removeRejectMessage = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      console.log(id);
+
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/remove-reject-message`,
         {},

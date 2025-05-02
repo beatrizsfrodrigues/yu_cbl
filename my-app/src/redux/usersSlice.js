@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { sendNotification } from "./messagesSlice"; // garante que este import está correto
+// import { sendNotification } from "./messagesSlice"; // garante que este import está correto
 
 //* Fetch users from local storage or JSON
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
@@ -34,13 +34,13 @@ export const createNewTaskAfterRejection = createAsyncThunk(
     dispatch(rejectTask({ userId, task, message }));
 
     // Notifica parceiro da rejeição
-    dispatch(
-      sendNotification({
-        senderId: partnerId,
-        receiverId: userId,
-        text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
-      })
-    );
+    // dispatch(
+    //   sendNotification({
+    //     senderId: partnerId,
+    //     receiverId: userId,
+    //     text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
+    //   })
+    // );
 
     // Cria nova tarefa
     dispatch(
@@ -52,13 +52,13 @@ export const createNewTaskAfterRejection = createAsyncThunk(
     );
 
     // Notifica o utilizador principal sobre nova tarefa
-    dispatch(
-      sendNotification({
-        senderId: userId,
-        receiverId: partnerId,
-        text: `Recebeste uma nova tarefa: <b>${newTaskTitle}</b>.`,
-      })
-    );
+    // dispatch(
+    //   sendNotification({
+    //     senderId: userId,
+    //     receiverId: partnerId,
+    //     text: `Recebeste uma nova tarefa: <b>${newTaskTitle}</b>.`,
+    //   })
+    // );
   }
 );
 
