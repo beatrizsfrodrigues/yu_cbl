@@ -26,9 +26,9 @@ const Store = ({
   // Estado para controlar a seção ativa
   const [activeSection, setActiveSection] = useState(0);
 
-  const unownedItems = closet.filter(
+  /*const unownedItems = closet.filter(
     (item) => !currentMascot.accessoriesOwned.includes(item.id)
-  );
+  );*/
 
   // Estado para ver a confirmação de saída
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
@@ -44,10 +44,14 @@ const Store = ({
   };
 
   useEffect(() => {
+    dispatch(fetchCloset(sectionsData[activeSection].label)); // Busca acessórios da API com base na categoria ativa
+  }, [activeSection, dispatch]);
+
+  /*useEffect(() => {
     if (closetStatus === "idle") {
       dispatch(fetchCloset());
     }
-  }, [closetStatus, dispatch]);
+  }, [closetStatus, dispatch]);*/
 
   if (!closet) {
     return <div>Loading...</div>;
@@ -92,6 +96,25 @@ const Store = ({
 
   const sectionsData = [
     {
+      label: "SkinColor",
+      icon: <ion-icon name="color-palette-outline" class="icons"></ion-icon>,
+    },
+    {
+      label: "Shirts",
+      icon: <ion-icon name="shirt-outline" class="icons"></ion-icon>,
+    },
+    {
+      label: "Decor",
+      icon: <ion-icon name="glasses-outline" class="icons"></ion-icon>,
+    },
+    {
+      label: "Backgrounds",
+      icon: <ion-icon name="image-outline" class="icons"></ion-icon>,
+    },
+  ];
+
+  /*const sectionsData = [
+    {
       label: "Skin Color",
       icon: <ion-icon name="color-palette-outline" class="icons"></ion-icon>,
       items: unownedItems.filter((item) => item.type === "SkinColor"),
@@ -111,7 +134,7 @@ const Store = ({
       icon: <ion-icon name="image-outline" class="icons"></ion-icon>,
       items: unownedItems.filter((item) => item.type === "Backgrounds"),
     },
-  ];
+  ];*/
 
   const totalPrice = Object.values(selectedItems).reduce(
     (acc, item) => acc + (item?.value || 0),
@@ -148,7 +171,7 @@ const Store = ({
           <div className="divider"></div>
 
           {/* Section Content */}
-          {sectionsData[activeSection].items.length === 0 ? (
+          {closet?.length === 0 ? (
             <div className="avatarcontentEmpty">
               <p className="empty-category-message">
                 Não há mais itens nesta categoria para comprar!
@@ -156,7 +179,7 @@ const Store = ({
             </div>
           ) : (
             <div className="avatarcontent">
-              {sectionsData[activeSection].items.map((item) => (
+              {closet?.map((item) => (
                 <div className="avatarItemDiv" key={item.id}>
                   <button
                     className={`avatarcircle ${
@@ -166,20 +189,18 @@ const Store = ({
                     }`}
                     onClick={() => {
                       if (selectedItems[item.type]?.id === item.id) {
-                        // Remove o item se já estiver selecionado
                         setSelectedItems((prev) => {
                           const updatedItems = { ...prev };
                           delete updatedItems[item.type];
                           return updatedItems;
                         });
-                        dressUp(null, item.type); // Remove o item da mascote
+                        dressUp(null, item.type);
                       } else {
-                        // Adiciona o item se não estiver selecionado
                         setSelectedItems((prev) => ({
                           ...prev,
                           [item.type]: item,
                         }));
-                        dressUp(item); // Aplica o item na mascote
+                        dressUp(item);
                       }
                     }}
                   >
