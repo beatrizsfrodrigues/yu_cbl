@@ -8,7 +8,7 @@ import Grafico from "../Grafico/Grafico";
 import Definicoes from "../Definicoes/Definicoes.js";
 // import Messages from "../../Tasks/Messages";
 import TopBar from "../../TopBar.js";
-import { fetchUsers } from "../../../redux/usersSlice.js";
+
 
 const Profile = () => {
   const navigate = useNavigate(); // Hook para redirecionar o user
@@ -32,11 +32,6 @@ const Profile = () => {
     }
   }, [loggedInUser, navigate]);
 
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
 
   useEffect(() => {
     const root = document.getElementById("root");

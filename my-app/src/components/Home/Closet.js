@@ -1,161 +1,78 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCloset } from "../../redux/closetSlice";
+import React, { useState } from "react";
 
-const Closet = ({
-  dressUp,
-  closeCloset,
-  currentMascot,
-  selectedBackground,
-  selectedShirt,
-  selectedAcc,
-  selectedColor,
-  saveOutfit,
-  resetClothes,
-  onShowPopUpInfo,
-}) => {
-  const dispatch = useDispatch();
-  const closet = useSelector((state) => state.closet.data);
-  const closetStatus = useSelector((state) => state.closet.status);
+export default function Closet({
+  ownedAccessories,   // array
+  equipped,           // { background, shirt, hat, color }  (ids ou null)
+  onPreview,          // fn(slot, newId|null) – só PREVIEW
+  onSave,             // fn()           – faz PUTs
+  closeCloset,        // fn()           – fecha sem guardar
+}) {
+  const [active, setActive] = useState(0);
 
-  const [activeSection, setActiveSection] = useState(0);
-
-  const ownedItems = closet.filter((item) =>
-    currentMascot.accessoriesOwned.includes(item.id)
-  );
-
-  useEffect(() => {
-    if (closetStatus === "idle") {
-      dispatch(fetchCloset());
-    }
-  }, [closetStatus, dispatch]);
-
-  if (!closet) {
-    return <div>Loading...</div>;
-  }
-
-  const sectionsData = [
-    {
-      label: "Skin Color",
-      icon: <ion-icon name="color-palette-outline" class="icons"></ion-icon>,
-      items: ownedItems.filter((item) => item.type === "SkinColor"),
-    },
-    {
-      label: "Shirts",
-      icon: <ion-icon name="shirt-outline" class="icons"></ion-icon>,
-      items: ownedItems.filter((item) => item.type === "Shirts"),
-    },
-    {
-      label: "Decor",
-      icon: <ion-icon name="glasses-outline" class="icons"></ion-icon>,
-      items: ownedItems.filter((item) => item.type === "Decor"),
-    },
-    {
-      label: "Backgrounds",
-      icon: <ion-icon name="image-outline" class="icons"></ion-icon>,
-      items: ownedItems.filter((item) => item.type === "Backgrounds"),
-    },
+  const sections = [
+    { type: "SkinColor",  slot: "color",       icon: "color-palette-outline" },
+    { type: "Shirts",     slot: "shirt",       icon: "shirt-outline"         },
+    { type: "Decor",      slot: "hat",         icon: "glasses-outline"       },
+    { type: "Backgrounds",slot: "background",  icon: "image-outline"         },
   ];
 
-  const handleItemClick = (item) => {
-    // Verifica se o item já está selecionado
-    const isSelected =
-      selectedBackground?.id === item.id ||
-      selectedShirt?.id === item.id ||
-      selectedAcc?.id === item.id ||
-      selectedColor?.id === item.id;
-
-    if (isSelected) {
-      // Remove o item se já estiver selecionado
-      if (item.type === "SkinColor") {
-        // Define a cor original ao remover a cor
-        dressUp({ type: "SkinColor", src: "/assets/YU_cores/YU-roxo.svg" }); // Substitua 40 pelo ID da cor original
-      } else {
-        dressUp({ type: item.type, id: null });
-      }
-    } else {
-      // Aplica o item se não estiver selecionado
-      dressUp(item);
-    }
-  };
+  const { type, slot, icon } = sections[active];
+  const items = ownedAccessories.filter((i) => i.type === type);
 
   return (
     <div className="closetOverlay">
       <div className="closetContainer">
         <div className="avatareditor">
-          {/* Header Icons */}
           <div className="avatarheader">
-            {sectionsData.map((section, index) => (
+            {sections.map((sec, idx) => (
               <button
-                key={section.label}
-                className={`icons ${activeSection === index ? "active" : ""}`}
-                onClick={() => setActiveSection(index)}
+                key={sec.type}
+                className={`icons ${active === idx ? "active" : ""}`}
+                onClick={() => setActive(idx)}
               >
-                {section.icon}
-                {activeSection === index && <span className="dot"></span>}
+                <ion-icon name={sec.icon} class="icons" />
+                {active === idx && <span className="dot" />}
               </button>
             ))}
           </div>
 
-          {/* Divider */}
-          <div className="divider"></div>
+          <div className="divider" />
 
-          {/* Section Content */}
-          {sectionsData[activeSection].items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="avatarcontentEmpty">
-              <p className="empty-category-message">
-                Ainda não tens acessórios nesta categoria!
-              </p>
+              <p className="empty-category-message">Ainda não tens itens!</p>
             </div>
           ) : (
             <div className="avatarcontent">
-              {sectionsData[activeSection].items.map((item) => (
-                <button
-                  key={item.id}
-                  className={`avatarcircle ${
-                    selectedBackground?.id === item.id ||
-                    selectedShirt?.id === item.id ||
-                    selectedAcc?.id === item.id ||
-                    selectedColor?.id === item.id
-                      ? "activeFit"
-                      : ""
-                  }`}
-                  onClick={() => handleItemClick(item)}
-                >
-                  <img src={item.src} alt={item.name} />
-                </button>
-              ))}
+              {items.map((it) => {
+                const isActive = equipped[slot] === it._id;
+                return (
+                  <button
+                    key={it._id}
+                    className={`avatarcircle ${isActive ? "activeFit" : ""}`}
+                    onClick={() => {
+                      const next = isActive ? null : it._id;
+                      onPreview(slot, next);  
+                    }}
+                  >
+                    <img src={it.src} alt={it.name} />
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
+
         <div className="closetFooter">
-          <button
-            className="profile-button btnHomeActive"
-            onClick={() => {
-              closeCloset(); // Apenas fecha o modal
-            }}
-          >
-            <ion-icon name="close-outline" class="iconswhite"></ion-icon>
+          <button className="profile-button btnHomeActive" onClick={closeCloset}>
+            <ion-icon name="close-outline" class="iconswhite" />
           </button>
-          <button
-            className="buttonMid btnHomeActive"
-            onClick={() => {
-              saveOutfit(); // Salva as alterações
-            }}
-          >
+
+          <button className="buttonMid btnHomeActive" onClick={onSave}>
             Guardar
-          </button>
-          <button className="profile-button btnHomeActive">
-            <ion-icon
-              name="refresh-outline"
-              onClick={() => resetClothes()}
-              class="iconswhite"
-            ></ion-icon>
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-export default Closet;
+}

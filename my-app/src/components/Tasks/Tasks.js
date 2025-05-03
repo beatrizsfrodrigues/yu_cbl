@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, clearRejectMessage } from "../../redux/usersSlice.js";
+
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
 import TopBar from "../TopBar.js";
@@ -84,12 +84,6 @@ function Tasks() {
       dispatch(getTasks(partnerUser.id));
     }
   };
-
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
 
   useEffect(() => {
     const user =

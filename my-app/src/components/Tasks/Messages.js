@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages, addMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
-import { fetchUsers } from "../../redux/usersSlice.js";
 import { X } from "react-feather";
 import "./messages.css";
 
@@ -45,11 +44,6 @@ function Messages({}) {
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
 
   //* fetch preset text messages
   useEffect(() => {

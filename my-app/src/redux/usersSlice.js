@@ -1,207 +1,267 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { sendNotification } from "./messagesSlice"; // garante que este import está correto
+import { getAuthToken } from "../utils/cookieUtils";
 
-//* Fetch users from local storage or JSON
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const localData = localStorage.getItem("users");
 
-  if (localData) {
-    return JSON.parse(localData);
-  }
-
-  const response = await fetch("/users.json");
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  try {
-    const data = await response.json();
-    localStorage.setItem("users", JSON.stringify(data));
-    return data;
-  } catch (error) {
-    throw new Error("Failed to parse JSON");
-  }
-});
-
-//* Fluxo completo: rejeita + notifica + cria nova tarefa + notifica
-export const createNewTaskAfterRejection = createAsyncThunk(
-  "users/createNewTaskAfterRejection",
-  async (
-    { userId, partnerId, task, message, newTaskTitle, newTaskDescription },
-    { dispatch }
-  ) => {
-    // Rejeita tarefa
-    dispatch(rejectTask({ userId, task, message }));
-
-    // Notifica parceiro da rejeição
-    dispatch(
-      sendNotification({
-        senderId: partnerId,
-        receiverId: userId,
-        text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
-      })
-    );
-
-    // Cria nova tarefa
-    dispatch(
-      addTask({
-        title: newTaskTitle,
-        description: newTaskDescription,
-        partnerId,
-      })
-    );
-
-    // Notifica o utilizador principal sobre nova tarefa
-    dispatch(
-      sendNotification({
-        senderId: userId,
-        receiverId: partnerId,
-        text: `Recebeste uma nova tarefa: <b>${newTaskTitle}</b>.`,
-      })
-    );
+export const fetchAuthUser = createAsyncThunk(
+  "user/fetchAuthUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch("http://localhost:3000/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Não autenticado");
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
   }
 );
 
-const usersSlice = createSlice({
-  name: "users",
+
+
+// GET /users/partner/   ( parceiro do user)
+export const fetchPartnerUser = createAsyncThunk(
+  "user/partner",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch(`http://localhost:3000/users/partner`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Erro ao buscar parceiro");
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
+// PUT /users/connect/:id       (liga parceiro)
+export const connectPartner = createAsyncThunk(
+  "user/connectPartner",
+  async ({ _, code }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch(
+        `http://localhost:3000/users/connect-partner`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ code }),
+        }
+      );
+      if (!res.ok) throw new Error("Erro ao ligar parceiro");
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
+// GET /users/accessories      (acessórios que o user TEM)
+export const fetchOwnedAccessories = createAsyncThunk(
+  "user/fetchOwnedAccessories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch("http://localhost:3000/users/accessories", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Erro ao buscar acessórios owned");
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+// GET /users/accessories/equipped (acessórios equipados)
+// (verifica qual é a rota correcta, se for /users/accessories-equipped)
+export const fetchEquippedAccessories = createAsyncThunk(
+  "user/fetchEquippedAccessories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch("http://localhost:3000/users/accessories-equipped", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Erro ao buscar acessórios equipados");
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+// PUT /users/:id               (editar user)
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (updatedUser, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch(
+        `http://localhost:3000/users/${updatedUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
+      if (!res.ok) throw new Error("Erro ao atualizar utilizador");
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+// POST /users/accessories/buy   (comprar acessório)
+export const buyAccessory = createAsyncThunk(
+  "user/buyAccessory",
+  async ({ _, accessoryId }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await fetch("http://localhost:3000/users/accessories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ accessoryId }),
+      });
+      if (!res.ok) throw new Error("Erro ao comprar acessório");
+      return await res.json(); // devolve, p.ex., { owned: [...], points: novoSaldo }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+// PUT /users/accessories/equip  (acessório – string)  |  cor  (number)
+
+  // PUT  /users/accessories/equip
+ export const equipAccessories = createAsyncThunk(
+  "user/equipAccessories",
+
+ async ({ accessoryId, type }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+
+      const body =
+        type === "SkinColor"
+          ? { color: accessoryId ?? null }     
+          : { accessoryId: accessoryId ?? null };
+
+      const res = await fetch(
+        "http://localhost:3000/users/accessories/equip",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Erro ao equipar acessórios");
+      }
+      const data = await res.json();
+      return data.accessoriesEquipped;          
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
+// —————————————————————————————————————————————————————
+// 2) Slice & estado
+// —————————————————————————————————————————————————————
+const userSlice = createSlice({
+  name: "user",
   initialState: {
-    data: null,
+    authUser: null,
+    allUsers: [],
+    partnerUser: null,
+    ownedAccessories: [],
+    equippedAccessories: { hat: null, shirt: null, color: null, background: null },
     status: "idle",
     error: null,
   },
   reducers: {
-    addTask: (state, action) => {
-      const { title, description, partnerId } = action.payload;
-      const user = state.data.find((u) => u.id === partnerId);
-
-      const newTask = {
-        id: state.data.length + 1,
-        title,
-        description,
-        picture: "",
-        completed: false,
-        verified: false,
-        completedDate: 0,
-        rejectMessage: "",
-      };
-
-      if (user) {
-        user.tasks.push(newTask);
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    validateTask: (state, action) => {
-      const { userId, task } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        const taskValidate = user.tasks.find((t) => t.id === task.id);
-        if (taskValidate) {
-          taskValidate.verified = true;
-          user.points += 10;
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    completeTask: (state, action) => {
-      const { taskId, proofImage, userId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-
-      function getFormattedDate() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        const seconds = String(now.getSeconds()).padStart(2, "0");
-        return `${year}${month}${day}${hours}${minutes}${seconds}`;
-      }
-
-      if (user) {
-        const task = user.tasks.find((t) => t.id === taskId);
-        if (task) {
-          task.picture = proofImage;
-          task.completedDate = getFormattedDate();
-          task.completed = true;
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    rejectTask: (state, action) => {
-      const { userId, task, message } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        const taskReject = user.tasks.find((t) => t.id === task.id);
-        if (taskReject) {
-          taskReject.verified = false;
-          taskReject.completed = false;
-          taskReject.completedDate = 0;
-          taskReject.rejectMessage = message;
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    clearRejectMessage: (state, action) => {
-      const { userId, taskId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        const taskReject = user.tasks.find((t) => t.id === taskId);
-        if (taskReject) {
-          taskReject.rejectMessage = "";
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    updateUser: (state, action) => {
-      const updatedUser = action.payload;
-      const index = state.data.findIndex((user) => user.id === updatedUser.id);
-      if (index !== -1) {
-        state.data[index] = {
-          ...state.data[index],
-          ...updatedUser,
-        };
-        localStorage.setItem("users", JSON.stringify(state.data));
-      }
-    },
-    buyMultipleItems: (state, action) => {
-      const { totalPrice, userId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        user.points = (user.points || 0) - Number(totalPrice);
-      }
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
+    
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
-        state.status = "loading";
+      
+      .addCase(fetchAuthUser.pending, (s) => { s.status = "loading"; })
+      .addCase(fetchAuthUser.fulfilled, (s, a) => {
+        s.status = "succeeded";
+        s.authUser = a.payload;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.data = action.payload;
-        localStorage.setItem("users", JSON.stringify(action.payload));
+      .addCase(fetchAuthUser.rejected, (s, a) => {
+        s.status = "failed";
+        s.error = a.payload;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
+
+      .addCase(updateUser.fulfilled, (s, a) => {
+        // substitui na lista de allUsers e em authUser, se for o mesmo
+        const u = a.payload;
+        s.authUser = s.authUser?._id === u._id ? u : s.authUser;
+        s.allUsers = s.allUsers.map(x => x._id === u._id ? u : x);
+      })
+
+      //
+      .addCase(fetchPartnerUser.fulfilled, (s, a) => {
+        s.partnerUser = a.payload;
+      })
+
+
+      .addCase(connectPartner.fulfilled, (s, a) => {
+        s.authUser = a.payload;
+      })
+   
+
+      .addCase(fetchOwnedAccessories.fulfilled, (s, a) => {
+        s.ownedAccessories = a.payload;
+      })
+      .addCase(fetchEquippedAccessories.fulfilled, (s, a) => {
+        const { hat, shirt, color, background } = a.payload;
+            s.equippedAccessories = {
+            hat:        hat?.id         ?? null,   
+            shirt:      shirt?.id       ?? null,
+            color:      color           ?? null,
+            background: background?.id  ?? null,
+      };
+      })
+
+     
+      .addCase(buyAccessory.fulfilled, (s, a) => {
+     
+        s.ownedAccessories = a.payload.owned;
+        if (s.authUser) s.authUser.points = a.payload.points;
+      })
+      .addCase(equipAccessories.fulfilled, (state, action) => {
+        state.equippedAccessories = action.payload;
+      })
+      .addCase(equipAccessories.rejected, (state, action) => {
+        state.error = action.payload;
       });
+
+
   },
 });
 
-export const {
-  addTask,
-  updateUser,
-  completeTask,
-  validateTask,
-  rejectTask,
-  clearRejectMessage,
-  buyMultipleItems,
-} = usersSlice.actions;
-
-export default usersSlice.reducer;
+export default userSlice.reducer;

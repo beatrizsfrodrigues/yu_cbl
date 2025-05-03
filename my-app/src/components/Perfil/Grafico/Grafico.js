@@ -13,7 +13,7 @@ import {
   Legend,
 } from "chart.js";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUsers } from "../../../redux/usersSlice";
+
 import { X } from "react-feather"; // Ícone para fechar
 
 ChartJS.register(
@@ -36,12 +36,6 @@ const Grafico = ({ show, onClose }) => {
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser"))?.id;
   const users = useSelector((state) => state.users.data || []);
   const activeUser = users.find((user) => user.id === currentUserId);
-
-  useEffect(() => {
-    if (users.length === 0) {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, users]);
 
   useEffect(() => {
     if (activeUser && activeUser.tasks) {

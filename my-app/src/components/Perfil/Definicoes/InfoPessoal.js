@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updateUser, fetchUsers } from "../../../redux/usersSlice";
+import { updateUser } from "../../../redux/usersSlice";
 
 import visibleIcon from "../../../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../../../assets/imgs/Icons/notvisible.png";
@@ -52,11 +52,6 @@ const InfoPessoal = () => {
     }
   }, [activeUser]);
 
-  useEffect(() => {
-    if (!users || users.length === 0) {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, users]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,8 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../redux/usersSlice";
-import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
@@ -50,14 +48,6 @@ const Register = () => {
   const mascot = useSelector((state) => state.mascot.data) || [];
   const mascotStatus = useSelector((state) => state.mascot.status);
 
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-    if (mascotStatus === "idle") {
-      dispatch(fetchMascot());
-    }
-  }, [usersStatus, mascotStatus, dispatch]);
 
   const generateCode = () => {
     const characters =
