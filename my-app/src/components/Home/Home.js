@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+
 import {
   fetchAuthUser,
   fetchOwnedAccessories,
@@ -151,10 +152,9 @@ export default function Home() {
   /* Gravar seleccionados */
   const saveOutfit = async () => {
     try {
-        const reqs = Object.values(pendingEquip).map(({ id, type }) =>
-              dispatch(equipAccessories({ accessoryId: id, type })).unwrap()
-        );
-      await Promise.all(reqs);
+      for (const { id, type } of Object.values(pendingEquip)) {
+        await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
+      }
       setPendingEquip({});
       pop("Alterações guardadas!");
       setShowCloset(false);

@@ -83,7 +83,6 @@ export const fetchOwnedAccessories = createAsyncThunk(
 );
 
 // GET /users/accessories/equipped (acessórios equipados)
-// (verifica qual é a rota correcta, se for /users/accessories-equipped)
 export const fetchEquippedAccessories = createAsyncThunk(
   "user/fetchEquippedAccessories",
   async (_, { rejectWithValue }) => {
@@ -157,10 +156,10 @@ export const buyAccessory = createAsyncThunk(
     try {
       const token = getAuthToken();
 
-      const body =
-        type === "SkinColor"
-          ? { color: accessoryId ?? null }     
-          : { accessoryId: accessoryId ?? null };
+      const body = {
+       accessoryId: accessoryId ?? null,
+        type
+      };
 
       const res = await fetch(
         "http://localhost:3000/users/accessories/equip",
@@ -170,7 +169,7 @@ export const buyAccessory = createAsyncThunk(
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(body),
+         body: JSON.stringify(body),
         }
       );
       if (!res.ok) {

@@ -39,7 +39,7 @@ const Login = () => {
       
      
         if (user.role === "admin") {
-          window.location.href = "http://localhost:3001/";
+          window.location.href = "http://localhost:3002/";
         } else {
           navigate("/home");
         }
