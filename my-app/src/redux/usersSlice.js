@@ -1,210 +1,224 @@
+// src/redux/usersSlice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import { getAuthToken } from "../utils/cookieUtils";
+import { getTasks, completeTask, verifyTask, removeRejectMessage, notifyTasks } from "./taskSlice";
 
+import { rejectTask, addTask } from "./taskSlice";
+import { sendMessage } from "./messagesSlice";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
+// 1) Buscar utilizador autenticado
 export const fetchAuthUser = createAsyncThunk(
   "user/fetchAuthUser",
   async (_, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch("http://localhost:3000/users/me", {
+      const res = await axios.get(`${API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Não autenticado");
-      return await res.json();
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
+// 2) Fluxo “rejeitar + nova tarefa + notificar”
+export const createNewTaskAfterRejection = createAsyncThunk(
+  "user/createNewTaskAfterRejection",
+  async (
+    { userId, partnerId, task, message, newTaskTitle, newTaskDescription },
+    { dispatch, rejectWithValue }
+  ) => {
+    // 2.1 rejeita a task via API
+    await dispatch(
+      completeTask({ taskId: task.id, proofImage: null, userId })
+    ).unwrap();
 
+    // 2.2 notifica parceiro
+    await dispatch(
+        sendMessage({
+           senderId: partnerId,
+           receiverId: userId,
+           text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
+         })
+       ).unwrap();
 
-// GET /users/partner/   ( parceiro do user)
+    // 2.3 cria nova tarefa
+    const newTask = await dispatch(
+      getTasks(partnerId) // buscar lista atualizada
+    ).unwrap();
+
+    await dispatch(
+      notifyTasks({ userId: partnerId, message: `Nova tarefa: ${newTaskTitle}` })
+    );
+
+    // podes devolver algo se quiseres
+    return { partnerTasks: newTask };
+  }
+);
+
+// 3) Tasks: buscar, completar, verificar, remover mensagem
+export const fetchTasks = createAsyncThunk(
+  "user/fetchTasks",
+   async (userId, { dispatch, rejectWithValue }) => {
+    try {
+      return await dispatch(getTasks(userId)).unwrap();
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+// 4) Parceiro
 export const fetchPartnerUser = createAsyncThunk(
-  "user/partner",
+  "user/fetchPartnerUser",
   async (_, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch(`http://localhost:3000/users/partner`, {
+      const res = await axios.get(`${API_URL}/users/partner`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Erro ao buscar parceiro");
-      return await res.json();
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-
-// PUT /users/connect/:id       (liga parceiro)
+// 5) Ligar parceiro
 export const connectPartner = createAsyncThunk(
   "user/connectPartner",
-  async ({ _, code }, { rejectWithValue }) => {
+  async ({ code }, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch(
-        `http://localhost:3000/users/connect-partner`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ code }),
-        }
+      const res = await axios.put(
+        `${API_URL}/users/connect-partner`,
+        { code },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (!res.ok) throw new Error("Erro ao ligar parceiro");
-      return await res.json();
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-
-// GET /users/accessories      (acessórios que o user TEM)
+// 6) Acessórios owned
 export const fetchOwnedAccessories = createAsyncThunk(
   "user/fetchOwnedAccessories",
   async (_, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch("http://localhost:3000/users/accessories", {
+      const res = await axios.get(`${API_URL}/users/accessories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Erro ao buscar acessórios owned");
-      return await res.json();
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// GET /users/accessories/equipped (acessórios equipados)
+// 7) Acessórios equipados
 export const fetchEquippedAccessories = createAsyncThunk(
   "user/fetchEquippedAccessories",
   async (_, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch("http://localhost:3000/users/accessories-equipped", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Erro ao buscar acessórios equipados");
-      return await res.json();
+      const res = await axios.get(
+        `${API_URL}/users/accessories-equipped`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// PUT /users/:id               (editar user)
+// 8) Atualizar utilizador
 export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (updatedUser, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch(
-        `http://localhost:3000/users/${updatedUser._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updatedUser),
-        }
+      const res = await axios.put(
+        `${API_URL}/users/${updatedUser._id}`,
+        updatedUser,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (!res.ok) throw new Error("Erro ao atualizar utilizador");
-      return await res.json();
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-// POST /users/accessories/buy   (comprar acessório)
+// 9) Comprar acessório
 export const buyAccessory = createAsyncThunk(
   "user/buyAccessory",
-  async ({ _, accessoryId }, { rejectWithValue }) => {
+  async ({ accessoryId }, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await fetch("http://localhost:3000/users/accessories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ accessoryId }),
-      });
-      if (!res.ok) throw new Error("Erro ao comprar acessório");
-      return await res.json(); // devolve, p.ex., { owned: [...], points: novoSaldo }
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  }
-);
-
-// PUT /users/accessories/equip  (acessório – string)  |  cor  (number)
-
-  // PUT  /users/accessories/equip
- export const equipAccessories = createAsyncThunk(
-  "user/equipAccessories",
-
- async ({ accessoryId, type }, { rejectWithValue }) => {
-    try {
-      const token = getAuthToken();
-
-      const body = {
-       accessoryId: accessoryId ?? null,
-        type
-      };
-
-      const res = await fetch(
-        "http://localhost:3000/users/accessories/equip",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-         body: JSON.stringify(body),
-        }
+      const res = await axios.post(
+        `${API_URL}/users/accessories`,
+        { accessoryId },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Erro ao equipar acessórios");
-      }
-      const data = await res.json();
-      return data.accessoriesEquipped;          
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
+// 10) Equipar/desequipar acessório
+export const equipAccessories = createAsyncThunk(
+  "user/equipAccessories",
+  async ({ accessoryId, type }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.put(
+        `${API_URL}/users/accessories/equip`,
+        { accessoryId: accessoryId ?? null, type },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data.accessoriesEquipped;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
 
 // —————————————————————————————————————————————————————
-// 2) Slice & estado
+// Slice & estado
 // —————————————————————————————————————————————————————
 const userSlice = createSlice({
   name: "user",
   initialState: {
     authUser: null,
-    allUsers: [],
     partnerUser: null,
     ownedAccessories: [],
-    equippedAccessories: { hat: null, shirt: null, color: null, background: null },
+    equippedAccessories: {
+      hat: null,
+      shirt: null,
+      color: null,
+      background: null,
+    },
+    tasks: [],          // será preenchido pelo fetchTasks
     status: "idle",
     error: null,
   },
   reducers: {
-    
+    // se ainda quiseres algum reducer local, adiciona aqui…
   },
   extraReducers: (builder) => {
     builder
-      
+      // fetchAuthUser
       .addCase(fetchAuthUser.pending, (s) => { s.status = "loading"; })
       .addCase(fetchAuthUser.fulfilled, (s, a) => {
         s.status = "succeeded";
@@ -215,51 +229,51 @@ const userSlice = createSlice({
         s.error = a.payload;
       })
 
-      .addCase(updateUser.fulfilled, (s, a) => {
-        // substitui na lista de allUsers e em authUser, se for o mesmo
-        const u = a.payload;
-        s.authUser = s.authUser?._id === u._id ? u : s.authUser;
-        s.allUsers = s.allUsers.map(x => x._id === u._id ? u : x);
+      // tarefas
+      .addCase(getTasks.fulfilled,       (s, a) => { s.tasks = a.payload; })
+      .addCase(completeTask.fulfilled,   (s, a) => {
+        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+      .addCase(verifyTask.fulfilled,     (s, a) => {
+        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+      .addCase(removeRejectMessage.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+      .addCase(notifyTasks.fulfilled,    (s, a) => {
+        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
       })
 
-      //
-      .addCase(fetchPartnerUser.fulfilled, (s, a) => {
-        s.partnerUser = a.payload;
-      })
+      // partner
+      .addCase(fetchPartnerUser.fulfilled, (s, a) => { s.partnerUser = a.payload; })
+      .addCase(connectPartner.fulfilled,   (s, a) => { s.authUser = a.payload; })
 
-
-      .addCase(connectPartner.fulfilled, (s, a) => {
-        s.authUser = a.payload;
-      })
-   
-
-      .addCase(fetchOwnedAccessories.fulfilled, (s, a) => {
-        s.ownedAccessories = a.payload;
-      })
+      // acessórios
+      .addCase(fetchOwnedAccessories.fulfilled,    (s, a) => { s.ownedAccessories = a.payload; })
       .addCase(fetchEquippedAccessories.fulfilled, (s, a) => {
-        const { hat, shirt, color, background } = a.payload;
-            s.equippedAccessories = {
-            hat:        hat?.id         ?? null,   
-            shirt:      shirt?.id       ?? null,
+ 
+          const equipObj = a.payload.accessoriesEquipped ?? a.payload;
+          const { hat, shirt, background, color } = equipObj;
+          s.equippedAccessories = {
+          
+            hat:        hat?.id         ?? hat         ?? null,
+            shirt:      shirt?.id       ?? shirt       ?? null,
+            background: background?.id  ?? background  ?? null,
             color:      color           ?? null,
-            background: background?.id  ?? null,
-      };
-      })
-
-     
-      .addCase(buyAccessory.fulfilled, (s, a) => {
-     
+          };
+        })
+      .addCase(buyAccessory.fulfilled,     (s, a) => {
         s.ownedAccessories = a.payload.owned;
         if (s.authUser) s.authUser.points = a.payload.points;
       })
-      .addCase(equipAccessories.fulfilled, (state, action) => {
-        state.equippedAccessories = action.payload;
-      })
-      .addCase(equipAccessories.rejected, (state, action) => {
-        state.error = action.payload;
+
+      .addCase(equipAccessories.fulfilled, (s, a) => {
+        s.equippedAccessories = a.payload;
       });
-
-
   },
 });
 

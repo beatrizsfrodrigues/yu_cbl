@@ -4,6 +4,8 @@ import axios from "axios";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 
+
+
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +13,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
-
+ const API_URL = process.env.REACT_APP_API_URL;
   // Pré-carregar o logo
   useEffect(() => {
     const link = document.createElement("link");
@@ -25,32 +27,42 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3000/users/login", {
-        emailOrUsername,
-        password,
-      });
+      const response = await axios.post(
+         `${API_URL}/users/login`,
+        {
+          emailOrUsername,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.data && response.data.token) {
         const user = response.data.user;
         const token = response.data.token;
-      
+
         document.cookie = `token=${token}; Path=/; SameSite=Lax;`;
-        document.cookie = `loggedInUser=${encodeURIComponent(JSON.stringify(user))}; Path=/; SameSite=Lax;`;
-      
-     
+        document.cookie = `loggedInUser=${encodeURIComponent(
+          JSON.stringify(user)
+        )}; Path=/; SameSite=Lax;`;
+
         if (user.role === "admin") {
           window.location.href = "http://localhost:3002/";
         } else {
           navigate("/home");
         }
-
       } else {
         setAlert("Resposta inesperada da API.");
       }
     } catch (error) {
       console.error("Erro no login:", error);
       // Se a API retornar uma mensagem de erro, exiba-a; caso contrário, uma mensagem genérica.
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         setAlert(error.response.data.message);
       } else {
         setAlert("Erro ao fazer login.");

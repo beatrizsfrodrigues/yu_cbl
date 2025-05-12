@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { sendNotification } from "../../redux/messagesSlice";
 import { verifyTask } from "../../redux/taskSlice.js";
 
 function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
@@ -10,14 +9,6 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
     e.preventDefault();
 
     dispatch(verifyTask({ id: task._id, rejectMessage: "", verify: true }));
-
-    dispatch(
-      sendNotification({
-        senderId: partnerUser.partnerId,
-        receiverId: partnerUser.id,
-        text: `Tarefa <b>${task.title}</b> foi validada! Recebeste 10 pontos!`,
-      })
-    );
 
     onClose();
     onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);

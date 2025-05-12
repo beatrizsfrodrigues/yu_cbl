@@ -18,11 +18,11 @@ const Connection = () => {
   const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (messagesStatus === "idle") {
-      dispatch(fetchMessages());
-    }
-  }, [messagesStatus, dispatch]);
+  // useEffect(() => {
+  //   if (messagesStatus === "idle") {
+  //     dispatch(fetchMessages());
+  //   }
+  // }, [messagesStatus, dispatch]);
 
   // Fetch LocalStorage
   useEffect(() => {
@@ -90,9 +90,9 @@ const Connection = () => {
     localStorage.setItem("users", JSON.stringify(updatedUsers));
 
     //* create msg object
-    dispatch(
-      newConversation({ userId: currentUser.id, partnerId: partner.id })
-    );
+    // dispatch(
+    //   newConversation({ userId: currentUser.id, partnerId: partner.id })
+    // );
     setConnectedUserName(partner.username);
     setMessage("Conexão realizada com sucesso ✔");
     setPartnerCode(""); // Clear input

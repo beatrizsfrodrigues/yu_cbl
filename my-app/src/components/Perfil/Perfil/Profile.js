@@ -6,143 +6,194 @@ import InfoPessoal from "../Definicoes/InfoPessoal";
 import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
 import Definicoes from "../Definicoes/Definicoes.js";
-// import Messages from "../../Tasks/Messages";
 import TopBar from "../../TopBar.js";
 
 
-const Profile = () => {
-  const navigate = useNavigate(); // Hook para redirecionar o user
-  const loggedInUser = localStorage.getItem("loggedInUser");
-  const currentUserId = loggedInUser ? JSON.parse(loggedInUser).id : null;
+import {
+  fetchAuthUser,
+  fetchOwnedAccessories,
+  fetchEquippedAccessories,
+} from "../../../redux/usersSlice";
+import { fetchAccessories } from "../../../redux/accessoriesSlice";
 
+export default function Profile() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const error = useSelector((state) => state.users.error);
 
-  const [showInfoPessoal, setShowInfoPessoal] = useState(false);
-  const [showArquivo, setShowArquivo] = useState(false);
-  const [showGrafico, setShowGrafico] = useState(false);
-
+  const [showGrafico, setShowGrafico]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-  useEffect(() => {
-    if (!loggedInUser) {
-      navigate("/login");
-    }
-  }, [loggedInUser, navigate]);
+
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [selectedShirt,      setSelectedShirt]      = useState(null);
+  const [selectedAcc,        setSelectedAcc]        = useState(null);
+  const [selectedColor,      setSelectedColor]      = useState(null);
+
+  const {
+    authUser:            currentUser,
+    status:              userStatus,
+    error:               userError,
+    ownedAccessories,
+    equippedAccessories,
+  } = useSelector((state) => state.user);
+
+  const accessories = useSelector((state) => state.accessories.data);
 
 
   useEffect(() => {
-    const root = document.getElementById("root");
-    root.classList.add("profile-background");
-    return () => {
-      root.classList.remove("profile-background");
-    };
-  }, []);
+    dispatch(fetchAuthUser());
+    dispatch(fetchOwnedAccessories());
+    dispatch(fetchEquippedAccessories());
+    dispatch(fetchAccessories());
+  }, [dispatch]);
 
-  const toggleGrafico = () => setShowGrafico(!showGrafico);
 
-  const handleInfoPessoalClick = () => {
-    setShowInfoPessoal(true);
-  };
+  const findById = (id) =>
+    accessories?.find((a) => a && a._id === id) || null;
 
-  const handleArquivoClick = () => {
-    setShowArquivo(true);
-  };
+  useEffect(() => {
+    if (!accessories) return;
+    setSelectedBackground(findById(equippedAccessories.background));
+    setSelectedShirt(     findById(equippedAccessories.shirt));
+    setSelectedAcc(       findById(equippedAccessories.hat));
+    setSelectedColor(     findById(equippedAccessories.color));
+  }, [accessories, equippedAccessories]);
 
-  const closeGrafico = () => setShowGrafico(false);
 
-  const backToSettings = () => {
-    setShowInfoPessoal(false);
-    setShowArquivo(false);
-  };
+  // Loading / erro
+  if (userStatus === "loading") return <div>Loading perfil…</div>;
+  if (userStatus === "failed")  return <div>Error: {userError}</div>;
 
-  const openSettings = () => {
-    setShowSettings(true);
-    navigate("/definicoes");
-  };
-
-  if (!loggedInUser) {
-    return (
-      <div className="error-message">
-        <h2>Efetua login para poderes aceder à YU.</h2>
-        <Link to="/login" className="login-link">
-          Ir para a página de login
-        </Link>
-      </div>
-    );
+  // Se não estiver logado, redireciona
+  if (!currentUser?._id) {
+    navigate("/login");
+    return null;
   }
 
-  if (usersStatus === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (usersStatus === "failed") {
-    return <div>Error: {error}</div>;
-  }
-
-  const currentUser =
-    users && users.length > 0
-      ? users.find((user) => user.id === currentUserId)
-      : null;
 
   return (
     <div className="profile-container mainBody">
-      <div className="backgroundDiv"></div>
+      <div className="backgroundDiv" />
 
       <TopBar title="Perfil">
-        <button aria-label="Abrir definições" onClick={openSettings}>
-          <ion-icon name="settings-outline" class="icons"></ion-icon>
+        <button
+          aria-label="Abrir definições"
+          onClick={() => {
+            setShowSettings(true);
+            navigate("/definicoes");
+          }}
+        >
+          <ion-icon name="settings-outline" className="icons" />
         </button>
       </TopBar>
+          {/* Avatar + acessórios */}
+<div className="profile-avatar">
+  <div className="profile-mascotContainer">
+    <img
+      src={currentUser.mascot}
+      className="profile-Yu"
+      alt="Mascote YU"
+    />
 
-      <div className="profile-avatar">
-        <img
-          src="/assets/YU_cores/YU-roxo.svg"
-          alt="O teu Avatar YU"
-          className="avatar-image"
-        />
-        <h2 className="profile-name">
-          {currentUser ? currentUser.username : "Utilizador"}
-        </h2>
-      </div>
+      {selectedBackground && (
+    <img
+      src={selectedBackground.src}
+      alt=""
+      style={{
+        position:      "absolute",
+        left:          `${selectedBackground.left}px`,
+        bottom:        `${selectedBackground.bottom}px`,
+        width:         `${selectedBackground.width}px`,
+        pointerEvents: "none",
+        zIndex:        1
+      }}
+    />
+  )}
+
+  {selectedShirt && (
+    <img
+      src={selectedShirt.src}
+      alt=""
+      style={{
+        position:      "absolute",
+        left:          `${selectedShirt.left}px`,
+        bottom:        `${selectedShirt.bottom}px`,
+        width:         `${selectedShirt.width}px`,
+        pointerEvents: "none",
+        zIndex:        2
+      }}
+    />
+  )}
+
+  {selectedAcc && (
+    <img
+      src={selectedAcc.src}
+      alt=""
+      style={{
+        position:      "absolute",
+        left:          `${selectedAcc.left}px`,
+        bottom:        `${selectedAcc.bottom}px`,
+        width:         `${selectedAcc.width}px`,
+        pointerEvents: "none",
+        zIndex:        3
+      }}
+    />
+  )}
+
+  {selectedColor && (
+    <img
+      src={selectedColor.src}
+      alt=""
+      style={{
+        position:      "absolute",
+        left:          `${selectedColor.left}px`,
+        bottom:        `${selectedColor.bottom}px`,
+        width:         `${selectedColor.width}px`,
+        pointerEvents: "none",
+        zIndex:        4
+      }}
+    />
+  )}
+  </div>
+  <h2 className="profile-name">{currentUser.username}</h2>
+</div>
+
+
 
       <div className="profile-buttons">
         <button
           aria-label="Botão para abrir gráficos"
           className="profile-button award"
-          onClick={toggleGrafico}
+          onClick={() => setShowGrafico((v) => !v)}
         >
-          <ion-icon name="podium-outline" class="icons"></ion-icon>
+          <ion-icon name="podium-outline" className="icons" />
         </button>
 
         <Link
-          aria-label="Link para a página de informações"
           to="/informacoes"
           className="profile-button circle"
+          aria-label="Informações"
         >
-          <ion-icon name="information-outline" class="icons"></ion-icon>
+          <ion-icon name="information-outline" className="icons" />
         </Link>
       </div>
 
       {showGrafico && (
         <Grafico
           show={showGrafico}
-          onClose={closeGrafico}
+          onClose={() => setShowGrafico(false)}
           monthlyData={[5, 10, 15, 20, 25]}
           yearlyData={[100, 200, 300, 400, 500]}
         />
       )}
+
       {showSettings && (
         <Definicoes
           onClose={() => setShowSettings(false)}
-          onInfoPessoalClick={handleInfoPessoalClick}
-          onArquivoClick={handleArquivoClick}
+          onInfoPessoalClick={() => navigate("/informacoes-pessoais")}
+          onArquivoClick={() => navigate("/arquivo")}
         />
       )}
     </div>
   );
-};
-
-export default Profile;
+}

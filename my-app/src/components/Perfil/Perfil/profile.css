@@ -140,3 +140,38 @@ button[aria-label="Abrir definições"] {
   transition: 0.1s;
   color: #fff;
 }
+
+
+/* ─── Profile Avatar ──────────────────────────────────────────────────────── */
+
+.profile-mascotContainer {
+  position: relative;
+  width: 300px;          /* mesmo tamanho do Home */
+  height: 300px;
+  margin: 0 auto;        /* centra no ecrã */
+  display: block;
+  overflow: visible;
+}
+
+.profile-Yu {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* todos os acessórios usam as mesmas regras base */
+.profile-accessory {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* se quiseres, podes ajustar individualmente */
+.profile-accessory.bg    { /* background */  }
+.profile-accessory.shirt { /* camisa */      }
+.profile-accessory.hat   { /* chapéu */      }
+.profile-accessory.color { /* cor de pele */ }

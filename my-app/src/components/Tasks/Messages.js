@@ -1,17 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMessages, addMessage } from "../../redux/messagesSlice";
+import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
+import { getAuthUser } from "../../utils/cookieUtils";
+
+
+
 import { X } from "react-feather";
 import "./messages.css";
 
 function Messages({}) {
   const dispatch = useDispatch();
-  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
-  const [currentUser, setCurrentUser] = useState(null);
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const messages = useSelector((state) => state.messages.data);
+  const { data: messages, status } = useSelector((state) => state.messages);
+
+  const authUser = getAuthUser();
+  const currentUserId = authUser?._id;
+
+
+
+ const currentUser  = useSelector((state) => state.user.authUser);
+ const partnerUser  = useSelector((state) => state.user.partnerUser);
+
   const messagesStatus = useSelector((state) => state.messages.status);
   const presetMessages = useSelector((state) => state.presetMessages.data);
   const presetMessagesStatus = useSelector(
@@ -25,25 +34,19 @@ function Messages({}) {
   //* fetch text messages
 
   useEffect(() => {
-    if (messagesStatus === "idle") {
-      dispatch(fetchMessages());
+    if (currentUserId) {
+      dispatch(getMessages(currentUserId));
     }
-  }, [messagesStatus, dispatch]);
+  }, [dispatch, currentUserId]);
+
+
+ 
 
   useEffect(() => {
-    const user =
-      users && users.length > 0
-        ? users.find((user) => user.id === currentUserId)
-        : null;
-    setCurrentUser(user);
-  }, [users, currentUserId]);
-
-  useEffect(() => {
-    if (textSpaceRef.current && messages && messages.length > 0) {
+    if (textSpaceRef.current && messages) {
       textSpaceRef.current.scrollTop = textSpaceRef.current.scrollHeight;
     }
   }, [messages]);
-
 
   //* fetch preset text messages
   useEffect(() => {
@@ -64,46 +67,40 @@ function Messages({}) {
 
   //* send a text message
   const handleAddMessage = (text) => {
-    const senderId = currentUser.id;
-    const receiverId = currentUser.partnerId;
-
-    dispatch(addMessage({ senderId, receiverId, text }));
+    console.log(messages);
+    dispatch(sendMessage({ message: text, id: messages._id }));
   };
-
-  //* text messages status info
-  if (messagesStatus === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (messagesStatus === "failed") {
-    return <div>Error: {error}</div>;
-  }
-
-  const partnerUser =
-    currentUser && currentUser.partnerId
-      ? users.find((user) => user.id === currentUser.partnerId)
-      : null;
 
   //* text messages
   let messageContent;
-  if (currentUser && currentUser.partnerId && messages && messages.length > 0) {
-    const conversation = messages.find(
-      (msg) =>
-        msg.usersId.includes(currentUser.id) &&
-        msg.usersId.includes(currentUser.partnerId)
+
+  if (messagesStatus === "loading") {
+    messageContent = <div className="loadingMessage">A carregar...</div>;
+  } else if (messagesStatus === "failed") {
+    messageContent = (
+      <div className="errorMessage">Erro ao carregar mensagens</div>
     );
+  } else if (
+    currentUser &&
+    currentUser.partnerId &&
+    messagesStatus === "succeeded" &&
+    messages != {}
+  ) {
+    const conversation = messages;
+
     const sortedMessages = [...conversation.messages].sort(
       (a, b) => +a.date - +b.date
     );
     messageContent = sortedMessages.map((message, index) => {
-      const year = message.date.slice(0, 4);
-      const month = message.date.slice(4, 6);
-      const day = message.date.slice(6, 8);
-      const hours = message.date.slice(8, 10);
-      const minutes = message.date.slice(10, 12);
+      const dateString = String(message.date);
+      const year = dateString.slice(0, 4);
+      const month = dateString.slice(4, 6);
+      const day = dateString.slice(6, 8);
+      const hours = dateString.slice(8, 10);
+      const minutes = dateString.slice(10, 12);
 
       if (message.receiverId === currentUser.partnerId) {
-        if (message.senderId === "app") {
+        if (message.senderType === "app") {
           return (
             <div key={index} className="textMessage">
               <p
@@ -116,7 +113,10 @@ function Messages({}) {
         } else {
           return (
             <div key={index} className="textMessage">
-              <p className="bubble bubbleBlue">{message.message}</p>
+              <p
+                className="bubble bubbleBlue"
+                dangerouslySetInnerHTML={{ __html: message.message }}
+              ></p>
 
               <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
             </div>
@@ -136,7 +136,10 @@ function Messages({}) {
         } else {
           return (
             <div key={index} className="textMessage">
-              <p className="bubble">{message.message}</p>
+              <p
+                className="bubble"
+                dangerouslySetInnerHTML={{ __html: message.message }}
+              ></p>
               <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
             </div>
           );
@@ -205,12 +208,7 @@ function Messages({}) {
 
       <div className="line"></div>
 
-      <div
-        id="textSpace"
-        ref={textSpaceRef}
-        className="windowBody"
-        onClick={closePresetMessages}
-      >
+      <div id="textSpace" ref={textSpaceRef} onClick={closePresetMessages}>
         {partnerUser ? (
           messageContent
         ) : (

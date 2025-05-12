@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getAuthToken } from "../utils/cookieUtils";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -7,14 +8,14 @@ export const getTasks = createAsyncThunk(
   "tasks/getTasks",
   async (id, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
 
       const res = await axios.get(`${API_URL}/tasks?userId=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data);
+
       return res.data.tasks;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -26,7 +27,7 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async ({ title, description }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
       const res = await axios.post(
         `${API_URL}/tasks`,
         { title, description },
@@ -36,7 +37,7 @@ export const addTask = createAsyncThunk(
           },
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -48,7 +49,7 @@ export const completeTask = createAsyncThunk(
   "tasks/completeTask",
   async ({ picture, id }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/complete`,
@@ -59,7 +60,7 @@ export const completeTask = createAsyncThunk(
           },
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -71,7 +72,7 @@ export const verifyTask = createAsyncThunk(
   "tasks/verifyTask",
   async ({ id, rejectMessage, verify }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/verify`,
@@ -82,7 +83,7 @@ export const verifyTask = createAsyncThunk(
           },
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -94,7 +95,7 @@ export const removeRejectMessage = createAsyncThunk(
   "tasks/removeRejectMessage",
   async (id, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/remove-reject-message`,
@@ -117,7 +118,7 @@ export const notifyTasks = createAsyncThunk(
   "tasks/notifyTasks",
   async (id, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/notification`,
