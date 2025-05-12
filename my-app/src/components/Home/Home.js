@@ -1,6 +1,4 @@
-/*  src/components/Home/Home.js
-    (versão completa e já integrada com o novo fluxo Closet + Store)
--------------------------------------------------------------------*/
+ 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 

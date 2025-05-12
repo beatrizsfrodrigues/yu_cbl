@@ -10,7 +10,7 @@ import { sendMessage } from "./messagesSlice";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// 1) Buscar utilizador autenticado
+// 1) Procurar utilizador autenticado
 export const fetchAuthUser = createAsyncThunk(
   "user/fetchAuthUser",
   async (_, { rejectWithValue }) => {
@@ -61,7 +61,7 @@ export const createNewTaskAfterRejection = createAsyncThunk(
   }
 );
 
-// 3) Tasks: buscar, completar, verificar, remover mensagem
+// 3) Tasks: procurar, completar, verificar, remover mensagem
 export const fetchTasks = createAsyncThunk(
   "user/fetchTasks",
    async (userId, { dispatch, rejectWithValue }) => {

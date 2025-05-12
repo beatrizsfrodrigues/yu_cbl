@@ -88,7 +88,7 @@ export default function Store({
                 >
                   <img src={item.src} alt={item.name} />
                 </button>
-                <p>{item.value} pontos</p>
+                <p>{item.value} ⭐️</p>
               </div>
             ))}
           </div>
@@ -124,7 +124,7 @@ export default function Store({
               <button
                 className="buttonMid btnHomeActive disabled"
                 onClick={() => {
-                  onShowPopUpInfo("Pontos insuficientes!");
+                  onShowPopUpInfo("Estrelas insuficientes!");
                 }}
               >
                 {selectedFit.value}
