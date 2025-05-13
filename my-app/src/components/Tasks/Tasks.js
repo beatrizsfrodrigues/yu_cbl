@@ -15,19 +15,20 @@ const PopUpInfo = lazy(() => import("../PopUpInfo.js"));
 const Filter = lazy(() => import("./Filter.js"));
 const Reject = lazy(() => import("./Reject.js"));
 
-// ! polling
 function Tasks() {
   const dispatch = useDispatch();
-  const { data: tasks, status } = useSelector((state) => state.tasks);
+  const { data: tasks, status: tasksStatus } = useSelector(
+    (state) => state.tasks
+  );
 
-  const authUser = getAuthUser();
+  const [authUser] = useState(getAuthUser());
+
   const currentUserId = authUser?._id;
 
   const users = useSelector((state) => state.users.data);
   const usersStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
-  const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
@@ -44,10 +45,17 @@ function Tasks() {
   const [filter, setFilter] = useState("received");
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
+  const [myTasks, setMyTasks] = useState([]);
+  const [partnerTasks, setPartnerTasks] = useState([]);
 
   useEffect(() => {
-    dispatch(getTasks(currentUserId));
-  }, [dispatch, currentUserId]);
+    if (authUser?._id) {
+      dispatch(getTasks(authUser._id)).then((action) => {
+        const fetchedTasks = action.payload || [];
+        setMyTasks(fetchedTasks);
+      });
+    }
+  }, [dispatch, authUser?._id]);
 
   useEffect(() => {
     const rejectedTask =
@@ -55,7 +63,7 @@ function Tasks() {
         ? tasks.find((task) => task.rejectMessage !== "")
         : null;
 
-    if (rejectedTask && rejectedTask.userId === currentUserId) {
+    if (rejectedTask && rejectedTask.userId === authUser?._id) {
       handleShowPopUpInfo(
         `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
       );
@@ -65,39 +73,44 @@ function Tasks() {
   }, [tasks, currentUserId, dispatch]);
 
   useEffect(() => {
-    if (currentUserId && tasks) {
-      const filtered = tasks.filter((task) => {
-        const isReceived =
-          filter === "received" && task.userId === currentUserId;
-        const isAssigned =
-          filter === "assigned" &&
-          partnerUser &&
-          task.userId === partnerUser.id;
+    let baseTasks = filter === "received" ? myTasks : partnerTasks;
+    const filtered = applyFiltering(
+      baseTasks,
+      filter,
+      filterCriteria,
+      authUser._id,
+      partnerUser
+    );
+    setFilteredTasks(filtered);
+  }, [
+    filter,
+    filterCriteria,
+    authUser._id,
+    partnerUser,
+    myTasks,
+    partnerTasks,
+  ]);
 
-        const matchesCriteria =
-          filterCriteria === "todas" ||
-          (filterCriteria === "concluidas" &&
-            task.completed &&
-            task.verified) ||
-          (filterCriteria === "porConcluir" &&
-            !task.completed &&
-            !task.verified) ||
-          (filterCriteria === "espera" && task.completed && !task.verified);
+  const applyFiltering = (tasksList, userFilter, criteria, authId, partner) => {
+    const filtered = tasksList.filter((task) => {
+      const isReceived = userFilter === "received" && task.userId === authId;
+      const isAssigned =
+        userFilter === "assigned" && partner?.id && task.userId === partner.id;
 
-        return (isReceived || isAssigned) && matchesCriteria;
-      });
+      const matchesCriteria =
+        criteria === "todas" ||
+        (criteria === "concluidas" && task.completed && task.verified) ||
+        (criteria === "porConcluir" && !task.completed && !task.verified) ||
+        (criteria === "espera" && task.completed && !task.verified);
 
-      setFilteredTasks(filtered);
-    }
-  }, [tasks, filter, filterCriteria, currentUserId, partnerUser]);
+      return (isReceived || isAssigned) && matchesCriteria;
+    });
+
+    return filtered;
+  };
 
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
-    if (filterType === "received") {
-      dispatch(getTasks(currentUserId));
-    } else if (filterType === "assigned" && partnerUser) {
-      dispatch(getTasks(partnerUser.id));
-    }
   };
 
   useEffect(() => {
@@ -122,16 +135,26 @@ function Tasks() {
     if (partner) {
       setPartnerUser(partner);
 
+      const filtered = applyFiltering(
+        tasks || [],
+        filter,
+        filterCriteria,
+        authUser._id,
+        partner
+      );
+      setFilteredTasks(filtered);
+
       const fetchPartnerTasks = async () => {
         try {
           const resultAction = await dispatch(getTasks(partner.id));
-          const partnerTasks = resultAction.payload;
+          const fetchedPartnerTasks = resultAction.payload || [];
+          setPartnerTasks(fetchedPartnerTasks);
 
-          const taskToVerify = partnerTasks.find(
-            (task) => task.completed && !task.verified
+          const taskToVerify = fetchedPartnerTasks.find(
+            (task) => task.completed && !task.verified && task.notification
           );
 
-          if (taskToVerify && taskToVerify.notification == true) {
+          if (taskToVerify) {
             setTaskToVerify(taskToVerify);
             setShowVerifyTask(true);
           } else {
@@ -146,9 +169,40 @@ function Tasks() {
     }
   }, [users, currentUserId, dispatch]);
 
-  const handleTaskClick = (index) => {
-    setToggledTaskIndex(toggledTaskIndex === index ? null : index);
-  };
+  useEffect(() => {
+    const POLL_INTERVAL = 10000; // 10 seconds
+
+    const pollTasks = async () => {
+      console.log("polling tasks...");
+
+      if (authUser?._id) {
+        const myResult = await dispatch(getTasks(authUser._id));
+        const fetchedMyTasks = myResult.payload || [];
+        setMyTasks(fetchedMyTasks);
+      }
+
+      if (partnerUser?.id) {
+        const partnerResult = await dispatch(getTasks(partnerUser.id));
+        const fetchedPartnerTasks = partnerResult.payload || [];
+        setPartnerTasks(fetchedPartnerTasks);
+
+        const taskToVerify = fetchedPartnerTasks.find(
+          (task) => task.completed && !task.verified && task.notification
+        );
+
+        if (taskToVerify) {
+          setTaskToVerify(taskToVerify);
+          setShowVerifyTask(true);
+        } else {
+          setShowVerifyTask(false);
+        }
+      }
+    };
+
+    const intervalId = setInterval(pollTasks, POLL_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [authUser?._id, partnerUser?.id, dispatch]);
 
   //* open and close new task window
   const handleOpenNewTaskModal = () => {
@@ -214,7 +268,7 @@ function Tasks() {
   }
 
   if (!tasks) {
-    return <div>Loading...</div>;
+    return <div>A carregar...</div>;
   }
 
   const handleRequestNewTask = () => {
@@ -262,37 +316,29 @@ function Tasks() {
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) => (
             <div className="taskDivOp" key={index}>
-              {!task.completed && !task.verified ? (
-                <div className="taskItemContainer">
-                  <button
-                    className={`task-item ${
-                      expandedTaskIndex === index ? "expanded" : ""
-                    }`}
-                    onClick={() => handleToggleTaskExpand(index)}
-                  >
-                    <p className="taskTitle">{task.title}</p>
+              <div className="taskItemContainer">
+                <button
+                  className={`task-item ${
+                    expandedTaskIndex === index ? "expanded" : ""
+                  }`}
+                  onClick={() => handleToggleTaskExpand(index)}
+                >
+                  <p className="taskTitle">{task.title}</p>
 
-                    {/* ✅ Mostra a descrição abaixo do título quando expandido */}
-                    {expandedTaskIndex === index && (
-                      <p className="taskDescription">
-                        Descrição:<br></br>
-                        {task.description}
-                      </p>
-                    )}
-                  </button>
-
+                  {/* ✅ Mostra a descrição abaixo do título quando expandido */}
                   {expandedTaskIndex === index && (
+                    <p className="taskDescription">
+                      Descrição:<br></br>
+                      {task.description}
+                    </p>
+                  )}
+                </button>
+
+                {expandedTaskIndex === index &&
+                  !task.completed &&
+                  !task.verified &&
+                  task.userId === currentUser._id && (
                     <div className="btnTaskGroupVertical">
-                      <button
-                        className="btnTaskCircle reject"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenRejectModal(task);
-                        }}
-                        aria-label="Recusar tarefa"
-                      >
-                        <ion-icon name="close" class="icons"></ion-icon>
-                      </button>
                       <button
                         className="btnTaskCircle conclude"
                         onClick={(e) => {
@@ -305,19 +351,28 @@ function Tasks() {
                       </button>
                     </div>
                   )}
-                </div>
-              ) : (
-                <div
-                  className={`taskDiv taskDone ${
-                    toggledTaskIndex === index ? "toggled" : ""
-                  }`}
-                  onClick={() => handleTaskClick(index)}
-                >
-                  <p className="taskTitle">
-                    {toggledTaskIndex === index ? task.description : task.title}
-                  </p>
-                </div>
-              )}
+
+                {expandedTaskIndex === index &&
+                  task.completed &&
+                  !task.verified &&
+                  task.userId == currentUser.partnerId && (
+                    <div className="btnTaskGroupVertical">
+                      <button
+                        className="btnTaskCircle verify"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenVerifyTaskModal();
+                        }}
+                        aria-label="Verificar tarefa"
+                      >
+                        <ion-icon
+                          name="checkmark-circle"
+                          class="icons"
+                        ></ion-icon>
+                      </button>
+                    </div>
+                  )}
+              </div>
             </div>
           ))
         ) : (

@@ -38,6 +38,16 @@ function Messages({}) {
   }, [dispatch, currentUserId]);
 
   useEffect(() => {
+    if (!currentUserId) return;
+
+    const intervalId = setInterval(() => {
+      dispatch(getMessages(currentUserId));
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch, currentUserId]);
+
+  useEffect(() => {
     if (usersStatus === "idle") {
       dispatch(fetchUsers());
     }
@@ -64,6 +74,7 @@ function Messages({}) {
   useEffect(() => {
     if (textSpaceRef.current && messages) {
       textSpaceRef.current.scrollTop = textSpaceRef.current.scrollHeight;
+      textSpaceRef.current.style.scrollBehavior = "auto"; // This disables smooth scrolling
     }
   }, [messages]);
 
