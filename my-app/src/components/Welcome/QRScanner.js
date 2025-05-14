@@ -1,5 +1,5 @@
 import React from "react";
-import QrReader from "react-qr-reader";
+import { QrReader } from "react-qr-reader";
 
 const QRScanner = ({ onScanSuccess, onClose }) => {
   const handleScan = (data) => {
@@ -15,13 +15,12 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
   return (
     <div className="scanner-container">
       <h2>Scan o código QR</h2>
-      <QrReader
-        delay={300}
-        onError={handleError}
-        onScan={handleScan}
-        style={{ width: "100%" }}
-      />
-      <button onClick={onClose}>Cancelar</button>
+      <div className="qr-wrapper">
+        <QrReader delay={300} onError={handleError} onScan={handleScan} />
+      </div>
+      <button className="submitBtn orangeBtn" onClick={onClose}>
+        Cancelar
+      </button>
     </div>
   );
 };

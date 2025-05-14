@@ -3,7 +3,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getAuthToken } from "../utils/cookieUtils";
-import { getTasks, completeTask, verifyTask, removeRejectMessage, notifyTasks } from "./taskSlice";
+import {
+  getTasks,
+  completeTask,
+  verifyTask,
+  removeRejectMessage,
+  notifyTasks,
+} from "./taskSlice";
 
 import { rejectTask, addTask } from "./taskSlice";
 import { sendMessage } from "./messagesSlice";
@@ -40,12 +46,12 @@ export const createNewTaskAfterRejection = createAsyncThunk(
 
     // 2.2 notifica parceiro
     await dispatch(
-        sendMessage({
-           senderId: partnerId,
-           receiverId: userId,
-           text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
-         })
-       ).unwrap();
+      sendMessage({
+        senderId: partnerId,
+        receiverId: userId,
+        text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
+      })
+    ).unwrap();
 
     // 2.3 cria nova tarefa
     const newTask = await dispatch(
@@ -53,7 +59,10 @@ export const createNewTaskAfterRejection = createAsyncThunk(
     ).unwrap();
 
     await dispatch(
-      notifyTasks({ userId: partnerId, message: `Nova tarefa: ${newTaskTitle}` })
+      notifyTasks({
+        userId: partnerId,
+        message: `Nova tarefa: ${newTaskTitle}`,
+      })
     );
 
     // podes devolver algo se quiseres
@@ -62,16 +71,16 @@ export const createNewTaskAfterRejection = createAsyncThunk(
 );
 
 // 3) Tasks: procurar, completar, verificar, remover mensagem
-export const fetchTasks = createAsyncThunk(
-  "user/fetchTasks",
-   async (userId, { dispatch, rejectWithValue }) => {
-    try {
-      return await dispatch(getTasks(userId)).unwrap();
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
+// export const fetchTasks = createAsyncThunk(
+//   "user/fetchTasks",
+//    async (userId, { dispatch, rejectWithValue }) => {
+//     try {
+//       return await dispatch(getTasks(userId)).unwrap();
+//     } catch (err) {
+//       return rejectWithValue(err);
+//     }
+//   }
+// );
 
 // 4) Parceiro
 export const fetchPartnerUser = createAsyncThunk(
@@ -129,10 +138,9 @@ export const fetchEquippedAccessories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const res = await axios.get(
-        `${API_URL}/users/accessories-equipped`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await axios.get(`${API_URL}/users/accessories-equipped`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -209,7 +217,7 @@ const userSlice = createSlice({
       color: null,
       background: null,
     },
-    tasks: [],          // será preenchido pelo fetchTasks
+    tasks: [], // será preenchido pelo fetchTasks
     status: "idle",
     error: null,
   },
@@ -219,7 +227,9 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // fetchAuthUser
-      .addCase(fetchAuthUser.pending, (s) => { s.status = "loading"; })
+      .addCase(fetchAuthUser.pending, (s) => {
+        s.status = "loading";
+      })
       .addCase(fetchAuthUser.fulfilled, (s, a) => {
         s.status = "succeeded";
         s.authUser = a.payload;
@@ -230,43 +240,49 @@ const userSlice = createSlice({
       })
 
       // tarefas
-      .addCase(getTasks.fulfilled,       (s, a) => { s.tasks = a.payload; })
-      .addCase(completeTask.fulfilled,   (s, a) => {
-        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+      .addCase(getTasks.fulfilled, (s, a) => {
+        s.tasks = a.payload;
+      })
+      .addCase(completeTask.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
-      .addCase(verifyTask.fulfilled,     (s, a) => {
-        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+      .addCase(verifyTask.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
       .addCase(removeRejectMessage.fulfilled, (s, a) => {
-        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
-      .addCase(notifyTasks.fulfilled,    (s, a) => {
-        const idx = s.tasks.findIndex(t => t.id === a.payload.id);
+      .addCase(notifyTasks.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
 
       // partner
-      .addCase(fetchPartnerUser.fulfilled, (s, a) => { s.partnerUser = a.payload; })
-      .addCase(connectPartner.fulfilled,   (s, a) => { s.authUser = a.payload; })
+      .addCase(fetchPartnerUser.fulfilled, (s, a) => {
+        s.partnerUser = a.payload;
+      })
+      .addCase(connectPartner.fulfilled, (s, a) => {
+        s.authUser = a.payload;
+      })
 
       // acessórios
-      .addCase(fetchOwnedAccessories.fulfilled,    (s, a) => { s.ownedAccessories = a.payload; })
+      .addCase(fetchOwnedAccessories.fulfilled, (s, a) => {
+        s.ownedAccessories = a.payload;
+      })
       .addCase(fetchEquippedAccessories.fulfilled, (s, a) => {
- 
-          const equipObj = a.payload.accessoriesEquipped ?? a.payload;
-          const { hat, shirt, background, color } = equipObj;
-          s.equippedAccessories = {
-          
-            hat:        hat?.id         ?? hat         ?? null,
-            shirt:      shirt?.id       ?? shirt       ?? null,
-            background: background?.id  ?? background  ?? null,
-            color:      color           ?? null,
-          };
-        })
-      .addCase(buyAccessory.fulfilled,     (s, a) => {
+        const equipObj = a.payload.accessoriesEquipped ?? a.payload;
+        const { hat, shirt, background, color } = equipObj;
+        s.equippedAccessories = {
+          hat: hat?.id ?? hat ?? null,
+          shirt: shirt?.id ?? shirt ?? null,
+          background: background?.id ?? background ?? null,
+          color: color ?? null,
+        };
+      })
+      .addCase(buyAccessory.fulfilled, (s, a) => {
         s.ownedAccessories = a.payload.owned;
         if (s.authUser) s.authUser.points = a.payload.points;
       })

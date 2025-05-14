@@ -1,11 +1,9 @@
-import React, { useEffect, useState, Suspense, lazy  } from "react";
+import React, { useEffect, useState, Suspense, lazy, useMemo } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice.js";
-
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -17,22 +15,25 @@ const PopUpInfo = lazy(() => import("../PopUpInfo.js"));
 const Filter = lazy(() => import("./Filter.js"));
 const Reject = lazy(() => import("./Reject.js"));
 
-// ! polling
 function Tasks() {
   const dispatch = useDispatch();
-  const { data: tasks, status: tasksStatus, error: tasksError } =
-   useSelector((state) => state.tasks);
+  const tasksState = useSelector((state) => state.tasks || {});
+  const usersState = useSelector((state) => state.users || {});
 
+  const {
+    data: tasks = [],
+    status: tasksStatus,
+    error: tasksError,
+  } = tasksState;
 
-  const authUser = getAuthUser();
+  const { data: users = [], status: usersStatus } = usersState;
+
+  const [authUser] = useState(getAuthUser());
   const currentUserId = authUser?._id;
-
-  const currentUser = useSelector((state) => state.user.authUser);
-  const partnerUser = useSelector((state) => state.user.partnerUser);
-
+  const [currentUser, setCurrentUser] = useState(false);
+  const [partnerUser, setPartnerUser] = useState(false);
 
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
-  const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
@@ -46,81 +47,154 @@ function Tasks() {
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
   const [filter, setFilter] = useState("received");
-  const [filteredTasks, setFilteredTasks] = useState([]);
   const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
+  const [myTasks, setMyTasks] = useState([]);
+  const [partnerTasks, setPartnerTasks] = useState([]);
 
   useEffect(() => {
-    if (currentUserId) {
-      dispatch(getTasks(currentUserId));
-      dispatch(fetchPartnerUser());
-   }
-  }, [dispatch, currentUserId]);
-
-  useEffect(() => {
-    const rejectedTask =
-      tasks && tasks.length > 0
-        ? tasks.find((task) => task.rejectMessage !== "")
-        : null;
-
-    if (rejectedTask && rejectedTask.userId === currentUserId) {
-      handleShowPopUpInfo(
-        `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
-      );
-
-      dispatch(removeRejectMessage(rejectedTask._id));
+    if (authUser?._id) {
+      const fetchTasks = async () => {
+        try {
+          const myResult = await dispatch(getTasks(authUser._id)).unwrap();
+          if (JSON.stringify(myResult) !== JSON.stringify(myTasks)) {
+            setMyTasks(myResult || []);
+          }
+        } catch (err) {
+          console.error("Failed to fetch tasks:", err);
+        }
+      };
+      fetchTasks();
     }
-  }, [tasks, currentUserId, dispatch]);
+  }, [authUser?._id, dispatch]);
 
   useEffect(() => {
-    if (currentUserId && tasks) {
-      const filtered = tasks.filter((task) => {
-        const isReceived =
-          filter === "received" && task.userId === currentUserId;
-        const isAssigned =
-          filter === "assigned" &&
-          partnerUser?._id &&
-          task.userId === partnerUser._id;
+    if (authUser?.partnerId) {
+      const fetchPartner = async () => {
+        try {
+          const result = await dispatch(
+            fetchPartnerUser(authUser.partnerId)
+          ).unwrap();
+          if (JSON.stringify(result) !== JSON.stringify(partnerUser)) {
+            setPartnerUser(result || {});
+          }
+        } catch (err) {
+          console.error("Failed to fetch partner user:", err);
+        }
+      };
 
-        const matchesCriteria =
-          filterCriteria === "todas" ||
-          (filterCriteria === "concluidas" &&
-            task.completed &&
-            task.verified) ||
-          (filterCriteria === "porConcluir" &&
-            !task.completed &&
-            !task.verified) ||
-          (filterCriteria === "espera" && task.completed && !task.verified);
-
-        return (isReceived || isAssigned) && matchesCriteria;
-      });
-
-      setFilteredTasks(filtered);
+      fetchPartner();
     }
-  }, [tasks, filter, filterCriteria, currentUserId, partnerUser]);
+  }, [authUser?.partnerId, dispatch, partnerUser]);
+
+  useEffect(() => {
+    if (partnerUser?._id) {
+      const fetchTasks = async () => {
+        try {
+          const result = await dispatch(getTasks(partnerUser._id)).unwrap();
+          if (JSON.stringify(result) !== JSON.stringify(partnerTasks)) {
+            setPartnerTasks(result || []);
+          }
+        } catch (err) {
+          console.error("Failed to fetch tasks:", err);
+        }
+      };
+      fetchTasks();
+    }
+  }, [partnerUser?._id, dispatch]);
+
+  useEffect(() => {
+    const POLL_INTERVAL = 15000; // 15 seconds
+
+    const pollTasks = async () => {
+      try {
+        if (authUser?._id) {
+          const myResult = await dispatch(getTasks(authUser._id)).unwrap();
+          if (JSON.stringify(myResult) !== JSON.stringify(myTasks)) {
+            setMyTasks(myResult || []);
+          }
+        }
+
+        if (partnerUser?._id) {
+          const partnerResult = await dispatch(
+            getTasks(partnerUser._id)
+          ).unwrap();
+          if (JSON.stringify(partnerResult) !== JSON.stringify(partnerTasks)) {
+            setPartnerTasks(partnerResult || []);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to poll tasks:", err);
+      }
+    };
+
+    const intervalId = setInterval(pollTasks, POLL_INTERVAL);
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [authUser?._id, partnerUser?.id, dispatch, myTasks, partnerTasks]);
+
+  useEffect(() => {
+    if (tasks && tasks.length > 0) {
+      const rejectedTask = tasks.find((task) => task.rejectMessage !== "");
+      if (rejectedTask && rejectedTask.userId === authUser?._id) {
+        handleShowPopUpInfo(
+          `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
+        );
+        dispatch(removeRejectMessage(rejectedTask._id));
+      }
+    }
+  }, [tasks, authUser?._id, dispatch]);
+
+  const filteredTasks = useMemo(() => {
+    const baseTasks = filter === "received" ? myTasks : partnerTasks;
+    return baseTasks.filter((task) => {
+      const isReceived = filter === "received" && task.userId === authUser._id;
+      const isAssigned =
+        filter === "assigned" &&
+        partnerUser?._id &&
+        task.userId === partnerUser._id;
+
+      const matchesCriteria =
+        filterCriteria === "todas" ||
+        (filterCriteria === "concluidas" && task.completed && task.verified) ||
+        (filterCriteria === "porConcluir" &&
+          !task.completed &&
+          !task.verified) ||
+        (filterCriteria === "espera" && task.completed && !task.verified);
+
+      return (isReceived || isAssigned) && matchesCriteria;
+    });
+  }, [
+    filter,
+    filterCriteria,
+    myTasks,
+    partnerTasks,
+    authUser._id,
+    partnerUser?._id,
+  ]);
 
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
-    if (filterType === "received") {
-      dispatch(getTasks(currentUserId));
-    } else if (filterType === "assigned" && partnerUser) {
-      dispatch(getTasks(partnerUser._id));
-    }
   };
 
- useEffect(() => {
-    if (!partnerUser) return;
-    dispatch(getTasks(partnerUser._id))
-      .unwrap()
-      .then(list => {
-        const next = list.find(t => t.completed && !t.verified && t.notification);
-        setShowVerifyTask(!!next);
-        setTaskToVerify(next || null);
-      });
-  }, [dispatch, partnerUser?._id]);
+  useEffect(() => {
+    setCurrentUser(authUser); // You may not even need this if it's just copying state
 
-  const handleTaskClick = (index) => {
-    setToggledTaskIndex(toggledTaskIndex === index ? null : index);
-  };
+    const fetchPartner = async () => {
+      if (!authUser?.partnerId) return;
+      try {
+        const resultAction = await dispatch(
+          fetchPartnerUser(authUser.partnerId)
+        );
+        if (resultAction.payload) {
+          setPartnerUser(resultAction.payload);
+        }
+      } catch (err) {
+        console.error("Failed to fetch partner user:", err);
+      }
+    };
+
+    fetchPartner();
+  }, [authUser?.partnerId, dispatch]); // ✅ use only stable dependencies
 
   //* open and close new task window
   const handleOpenNewTaskModal = () => {
@@ -180,25 +254,18 @@ function Tasks() {
   if (tasksStatus === "loading") {
     return <div>Loading tarefas…</div>;
   }
+
   if (tasksStatus === "failed") {
     return <div>Error: {tasksError}</div>;
   }
 
   if (!tasks) {
-    return <div>Loading...</div>;
+    return <div>A carregar...</div>;
   }
 
   const handleRequestNewTask = () => {
     setIsNewTaskModalOpen(true);
   };
-
-  <Reject
-    onClose={handleCloseRejectModal}
-    task={taskToVerify}
-    partnerUser={partnerUser}
-    onShowPopUpInfo={handleShowPopUpInfo}
-    onRequestNewTask={handleRequestNewTask}
-  />;
 
   const handleToggleTaskExpand = (index) => {
     setExpandedTaskIndex((prev) => (prev === index ? null : index));
@@ -212,7 +279,6 @@ function Tasks() {
           <ion-icon name="options-outline" class="icons"></ion-icon>
         </button>
       </TopBar>
-
       <div className="filter-buttons">
         <button
           className={`filter-button ${filter === "received" ? "active" : ""}`}
@@ -228,42 +294,30 @@ function Tasks() {
           Atribuídas
         </button>
       </div>
-
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) => (
             <div className="taskDivOp" key={index}>
-              {!task.completed && !task.verified ? (
-                <div className="taskItemContainer">
-                  <button
-                    className={`task-item ${
-                      expandedTaskIndex === index ? "expanded" : ""
-                    }`}
-                    onClick={() => handleToggleTaskExpand(index)}
-                  >
-                    <p className="taskTitle">{task.title}</p>
-
-                    {/* ✅ Mostra a descrição abaixo do título quando expandido */}
-                    {expandedTaskIndex === index && (
-                      <p className="taskDescription">
-                        Descrição:<br></br>
-                        {task.description}
-                      </p>
-                    )}
-                  </button>
-
+              <div className="taskItemContainer">
+                <button
+                  className={`task-item ${
+                    expandedTaskIndex === index ? "expanded" : ""
+                  }`}
+                  onClick={() => handleToggleTaskExpand(index)}
+                >
+                  <p className="taskTitle">{task.title}</p>
                   {expandedTaskIndex === index && (
+                    <p className="taskDescription">
+                      Descrição:<br></br>
+                      {task.description}
+                    </p>
+                  )}
+                </button>
+                {expandedTaskIndex === index &&
+                  !task.completed &&
+                  !task.verified &&
+                  task.userId === currentUser._id && (
                     <div className="btnTaskGroupVertical">
-                      <button
-                        className="btnTaskCircle reject"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenRejectModal(task);
-                        }}
-                        aria-label="Recusar tarefa"
-                      >
-                        <ion-icon name="close" class="icons"></ion-icon>
-                      </button>
                       <button
                         className="btnTaskCircle conclude"
                         onClick={(e) => {
@@ -276,19 +330,27 @@ function Tasks() {
                       </button>
                     </div>
                   )}
-                </div>
-              ) : (
-                <div
-                  className={`taskDiv taskDone ${
-                    toggledTaskIndex === index ? "toggled" : ""
-                  }`}
-                  onClick={() => handleTaskClick(index)}
-                >
-                  <p className="taskTitle">
-                    {toggledTaskIndex === index ? task.description : task.title}
-                  </p>
-                </div>
-              )}
+                {expandedTaskIndex === index &&
+                  task.completed &&
+                  !task.verified &&
+                  task.userId == currentUser.partnerId && (
+                    <div className="btnTaskGroupVertical">
+                      <button
+                        className="btnTaskCircle verify"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenVerifyTaskModal();
+                        }}
+                        aria-label="Verificar tarefa"
+                      >
+                        <ion-icon
+                          name="checkmark-circle"
+                          class="icons"
+                        ></ion-icon>
+                      </button>
+                    </div>
+                  )}
+              </div>
             </div>
           ))
         ) : (
@@ -309,7 +371,7 @@ function Tasks() {
         <ion-icon name="add-outline" class="iconswhite"></ion-icon>
       </button>
 
-      {/* Modais (sem alterações) */}
+      {/* Modais */}
       {showVerifyTask && partnerUser && (
         <Suspense fallback={<div>Loading rejeição...</div>}>
           <VerifyPopUp
