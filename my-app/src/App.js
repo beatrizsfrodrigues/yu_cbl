@@ -5,6 +5,12 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+
+import axios from 'axios';
+import { getAuthToken } from './utils/cookieUtils';
+
+
+
 import NavBar from "./components/NavBar";
 import Tasks from "./components/Tasks/Tasks";
 import Home from "./components/Home/Home";
@@ -33,6 +39,8 @@ import "./App.css";
 
 function AppContent() {
 
+
+
     const location = useLocation();
 
     useEffect(() => {
@@ -48,6 +56,14 @@ function AppContent() {
       }
     }, [location.pathname]);
   
+    axios.defaults.withCredentials = true;       
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
+
+    axios.interceptors.request.use(config => {
+      const token = getAuthToken();
+      if (token) config.headers['Authorization'] = `Bearer ${token}`;
+      return config;
+    });
 
   // Nomes das páginas (mudar à vontade)
   const pageTitles = {

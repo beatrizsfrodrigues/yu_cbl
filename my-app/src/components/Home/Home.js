@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../../redux/usersSlice.js";
+import { getAuthUser } from "../../utils/cookieUtils";
 import { fetchMascot, buyItem, saveFit } from "../../redux/mascotSlice.js";
 import { fetchCloset } from "../../redux/closetSlice";
 import PopUpInfo from "../PopUpInfo.js";
@@ -11,7 +12,11 @@ import "../../assets/css/home.css";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
+  const authUser = getAuthUser();
+  const currentUserId = authUser?.id;
+  console.log('🟢 Cookie completo:', document.cookie);
+  console.log('🟢 getAuthUser():', authUser);
+
   const users = useSelector((state) => state.users.data);
   //const usersStatus = useSelector((state) => state.users.status);
   const mascots = useSelector((state) => state.mascot.data);

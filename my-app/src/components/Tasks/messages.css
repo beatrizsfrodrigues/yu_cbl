@@ -36,8 +36,7 @@ div .line {
   height: 2px;
 }
 
-/* #textSpace {
-  height: 60vh;
+#textSpace {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -47,10 +46,10 @@ div .line {
   scrollbar-width: none;
   scroll-behavior: smooth;
   margin: 0px 0px;
-  height: calc(140vh - 70px - 60vh);
   overflow-y: auto;
   flex: 1;
-} */
+  margin-top: -32px;
+}
 
 #textSpace {
   flex: 1;
@@ -81,6 +80,7 @@ div .line {
   word-wrap: break-word;
   white-space: normal;
   margin-bottom: -4px;
+  background-color: var(--white);
 }
 
 .bubbleBlue {
@@ -90,8 +90,10 @@ div .line {
 }
 
 .bubbleDotted {
-  display: inline-flex;
-  height: 68px;
+  /* display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; */
+  /* height: 68px; */
   padding: 10px 26px 10px 26px;
   align-items: center;
   border-radius: 15px;

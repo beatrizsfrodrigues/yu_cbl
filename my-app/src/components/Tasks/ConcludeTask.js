@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { X, UploadCloud, RefreshCw } from "react-feather";
-import { completeTask } from "../../redux/usersSlice";
-import { sendNotification } from "../../redux/messagesSlice";
+import { completeTask } from "../../redux/taskSlice.js";
 
 function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
   const dispatch = useDispatch();
@@ -23,21 +22,8 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
   };
 
   const handleSubmit = () => {
-    dispatch(
-      completeTask({
-        taskId: task.id,
-        proofImage: selectedFile.name,
-        userId: currentUser.id,
-      })
-    );
+    dispatch(completeTask({ picture: selectedFile.name, id: task._id }));
 
-    dispatch(
-      sendNotification({
-        senderId: currentUser.id,
-        receiverId: currentUser.partnerId,
-        text: `Tarefa <b>${task.title}</b> foi marcada como concluída.`,
-      })
-    );
     onClose();
     onShowPopUpInfo(
       `Tarefa <b>${task.title}</b> foi marcada como concluída. Espera pela verificação para obteres pontos.`
