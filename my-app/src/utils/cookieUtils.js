@@ -7,12 +7,13 @@ export function getCookie(name) {
 }
 
 export function getAuthUser() {
-  const userJson = getCookie('loggedInUser');
-  if (!userJson) return null;
+  const raw = getCookie('loggedInUser');
+  if (!raw) return null;
   try {
-    return JSON.parse(userJson);
-  } catch (err) {
-    console.error('Erro a fazer parse do cookie loggedInUser:', err, userJson);
+    const user = JSON.parse(raw);
+    if (user._id && !user.id) user.id = user._id; 
+    return user;
+  } catch {
     return null;
   }
 }

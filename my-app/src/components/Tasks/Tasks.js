@@ -1,9 +1,11 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy  } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../redux/usersSlice.js";
+
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
+import { fetchPartnerUser } from "../../redux/usersSlice.js";
+
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -18,14 +20,17 @@ const Reject = lazy(() => import("./Reject.js"));
 // ! polling
 function Tasks() {
   const dispatch = useDispatch();
-  const { data: tasks, status } = useSelector((state) => state.tasks);
+  const { data: tasks, status: tasksStatus, error: tasksError } =
+   useSelector((state) => state.tasks);
+
 
   const authUser = getAuthUser();
   const currentUserId = authUser?._id;
 
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const error = useSelector((state) => state.users.error);
+  const currentUser = useSelector((state) => state.user.authUser);
+  const partnerUser = useSelector((state) => state.user.partnerUser);
+
+
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [toggledTaskIndex, setToggledTaskIndex] = useState(null);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -37,8 +42,7 @@ function Tasks() {
   const [showVerifyTask, setShowVerifyTask] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToVerify, setTaskToVerify] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [partnerUser, setPartnerUser] = useState(null);
+
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
   const [filter, setFilter] = useState("received");
@@ -46,7 +50,10 @@ function Tasks() {
   const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
 
   useEffect(() => {
-    dispatch(getTasks(currentUserId));
+    if (currentUserId) {
+      dispatch(getTasks(currentUserId));
+      dispatch(fetchPartnerUser());
+   }
   }, [dispatch, currentUserId]);
 
   useEffect(() => {
@@ -71,8 +78,8 @@ function Tasks() {
           filter === "received" && task.userId === currentUserId;
         const isAssigned =
           filter === "assigned" &&
-          partnerUser &&
-          task.userId === partnerUser.id;
+          partnerUser?._id &&
+          task.userId === partnerUser._id;
 
         const matchesCriteria =
           filterCriteria === "todas" ||
@@ -96,55 +103,20 @@ function Tasks() {
     if (filterType === "received") {
       dispatch(getTasks(currentUserId));
     } else if (filterType === "assigned" && partnerUser) {
-      dispatch(getTasks(partnerUser.id));
+      dispatch(getTasks(partnerUser._id));
     }
   };
 
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
-
-  useEffect(() => {
-    const user =
-      users && users.length > 0
-        ? users.find((user) => user.id === currentUserId)
-        : null;
-    setCurrentUser(authUser);
-
-    // ! getPartner
-    const partner =
-      users && users.length > 0
-        ? users.find((u) => u.id === user.partnerId)
-        : null;
-
-    if (partner) {
-      setPartnerUser(partner);
-
-      const fetchPartnerTasks = async () => {
-        try {
-          const resultAction = await dispatch(getTasks(partner.id));
-          const partnerTasks = resultAction.payload;
-
-          const taskToVerify = partnerTasks.find(
-            (task) => task.completed && !task.verified
-          );
-
-          if (taskToVerify && taskToVerify.notification == true) {
-            setTaskToVerify(taskToVerify);
-            setShowVerifyTask(true);
-          } else {
-            setShowVerifyTask(false);
-          }
-        } catch (err) {
-          console.error("Failed to fetch partner tasks:", err);
-        }
-      };
-
-      fetchPartnerTasks();
-    }
-  }, [users, currentUserId, dispatch]);
+ useEffect(() => {
+    if (!partnerUser) return;
+    dispatch(getTasks(partnerUser._id))
+      .unwrap()
+      .then(list => {
+        const next = list.find(t => t.completed && !t.verified && t.notification);
+        setShowVerifyTask(!!next);
+        setTaskToVerify(next || null);
+      });
+  }, [dispatch, partnerUser?._id]);
 
   const handleTaskClick = (index) => {
     setToggledTaskIndex(toggledTaskIndex === index ? null : index);
@@ -205,12 +177,11 @@ function Tasks() {
     setTaskToVerify(null);
   };
 
-  if (usersStatus === "loading") {
-    return <div>Loading...</div>;
+  if (tasksStatus === "loading") {
+    return <div>Loading tarefas…</div>;
   }
-
-  if (usersStatus === "failed") {
-    return <div>Error: {error}</div>;
+  if (tasksStatus === "failed") {
+    return <div>Error: {tasksError}</div>;
   }
 
   if (!tasks) {

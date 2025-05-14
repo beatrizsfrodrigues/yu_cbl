@@ -1,21 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
-import usersReducer from "./usersSlice.js";
+
+
+import userReducer from "./usersSlice.js";            
+import accessoriesReducer from "./accessoriesSlice.js";
+
+
+import tasksReducer from "./taskSlice.js";
 import messagesReducer from "./messagesSlice.js";
 import presetMessagesReducer from "./presetMessagesSlice.js";
 import formReducer from "./formSlice.js";
-import closetReducer from "./closetSlice.js";
-import mascotReducer from "./mascotSlice.js";
-import tasksReducer from "./taskSlice.js";
 
 const store = configureStore({
   reducer: {
-    users: usersReducer,
+    user: userReducer,                  
+    accessories: accessoriesReducer,     
+    tasks: tasksReducer,
     messages: messagesReducer,
     presetMessages: presetMessagesReducer,
     form: formReducer,
-    closet: closetReducer,
-    mascot: mascotReducer,
-    tasks: tasksReducer,
   },
 });
 
