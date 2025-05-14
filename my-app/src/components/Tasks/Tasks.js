@@ -1,11 +1,9 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy, useMemo } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice.js";
-
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -19,16 +17,21 @@ const Reject = lazy(() => import("./Reject.js"));
 
 function Tasks() {
   const dispatch = useDispatch();
-  const { data: tasks, status: tasksStatus } = useSelector(
-    (state) => state.tasks
-  );
+  const tasksState = useSelector((state) => state.tasks || {});
+  const usersState = useSelector((state) => state.users || {});
+
+  const {
+    data: tasks = [],
+    status: tasksStatus,
+    error: tasksError,
+  } = tasksState;
+
+  const { data: users = [], status: usersStatus } = usersState;
 
   const [authUser] = useState(getAuthUser());
-
   const currentUserId = authUser?._id;
-
-  const currentUser = useSelector((state) => state.user.authUser);
-  const partnerUser = useSelector((state) => state.user.partnerUser);
+  const [currentUser, setCurrentUser] = useState(false);
+  const [partnerUser, setPartnerUser] = useState(false);
 
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -44,166 +47,154 @@ function Tasks() {
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
   const [filter, setFilter] = useState("received");
-  const [filteredTasks, setFilteredTasks] = useState([]);
   const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
 
   useEffect(() => {
     if (authUser?._id) {
-      dispatch(getTasks(authUser._id)).then((action) => {
-        const fetchedTasks = action.payload || [];
-        setMyTasks(fetchedTasks);
-      });
+      const fetchTasks = async () => {
+        try {
+          const myResult = await dispatch(getTasks(authUser._id)).unwrap();
+          if (JSON.stringify(myResult) !== JSON.stringify(myTasks)) {
+            setMyTasks(myResult || []);
+          }
+        } catch (err) {
+          console.error("Failed to fetch tasks:", err);
+        }
+      };
+      fetchTasks();
     }
-  }, [dispatch, authUser?._id]);
+  }, [authUser?._id, dispatch]);
 
   useEffect(() => {
-    const rejectedTask =
-      tasks && tasks.length > 0
-        ? tasks.find((task) => task.rejectMessage !== "")
-        : null;
+    if (authUser?.partnerId) {
+      const fetchPartner = async () => {
+        try {
+          const result = await dispatch(
+            fetchPartnerUser(authUser.partnerId)
+          ).unwrap();
+          if (JSON.stringify(result) !== JSON.stringify(partnerUser)) {
+            setPartnerUser(result || {});
+          }
+        } catch (err) {
+          console.error("Failed to fetch partner user:", err);
+        }
+      };
 
-    if (rejectedTask && rejectedTask.userId === authUser?._id) {
-      handleShowPopUpInfo(
-        `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
-      );
-
-      dispatch(removeRejectMessage(rejectedTask._id));
+      fetchPartner();
     }
-  }, [tasks, currentUserId, dispatch]);
+  }, [authUser?.partnerId, dispatch, partnerUser]);
 
   useEffect(() => {
-    let baseTasks = filter === "received" ? myTasks : partnerTasks;
-    const filtered = applyFiltering(
-      baseTasks,
-      filter,
-      filterCriteria,
-      authUser._id,
-      partnerUser
-    );
-    setFilteredTasks(filtered);
-  }, [
-    filter,
-    filterCriteria,
-    authUser._id,
-    partnerUser,
-    myTasks,
-    partnerTasks,
-  ]);
+    if (partnerUser?._id) {
+      const fetchTasks = async () => {
+        try {
+          const result = await dispatch(getTasks(partnerUser._id)).unwrap();
+          if (JSON.stringify(result) !== JSON.stringify(partnerTasks)) {
+            setPartnerTasks(result || []);
+          }
+        } catch (err) {
+          console.error("Failed to fetch tasks:", err);
+        }
+      };
+      fetchTasks();
+    }
+  }, [partnerUser?._id, dispatch]);
 
-  const applyFiltering = (tasksList, userFilter, criteria, authId, partner) => {
-    const filtered = tasksList.filter((task) => {
-      const isReceived = userFilter === "received" && task.userId === authId;
+  useEffect(() => {
+    const POLL_INTERVAL = 15000; // 15 seconds
+
+    const pollTasks = async () => {
+      try {
+        if (authUser?._id) {
+          const myResult = await dispatch(getTasks(authUser._id)).unwrap();
+          if (JSON.stringify(myResult) !== JSON.stringify(myTasks)) {
+            setMyTasks(myResult || []);
+          }
+        }
+
+        if (partnerUser?._id) {
+          const partnerResult = await dispatch(
+            getTasks(partnerUser._id)
+          ).unwrap();
+          if (JSON.stringify(partnerResult) !== JSON.stringify(partnerTasks)) {
+            setPartnerTasks(partnerResult || []);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to poll tasks:", err);
+      }
+    };
+
+    const intervalId = setInterval(pollTasks, POLL_INTERVAL);
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [authUser?._id, partnerUser?.id, dispatch, myTasks, partnerTasks]);
+
+  useEffect(() => {
+    if (tasks && tasks.length > 0) {
+      const rejectedTask = tasks.find((task) => task.rejectMessage !== "");
+      if (rejectedTask && rejectedTask.userId === authUser?._id) {
+        handleShowPopUpInfo(
+          `Tarefa <b>${rejectedTask.title}</b> foi rejeita. Tenta outra vez.`
+        );
+        dispatch(removeRejectMessage(rejectedTask._id));
+      }
+    }
+  }, [tasks, authUser?._id, dispatch]);
+
+  const filteredTasks = useMemo(() => {
+    const baseTasks = filter === "received" ? myTasks : partnerTasks;
+    return baseTasks.filter((task) => {
+      const isReceived = filter === "received" && task.userId === authUser._id;
       const isAssigned =
-        userFilter === "assigned" && partner?.id && task.userId === partner.id;
+        filter === "assigned" &&
+        partnerUser?._id &&
+        task.userId === partnerUser._id;
 
       const matchesCriteria =
-        criteria === "todas" ||
-        (criteria === "concluidas" && task.completed && task.verified) ||
-        (criteria === "porConcluir" && !task.completed && !task.verified) ||
-        (criteria === "espera" && task.completed && !task.verified);
+        filterCriteria === "todas" ||
+        (filterCriteria === "concluidas" && task.completed && task.verified) ||
+        (filterCriteria === "porConcluir" &&
+          !task.completed &&
+          !task.verified) ||
+        (filterCriteria === "espera" && task.completed && !task.verified);
 
       return (isReceived || isAssigned) && matchesCriteria;
     });
-
-    return filtered;
-  };
+  }, [
+    filter,
+    filterCriteria,
+    myTasks,
+    partnerTasks,
+    authUser._id,
+    partnerUser?._id,
+  ]);
 
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
   };
 
   useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
+    setCurrentUser(authUser); // You may not even need this if it's just copying state
 
-  useEffect(() => {
-    const user =
-      users && users.length > 0
-        ? users.find((user) => user.id === currentUserId)
-        : null;
-    setCurrentUser(authUser);
-
-    // ! getPartner
-    const partner =
-      users && users.length > 0
-        ? users.find((u) => u.id === user.partnerId)
-        : null;
-
-    if (partner) {
-      setPartnerUser(partner);
-
-      const filtered = applyFiltering(
-        tasks || [],
-        filter,
-        filterCriteria,
-        authUser._id,
-        partner
-      );
-      setFilteredTasks(filtered);
-
-      const fetchPartnerTasks = async () => {
-        try {
-          const resultAction = await dispatch(getTasks(partner.id));
-          const fetchedPartnerTasks = resultAction.payload || [];
-          setPartnerTasks(fetchedPartnerTasks);
-
-          const taskToVerify = fetchedPartnerTasks.find(
-            (task) => task.completed && !task.verified && task.notification
-          );
-
-          if (taskToVerify) {
-            setTaskToVerify(taskToVerify);
-            setShowVerifyTask(true);
-          } else {
-            setShowVerifyTask(false);
-          }
-        } catch (err) {
-          console.error("Failed to fetch partner tasks:", err);
-        }
-      };
-
-      fetchPartnerTasks();
-    }
-  }, [users, currentUserId, dispatch]);
-
-  useEffect(() => {
-    const POLL_INTERVAL = 10000; // 10 seconds
-
-    const pollTasks = async () => {
-      console.log("polling tasks...");
-
-      if (authUser?._id) {
-        const myResult = await dispatch(getTasks(authUser._id));
-        const fetchedMyTasks = myResult.payload || [];
-        setMyTasks(fetchedMyTasks);
-      }
-
-      if (partnerUser?.id) {
-        const partnerResult = await dispatch(getTasks(partnerUser.id));
-        const fetchedPartnerTasks = partnerResult.payload || [];
-        setPartnerTasks(fetchedPartnerTasks);
-
-        const taskToVerify = fetchedPartnerTasks.find(
-          (task) => task.completed && !task.verified && task.notification
+    const fetchPartner = async () => {
+      if (!authUser?.partnerId) return;
+      try {
+        const resultAction = await dispatch(
+          fetchPartnerUser(authUser.partnerId)
         );
-
-        if (taskToVerify) {
-          setTaskToVerify(taskToVerify);
-          setShowVerifyTask(true);
-        } else {
-          setShowVerifyTask(false);
+        if (resultAction.payload) {
+          setPartnerUser(resultAction.payload);
         }
+      } catch (err) {
+        console.error("Failed to fetch partner user:", err);
       }
     };
 
-    const intervalId = setInterval(pollTasks, POLL_INTERVAL);
-
-    return () => clearInterval(intervalId);
-  }, [authUser?._id, partnerUser?.id, dispatch]);
+    fetchPartner();
+  }, [authUser?.partnerId, dispatch]); // ✅ use only stable dependencies
 
   //* open and close new task window
   const handleOpenNewTaskModal = () => {
@@ -263,6 +254,7 @@ function Tasks() {
   if (tasksStatus === "loading") {
     return <div>Loading tarefas…</div>;
   }
+
   if (tasksStatus === "failed") {
     return <div>Error: {tasksError}</div>;
   }
@@ -274,14 +266,6 @@ function Tasks() {
   const handleRequestNewTask = () => {
     setIsNewTaskModalOpen(true);
   };
-
-  <Reject
-    onClose={handleCloseRejectModal}
-    task={taskToVerify}
-    partnerUser={partnerUser}
-    onShowPopUpInfo={handleShowPopUpInfo}
-    onRequestNewTask={handleRequestNewTask}
-  />;
 
   const handleToggleTaskExpand = (index) => {
     setExpandedTaskIndex((prev) => (prev === index ? null : index));
@@ -295,7 +279,6 @@ function Tasks() {
           <ion-icon name="options-outline" class="icons"></ion-icon>
         </button>
       </TopBar>
-
       <div className="filter-buttons">
         <button
           className={`filter-button ${filter === "received" ? "active" : ""}`}
@@ -311,7 +294,6 @@ function Tasks() {
           Atribuídas
         </button>
       </div>
-
       <div id="tasks">
         {currentUser && filteredTasks.length > 0 ? (
           filteredTasks.map((task, index) => (
@@ -324,8 +306,6 @@ function Tasks() {
                   onClick={() => handleToggleTaskExpand(index)}
                 >
                   <p className="taskTitle">{task.title}</p>
-
-                  {/* ✅ Mostra a descrição abaixo do título quando expandido */}
                   {expandedTaskIndex === index && (
                     <p className="taskDescription">
                       Descrição:<br></br>
@@ -333,7 +313,6 @@ function Tasks() {
                     </p>
                   )}
                 </button>
-
                 {expandedTaskIndex === index &&
                   !task.completed &&
                   !task.verified &&
@@ -351,7 +330,6 @@ function Tasks() {
                       </button>
                     </div>
                   )}
-
                 {expandedTaskIndex === index &&
                   task.completed &&
                   !task.verified &&
@@ -393,7 +371,7 @@ function Tasks() {
         <ion-icon name="add-outline" class="iconswhite"></ion-icon>
       </button>
 
-      {/* Modais (sem alterações) */}
+      {/* Modais */}
       {showVerifyTask && partnerUser && (
         <Suspense fallback={<div>Loading rejeição...</div>}>
           <VerifyPopUp

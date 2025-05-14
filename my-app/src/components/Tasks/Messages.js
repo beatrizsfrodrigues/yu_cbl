@@ -1,24 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { createSelector } from "reselect";
 import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { getAuthUser } from "../../utils/cookieUtils";
-
+import { fetchPartnerUser } from "../../redux/usersSlice";
 import { X } from "react-feather";
 import "./messages.css";
 
+// Memoized selectors
+const selectMessages = createSelector(
+  (state) => state.messages?.data,
+  (messages) => (messages ? { ...messages } : { messages: [] }) // Ensure a new object is returned
+);
+
+const selectUsers = createSelector(
+  (state) => state.users?.data,
+  (users) => (users ? [...users] : []) // Ensure a new array is returned
+);
+
+const selectPresetMessages = createSelector(
+  (state) => state.presetMessages?.data,
+  (presetMessages) => (presetMessages ? [...presetMessages] : []) // Ensure a new array is returned
+);
+
 function Messages({}) {
   const dispatch = useDispatch();
-  const { data: messages, status } = useSelector((state) => state.messages);
+
+  // Use memoized selectors
+  const messages = useSelector(selectMessages);
+
+  const users = useSelector(selectUsers);
+  const presetMessages = useSelector(selectPresetMessages);
 
   const authUser = getAuthUser();
+  console.log(messages);
   const currentUserId = authUser?._id;
 
   const currentUser = useSelector((state) => state.user.authUser);
   const partnerUser = useSelector((state) => state.user.partnerUser);
 
   const messagesStatus = useSelector((state) => state.messages.status);
-  const presetMessages = useSelector((state) => state.presetMessages.data);
   const presetMessagesStatus = useSelector(
     (state) => state.presetMessages.status
   );
@@ -30,26 +52,35 @@ function Messages({}) {
   //* fetch text messages
 
   useEffect(() => {
-    if (currentUserId) {
-      dispatch(getMessages(currentUserId));
+    if (authUser?._id) {
+      dispatch(getMessages(authUser._id));
     }
-  }, [dispatch, currentUserId]);
+  }, [dispatch, authUser?._id]); // Ensure the dependency is stable and correct
 
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!authUser?._id) return;
 
     const intervalId = setInterval(() => {
-      dispatch(getMessages(currentUserId));
+      dispatch(getMessages(authUser._id));
     }, 5000);
 
-    return () => clearInterval(intervalId);
-  }, [dispatch, currentUserId]);
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [dispatch, authUser?._id]); // Use stable dependency for the interval
 
   useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
+    if (authUser?.partnerId) {
+      dispatch(fetchPartnerUser(authUser.partnerId)); // Fetch partner user using the action
     }
-  }, [usersStatus, dispatch]);
+  }, [authUser?.partnerId, dispatch]);
+
+  useEffect(() => {
+    if (users && authUser?.partnerId) {
+      const partner = users.find((user) => user._id === authUser.partnerId);
+      if (partner) {
+        dispatch({ type: "SET_PARTNER_USER", payload: partner }); // Ensure partnerUser is set in the Redux store
+      }
+    }
+  }, [users, authUser?.partnerId, dispatch]);
 
   useEffect(() => {
     if (textSpaceRef.current && messages) {
@@ -83,7 +114,8 @@ function Messages({}) {
 
   //* text messages
   let messageContent;
-
+  console.log(messagesStatus);
+  console.log(authUser);
   if (messagesStatus === "loading") {
     messageContent = <div className="loadingMessage">A carregar...</div>;
   } else if (messagesStatus === "failed") {
@@ -91,12 +123,14 @@ function Messages({}) {
       <div className="errorMessage">Erro ao carregar mensagens</div>
     );
   } else if (
-    currentUser &&
-    currentUser.partnerId &&
+    authUser &&
+    authUser.partnerId &&
     messagesStatus === "succeeded" &&
     messages != {}
   ) {
+    console.log("ola");
     const conversation = messages;
+    console.log(conversation.messages);
 
     const sortedMessages = [...conversation.messages].sort(
       (a, b) => +a.date - +b.date
@@ -109,7 +143,8 @@ function Messages({}) {
       const hours = dateString.slice(8, 10);
       const minutes = dateString.slice(10, 12);
 
-      if (message.receiverId === currentUser.partnerId) {
+      if (message.receiverId === authUser.partnerId) {
+        console.log("olaaa");
         if (message.senderType === "app") {
           return (
             <div key={index} className="textMessage">
