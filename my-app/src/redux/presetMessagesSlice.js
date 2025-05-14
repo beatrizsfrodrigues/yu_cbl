@@ -1,10 +1,14 @@
+ 
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"; //função que o redux tem para criar tarefas
+const API_URL = process.env.REACT_APP_API_URL;
+
 //createSlice é uma forma simplificada de criar um slice de estado no Redux
 // 1) Chama o endpoint real
 export const fetchPresetMessages = createAsyncThunk(
   "presetMessages/fetchPresetMessages", //identificador (string) para o Redux.
   async () => {
-    const response = await fetch("http://localhost:3000/preset-messages"); //Pede ao navegador que vá procurar o recurso neste endereço.
+    const response = await fetch(`${API_URL}/preset-messages`); //Pede ao navegador que vá procurar o recurso neste endereço.
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

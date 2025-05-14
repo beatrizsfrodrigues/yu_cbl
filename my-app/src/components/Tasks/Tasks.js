@@ -1,9 +1,11 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../redux/usersSlice.js";
+
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
+import { fetchPartnerUser } from "../../redux/usersSlice.js";
+
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 
@@ -25,9 +27,9 @@ function Tasks() {
 
   const currentUserId = authUser?._id;
 
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const error = useSelector((state) => state.users.error);
+  const currentUser = useSelector((state) => state.user.authUser);
+  const partnerUser = useSelector((state) => state.user.partnerUser);
+
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
   const [isConcludeTaskOpen, setIsConcludeTaskOpen] = useState(false);
@@ -38,8 +40,7 @@ function Tasks() {
   const [showVerifyTask, setShowVerifyTask] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToVerify, setTaskToVerify] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [partnerUser, setPartnerUser] = useState(null);
+
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
   const [filter, setFilter] = useState("received");
@@ -259,12 +260,11 @@ function Tasks() {
     setTaskToVerify(null);
   };
 
-  if (usersStatus === "loading") {
-    return <div>Loading...</div>;
+  if (tasksStatus === "loading") {
+    return <div>Loading tarefas…</div>;
   }
-
-  if (usersStatus === "failed") {
-    return <div>Error: {error}</div>;
+  if (tasksStatus === "failed") {
+    return <div>Error: {tasksError}</div>;
   }
 
   if (!tasks) {

@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
-import { fetchUsers } from "../../redux/usersSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
+
 import { X } from "react-feather";
 import "./messages.css";
 
@@ -14,10 +14,8 @@ function Messages({}) {
   const authUser = getAuthUser();
   const currentUserId = authUser?._id;
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const [partnerUser, setPartnerUser] = useState(null);
+  const currentUser = useSelector((state) => state.user.authUser);
+  const partnerUser = useSelector((state) => state.user.partnerUser);
 
   const messagesStatus = useSelector((state) => state.messages.status);
   const presetMessages = useSelector((state) => state.presetMessages.data);
@@ -52,24 +50,6 @@ function Messages({}) {
       dispatch(fetchUsers());
     }
   }, [usersStatus, dispatch]);
-
-  useEffect(() => {
-    const user =
-      users && users.length > 0
-        ? users.find((user) => user.id === currentUserId)
-        : null;
-    setCurrentUser(authUser);
-
-    // ! getPartner
-    const partner =
-      users && users.length > 0
-        ? users.find((u) => u.id === user.partnerId)
-        : null;
-
-    if (partner) {
-      setPartnerUser(partner);
-    }
-  }, [users, currentUserId]);
 
   useEffect(() => {
     if (textSpaceRef.current && messages) {
