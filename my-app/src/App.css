@@ -74,6 +74,7 @@ p {
   height: 48px;
   box-shadow: 0px;
   border: none;
+  cursor: pointer;
 }
 
 .buttonBig:active {
@@ -82,6 +83,7 @@ p {
 
 .buttonBig:disabled {
   background-color: var(--purple-darker);
+  cursor: not-allowed;
 }
 
 .btnRound {

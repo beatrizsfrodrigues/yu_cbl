@@ -24,13 +24,13 @@ label {
   justify-content: center;
   align-items: center;
   margin-bottom: 28px;
-    margin-top: 20px;
+  margin-top: 20px;
   position: relative; /* Ensures better stacking behavior */
 }
 
 .logo {
   width: 80%; /* Adjusts dynamically */
-  max-width: 300px; /* Prevents it from getting too large */
+  max-width: 250px; /* Prevents it from getting too large */
   height: auto;
   z-index: 2;
   display: block;
