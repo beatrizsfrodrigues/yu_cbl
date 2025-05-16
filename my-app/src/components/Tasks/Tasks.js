@@ -18,7 +18,6 @@ const Reject = lazy(() => import("./Reject.js"));
 function Tasks() {
   const dispatch = useDispatch();
   const tasksState = useSelector((state) => state.tasks || {});
-  const usersState = useSelector((state) => state.users || {});
 
   const {
     data: tasks = [],
@@ -26,10 +25,8 @@ function Tasks() {
     error: tasksError,
   } = tasksState;
 
-  const { data: users = [], status: usersStatus } = usersState;
-
   const [authUser] = useState(getAuthUser());
-  const currentUserId = authUser?._id;
+
   const [currentUser, setCurrentUser] = useState(false);
   const [partnerUser, setPartnerUser] = useState(false);
 
@@ -65,7 +62,7 @@ function Tasks() {
       };
       fetchTasks();
     }
-  }, [authUser?._id, dispatch]);
+  }, [authUser?._id, dispatch, myTasks]);
 
   useEffect(() => {
     if (authUser?.partnerId) {
@@ -100,7 +97,7 @@ function Tasks() {
       };
       fetchTasks();
     }
-  }, [partnerUser?._id, dispatch]);
+  }, [partnerUser?._id, dispatch, partnerTasks]);
 
   useEffect(() => {
     const POLL_INTERVAL = 15000; // 15 seconds
@@ -130,7 +127,7 @@ function Tasks() {
     const intervalId = setInterval(pollTasks, POLL_INTERVAL);
 
     return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, [authUser?._id, partnerUser?.id, dispatch, myTasks, partnerTasks]);
+  }, [authUser?._id, partnerUser?._id, dispatch, myTasks, partnerTasks]);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {
@@ -194,7 +191,7 @@ function Tasks() {
     };
 
     fetchPartner();
-  }, [authUser?.partnerId, dispatch]); // ✅ use only stable dependencies
+  }, [authUser?.partnerId, dispatch, authUser]); // ✅ use only stable dependencies
 
   //* open and close new task window
   const handleOpenNewTaskModal = () => {
@@ -263,10 +260,6 @@ function Tasks() {
     return <div>A carregar...</div>;
   }
 
-  const handleRequestNewTask = () => {
-    setIsNewTaskModalOpen(true);
-  };
-
   const handleToggleTaskExpand = (index) => {
     setExpandedTaskIndex((prev) => (prev === index ? null : index));
   };
@@ -333,7 +326,7 @@ function Tasks() {
                 {expandedTaskIndex === index &&
                   task.completed &&
                   !task.verified &&
-                  task.userId == currentUser.partnerId && (
+                  task.userId === currentUser.partnerId && (
                     <div className="btnTaskGroupVertical">
                       <button
                         className="btnTaskCircle verify"
