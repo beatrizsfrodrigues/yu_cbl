@@ -16,6 +16,23 @@ import { sendMessage } from "./messagesSlice";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+export const registerUser = createAsyncThunk(
+  "user/register",
+  async ({ username, email, password }, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/users/signup`,
+        { username, email, password }
+      );
+      return res.data.user;
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      return rejectWithValue(msg);
+    }
+  }
+);
+
+
 // 1) Procurar utilizador autenticado
 export const fetchAuthUser = createAsyncThunk(
   "user/fetchAuthUser",
@@ -125,7 +142,7 @@ export const fetchOwnedAccessories = createAsyncThunk(
       const res = await axios.get(`${API_URL}/users/accessories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return res.data;
+      return res.data; 
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
@@ -141,7 +158,7 @@ export const fetchEquippedAccessories = createAsyncThunk(
       const res = await axios.get(`${API_URL}/users/accessories-equipped`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return res.data;
+      return res.data; 
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
@@ -212,12 +229,16 @@ const userSlice = createSlice({
     partnerUser: null,
     ownedAccessories: [],
     equippedAccessories: {
-      hat: null,
+      background: null,
       shirt: null,
       color: null,
-      background: null,
+      bigode: null,
+      cachecol: null,
+      chapeu: null,
+      ouvidos: null,
+      oculos: null,
     },
-    tasks: [], // será preenchido pelo fetchTasks
+    tasks: [],
     status: "idle",
     error: null,
   },
@@ -226,7 +247,18 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchAuthUser
+      .addCase(registerUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.authUser = action.payload;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
       .addCase(fetchAuthUser.pending, (s) => {
         s.status = "loading";
       })
@@ -272,24 +304,54 @@ const userSlice = createSlice({
       .addCase(fetchOwnedAccessories.fulfilled, (s, a) => {
         s.ownedAccessories = a.payload;
       })
-      .addCase(fetchEquippedAccessories.fulfilled, (s, a) => {
-        const equipObj = a.payload.accessoriesEquipped ?? a.payload;
-        const { hat, shirt, background, color } = equipObj;
-        s.equippedAccessories = {
-          hat: hat?.id ?? hat ?? null,
-          shirt: shirt?.id ?? shirt ?? null,
+      .addCase(fetchEquippedAccessories.fulfilled, (state, action) => {
+       
+        const equipObj = action.payload.accessoriesEquipped ?? action.payload;
+
+        const {
+          background,
+          shirt,
+          color,
+          bigode,
+          cachecol,
+          chapeu,
+          ouvidos,
+          oculos,
+        } = equipObj;
+
+      
+        state.equippedAccessories = {
           background: background?.id ?? background ?? null,
-          color: color ?? null,
+          shirt:      shirt?.id      ?? shirt ?? null,
+          color:      color           ?? null,
+          bigode:     bigode?.id     ?? bigode ?? null,
+          cachecol:   cachecol?.id   ?? cachecol ?? null,
+          chapeu:     chapeu?.id     ?? chapeu ?? null,
+          ouvidos:    ouvidos?.id    ?? ouvidos ?? null,
+          oculos:     oculos?.id     ?? oculos ?? null,
         };
       })
+
       .addCase(buyAccessory.fulfilled, (s, a) => {
         s.ownedAccessories = a.payload.owned;
         if (s.authUser) s.authUser.points = a.payload.points;
       })
 
-      .addCase(equipAccessories.fulfilled, (s, a) => {
-        s.equippedAccessories = a.payload;
-      });
+     .addCase(equipAccessories.fulfilled, (state, action) => {
+
+        const equipObj = action.payload;
+        state.equippedAccessories = {
+          background: equipObj.background ?? null,
+          shirt:      equipObj.shirt      ?? null,
+          color:      equipObj.color      ?? null,
+          bigode:     equipObj.bigode     ?? null,
+          cachecol:   equipObj.cachecol   ?? null,
+          chapeu:     equipObj.chapeu     ?? null,
+          ouvidos:    equipObj.ouvidos    ?? null,
+          oculos:     equipObj.oculos     ?? null,
+        };
+      })
+
   },
 });
 
