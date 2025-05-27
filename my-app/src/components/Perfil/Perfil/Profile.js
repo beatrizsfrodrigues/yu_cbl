@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
-import InfoPessoal from "../Definicoes/InfoPessoal";
-import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
 import Definicoes from "../Definicoes/Definicoes.js";
 import TopBar from "../../TopBar.js";
-
 
 import {
   fetchAuthUser,
@@ -23,22 +20,15 @@ export default function Profile() {
   const [showGrafico, setShowGrafico]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-
-  const [selectedBackground, setSelectedBackground] = useState(null);
-  const [selectedShirt,      setSelectedShirt]      = useState(null);
-  const [selectedAcc,        setSelectedAcc]        = useState(null);
-  const [selectedColor,      setSelectedColor]      = useState(null);
-
   const {
-    authUser:            currentUser,
-    status:              userStatus,
-    error:               userError,
+    authUser: currentUser,
+    status: userStatus,
+    error: userError,
     ownedAccessories,
     equippedAccessories,
   } = useSelector((state) => state.user);
 
   const accessories = useSelector((state) => state.accessories.data);
-
 
   useEffect(() => {
     dispatch(fetchAuthUser());
@@ -47,118 +37,125 @@ export default function Profile() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
-
   const findById = (id) =>
     accessories?.find((a) => a && a._id === id) || null;
+
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [selectedShirt,      setSelectedShirt]      = useState(null);
+  const [selectedHat,        setSelectedHat]        = useState(null);
+  const [selectedColor,      setSelectedColor]      = useState(null);
+  const [selectedBigode,     setSelectedBigode]     = useState(null);
+  const [selectedCachecol,   setSelectedCachecol]   = useState(null);
+  const [selectedChapeu,     setSelectedChapeu]     = useState(null);
+  const [selectedOuvidos,    setSelectedOuvidos]    = useState(null);
+  const [selectedOculos,     setSelectedOculos]     = useState(null);
 
   useEffect(() => {
     if (!accessories) return;
     setSelectedBackground(findById(equippedAccessories.background));
-    setSelectedShirt(     findById(equippedAccessories.shirt));
-    setSelectedAcc(       findById(equippedAccessories.hat));
-    setSelectedColor(     findById(equippedAccessories.color));
+    setSelectedShirt(    findById(equippedAccessories.shirt));
+    setSelectedHat(      findById(equippedAccessories.hat));
+    setSelectedColor(    findById(equippedAccessories.color));
+    setSelectedBigode(   findById(equippedAccessories.bigode));
+    setSelectedCachecol( findById(equippedAccessories.cachecol));
+    setSelectedChapeu(   findById(equippedAccessories.chapeu));
+    setSelectedOuvidos(  findById(equippedAccessories.ouvidos));
+    setSelectedOculos(   findById(equippedAccessories.oculos));
   }, [accessories, equippedAccessories]);
 
-
-  // Loading / erro
   if (userStatus === "loading") return <div>Loading perfil…</div>;
   if (userStatus === "failed")  return <div>Error: {userError}</div>;
 
-  // Se não estiver logado, redireciona
   if (!currentUser?._id) {
     navigate("/login");
     return null;
   }
 
-
   return (
     <div className="profile-container mainBody">
       <div className="backgroundDiv" />
+        {selectedBackground && (
+          <div
+            className="equippedBackground"
+            style={{ backgroundImage: `url(${selectedBackground.src})` }}
+          />
+        )}
 
       <TopBar title="Perfil">
         <button
           aria-label="Abrir definições"
-          onClick={() => {
-            setShowSettings(true);
-            navigate("/definicoes");
-          }}
+          onClick={() => { setShowSettings(true); navigate("/definicoes"); }}
         >
           <ion-icon name="settings-outline" className="icons" />
         </button>
       </TopBar>
-          {/* Avatar + acessórios */}
-<div className="profile-avatar">
-  <div className="profile-mascotContainer">
-    <img
-      src={currentUser.mascot}
-      className="profile-Yu"
-      alt="Mascote YU"
-    />
 
-      {selectedBackground && (
-    <img
-      src={selectedBackground.src}
-      alt=""
-      style={{
-        position:      "absolute",
-        left:          `${selectedBackground.left}px`,
-        bottom:        `${selectedBackground.bottom}px`,
-        width:         `${selectedBackground.width}px`,
-        pointerEvents: "none",
-        zIndex:        1
-      }}
-    />
-  )}
-
-  {selectedShirt && (
-    <img
-      src={selectedShirt.src}
-      alt=""
-      style={{
-        position:      "absolute",
-        left:          `${selectedShirt.left}px`,
-        bottom:        `${selectedShirt.bottom}px`,
-        width:         `${selectedShirt.width}px`,
-        pointerEvents: "none",
-        zIndex:        2
-      }}
-    />
-  )}
-
-  {selectedAcc && (
-    <img
-      src={selectedAcc.src}
-      alt=""
-      style={{
-        position:      "absolute",
-        left:          `${selectedAcc.left}px`,
-        bottom:        `${selectedAcc.bottom}px`,
-        width:         `${selectedAcc.width}px`,
-        pointerEvents: "none",
-        zIndex:        3
-      }}
-    />
-  )}
-
-  {selectedColor && (
-    <img
-      src={selectedColor.src}
-      alt=""
-      style={{
-        position:      "absolute",
-        left:          `${selectedColor.left}px`,
-        bottom:        `${selectedColor.bottom}px`,
-        width:         `${selectedColor.width}px`,
-        pointerEvents: "none",
-        zIndex:        4
-      }}
-    />
-  )}
-  </div>
-  <h2 className="profile-name">{currentUser.username}</h2>
-</div>
-
-
+      <div className="profile-avatar">
+        <div className="profile-mascotContainer">
+          <img
+            src={currentUser.mascot}
+            alt="Mascote YU"
+            className="profile-Yu base"
+          />
+          {selectedCachecol && (
+            <img
+              src={selectedCachecol.src}
+              alt="Cachecol"
+              className="profile-accessory cachecol"
+            />
+          )}
+          {selectedChapeu && (
+            <img
+              src={selectedChapeu.src}
+              alt="Chapéu"
+              className="profile-accessory chapeu"
+            />
+          )}
+          {selectedOuvidos && (
+            <img
+              src={selectedOuvidos.src}
+              alt="Ouvidos"
+              className="profile-accessory ouvidos"
+            />
+          )}
+          {selectedOculos && (
+            <img
+              src={selectedOculos.src}
+              alt="Óculos"
+              className="profile-accessory oculos"
+            />
+          )}
+          {selectedShirt && (
+            <img
+              src={selectedShirt.src}
+              alt="Camisola"
+              className="profile-accessory shirt"
+            />
+          )}
+          {selectedBigode && (
+            <img
+              src={selectedBigode.src}
+              alt="Bigode"
+              className="profile-accessory bigode"
+            />
+          )}
+          {selectedHat && (
+            <img
+              src={selectedHat.src}
+              alt="Decoração"
+              className="profile-accessory hat"
+            />
+          )}
+          {selectedColor && (
+            <img
+              src={selectedColor.src}
+              alt="Cor de pele"
+              className="profile-accessory color"
+            />
+          )}
+        </div>
+        <h2 className="profile-name">{currentUser.username}</h2>
+      </div>
 
       <div className="profile-buttons">
         <button
@@ -190,7 +187,7 @@ export default function Profile() {
       {showSettings && (
         <Definicoes
           onClose={() => setShowSettings(false)}
-          onInfoPessoalClick={() => navigate("/informacoes-pessoais")}
+          onInfoPessoalClick={() => navigate("/informacoes-pessoais")}        
           onArquivoClick={() => navigate("/arquivo")}
         />
       )}
