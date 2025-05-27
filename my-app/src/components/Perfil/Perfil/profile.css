@@ -144,34 +144,67 @@ button[aria-label="Abrir definições"] {
 
 /* ─── Profile Avatar ──────────────────────────────────────────────────────── */
 
+/* Container do avatar no Perfil */
 .profile-mascotContainer {
   position: relative;
-  width: 300px;          /* mesmo tamanho do Home */
-  height: 300px;
-  margin: 0 auto;        /* centra no ecrã */
-  display: block;
-  overflow: visible;
+  width: 60vw;   
+  height: 60vw; 
+  margin: 0 auto;
 }
 
-.profile-Yu {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-/* todos os acessórios usam as mesmas regras base */
-.profile-accessory {
+/* Todas as imagens dentro do container partilham as mesmas dimensões e posição */
+.profile-mascotContainer img {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: contain;
   pointer-events: none;
 }
 
-/* se quiseres, podes ajustar individualmente */
-.profile-accessory.bg    { /* background */  }
-.profile-accessory.shirt { /* camisa */      }
-.profile-accessory.hat   { /* chapéu */      }
-.profile-accessory.color { /* cor de pele */ }
+.backgroundDiv {
+  /* O teu fundo “por defeito” (blur, cor, etc) */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: -50;
+  /* background-repeat / size / position que já tinhas */
+}
+
+.equippedBackground {
+  /* Só vai existir se o user tiver um fundo equipado */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  z-index: -49; /* por cima do backgroundDiv, mas atrás de tudo o resto */
+}
+
+
+.profile-mascotContainer img.base {
+  max-width: 100%;
+  max-height: 110%;
+}
+
+
+.profile-mascotContainer img:not(.base) {
+  max-width: 100%;
+  transform: translate(1%, -5%) scale(1.2) !important;;
+}
+
+
+
+/* Camadas — quanto maior o z-index, mais “por cima” */
+.profile-accessory.bg      { z-index: 0; }
+.profile-Yu                { z-index: 1; }
+.profile-accessory.cachecol{ z-index: 2; }
+.profile-accessory.chapeu  { z-index: 3; }
+.profile-accessory.ouvidos { z-index: 4; }
+.profile-accessory.oculos  { z-index: 5; }
+.profile-accessory.shirt   { z-index: 6; }
+.profile-accessory.bigode  { z-index: 7; }
+.profile-accessory.hat     { z-index: 8; }
+.profile-accessory.color   { z-index: 9; }

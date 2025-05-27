@@ -1,8 +1,9 @@
+// src/components/Closet.js
 import React, { useState } from "react";
 
 export default function Closet({
   ownedAccessories,   // array
-  equipped,           // { background, shirt, hat, color }  (ids ou null)
+  equipped,           // { background, shirt, hat, color, bigode, cachecol, chapeu, ouvidos, oculos }
   onPreview,          // fn(slot, newId|null) – só PREVIEW
   onSave,             // fn()           – faz PUTs
   closeCloset,        // fn()           – fecha sem guardar
@@ -10,14 +11,29 @@ export default function Closet({
   const [active, setActive] = useState(0);
 
   const sections = [
-    { type: "SkinColor",  slot: "color",       icon: "color-palette-outline" },
-    { type: "Shirts",     slot: "shirt",       icon: "shirt-outline"         },
-    { type: "Decor",      slot: "hat",         icon: "glasses-outline"       },
-    { type: "Backgrounds",slot: "background",  icon: "image-outline"         },
+    { type: "SkinColor",   slot: "color",      icon: "color-palette-outline" },
+    { type: "Shirts",      slot: "shirt",      icon: "shirt-outline"         },
+    { type: "Decor",       slot: "hat",        icon: "glasses-outline"       },
+    { type: "Backgrounds", slot: "background", icon: "image-outline"         },
+  ];
+
+  // Estes são os tipos que entram na secção “Decor”
+  const DECOR_TYPES = [
+    "Decor",
+    "Bigode",
+    "Cachecol",
+    "Chapeu",
+    "Ouvidos",
+    "Oculos",
   ];
 
   const { type, slot, icon } = sections[active];
-  const items = ownedAccessories.filter((i) => i.type === type);
+
+  // filtra items: se Decor, junta todos, senão só aquele tipo
+  const items =
+    type === "Decor"
+      ? ownedAccessories.filter((i) => DECOR_TYPES.includes(i.type))
+      : ownedAccessories.filter((i) => i.type === type);
 
   return (
     <div className="closetOverlay">
@@ -45,14 +61,16 @@ export default function Closet({
           ) : (
             <div className="avatarcontent">
               {items.map((it) => {
-                const isActive = equipped[slot] === it._id;
+                // para Decor, usamos o type real; senão, a slot normal
+                const currSlot = type === "Decor" ? it.type.toLowerCase() : slot;
+                const isActive = equipped[currSlot] === it._id;
                 return (
                   <button
                     key={it._id}
                     className={`avatarcircle ${isActive ? "activeFit" : ""}`}
                     onClick={() => {
                       const next = isActive ? null : it._id;
-                      onPreview(slot, next);  
+                      onPreview(currSlot, next);
                     }}
                   >
                     <img src={it.src} alt={it.name} />

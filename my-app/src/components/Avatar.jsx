@@ -1,60 +1,30 @@
+// src/components/Avatar.jsx
 import React from "react";
 
 export default function Avatar({
   mascot,
-  equipped,
+  equipped = {}, 
   accessoriesList,
-  size = 150,         // px do container
-  originalSize = 200, // px originais das coords
-  accScale = 1,       // escala só para acessórios
-  accOffsetX = 0,     // desloc horizontal em px para acessórios
-  accOffsetY = 0      // desloc vertical em px para acessórios
+  size = 150, // tamanho em px do container
 }) {
-  const { hat: hatId, shirt: shirtId, background: bgId } = equipped;
-  const toPct = px => (px / originalSize) * 100 + "%";
+  // destructura todos os tipos de acessório que agora tens
+  const {
+    background: bgId,
+    shirt: shirtId,
+    color: colorId,
+    bigode: bigodeId,
+    cachecol: cachecolId,
+    chapeu: chapeuId,
+    ouvidos: ouvidosId,
+    oculos: oculosId,
+  } = equipped;
 
-  const findAcc = id =>
-    accessoriesList.find(a => String(a._id) === String(id));
-
-  // layer base — SEM transform
-  const baseLayer = {
-    src: mascot,
-    style: {
-      position: "absolute",
-      top:    0,
-      left:   0,
-      width:  "100%",
-      height: "100%",
-      pointerEvents: "none",
-    }
-  };
-
-  // constrói layers de acessório, aplicando transform só a eles
-  const makeAccessoryLayer = (id) => {
-    const acc = findAcc(id);
-    if (!acc) return null;
-    const layerStyle = {
-      position: "absolute",
-      left:   toPct(acc.left),
-      bottom: toPct(acc.bottom),
-      width:  toPct(acc.width),
-      height: "auto",
-      pointerEvents: "none",
-      transform: `translate(${accOffsetX}px, ${accOffsetY}px) scale(${accScale})`,
-      transformOrigin: "center bottom"
-    };
-    return { src: acc.src, style: layerStyle };
-  };
-
-  const layers = [
-    baseLayer,
-    makeAccessoryLayer(bgId),
-    makeAccessoryLayer(shirtId),
-    makeAccessoryLayer(hatId),
-  ].filter(Boolean);
+  const findAcc = (id) =>
+    accessoriesList.find((a) => String(a._id) === String(id)) || {};
 
   return (
     <div
+      className="avatarWrapper"
       style={{
         position: "relative",
         width: size,
@@ -62,9 +32,64 @@ export default function Avatar({
         overflow: "hidden",
       }}
     >
-      {layers.map(({ src, style }, i) => (
-        <img key={i} src={src} alt="" style={style} />
-      ))}
+      {bgId && (
+        <img
+          src={findAcc(bgId).src}
+          className="accessory background"
+          alt=""
+        />
+      )}
+      <img src={mascot} className="accessory base" alt="Mascote" />
+
+      {colorId && (
+        <img
+          src={findAcc(colorId).src}
+          className="accessory color"
+          alt=""
+        />
+      )}
+      {shirtId && (
+        <img
+          src={findAcc(shirtId).src}
+          className="accessory shirt"
+          alt=""
+        />
+      )}
+      {bigodeId && (
+        <img
+          src={findAcc(bigodeId).src}
+          className="accessory bigode"
+          alt=""
+        />
+      )}
+      {cachecolId && (
+        <img
+          src={findAcc(cachecolId).src}
+          className="accessory cachecol"
+          alt=""
+        />
+      )}
+      {chapeuId && (
+        <img
+          src={findAcc(chapeuId).src}
+          className="accessory chapeu"
+          alt=""
+        />
+      )}
+      {ouvidosId && (
+        <img
+          src={findAcc(ouvidosId).src}
+          className="accessory ouvidos"
+          alt=""
+        />
+      )}
+      {oculosId && (
+        <img
+          src={findAcc(oculosId).src}
+          className="accessory oculos"
+          alt=""
+        />
+      )}
     </div>
   );
 }

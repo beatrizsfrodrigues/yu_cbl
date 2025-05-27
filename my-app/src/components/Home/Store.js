@@ -35,11 +35,14 @@ export default function Store({
       icon: <ion-icon name="shirt-outline" class="icons" />,
       items: accessories.filter((i) => i.type === "Shirts"),
     },
-    {
-      type: "Decor",
-      icon: <ion-icon name="glasses-outline" class="icons" />,
-      items: accessories.filter((i) => i.type === "Decor"),
+     {
+     type: "Decor",
+     icon: <ion-icon name="glasses-outline" class="icons" />,
+     items: accessories.filter(i =>
+       ["Bigode","Cachecol","Chapeu","Ouvidos","Oculos"].includes(i.type)
+     ),
     },
+   
     {
       type: "Backgrounds",
       icon: <ion-icon name="image-outline" class="icons" />,
