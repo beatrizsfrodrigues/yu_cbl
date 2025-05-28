@@ -20,7 +20,7 @@ body {
 .mainBody {
   width: 100%;
   max-width: 600px;
-  margin-top: 40px;
+  padding-top: 40px;
   width: 100%;
   padding: 8px 32px;
   display: flex;
@@ -74,6 +74,7 @@ p {
   height: 48px;
   box-shadow: 0px;
   border: none;
+  cursor: pointer;
 }
 
 .buttonBig:active {
@@ -82,6 +83,7 @@ p {
 
 .buttonBig:disabled {
   background-color: var(--purple-darker);
+  cursor: not-allowed;
 }
 
 .btnRound {
@@ -325,6 +327,10 @@ p {
   border-radius: 40px;
   width: 100%;
 }
-
-
-
+.userPhoto {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--purple-darker);
+}
