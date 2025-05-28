@@ -45,15 +45,15 @@ export const sendMessage = createAsyncThunk(
   }
 );
 
-const setLoading = (state) => {
-  state.status = "loading";
-  state.error = null;
-};
+// const setLoading = (state) => {
+//   state.status = "loading";
+//   state.error = null;
+// };
 
-const setError = (state, action) => {
-  state.status = "failed";
-  state.error = action.error.message;
-};
+// const setError = (state, action) => {
+//   state.status = "failed";
+//   state.error = action.error.message;
+// };
 
 const messagesSlice = createSlice({
   name: "messages",
@@ -98,5 +98,5 @@ const messagesSlice = createSlice({
   },
 });
 
-export const {} = messagesSlice.actions;
+// export const {} = messagesSlice.actions;
 export default messagesSlice.reducer;

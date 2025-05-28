@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy, useMemo } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
@@ -120,7 +120,7 @@ function Tasks() {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, [authUser?._id, partnerUser?._id, dispatch]);
+  }, [authUser?._id, partnerUser?._id, dispatch, hasPolled]);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {

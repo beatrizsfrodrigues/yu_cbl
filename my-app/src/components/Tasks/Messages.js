@@ -5,9 +5,9 @@ import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { getAuthUser } from "../../utils/cookieUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice";
-import { X } from "react-feather";
+
 import "./messages.css";
-import Avatar from "../Avatar.jsx";  
+import Avatar from "../Avatar.jsx";
 
 // Memoized selectors
 const selectMessages = createSelector(
@@ -15,31 +15,22 @@ const selectMessages = createSelector(
   (messages) => (messages ? { ...messages } : { messages: [] }) // Ensure a new object is returned
 );
 
-const selectUsers = createSelector(
-  (state) => state.users?.data,
-  (users) => (users ? [...users] : []) // Ensure a new array is returned
-);
-
 const selectPresetMessages = createSelector(
   (state) => state.presetMessages?.data,
   (presetMessages) => (presetMessages ? [...presetMessages] : []) // Ensure a new array is returned
 );
 
-function Messages({}) {
+function Messages() {
   const dispatch = useDispatch();
 
   const accessories = useSelector((state) => state.accessories.data);
   // Use memoized selectors
   const messages = useSelector(selectMessages);
 
-  const users = useSelector(selectUsers);
   const presetMessages = useSelector(selectPresetMessages);
 
   const authUser = getAuthUser();
 
-  const currentUserId = authUser?._id;
-
-  const currentUser = useSelector((state) => state.user.authUser);
   const partnerUser = useSelector((state) => state.user.partnerUser);
 
   const messagesStatus = useSelector((state) => state.messages.fetchStatus);
@@ -47,7 +38,7 @@ function Messages({}) {
   const presetMessagesStatus = useSelector(
     (state) => state.presetMessages.status
   );
-  const error = useSelector((state) => state.messages.error);
+
   const textSpaceRef = useRef(null);
   const textOptionsRef = useRef(null);
   const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
@@ -81,10 +72,6 @@ function Messages({}) {
       dispatch(fetchPartnerUser(authUser.partnerId));
     }
   }, [authUser?.partnerId, dispatch]);
-
-
-
-  
 
   useEffect(() => {
     if (textSpaceRef.current && messages) {
@@ -200,70 +187,21 @@ function Messages({}) {
     messageContent = <div>Não existem mensagens</div>;
   }
 
-  //* preset text messages column 1
-  let presetMsgs;
-  if (presetMessages && presetMessages.length > 0) {
-    presetMsgs = presetMessages.map((message, index) => {
-      if (index % 2 === 0) {
-        return (
-          <button
-            key={index}
-            className="optionText"
-            onClick={
-              partnerUser ? () => handleAddMessage(message.message) : null
-            }
-          >
-            {message.message}
-          </button>
-        );
-      }
-      return null;
-    });
-  } else {
-    presetMsgs = <div>Não existem mensagens</div>;
-  }
-
-  //* preset text messages column 2
-  let presetMsgs2;
-  if (presetMessages && presetMessages.length > 0) {
-    presetMsgs2 = presetMessages.map((message, index) => {
-      if (index % 2 !== 0) {
-        return (
-          <button
-            key={index}
-            className="optionText"
-            aria-label={`Enviar mensagem: ${message.message}`}
-            onClick={
-              partnerUser ? () => handleAddMessage(message.message) : null
-            }
-          >
-            {message.message}
-          </button>
-        );
-      }
-      return null;
-    });
-  } else {
-    presetMsgs2 = <div>Não existem mensagens</div>;
-  }
-
   return (
     <div className="mainBody mainBodyMessages">
       <div className="backgroundDiv"></div>
 
-     <header className="header headerMessages">
+      <header className="header headerMessages">
         {partnerUser && (
-        <Avatar
+          <Avatar
             mascot={partnerUser.mascot}
             equipped={partnerUser.accessoriesEquipped || {}}
             accessoriesList={accessories}
             size={54}
           />
-
         )}
         {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
       </header>
-
 
       <div className="line"></div>
 

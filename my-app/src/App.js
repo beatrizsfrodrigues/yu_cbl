@@ -30,6 +30,27 @@ import Questions from "./components/Welcome/Questions";
 
 import "./App.css";
 
+// Nomes das páginas (mudar à vontade)
+const pageTitles = {
+  "/": "Início - YU",
+  "/home": "Home - YU",
+  "/closet": "Closet - YU",
+  "/store": "Store - YU",
+  "/tasks": "Tarefas - YU",
+  "/profile": "Perfil - YU",
+  "/login": "Login - YU",
+  "/register": "Registo - YU",
+  "/connection": "Ligação - YU",
+  "/questions": "Questionário - YU",
+  "/informacoes": "Informações - YU",
+  "/infoPessoal": "Dados pessoais - YU",
+  "/definicoes": "Definições - YU",
+  "/grafico": "Estatísticas - YU",
+  "/arquivo": "Arquivo - YU",
+  "/apresentacao": "Apresentação - YU",
+  "/messages": "Mensagens - YU",
+};
+
 function AppContent() {
   const location = useLocation();
 
@@ -55,27 +76,6 @@ function AppContent() {
     if (token) config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   });
-
-  // Nomes das páginas (mudar à vontade)
-  const pageTitles = {
-    "/": "Início - YU",
-    "/home": "Home - YU",
-    "/closet": "Closet - YU",
-    "/store": "Store - YU",
-    "/tasks": "Tarefas - YU",
-    "/profile": "Perfil - YU",
-    "/login": "Login - YU",
-    "/register": "Registo - YU",
-    "/connection": "Ligação - YU",
-    "/questions": "Questionário - YU",
-    "/informacoes": "Informações - YU",
-    "/infoPessoal": "Dados pessoais - YU",
-    "/definicoes": "Definições - YU",
-    "/grafico": "Estatísticas - YU",
-    "/arquivo": "Arquivo - YU",
-    "/apresentacao": "Apresentação - YU",
-    "/messages": "Mensagens - YU",
-  };
 
   useEffect(() => {
     document.title = pageTitles[location.pathname] || "YU";

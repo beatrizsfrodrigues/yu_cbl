@@ -42,7 +42,7 @@ const Register = () => {
   // Redux + navegação
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, error: registerError } = useSelector((state) => state.user);
+  const { status } = useSelector((state) => state.user);
 
   // validação de password
   const validatePassword = (pwd) => {

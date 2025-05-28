@@ -11,7 +11,7 @@ import {
   notifyTasks,
 } from "./taskSlice";
 
-import { rejectTask, addTask } from "./taskSlice";
+// import { rejectTask, addTask } from "./taskSlice";
 import { sendMessage } from "./messagesSlice";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -20,10 +20,11 @@ export const registerUser = createAsyncThunk(
   "user/register",
   async ({ username, email, password }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        `${API_URL}/users/signup`,
-        { username, email, password }
-      );
+      const res = await axios.post(`${API_URL}/users/signup`, {
+        username,
+        email,
+        password,
+      });
       return res.data.user;
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
@@ -31,7 +32,6 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
-
 
 // 1) Procurar utilizador autenticado
 export const fetchAuthUser = createAsyncThunk(
@@ -142,7 +142,7 @@ export const fetchOwnedAccessories = createAsyncThunk(
       const res = await axios.get(`${API_URL}/users/accessories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return res.data; 
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
@@ -158,7 +158,7 @@ export const fetchEquippedAccessories = createAsyncThunk(
       const res = await axios.get(`${API_URL}/users/accessories-equipped`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return res.data; 
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
@@ -305,7 +305,6 @@ const userSlice = createSlice({
         s.ownedAccessories = a.payload;
       })
       .addCase(fetchEquippedAccessories.fulfilled, (state, action) => {
-       
         const equipObj = action.payload.accessoriesEquipped ?? action.payload;
 
         const {
@@ -319,16 +318,15 @@ const userSlice = createSlice({
           oculos,
         } = equipObj;
 
-      
         state.equippedAccessories = {
           background: background?.id ?? background ?? null,
-          shirt:      shirt?.id      ?? shirt ?? null,
-          color:      color           ?? null,
-          bigode:     bigode?.id     ?? bigode ?? null,
-          cachecol:   cachecol?.id   ?? cachecol ?? null,
-          chapeu:     chapeu?.id     ?? chapeu ?? null,
-          ouvidos:    ouvidos?.id    ?? ouvidos ?? null,
-          oculos:     oculos?.id     ?? oculos ?? null,
+          shirt: shirt?.id ?? shirt ?? null,
+          color: color ?? null,
+          bigode: bigode?.id ?? bigode ?? null,
+          cachecol: cachecol?.id ?? cachecol ?? null,
+          chapeu: chapeu?.id ?? chapeu ?? null,
+          ouvidos: ouvidos?.id ?? ouvidos ?? null,
+          oculos: oculos?.id ?? oculos ?? null,
         };
       })
 
@@ -337,21 +335,19 @@ const userSlice = createSlice({
         if (s.authUser) s.authUser.points = a.payload.points;
       })
 
-     .addCase(equipAccessories.fulfilled, (state, action) => {
-
+      .addCase(equipAccessories.fulfilled, (state, action) => {
         const equipObj = action.payload;
         state.equippedAccessories = {
           background: equipObj.background ?? null,
-          shirt:      equipObj.shirt      ?? null,
-          color:      equipObj.color      ?? null,
-          bigode:     equipObj.bigode     ?? null,
-          cachecol:   equipObj.cachecol   ?? null,
-          chapeu:     equipObj.chapeu     ?? null,
-          ouvidos:    equipObj.ouvidos    ?? null,
-          oculos:     equipObj.oculos     ?? null,
+          shirt: equipObj.shirt ?? null,
+          color: equipObj.color ?? null,
+          bigode: equipObj.bigode ?? null,
+          cachecol: equipObj.cachecol ?? null,
+          chapeu: equipObj.chapeu ?? null,
+          ouvidos: equipObj.ouvidos ?? null,
+          oculos: equipObj.oculos ?? null,
         };
-      })
-
+      });
   },
 });
 
