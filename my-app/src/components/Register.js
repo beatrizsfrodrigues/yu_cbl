@@ -33,8 +33,7 @@ const Register = () => {
 
   // modal de requisitos
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const togglePasswordModal = () =>
-    setIsPasswordModalOpen((open) => !open);
+  const togglePasswordModal = () => setIsPasswordModalOpen((open) => !open);
 
   // toggles de visibilidade
   const [showPassword, setShowPassword] = useState(false);
@@ -43,9 +42,7 @@ const Register = () => {
   // Redux + navegação
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status, error: registerError } = useSelector(
-    (state) => state.user
-  );
+  const { status, error: registerError } = useSelector((state) => state.user);
 
   // validação de password
   const validatePassword = (pwd) => {
@@ -233,16 +230,10 @@ const Register = () => {
                 <button
                   type="button"
                   className="password-toggle-button"
-                  onClick={() =>
-                    setShowConfirmPassword((v) => !v)
-                  }
+                  onClick={() => setShowConfirmPassword((v) => !v)}
                 >
                   <img
-                    src={
-                      showConfirmPassword
-                        ? visibleIcon
-                        : notVisibleIcon
-                    }
+                    src={showConfirmPassword ? visibleIcon : notVisibleIcon}
                     alt="toggle"
                     className="icons"
                   />
@@ -256,10 +247,7 @@ const Register = () => {
 
           {/* Modal de requisitos */}
           <Suspense fallback={<div>Loading...</div>}>
-            <Modal
-              isOpen={isPasswordModalOpen}
-              onClose={togglePasswordModal}
-            >
+            <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
               <ul className="password-requirements">
                 <li
                   className={
@@ -275,9 +263,7 @@ const Register = () => {
                 </li>
                 <li
                   className={
-                    passwordRequirements.hasUpperCase
-                      ? "valid"
-                      : "invalid"
+                    passwordRequirements.hasUpperCase ? "valid" : "invalid"
                   }
                 >
                   {passwordRequirements.hasUpperCase ? (
@@ -289,9 +275,7 @@ const Register = () => {
                 </li>
                 <li
                   className={
-                    passwordRequirements.hasLowerCase
-                      ? "valid"
-                      : "invalid"
+                    passwordRequirements.hasLowerCase ? "valid" : "invalid"
                   }
                 >
                   {passwordRequirements.hasLowerCase ? (
@@ -315,9 +299,7 @@ const Register = () => {
                 </li>
                 <li
                   className={
-                    passwordRequirements.hasSpecialChar
-                      ? "valid"
-                      : "invalid"
+                    passwordRequirements.hasSpecialChar ? "valid" : "invalid"
                   }
                 >
                   {passwordRequirements.hasSpecialChar ? (
@@ -340,7 +322,6 @@ const Register = () => {
 
         {/* feedback de API */}
         {status === "loading" && <p>Registando…</p>}
-        {registerError && <p className="alert">{registerError}</p>}
         {message && <p className="success">{message}</p>}
 
         <button className="buttonBig" type="submit">
