@@ -7,6 +7,7 @@ import { getAuthUser } from "../../utils/cookieUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice";
 import { X } from "react-feather";
 import "./messages.css";
+import Avatar from "../Avatar.jsx";  
 
 // Memoized selectors
 const selectMessages = createSelector(
@@ -27,6 +28,7 @@ const selectPresetMessages = createSelector(
 function Messages({}) {
   const dispatch = useDispatch();
 
+  const accessories = useSelector((state) => state.accessories.data);
   // Use memoized selectors
   const messages = useSelector(selectMessages);
 
@@ -75,18 +77,14 @@ function Messages({}) {
 
   useEffect(() => {
     if (authUser?.partnerId) {
-      dispatch(fetchPartnerUser(authUser.partnerId)); // Fetch partner user using the action
+      // só isto, sem payload
+      dispatch(fetchPartnerUser(authUser.partnerId));
     }
   }, [authUser?.partnerId, dispatch]);
 
-  useEffect(() => {
-    if (users && authUser?.partnerId) {
-      const partner = users.find((user) => user._id === authUser.partnerId);
-      if (partner) {
-        dispatch({ type: "SET_PARTNER_USER", payload: partner }); // Ensure partnerUser is set in the Redux store
-      }
-    }
-  }, [users, authUser?.partnerId, dispatch]);
+
+
+  
 
   useEffect(() => {
     if (textSpaceRef.current && messages) {
@@ -253,10 +251,19 @@ function Messages({}) {
     <div className="mainBody mainBodyMessages">
       <div className="backgroundDiv"></div>
 
-      <header className="header headerMessages">
-        {partnerUser && <div className="profilePic"></div>}
+     <header className="header headerMessages">
+        {partnerUser && (
+        <Avatar
+            mascot={partnerUser.mascot}
+            equipped={partnerUser.accessoriesEquipped || {}}
+            accessoriesList={accessories}
+            size={54}
+          />
+
+        )}
         {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
       </header>
+
 
       <div className="line"></div>
 
