@@ -4,16 +4,14 @@ import axios from "axios";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 
-
-
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
- const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
   // Pré-carregar o logo
   useEffect(() => {
     const link = document.createElement("link");
@@ -28,7 +26,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-         `${API_URL}/users/login`,
+        `${API_URL}/users/login`,
         {
           emailOrUsername,
           password,

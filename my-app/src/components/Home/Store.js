@@ -4,18 +4,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAccessories } from "../../redux/accessoriesSlice.js";
 
 export default function Store({
-  addAccessory,      // fn(item) para guardar preview no Home
-  buyItemBtn,        // fn() para disparar a compra
-  closeStore,        // fn() para fechar a store
-  currentUser,       // user object (tem .points)
-  selectedFit,       // item em preview ou null
-  resetFit,          // fn() limpa o preview
-  onShowPopUpInfo,   // fn(msg) => void
-  dressUp,           // fn(item,type) para aplicar preview no avatar
+  addAccessory, // fn(item) para guardar preview no Home
+  buyItemBtn, // fn() para disparar a compra
+  closeStore, // fn() para fechar a store
+  currentUser, // user object (tem .points)
+  selectedFit, // item em preview ou null
+  resetFit, // fn() limpa o preview
+  onShowPopUpInfo, // fn(msg) => void
+  dressUp, // fn(item,type) para aplicar preview no avatar
 }) {
   const dispatch = useDispatch();
   const accessories = useSelector((s) => s.accessories.data);
-  const status      = useSelector((s) => s.accessories.status);
+  const status = useSelector((s) => s.accessories.status);
   const [activeSection, setActiveSection] = useState(0);
 
   useEffect(() => {
@@ -35,14 +35,14 @@ export default function Store({
       icon: <ion-icon name="shirt-outline" class="icons" />,
       items: accessories.filter((i) => i.type === "Shirts"),
     },
-     {
-     type: "Decor",
-     icon: <ion-icon name="glasses-outline" class="icons" />,
-     items: accessories.filter(i =>
-       ["Bigode","Cachecol","Chapeu","Ouvidos","Oculos"].includes(i.type)
-     ),
+    {
+      type: "Decor",
+      icon: <ion-icon name="glasses-outline" class="icons" />,
+      items: accessories.filter((i) =>
+        ["Bigode", "Cachecol", "Chapeu", "Ouvidos", "Oculos"].includes(i.type)
+      ),
     },
-   
+
     {
       type: "Backgrounds",
       icon: <ion-icon name="image-outline" class="icons" />,
@@ -50,7 +50,7 @@ export default function Store({
     },
   ];
 
-  const { icon, items } = sectionsData[activeSection];
+  const { items } = sectionsData[activeSection];
 
   return (
     <div className="storeOverlay">
@@ -64,7 +64,7 @@ export default function Store({
                 className={`icons ${activeSection === idx ? "active" : ""}`}
                 onClick={() => {
                   setActiveSection(idx);
-                  resetFit();          // limpa preview
+                  resetFit(); // limpa preview
                 }}
               >
                 {sec.icon}
@@ -85,8 +85,8 @@ export default function Store({
                     selectedFit?._id === item._id ? "activeFit" : ""
                   }`}
                   onClick={() => {
-                    addAccessory(item);        // salva no Home
-                    dressUp(item, item.type);  // preview no avatar
+                    addAccessory(item); // salva no Home
+                    dressUp(item, item.type); // preview no avatar
                   }}
                 >
                   <img src={item.src} alt={item.name} />
