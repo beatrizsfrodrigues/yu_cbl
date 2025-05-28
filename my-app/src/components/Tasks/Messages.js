@@ -34,13 +34,14 @@ function Messages({}) {
   const presetMessages = useSelector(selectPresetMessages);
 
   const authUser = getAuthUser();
-  console.log(messages);
+
   const currentUserId = authUser?._id;
 
   const currentUser = useSelector((state) => state.user.authUser);
   const partnerUser = useSelector((state) => state.user.partnerUser);
 
-  const messagesStatus = useSelector((state) => state.messages.status);
+  const messagesStatus = useSelector((state) => state.messages.fetchStatus);
+
   const presetMessagesStatus = useSelector(
     (state) => state.presetMessages.status
   );
@@ -48,23 +49,28 @@ function Messages({}) {
   const textSpaceRef = useRef(null);
   const textOptionsRef = useRef(null);
   const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
+  const [hasPolled, setHasPolled] = useState(false); // Add hasPolled state for messages
 
   //* fetch text messages
 
   useEffect(() => {
     if (authUser?._id) {
-      dispatch(getMessages(authUser._id));
+      console.log("[Messages] Initial fetch triggered");
+      dispatch(getMessages(authUser._id)).then(() => setHasPolled(true));
     }
   }, [dispatch, authUser?._id]); // Ensure the dependency is stable and correct
 
   useEffect(() => {
     if (!authUser?._id) return;
-
+    console.log("[Messages] Polling interval set");
     const intervalId = setInterval(() => {
+      console.log("[Messages] Polling fetch triggered");
       dispatch(getMessages(authUser._id));
     }, 5000);
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
+    return () => {
+      console.log("[Messages] Polling interval cleared");
+      clearInterval(intervalId);
+    }; // Cleanup interval on unmount
   }, [dispatch, authUser?._id]); // Use stable dependency for the interval
 
   useEffect(() => {
@@ -108,17 +114,17 @@ function Messages({}) {
 
   //* send a text message
   const handleAddMessage = (text) => {
-    console.log(messages);
     dispatch(sendMessage({ message: text, id: messages._id }));
   };
 
   //* text messages
   let messageContent;
-  console.log(messagesStatus);
-  console.log(authUser);
-  if (messagesStatus === "loading") {
+
+  if (messagesStatus === "loading" && !hasPolled) {
+    console.log("[Messages] Render: loading spinner (first fetch)");
     messageContent = <div className="loadingMessage">A carregar...</div>;
   } else if (messagesStatus === "failed") {
+    console.log("[Messages] Render: error");
     messageContent = (
       <div className="errorMessage">Erro ao carregar mensagens</div>
     );
@@ -126,11 +132,12 @@ function Messages({}) {
     authUser &&
     authUser.partnerId &&
     messagesStatus === "succeeded" &&
-    messages != {}
+    messages &&
+    Array.isArray(messages.messages) &&
+    messages.messages.length > 0
   ) {
-    console.log("ola");
+    console.log("[Messages] Render: messages list");
     const conversation = messages;
-    console.log(conversation.messages);
 
     const sortedMessages = [...conversation.messages].sort(
       (a, b) => +a.date - +b.date
@@ -144,10 +151,9 @@ function Messages({}) {
       const minutes = dateString.slice(10, 12);
 
       if (message.receiverId === authUser.partnerId) {
-        console.log("olaaa");
         if (message.senderType === "app") {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble bubbleDotted textRight"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -157,7 +163,7 @@ function Messages({}) {
           );
         } else {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble bubbleBlue"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -170,7 +176,7 @@ function Messages({}) {
       } else {
         if (message.senderId === "app") {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble bubbleDotted"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -180,7 +186,7 @@ function Messages({}) {
           );
         } else {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -192,6 +198,7 @@ function Messages({}) {
       }
     });
   } else {
+    console.log("[Messages] Render: no messages");
     messageContent = <div>Não existem mensagens</div>;
   }
 
