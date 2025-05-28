@@ -1,22 +1,28 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+// src/components/Register.js
+import React, { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../redux/usersSlice";
-import { fetchMascot } from "../redux/mascotSlice";
 import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.webp";
+import { registerUser } from "../redux/usersSlice";
+
 const Modal = lazy(() => import("./PasswordRequirementsRegister"));
 
 const Register = () => {
+  // estados de form
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // mensagens / alerts
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const [alertPass, setAlertPass] = useState("");
+
+  // requisitos de password
   const [passwordRequirements, setPasswordRequirements] = useState({
     minLength: false,
     hasUpperCase: false,
@@ -24,70 +30,33 @@ const Register = () => {
     hasNumbers: false,
     hasSpecialChar: false,
   });
+
+  // modal de requisitos
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const togglePasswordModal = () =>
+    setIsPasswordModalOpen((open) => !open);
 
-  const togglePasswordModal = () => {
-    setIsPasswordModalOpen(!isPasswordModalOpen);
-  };
+  // toggles de visibilidade
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [showPasswordRequirements, setShowPasswordRequirements] =
-    useState(false); //Controla a visibilidade do pop-up de requisitos da password
-  const [showPassword, setShowPassword] = useState(false); //Controla a visibilidade da palavra-passe
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); //Controla a visibilidade da confirmação da palavra-passe
-
-  const [validationInputs, setValidationInputs] = useState({
-    username: false,
-    email: false,
-    password: false,
-    confirmPassword: false,
-  });
-
-  const navigate = useNavigate();
-
+  // Redux + navegação
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.users.data) || [];
-  const usersStatus = useSelector((state) => state.users.status);
-  const mascot = useSelector((state) => state.mascot.data) || [];
-  const mascotStatus = useSelector((state) => state.mascot.status);
+  const navigate = useNavigate();
+  const { status, error: registerError } = useSelector(
+    (state) => state.user
+  );
 
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-    if (mascotStatus === "idle") {
-      dispatch(fetchMascot());
-    }
-  }, [usersStatus, mascotStatus, dispatch]);
-
-  const generateCode = () => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let code;
-    const generateRandomCode = () => {
-      let result = "";
-      for (let i = 0; i < 10; i++) {
-        result += characters.charAt(
-          Math.floor(Math.random() * characters.length)
-        );
-      }
-      return result;
-    };
-
-    do {
-      code = generateRandomCode();
-    } while (users.some((user) => user.code === code));
-    return code;
-  };
-
-  const validatePassword = (password) => {
+  // validação de password
+  const validatePassword = (pwd) => {
     const minLength = 6;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(password);
+    const hasUpperCase = /[A-Z]/.test(pwd);
+    const hasLowerCase = /[a-z]/.test(pwd);
+    const hasNumbers = /[0-9]/.test(pwd);
+    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(pwd);
 
     setPasswordRequirements({
-      minLength: password.length >= minLength,
+      minLength: pwd.length >= minLength,
       hasUpperCase,
       hasLowerCase,
       hasNumbers,
@@ -95,7 +64,7 @@ const Register = () => {
     });
 
     return (
-      password.length >= minLength &&
+      pwd.length >= minLength &&
       hasUpperCase &&
       hasLowerCase &&
       hasNumbers &&
@@ -103,82 +72,55 @@ const Register = () => {
     );
   };
 
+  const handlePasswordChange = (e) => {
+    const nova = e.target.value;
+    setPassword(nova);
+    validatePassword(nova);
+  };
+
+  // envio do form
   const handleRegister = () => {
+    // 1) validações locais
     const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
-
     if (invalidUsernameChars.test(username)) {
-      setAlert("Nome de utilizador contem caracteres inválidos!");
+      setAlert("Nome de utilizador contém caracteres inválidos!");
       setAlertPass("");
       return;
     }
-
-    if (users.some((user) => user.username === username.toLocaleLowerCase())) {
-      setAlert("Nome de utilizador já existente!");
-      setAlertPass("");
-      return;
-    } else {
-      setAlert("");
-    }
+    setAlert("");
 
     if (!validatePassword(password)) {
       setAlertPass("A palavra-passe não atende aos requisitos mínimos!");
       return;
     }
-
     if (password !== confirmPassword) {
       setAlertPass("As palavras-passe não coincidem!");
       return;
     }
-
-    const newUser = {
-      id: users.length + 1,
-      code: generateCode(),
-      username,
-      email,
-      password,
-      points: 0,
-      partnerId: null,
-      tasks: [],
-      initialFormAnswers: [],
-    };
-
-    const newMascot = {
-      id: mascot.length + 1,
-      userId: newUser.id,
-      accessoriesOwned: [40],
-      accessoriesEquipped: {
-        hat: null,
-        shirt: null,
-        color: 40,
-        background: null,
-      },
-    };
-
-    const updatedUsers = [...users, newUser];
-    const updatedMascot = [...mascot, newMascot];
-
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    localStorage.setItem("mascot", JSON.stringify(updatedMascot));
-    localStorage.setItem("loggedInUser", JSON.stringify({ id: newUser.id }));
-    setMessage("Utilizador registado com sucesso!");
-    setEmail("");
-    setUsername("");
-    setPassword("");
-    setConfirmPassword("");
-    setAlert("");
     setAlertPass("");
-    navigate("/apresentacao");
+
+    // 2) dispara o thunk de registo
+    dispatch(registerUser({ username, email, password }))
+      .unwrap()
+      .then(() => {
+        setMessage("Utilizador registado com sucesso!");
+        // limpar form
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        // navegar
+        navigate("/apresentacao");
+      })
+      .catch((errMsg) => {
+        // mostra o erro do servidor
+        setAlert(errMsg);
+      });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleRegister();
-  };
-
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-    validatePassword(newPassword);
   };
 
   return (
@@ -194,13 +136,16 @@ const Register = () => {
               alt="logo"
               className="logo"
               width="300"
-              height="300" /* Set explicit height */
+              height="300"
             />
           </div>
           <header>
             <h1>Registo</h1>
           </header>
+
+          {/* Alertas de erro */}
           {alert && <p className="alert">{alert}</p>}
+
           <div className="label-container">
             <label htmlFor="input-email">
               Email <span className="alert">*</span>
@@ -210,12 +155,13 @@ const Register = () => {
               required
               id="input-email"
               type="email"
-              className={`input ${validationInputs.email ? "error" : ""}`}
+              className="input"
               placeholder="Inserir email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+
           <div className="user-container">
             <label htmlFor="input-utilizador">
               Nome de Utilizador <span className="alert">*</span>
@@ -224,17 +170,18 @@ const Register = () => {
               required
               id="input-utilizador"
               type="text"
-              className={`input ${validationInputs.username ? "error" : ""}`}
+              className="input"
               placeholder="Inserir nome de utilizador..."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
+
           <div className="pass-container">
             <div className="password-input-wrapper">
               <div className="password-label-container">
                 <label htmlFor="password_input">
-                  Palavra-passe <span className="alert">*</span>{" "}
+                  Palavra-passe <span className="alert">*</span>
                 </label>
                 <button
                   aria-label="Requisitos para password"
@@ -250,9 +197,7 @@ const Register = () => {
                   id="password_input"
                   required
                   type={showPassword ? "text" : "password"}
-                  className={`input ${
-                    validationInputs.password ? "error" : ""
-                  }`}
+                  className="input"
                   placeholder="Inserir uma palavra-passe..."
                   value={password}
                   onChange={handlePasswordChange}
@@ -260,12 +205,13 @@ const Register = () => {
                 <button
                   type="button"
                   className="password-toggle-button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((v) => !v)}
                 >
-                  <ion-icon
-                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  <img
+                    src={showPassword ? visibleIcon : notVisibleIcon}
+                    alt="toggle"
                     className="icons"
-                  ></ion-icon>
+                  />
                 </button>
               </div>
             </div>
@@ -279,9 +225,7 @@ const Register = () => {
                   required
                   id="input-password2"
                   type={showConfirmPassword ? "text" : "password"}
-                  className={`input ${
-                    validationInputs.confirmPassword ? "error" : ""
-                  }`}
+                  className="input"
                   placeholder="Confirmar palavra-passe..."
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -289,21 +233,33 @@ const Register = () => {
                 <button
                   type="button"
                   className="password-toggle-button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onClick={() =>
+                    setShowConfirmPassword((v) => !v)
+                  }
                 >
-                  <ion-icon
-                    name={
-                      showConfirmPassword ? "eye-off-outline" : "eye-outline"
+                  <img
+                    src={
+                      showConfirmPassword
+                        ? visibleIcon
+                        : notVisibleIcon
                     }
+                    alt="toggle"
                     className="icons"
-                  ></ion-icon>
+                  />
                 </button>
               </div>
             </div>
+
+            {/* Erro de password */}
             {alertPass && <p className="alert">{alertPass}</p>}
           </div>
+
+          {/* Modal de requisitos */}
           <Suspense fallback={<div>Loading...</div>}>
-            <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
+            <Modal
+              isOpen={isPasswordModalOpen}
+              onClose={togglePasswordModal}
+            >
               <ul className="password-requirements">
                 <li
                   className={
@@ -319,7 +275,9 @@ const Register = () => {
                 </li>
                 <li
                   className={
-                    passwordRequirements.hasUpperCase ? "valid" : "invalid"
+                    passwordRequirements.hasUpperCase
+                      ? "valid"
+                      : "invalid"
                   }
                 >
                   {passwordRequirements.hasUpperCase ? (
@@ -331,7 +289,9 @@ const Register = () => {
                 </li>
                 <li
                   className={
-                    passwordRequirements.hasLowerCase ? "valid" : "invalid"
+                    passwordRequirements.hasLowerCase
+                      ? "valid"
+                      : "invalid"
                   }
                 >
                   {passwordRequirements.hasLowerCase ? (
@@ -355,7 +315,9 @@ const Register = () => {
                 </li>
                 <li
                   className={
-                    passwordRequirements.hasSpecialChar ? "valid" : "invalid"
+                    passwordRequirements.hasSpecialChar
+                      ? "valid"
+                      : "invalid"
                   }
                 >
                   {passwordRequirements.hasSpecialChar ? (
@@ -369,12 +331,18 @@ const Register = () => {
             </Modal>
           </Suspense>
         </div>
+
         <div className="register-link">
           <p>
-            Já tens conta? <a href="/Login">Iniciar Sessão</a>{" "}
+            Já tens conta? <a href="/Login">Iniciar Sessão</a>
           </p>
         </div>
-        {message && <p>{message}</p>}
+
+        {/* feedback de API */}
+        {status === "loading" && <p>Registando…</p>}
+        {registerError && <p className="alert">{registerError}</p>}
+        {message && <p className="success">{message}</p>}
+
         <button className="buttonBig" type="submit">
           Registar
         </button>

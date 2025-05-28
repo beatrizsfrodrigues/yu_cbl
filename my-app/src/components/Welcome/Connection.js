@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchMessages, newConversation } from "../../redux/messagesSlice";
 import "./connection.css";
 import { QRCodeCanvas } from "qrcode.react";
+import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
 
 const Connection = () => {
@@ -17,6 +18,7 @@ const Connection = () => {
   const [isConnected, setIsConnected] = useState(false);
   const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
+  const [showScanner, setShowScanner] = useState(false);
 
   // useEffect(() => {
   //   if (messagesStatus === "idle") {
@@ -107,41 +109,55 @@ const Connection = () => {
   return (
     <div className="connection-page mainBody">
       <h1>Cria uma ligação mútua</h1>
-      <p className="page-desc">
-        Nesta fase, cria uma ligação com alguém para atribuirem tarefas entre
-        si.
-      </p>
+      {/* <p className="page-desc">Cria uma ligação com alguém.</p> */}
 
-      <div className="connection-placeholder">
-        <div className="profile-images">
-          <div className="profile-item">
-            <span className="profile-label">{userName}</span>
-            <img
-              src={yu_icon}
-              alt="User Profile"
-              className="profile-img"
-              loading="lazy"
-            />
-          </div>
-          <div className="profile-item">
-            <span className="profile-label">
-              {connectedUserName || ". . ."}
-            </span>
-            <img
-              src={yu_icon}
-              alt="Connected User Profile"
-              className={`profile-img ${!connectedUserName ? "grayscale" : ""}`}
-              loading="lazy"
-            />
+      {!isCodeInputVisible ? (
+        <div className="connection-placeholder">
+          <div className="profile-images">
+            <div className="profile-item">
+              <span className="profile-label">{userName || "user"}</span>
+              <img
+                src={yu_icon}
+                alt="User Profile"
+                className="profile-img"
+                loading="lazy"
+              />
+            </div>
+            <div className="profile-item">
+              <span className="profile-label">
+                {connectedUserName || "user2"}
+              </span>
+              <img
+                src={yu_icon}
+                alt="Connected User Profile"
+                className={`profile-img ${
+                  !connectedUserName ? "grayscale" : ""
+                }`}
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div></div>
+      )}
 
       {/* Show message above input section */}
       {message && <p className="message">{message}</p>}
 
+      {!isCodeInputVisible && !showScanner && (
+        <button
+          className="confirm-button qrBtn"
+          onClick={() => setShowScanner(true)}
+        >
+          Faz scan do código QR
+        </button>
+      )}
+
+      {!isCodeInputVisible && !showScanner && <p>Ou</p>}
+
       {/* Only show input section if not connected */}
-      {!isConnected && (
+      {!isConnected && !showScanner && (
         <div className="input-section">
           <label className="input-label" for="input-connection">
             {isCodeInputVisible
@@ -162,26 +178,38 @@ const Connection = () => {
               />
             </div>
           ) : (
-            <input
-              id="input-connection"
-              type="text"
-              className="code-input"
-              placeholder="Insere o teu código..."
-              value={partnerCode}
-              onChange={(e) => setPartnerCode(e.target.value)}
-            />
-          )}
-
-          {/* Button to confirm the connection */}
-          {!isCodeInputVisible && (
-            <button
-              className="confirm-button"
-              onClick={handleConfirmConnection}
-            >
-              Confirmar
-            </button>
+            <div>
+              <input
+                id="input-connection"
+                type="text"
+                className="code-input"
+                placeholder="Ex: 123456"
+                value={partnerCode}
+                onChange={(e) => setPartnerCode(e.target.value)}
+              />
+              {/* Button to confirm the connection */}
+              {!isCodeInputVisible && (
+                <button
+                  className="confirm-button"
+                  onClick={handleConfirmConnection}
+                >
+                  Confirmar
+                </button>
+              )}
+            </div>
           )}
         </div>
+      )}
+
+      {!isCodeInputVisible && !isConnected && showScanner && (
+        <QRScanner
+          onScanSuccess={(data) => {
+            setPartnerCode(data);
+            setMessage("Código QR lido com sucesso!");
+            setShowScanner(false);
+          }}
+          onClose={() => setShowScanner(false)}
+        />
       )}
 
       {/* Button remains visible during connection */}
@@ -193,12 +221,18 @@ const Connection = () => {
 
       {!isConnected && (
         <p className="footer-text">
-          {isCodeInputVisible
-            ? "Insere o código do teu parceiro"
-            : "Ou partilha o teu código"}{" "}
-          <a href="#" className="create-link" onClick={handleClick}>
+          {isCodeInputVisible ? (
+            <a href="#" className="create-link" onClick={handleClick}>
+              Quero inserir um código.
+            </a>
+          ) : (
+            <a href="#" className="create-link" onClick={handleClick}>
+              Quero mostrar o meu código.
+            </a>
+          )}{" "}
+          {/* <a href="#" className="create-link" onClick={handleClick}>
             aqui.
-          </a>
+          </a> */}
           <div class="skip-section">
             <a href="#" className="skip-button" onClick={handleNavigateToHome}>
               Fazer a ligação mais tarde.

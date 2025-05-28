@@ -284,6 +284,42 @@ p {
   margin: 0;
 }
 
+.avatarWrapper {
+  position: relative;
+  width: 150px;     
+  height: 150px;    
+  overflow: hidden;
+  border-radius: 50%; 
+
+}
+
+
+.avatarWrapper img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+}
+
+
+.avatarWrapper img.background { 
+  z-index: 0; width: 120%;
+ border-radius: 50%;
+}
+
+.avatarWrapper img.base       { z-index: 1; width: 100%; }
+.avatarWrapper img.color      { z-index: 2; width: 105%; }
+.avatarWrapper img.shirt      { z-index: 3; width:  90%; }
+.avatarWrapper img.bigode     { z-index: 4; width:  80%; transform: translate(-50%,-52%) scale(1); }
+.avatarWrapper img.cachecol   { z-index: 5; width:  80%; }
+.avatarWrapper img.chapeu     { z-index: 6; width:  80%; }
+.avatarWrapper img.ouvidos    { z-index: 7; width:  80%; }
+.avatarWrapper img.oculos     { z-index: 8; width:  80%; }
+
+
+
+
 .menu {
   display: flex;
   padding: 10px;
@@ -291,7 +327,6 @@ p {
   border-radius: 40px;
   width: 100%;
 }
-
 .userPhoto {
   display: flex;
   width: 40px;

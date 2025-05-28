@@ -4,6 +4,8 @@ import axios from "axios";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 
+
+
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +13,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
-
+ const API_URL = process.env.REACT_APP_API_URL;
   // Pré-carregar o logo
   useEffect(() => {
     const link = document.createElement("link");
@@ -26,7 +28,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3002/users/login",
+         `${API_URL}/users/login`,
         {
           emailOrUsername,
           password,
@@ -46,7 +48,7 @@ const Login = () => {
         )}; Path=/; SameSite=Lax;`;
 
         if (user.role === "admin") {
-          window.location.href = "http://localhost:3001/";
+          window.location.href = "http://localhost:3002/";
         } else {
           navigate("/home");
         }

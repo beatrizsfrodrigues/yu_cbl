@@ -2,152 +2,195 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
-import InfoPessoal from "../Definicoes/InfoPessoal";
-import Arquivo from "../Definicoes/Arquivo";
 import Grafico from "../Grafico/Grafico";
 import Definicoes from "../Definicoes/Definicoes.js";
-// import Messages from "../../Tasks/Messages";
 import TopBar from "../../TopBar.js";
-import { fetchUsers } from "../../../redux/usersSlice.js";
 
-const Profile = () => {
-  const navigate = useNavigate(); // Hook para redirecionar o user
-  const loggedInUser = localStorage.getItem("loggedInUser");
-  const currentUserId = loggedInUser ? JSON.parse(loggedInUser).id : null;
+import {
+  fetchAuthUser,
+  fetchOwnedAccessories,
+  fetchEquippedAccessories,
+} from "../../../redux/usersSlice";
+import { fetchAccessories } from "../../../redux/accessoriesSlice";
 
+export default function Profile() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const error = useSelector((state) => state.users.error);
 
-  const [showInfoPessoal, setShowInfoPessoal] = useState(false);
-  const [showArquivo, setShowArquivo] = useState(false);
-  const [showGrafico, setShowGrafico] = useState(false);
-
+  const [showGrafico, setShowGrafico]   = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-  useEffect(() => {
-    if (!loggedInUser) {
-      navigate("/login");
-    }
-  }, [loggedInUser, navigate]);
+  const {
+    authUser: currentUser,
+    status: userStatus,
+    error: userError,
+    ownedAccessories,
+    equippedAccessories,
+  } = useSelector((state) => state.user);
+
+  const accessories = useSelector((state) => state.accessories.data);
 
   useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
+    dispatch(fetchAuthUser());
+    dispatch(fetchOwnedAccessories());
+    dispatch(fetchEquippedAccessories());
+    dispatch(fetchAccessories());
+  }, [dispatch]);
+
+  const findById = (id) =>
+    accessories?.find((a) => a && a._id === id) || null;
+
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [selectedShirt,      setSelectedShirt]      = useState(null);
+  const [selectedHat,        setSelectedHat]        = useState(null);
+  const [selectedColor,      setSelectedColor]      = useState(null);
+  const [selectedBigode,     setSelectedBigode]     = useState(null);
+  const [selectedCachecol,   setSelectedCachecol]   = useState(null);
+  const [selectedChapeu,     setSelectedChapeu]     = useState(null);
+  const [selectedOuvidos,    setSelectedOuvidos]    = useState(null);
+  const [selectedOculos,     setSelectedOculos]     = useState(null);
 
   useEffect(() => {
-    const root = document.getElementById("root");
-    root.classList.add("profile-background");
-    return () => {
-      root.classList.remove("profile-background");
-    };
-  }, []);
+    if (!accessories) return;
+    setSelectedBackground(findById(equippedAccessories.background));
+    setSelectedShirt(    findById(equippedAccessories.shirt));
+    setSelectedHat(      findById(equippedAccessories.hat));
+    setSelectedColor(    findById(equippedAccessories.color));
+    setSelectedBigode(   findById(equippedAccessories.bigode));
+    setSelectedCachecol( findById(equippedAccessories.cachecol));
+    setSelectedChapeu(   findById(equippedAccessories.chapeu));
+    setSelectedOuvidos(  findById(equippedAccessories.ouvidos));
+    setSelectedOculos(   findById(equippedAccessories.oculos));
+  }, [accessories, equippedAccessories]);
 
-  const toggleGrafico = () => setShowGrafico(!showGrafico);
+  if (userStatus === "loading") return <div>Loading perfil…</div>;
+  if (userStatus === "failed")  return <div>Error: {userError}</div>;
 
-  const handleInfoPessoalClick = () => {
-    setShowInfoPessoal(true);
-  };
-
-  const handleArquivoClick = () => {
-    setShowArquivo(true);
-  };
-
-  const closeGrafico = () => setShowGrafico(false);
-
-  const backToSettings = () => {
-    setShowInfoPessoal(false);
-    setShowArquivo(false);
-  };
-
-  const openSettings = () => {
-    setShowSettings(true);
-    navigate("/definicoes");
-  };
-
-  if (!loggedInUser) {
-    return (
-      <div className="error-message">
-        <h2>Efetua login para poderes aceder à YU.</h2>
-        <Link to="/login" className="login-link">
-          Ir para a página de login
-        </Link>
-      </div>
-    );
+  if (!currentUser?._id) {
+    navigate("/login");
+    return null;
   }
-
-  if (usersStatus === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (usersStatus === "failed") {
-    return <div>Error: {error}</div>;
-  }
-
-  const currentUser =
-    users && users.length > 0
-      ? users.find((user) => user.id === currentUserId)
-      : null;
 
   return (
     <div className="profile-container mainBody">
-      <div className="backgroundDiv"></div>
+      <div className="backgroundDiv" />
+        {selectedBackground && (
+          <div
+            className="equippedBackground"
+            style={{ backgroundImage: `url(${selectedBackground.src})` }}
+          />
+        )}
 
       <TopBar title="Perfil">
-        <button aria-label="Abrir definições" onClick={openSettings}>
-          <ion-icon name="settings-outline" class="icons"></ion-icon>
+        <button
+          aria-label="Abrir definições"
+          onClick={() => { setShowSettings(true); navigate("/definicoes"); }}
+        >
+          <ion-icon name="settings-outline" className="icons" />
         </button>
       </TopBar>
 
       <div className="profile-avatar">
-        <img
-          src="/assets/YU_cores/YU-roxo.svg"
-          alt="O teu Avatar YU"
-          className="avatar-image"
-        />
-        <h2 className="profile-name">
-          {currentUser ? currentUser.username : "Utilizador"}
-        </h2>
+        <div className="profile-mascotContainer">
+          <img
+            src={currentUser.mascot}
+            alt="Mascote YU"
+            className="profile-Yu base"
+          />
+          {selectedCachecol && (
+            <img
+              src={selectedCachecol.src}
+              alt="Cachecol"
+              className="profile-accessory cachecol"
+            />
+          )}
+          {selectedChapeu && (
+            <img
+              src={selectedChapeu.src}
+              alt="Chapéu"
+              className="profile-accessory chapeu"
+            />
+          )}
+          {selectedOuvidos && (
+            <img
+              src={selectedOuvidos.src}
+              alt="Ouvidos"
+              className="profile-accessory ouvidos"
+            />
+          )}
+          {selectedOculos && (
+            <img
+              src={selectedOculos.src}
+              alt="Óculos"
+              className="profile-accessory oculos"
+            />
+          )}
+          {selectedShirt && (
+            <img
+              src={selectedShirt.src}
+              alt="Camisola"
+              className="profile-accessory shirt"
+            />
+          )}
+          {selectedBigode && (
+            <img
+              src={selectedBigode.src}
+              alt="Bigode"
+              className="profile-accessory bigode"
+            />
+          )}
+          {selectedHat && (
+            <img
+              src={selectedHat.src}
+              alt="Decoração"
+              className="profile-accessory hat"
+            />
+          )}
+          {selectedColor && (
+            <img
+              src={selectedColor.src}
+              alt="Cor de pele"
+              className="profile-accessory color"
+            />
+          )}
+        </div>
+        <h2 className="profile-name">{currentUser.username}</h2>
       </div>
 
       <div className="profile-buttons">
         <button
           aria-label="Botão para abrir gráficos"
           className="profile-button award"
-          onClick={toggleGrafico}
+          onClick={() => setShowGrafico((v) => !v)}
         >
-          <ion-icon name="podium-outline" class="icons"></ion-icon>
+          <ion-icon name="podium-outline" className="icons" />
         </button>
 
         <Link
-          aria-label="Link para a página de informações"
           to="/informacoes"
           className="profile-button circle"
+          aria-label="Informações"
         >
-          <ion-icon name="information-outline" class="icons"></ion-icon>
+          <ion-icon name="information-outline" className="icons" />
         </Link>
       </div>
 
       {showGrafico && (
         <Grafico
           show={showGrafico}
-          onClose={closeGrafico}
+          onClose={() => setShowGrafico(false)}
           monthlyData={[5, 10, 15, 20, 25]}
           yearlyData={[100, 200, 300, 400, 500]}
         />
       )}
+
       {showSettings && (
         <Definicoes
           onClose={() => setShowSettings(false)}
-          onInfoPessoalClick={handleInfoPessoalClick}
-          onArquivoClick={handleArquivoClick}
+          onInfoPessoalClick={() => navigate("/informacoes-pessoais")}        
+          onArquivoClick={() => navigate("/arquivo")}
         />
       )}
     </div>
   );
-};
-
-export default Profile;
+}

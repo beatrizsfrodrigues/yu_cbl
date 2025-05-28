@@ -40,7 +40,10 @@ function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {
         >
           Verificar
         </button>
-        <p className="laterLink" onClick={() => handleClosePopUp(task)}>
+        <p
+          className="submitBtn orangeBtn"
+          onClick={() => handleClosePopUp(task)}
+        >
           Lembrar mais tarde
         </p>
       </div>

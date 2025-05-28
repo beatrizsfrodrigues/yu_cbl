@@ -1,207 +1,358 @@
+// src/redux/usersSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { sendNotification } from "./messagesSlice"; // garante que este import está correto
+import axios from "axios";
+import { getAuthToken } from "../utils/cookieUtils";
+import {
+  getTasks,
+  completeTask,
+  verifyTask,
+  removeRejectMessage,
+  notifyTasks,
+} from "./taskSlice";
 
-//* Fetch users from local storage or JSON
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const localData = localStorage.getItem("users");
+import { rejectTask, addTask } from "./taskSlice";
+import { sendMessage } from "./messagesSlice";
 
-  if (localData) {
-    return JSON.parse(localData);
-  }
+const API_URL = process.env.REACT_APP_API_URL;
 
-  const response = await fetch("/users.json");
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  try {
-    const data = await response.json();
-    localStorage.setItem("users", JSON.stringify(data));
-    return data;
-  } catch (error) {
-    throw new Error("Failed to parse JSON");
-  }
-});
-
-//* Fluxo completo: rejeita + notifica + cria nova tarefa + notifica
-export const createNewTaskAfterRejection = createAsyncThunk(
-  "users/createNewTaskAfterRejection",
-  async (
-    { userId, partnerId, task, message, newTaskTitle, newTaskDescription },
-    { dispatch }
-  ) => {
-    // Rejeita tarefa
-    dispatch(rejectTask({ userId, task, message }));
-
-    // Notifica parceiro da rejeição
-    // dispatch(
-    //   sendNotification({
-    //     senderId: partnerId,
-    //     receiverId: userId,
-    //     text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
-    //   })
-    // );
-
-    // Cria nova tarefa
-    dispatch(
-      addTask({
-        title: newTaskTitle,
-        description: newTaskDescription,
-        partnerId,
-      })
-    );
-
-    // Notifica o utilizador principal sobre nova tarefa
-    // dispatch(
-    //   sendNotification({
-    //     senderId: userId,
-    //     receiverId: partnerId,
-    //     text: `Recebeste uma nova tarefa: <b>${newTaskTitle}</b>.`,
-    //   })
-    // );
+export const registerUser = createAsyncThunk(
+  "user/register",
+  async ({ username, email, password }, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/users/signup`,
+        { username, email, password }
+      );
+      return res.data.user;
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      return rejectWithValue(msg);
+    }
   }
 );
 
-const usersSlice = createSlice({
-  name: "users",
+
+// 1) Procurar utilizador autenticado
+export const fetchAuthUser = createAsyncThunk(
+  "user/fetchAuthUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.get(`${API_URL}/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 2) Fluxo “rejeitar + nova tarefa + notificar”
+export const createNewTaskAfterRejection = createAsyncThunk(
+  "user/createNewTaskAfterRejection",
+  async (
+    { userId, partnerId, task, message, newTaskTitle, newTaskDescription },
+    { dispatch, rejectWithValue }
+  ) => {
+    // 2.1 rejeita a task via API
+    await dispatch(
+      completeTask({ taskId: task.id, proofImage: null, userId })
+    ).unwrap();
+
+    // 2.2 notifica parceiro
+    await dispatch(
+      sendMessage({
+        senderId: partnerId,
+        receiverId: userId,
+        text: `Tarefa <b>${task.title}</b> foi rejeitada.`,
+      })
+    ).unwrap();
+
+    // 2.3 cria nova tarefa
+    const newTask = await dispatch(
+      getTasks(partnerId) // buscar lista atualizada
+    ).unwrap();
+
+    await dispatch(
+      notifyTasks({
+        userId: partnerId,
+        message: `Nova tarefa: ${newTaskTitle}`,
+      })
+    );
+
+    // podes devolver algo se quiseres
+    return { partnerTasks: newTask };
+  }
+);
+
+// 3) Tasks: procurar, completar, verificar, remover mensagem
+// export const fetchTasks = createAsyncThunk(
+//   "user/fetchTasks",
+//    async (userId, { dispatch, rejectWithValue }) => {
+//     try {
+//       return await dispatch(getTasks(userId)).unwrap();
+//     } catch (err) {
+//       return rejectWithValue(err);
+//     }
+//   }
+// );
+
+// 4) Parceiro
+export const fetchPartnerUser = createAsyncThunk(
+  "user/fetchPartnerUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.get(`${API_URL}/users/partner`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 5) Ligar parceiro
+export const connectPartner = createAsyncThunk(
+  "user/connectPartner",
+  async ({ code }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.put(
+        `${API_URL}/users/connect-partner`,
+        { code },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 6) Acessórios owned
+export const fetchOwnedAccessories = createAsyncThunk(
+  "user/fetchOwnedAccessories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.get(`${API_URL}/users/accessories`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 7) Acessórios equipados
+export const fetchEquippedAccessories = createAsyncThunk(
+  "user/fetchEquippedAccessories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.get(`${API_URL}/users/accessories-equipped`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 8) Atualizar utilizador
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (updatedUser, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.put(
+        `${API_URL}/users/${updatedUser._id}`,
+        updatedUser,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 9) Comprar acessório
+export const buyAccessory = createAsyncThunk(
+  "user/buyAccessory",
+  async ({ accessoryId }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.post(
+        `${API_URL}/users/accessories`,
+        { accessoryId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// 10) Equipar/desequipar acessório
+export const equipAccessories = createAsyncThunk(
+  "user/equipAccessories",
+  async ({ accessoryId, type }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const res = await axios.put(
+        `${API_URL}/users/accessories/equip`,
+        { accessoryId: accessoryId ?? null, type },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data.accessoriesEquipped;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+// —————————————————————————————————————————————————————
+// Slice & estado
+// —————————————————————————————————————————————————————
+const userSlice = createSlice({
+  name: "user",
   initialState: {
-    data: null,
+    authUser: null,
+    partnerUser: null,
+    ownedAccessories: [],
+    equippedAccessories: {
+      background: null,
+      shirt: null,
+      color: null,
+      bigode: null,
+      cachecol: null,
+      chapeu: null,
+      ouvidos: null,
+      oculos: null,
+    },
+    tasks: [],
     status: "idle",
     error: null,
   },
   reducers: {
-    addTask: (state, action) => {
-      const { title, description, partnerId } = action.payload;
-      const user = state.data.find((u) => u.id === partnerId);
-
-      const newTask = {
-        id: state.data.length + 1,
-        title,
-        description,
-        picture: "",
-        completed: false,
-        verified: false,
-        completedDate: 0,
-        rejectMessage: "",
-      };
-
-      if (user) {
-        user.tasks.push(newTask);
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    validateTask: (state, action) => {
-      const { userId, task } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        const taskValidate = user.tasks.find((t) => t.id === task.id);
-        if (taskValidate) {
-          taskValidate.verified = true;
-          user.points += 10;
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    completeTask: (state, action) => {
-      const { taskId, proofImage, userId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-
-      function getFormattedDate() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        const seconds = String(now.getSeconds()).padStart(2, "0");
-        return `${year}${month}${day}${hours}${minutes}${seconds}`;
-      }
-
-      if (user) {
-        const task = user.tasks.find((t) => t.id === taskId);
-        if (task) {
-          task.picture = proofImage;
-          task.completedDate = getFormattedDate();
-          task.completed = true;
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    rejectTask: (state, action) => {
-      const { userId, task, message } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        const taskReject = user.tasks.find((t) => t.id === task.id);
-        if (taskReject) {
-          taskReject.verified = false;
-          taskReject.completed = false;
-          taskReject.completedDate = 0;
-          taskReject.rejectMessage = message;
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    clearRejectMessage: (state, action) => {
-      const { userId, taskId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        const taskReject = user.tasks.find((t) => t.id === taskId);
-        if (taskReject) {
-          taskReject.rejectMessage = "";
-        }
-      }
-
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
-    updateUser: (state, action) => {
-      const updatedUser = action.payload;
-      const index = state.data.findIndex((user) => user.id === updatedUser.id);
-      if (index !== -1) {
-        state.data[index] = {
-          ...state.data[index],
-          ...updatedUser,
-        };
-        localStorage.setItem("users", JSON.stringify(state.data));
-      }
-    },
-    buyMultipleItems: (state, action) => {
-      const { totalPrice, userId } = action.payload;
-      const user = state.data.find((u) => u.id === userId);
-      if (user) {
-        user.points = (user.points || 0) - Number(totalPrice);
-      }
-      localStorage.setItem("users", JSON.stringify(state.data));
-    },
+    // se ainda quiseres algum reducer local, adiciona aqui…
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(registerUser.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload;
-        localStorage.setItem("users", JSON.stringify(action.payload));
+        state.authUser = action.payload;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
-      });
+        state.error = action.payload;
+      })
+      .addCase(fetchAuthUser.pending, (s) => {
+        s.status = "loading";
+      })
+      .addCase(fetchAuthUser.fulfilled, (s, a) => {
+        s.status = "succeeded";
+        s.authUser = a.payload;
+      })
+      .addCase(fetchAuthUser.rejected, (s, a) => {
+        s.status = "failed";
+        s.error = a.payload;
+      })
+
+      // tarefas
+      .addCase(getTasks.fulfilled, (s, a) => {
+        s.tasks = a.payload;
+      })
+      .addCase(completeTask.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+      .addCase(verifyTask.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+      .addCase(removeRejectMessage.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+      .addCase(notifyTasks.fulfilled, (s, a) => {
+        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
+        if (idx > -1) s.tasks[idx] = a.payload;
+      })
+
+      // partner
+      .addCase(fetchPartnerUser.fulfilled, (s, a) => {
+        s.partnerUser = a.payload;
+      })
+      .addCase(connectPartner.fulfilled, (s, a) => {
+        s.authUser = a.payload;
+      })
+
+      // acessórios
+      .addCase(fetchOwnedAccessories.fulfilled, (s, a) => {
+        s.ownedAccessories = a.payload;
+      })
+      .addCase(fetchEquippedAccessories.fulfilled, (state, action) => {
+       
+        const equipObj = action.payload.accessoriesEquipped ?? action.payload;
+
+        const {
+          background,
+          shirt,
+          color,
+          bigode,
+          cachecol,
+          chapeu,
+          ouvidos,
+          oculos,
+        } = equipObj;
+
+      
+        state.equippedAccessories = {
+          background: background?.id ?? background ?? null,
+          shirt:      shirt?.id      ?? shirt ?? null,
+          color:      color           ?? null,
+          bigode:     bigode?.id     ?? bigode ?? null,
+          cachecol:   cachecol?.id   ?? cachecol ?? null,
+          chapeu:     chapeu?.id     ?? chapeu ?? null,
+          ouvidos:    ouvidos?.id    ?? ouvidos ?? null,
+          oculos:     oculos?.id     ?? oculos ?? null,
+        };
+      })
+
+      .addCase(buyAccessory.fulfilled, (s, a) => {
+        s.ownedAccessories = a.payload.owned;
+        if (s.authUser) s.authUser.points = a.payload.points;
+      })
+
+     .addCase(equipAccessories.fulfilled, (state, action) => {
+
+        const equipObj = action.payload;
+        state.equippedAccessories = {
+          background: equipObj.background ?? null,
+          shirt:      equipObj.shirt      ?? null,
+          color:      equipObj.color      ?? null,
+          bigode:     equipObj.bigode     ?? null,
+          cachecol:   equipObj.cachecol   ?? null,
+          chapeu:     equipObj.chapeu     ?? null,
+          ouvidos:    equipObj.ouvidos    ?? null,
+          oculos:     equipObj.oculos     ?? null,
+        };
+      })
+
   },
 });
 
-export const {
-  addTask,
-  updateUser,
-  completeTask,
-  validateTask,
-  rejectTask,
-  clearRejectMessage,
-  buyMultipleItems,
-} = usersSlice.actions;
-
-export default usersSlice.reducer;
+export default userSlice.reducer;

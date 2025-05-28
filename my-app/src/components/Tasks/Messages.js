@@ -1,26 +1,48 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { createSelector } from "reselect";
 import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
-import { fetchUsers } from "../../redux/usersSlice.js";
 import { getAuthUser } from "../../utils/cookieUtils";
+import { fetchPartnerUser } from "../../redux/usersSlice";
 import { X } from "react-feather";
 import "./messages.css";
+import Avatar from "../Avatar.jsx";  
+
+// Memoized selectors
+const selectMessages = createSelector(
+  (state) => state.messages?.data,
+  (messages) => (messages ? { ...messages } : { messages: [] }) // Ensure a new object is returned
+);
+
+const selectUsers = createSelector(
+  (state) => state.users?.data,
+  (users) => (users ? [...users] : []) // Ensure a new array is returned
+);
+
+const selectPresetMessages = createSelector(
+  (state) => state.presetMessages?.data,
+  (presetMessages) => (presetMessages ? [...presetMessages] : []) // Ensure a new array is returned
+);
 
 function Messages({}) {
   const dispatch = useDispatch();
-  const { data: messages, status } = useSelector((state) => state.messages);
+
+  const accessories = useSelector((state) => state.accessories.data);
+  // Use memoized selectors
+  const messages = useSelector(selectMessages);
+
+  const users = useSelector(selectUsers);
+  const presetMessages = useSelector(selectPresetMessages);
 
   const authUser = getAuthUser();
+  console.log(messages);
   const currentUserId = authUser?._id;
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const users = useSelector((state) => state.users.data);
-  const usersStatus = useSelector((state) => state.users.status);
-  const [partnerUser, setPartnerUser] = useState(null);
+  const currentUser = useSelector((state) => state.user.authUser);
+  const partnerUser = useSelector((state) => state.user.partnerUser);
 
   const messagesStatus = useSelector((state) => state.messages.status);
-  const presetMessages = useSelector((state) => state.presetMessages.data);
   const presetMessagesStatus = useSelector(
     (state) => state.presetMessages.status
   );
@@ -32,38 +54,36 @@ function Messages({}) {
   //* fetch text messages
 
   useEffect(() => {
-    if (currentUserId) {
-      dispatch(getMessages(currentUserId));
+    if (authUser?._id) {
+      dispatch(getMessages(authUser._id));
     }
-  }, [dispatch, currentUserId]);
+  }, [dispatch, authUser?._id]); // Ensure the dependency is stable and correct
 
   useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [usersStatus, dispatch]);
+    if (!authUser?._id) return;
+
+    const intervalId = setInterval(() => {
+      dispatch(getMessages(authUser._id));
+    }, 5000);
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [dispatch, authUser?._id]); // Use stable dependency for the interval
 
   useEffect(() => {
-    const user =
-      users && users.length > 0
-        ? users.find((user) => user.id === currentUserId)
-        : null;
-    setCurrentUser(authUser);
-
-    // ! getPartner
-    const partner =
-      users && users.length > 0
-        ? users.find((u) => u.id === user.partnerId)
-        : null;
-
-    if (partner) {
-      setPartnerUser(partner);
+    if (authUser?.partnerId) {
+      // só isto, sem payload
+      dispatch(fetchPartnerUser(authUser.partnerId));
     }
-  }, [users, currentUserId]);
+  }, [authUser?.partnerId, dispatch]);
+
+
+
+  
 
   useEffect(() => {
     if (textSpaceRef.current && messages) {
       textSpaceRef.current.scrollTop = textSpaceRef.current.scrollHeight;
+      textSpaceRef.current.style.scrollBehavior = "auto"; // This disables smooth scrolling
     }
   }, [messages]);
 
@@ -92,7 +112,8 @@ function Messages({}) {
 
   //* text messages
   let messageContent;
-
+  console.log(messagesStatus);
+  console.log(authUser);
   if (messagesStatus === "loading") {
     messageContent = <div className="loadingMessage">A carregar...</div>;
   } else if (messagesStatus === "failed") {
@@ -100,12 +121,14 @@ function Messages({}) {
       <div className="errorMessage">Erro ao carregar mensagens</div>
     );
   } else if (
-    currentUser &&
-    currentUser.partnerId &&
+    authUser &&
+    authUser.partnerId &&
     messagesStatus === "succeeded" &&
     messages != {}
   ) {
+    console.log("ola");
     const conversation = messages;
+    console.log(conversation.messages);
 
     const sortedMessages = [...conversation.messages].sort(
       (a, b) => +a.date - +b.date
@@ -118,7 +141,8 @@ function Messages({}) {
       const hours = dateString.slice(8, 10);
       const minutes = dateString.slice(10, 12);
 
-      if (message.receiverId === currentUser.partnerId) {
+      if (message.receiverId === authUser.partnerId) {
+        console.log("olaaa");
         if (message.senderType === "app") {
           return (
             <div key={index} className="textMessage">
@@ -220,10 +244,19 @@ function Messages({}) {
     <div className="mainBody mainBodyMessages">
       <div className="backgroundDiv"></div>
 
-      <header className="header headerMessages">
-        {partnerUser && <div className="profilePic"></div>}
+     <header className="header headerMessages">
+        {partnerUser && (
+        <Avatar
+            mascot={partnerUser.mascot}
+            equipped={partnerUser.accessoriesEquipped || {}}
+            accessoriesList={accessories}
+            size={54}
+          />
+
+        )}
         {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
       </header>
+
 
       <div className="line"></div>
 

@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
-import axios from 'axios';
-import { getAuthToken } from './utils/cookieUtils';
-
-
+import axios from "axios";
+import { getAuthToken } from "./utils/cookieUtils";
+import store from "./redux//store";
+import { Provider } from "react-redux";
 
 import NavBar from "./components/NavBar";
 import Tasks from "./components/Tasks/Tasks";
@@ -33,37 +28,33 @@ import Apresentacao from "./components/Welcome/Apresentacao";
 
 import Questions from "./components/Welcome/Questions";
 
-
-
 import "./App.css";
 
 function AppContent() {
+  const location = useLocation();
 
+  useEffect(() => {
+    const lastTime = localStorage.getItem("lastQuestionTime");
+    if (lastTime) {
+      const now = Date.now();
+      const diffInMilliseconds = now - Number(lastTime);
+      const diffInSeconds = diffInMilliseconds / 1000;
 
-
-    const location = useLocation();
-
-    useEffect(() => {
-      const lastTime = localStorage.getItem("lastQuestionTime");
-      if (lastTime) {
-        const now = Date.now();
-        const diffInMilliseconds = now - Number(lastTime);
-        const diffInSeconds = diffInMilliseconds / 1000;
-
-        if (diffInSeconds >= 2592000) { // 30 dias em segundos
-          console.log("Novo questionário disponível.");
-        }
+      if (diffInSeconds >= 2592000) {
+        // 30 dias em segundos
+        console.log("Novo questionário disponível.");
       }
-    }, [location.pathname]);
-  
-    axios.defaults.withCredentials = true;       
-    axios.defaults.headers.common['Authorization'] = `Bearer ${getAuthToken()}`;
+    }
+  }, [location.pathname]);
 
-    axios.interceptors.request.use(config => {
-      const token = getAuthToken();
-      if (token) config.headers['Authorization'] = `Bearer ${token}`;
-      return config;
-    });
+  axios.defaults.withCredentials = true;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
+
+  axios.interceptors.request.use((config) => {
+    const token = getAuthToken();
+    if (token) config.headers["Authorization"] = `Bearer ${token}`;
+    return config;
+  });
 
   // Nomes das páginas (mudar à vontade)
   const pageTitles = {
@@ -126,9 +117,9 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
+    <Provider store={store}>
       <AppContent />
-    </Router>
+    </Provider>
   );
 }
 

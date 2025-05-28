@@ -19,17 +19,6 @@
   justify-content: start;
 }
 
-.profilePic {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 0; /* sem margem */
-  padding: 0;
-  background-color: red; /*temporario*/
-  margin-right: 8px;
-}
-
 div .line {
   width: 100%;
   margin-top: 1%;
@@ -214,3 +203,32 @@ div .line {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
+
+.avatarWrapper {
+  position: relative;
+  width: 54px;   
+  height: 54px;  
+  overflow: hidden;
+}
+
+
+.avatarWrapper img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+
+.avatarWrapper img.base    { z-index: 1; }
+.avatarWrapper img.color   { z-index: 2; }
+.avatarWrapper img.shirt   { z-index: 3; }
+.avatarWrapper img.bigode  { z-index: 4; }
+.avatarWrapper img.cachecol{ z-index: 5; }
+.avatarWrapper img.chapeu  { z-index: 6; }
+.avatarWrapper img.ouvidos { z-index: 7; }
+.avatarWrapper img.oculos  { z-index: 8; }
