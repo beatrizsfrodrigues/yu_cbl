@@ -31,9 +31,11 @@ jobs:
         working-directory: my-app
 
 
-      - name: Build Project (skip linting)
+      - name: Build Project
         run: NODE_ENV=production CI=false npm run build
         working-directory: my-app
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}   
 
       - name: Deploy to Vercel
         run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
