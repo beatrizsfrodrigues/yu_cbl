@@ -36,8 +36,8 @@ const Login = () => {
         }
       );
 
-      if (response.data && response.data.user) {
-        const user = response.data.user;
+      if (response.data && response.data.userWithoutPassword) {
+        const user = response.data.userWithoutPassword;
 
         if (user.role === "admin") {
           window.location.href = "http://localhost:3002/";
