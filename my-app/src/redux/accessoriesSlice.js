@@ -1,14 +1,14 @@
 // src/redux/accessoriesSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAuthToken } from "../utils/cookieUtils";
+// import { getAuthToken } from "../utils/cookieUtils";
 
 export const fetchAccessories = createAsyncThunk(
   "accessories/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await fetch("http://localhost:3000/accessories", {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // <-- important!
       });
       if (!res.ok) throw new Error("Falha a buscar acessórios");
       const { accessories } = await res.json();
@@ -22,9 +22,11 @@ export const fetchAccessories = createAsyncThunk(
 const accessoriesSlice = createSlice({
   name: "accessories",
   initialState: { data: [], status: "idle", error: null },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchAccessories.pending, state => { state.status = "loading"; })
+      .addCase(fetchAccessories.pending, (state) => {
+        state.status = "loading";
+      })
       .addCase(fetchAccessories.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
@@ -33,7 +35,7 @@ const accessoriesSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       });
-  }
+  },
 });
 
 export default accessoriesSlice.reducer;

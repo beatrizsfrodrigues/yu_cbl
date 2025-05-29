@@ -36,14 +36,8 @@ const Login = () => {
         }
       );
 
-      if (response.data && response.data.token) {
+      if (response.data && response.data.user) {
         const user = response.data.user;
-        const token = response.data.token;
-
-        document.cookie = `token=${token}; Path=/; SameSite=Lax;`;
-        document.cookie = `loggedInUser=${encodeURIComponent(
-          JSON.stringify(user)
-        )}; Path=/; SameSite=Lax;`;
 
         if (user.role === "admin") {
           window.location.href = "http://localhost:3002/";

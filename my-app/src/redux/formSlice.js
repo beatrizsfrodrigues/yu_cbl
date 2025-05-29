@@ -1,27 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAuthToken } from "../utils/cookieUtils"; // podes remover se não usares auth
+// import { getAuthToken } from "../utils/cookieUtils"; // podes remover se não usares auth
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 //* Vai buscar os dados do formulário ao backend
-export const fetchForm = createAsyncThunk("form/fetchForm", async (_, { rejectWithValue }) => {
-  try {
-    const token = getAuthToken(); // só se a vossa API usar autenticação
+export const fetchForm = createAsyncThunk(
+  "form/fetchForm",
+  async (_, { rejectWithValue }) => {
+    try {
+      // const token = getAuthToken(); // só se a vossa API usar autenticação
 
-    const response = await axios.get(`${API_URL}/forms`, {
-      headers: {
-        Authorization: `Bearer ${token}`, // remove esta linha se não houver auth
-      },
-    });
+      const response = await axios.get(`${API_URL}/forms`, {
+        withCredentials: true, // <-- important!
+      });
 
-    console.log("Dados recebidos do /forms:", response.data);
-    return response.data.questions; // ajusta conforme a estrutura real da resposta da API
-  } catch (error) {
-    const message = error.response?.data || error.message || "Erro ao obter formulário";
-    return rejectWithValue(message);
+      console.log("Dados recebidos do /forms:", response.data);
+      return response.data.questions; // ajusta conforme a estrutura real da resposta da API
+    } catch (error) {
+      const message =
+        error.response?.data || error.message || "Erro ao obter formulário";
+      return rejectWithValue(message);
+    }
   }
-});
+);
 
 const formSlice = createSlice({
   name: "form",
