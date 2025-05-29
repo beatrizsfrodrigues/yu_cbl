@@ -160,7 +160,7 @@ function Tasks() {
     filterCriteria,
     myTasks,
     partnerTasks,
-    authUser._id,
+    authUser?._id,
     partnerUser?._id,
   ]);
 
