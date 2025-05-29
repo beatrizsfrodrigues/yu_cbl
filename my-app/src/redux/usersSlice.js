@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAuthToken } from "../utils/cookieUtils";
+// import { getAuthToken } from "../utils/cookieUtils";
 import {
   getTasks,
   completeTask,
@@ -38,9 +38,9 @@ export const fetchAuthUser = createAsyncThunk(
   "user/fetchAuthUser",
   async (_, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.get(`${API_URL}/users/me`, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // <-- important!
       });
       return res.data;
     } catch (err) {
@@ -104,9 +104,9 @@ export const fetchPartnerUser = createAsyncThunk(
   "user/fetchPartnerUser",
   async (_, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.get(`${API_URL}/users/partner`, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // <-- important!
       });
       return res.data;
     } catch (err) {
@@ -120,11 +120,13 @@ export const connectPartner = createAsyncThunk(
   "user/connectPartner",
   async ({ code }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.put(
         `${API_URL}/users/connect-partner`,
         { code },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          withCredentials: true, // <-- important!
+        }
       );
       return res.data;
     } catch (err) {
@@ -138,9 +140,9 @@ export const fetchOwnedAccessories = createAsyncThunk(
   "user/fetchOwnedAccessories",
   async (_, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.get(`${API_URL}/users/accessories`, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // <-- important!
       });
       return res.data;
     } catch (err) {
@@ -154,9 +156,9 @@ export const fetchEquippedAccessories = createAsyncThunk(
   "user/fetchEquippedAccessories",
   async (_, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.get(`${API_URL}/users/accessories-equipped`, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // <-- important!
       });
       return res.data;
     } catch (err) {
@@ -170,11 +172,13 @@ export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (updatedUser, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.put(
         `${API_URL}/users/${updatedUser._id}`,
         updatedUser,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          withCredentials: true, // <-- important!
+        }
       );
       return res.data;
     } catch (err) {
@@ -188,11 +192,13 @@ export const buyAccessory = createAsyncThunk(
   "user/buyAccessory",
   async ({ accessoryId }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.post(
         `${API_URL}/users/accessories`,
         { accessoryId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          withCredentials: true, // <-- important!
+        }
       );
       return res.data;
     } catch (err) {
@@ -206,11 +212,13 @@ export const equipAccessories = createAsyncThunk(
   "user/equipAccessories",
   async ({ accessoryId, type }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.put(
         `${API_URL}/users/accessories/equip`,
         { accessoryId: accessoryId ?? null, type },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          withCredentials: true, // <-- important!
+        }
       );
       return res.data.accessoriesEquipped;
     } catch (err) {

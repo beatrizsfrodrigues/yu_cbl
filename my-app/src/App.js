@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 import axios from "axios";
-import { getAuthToken } from "./utils/cookieUtils";
+// import { getAuthToken } from "./utils/cookieUtils";
 import store from "./redux//store";
 import { Provider } from "react-redux";
 
@@ -69,13 +69,12 @@ function AppContent() {
   }, [location.pathname]);
 
   axios.defaults.withCredentials = true;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${getAuthToken()}`;
 
-  axios.interceptors.request.use((config) => {
-    const token = getAuthToken();
-    if (token) config.headers["Authorization"] = `Bearer ${token}`;
-    return config;
-  });
+  // axios.interceptors.request.use((config) => {
+  //   const token = getAuthToken();
+  //   if (token) config.headers["Authorization"] = `Bearer ${token}`;
+  //   return config;
+  // });
 
   useEffect(() => {
     document.title = pageTitles[location.pathname] || "YU";

@@ -50,6 +50,7 @@ function Tasks() {
 
   useEffect(() => {
     if (authUser?._id) {
+      console.log(authUser);
       const fetchTasks = async () => {
         try {
           const myResult = await dispatch(getTasks(authUser._id)).unwrap();
