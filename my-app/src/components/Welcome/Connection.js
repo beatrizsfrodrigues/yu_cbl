@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-// import { fetchMessages, newConversation } from "../../redux/messagesSlice";
 import "./connection.css";
 import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
+import { getAuthUser } from "../../utils/cookieUtils";
+import { connectPartner } from "../../redux/usersSlice.js";
 
 const Connection = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
   const [userCode, setUserCode] = useState(null);
   const [userName, setUserName] = useState("");
@@ -16,33 +17,15 @@ const Connection = () => {
   const [partnerCode, setPartnerCode] = useState("");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  // const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
   const [showScanner, setShowScanner] = useState(false);
 
-  // useEffect(() => {
-  //   if (messagesStatus === "idle") {
-  //     dispatch(fetchMessages());
-  //   }
-  // }, [messagesStatus, dispatch]);
+  const [authUser] = useState(getAuthUser());
 
-  // Fetch LocalStorage
   useEffect(() => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
-    if (loggedInUser && loggedInUser.id) {
-      const currentUser = users.find(
-        (user) => user.id === parseInt(loggedInUser.id)
-      );
-
-      if (currentUser) {
-        setUserCode(currentUser.code);
-        setUserName(currentUser.username);
-      } else {
-        setUserCode("Nenhum código encontrado, por favor registar.");
-        setUserName("Utilizador desconhecido.");
-      }
+    if (authUser) {
+      setUserCode(authUser.code);
+      setUserName(authUser.username);
     } else {
       setMessage("Nenhum utilizador autenticado.");
     }
@@ -53,9 +36,9 @@ const Connection = () => {
   };
 
   const handleConfirmConnection = () => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const partner = users.find((user) => user.code === partnerCode);
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const users = "";
+    const partner = "";
+    const loggedInUser = "";
 
     const currentUser = users.find(
       (user) => user.id === parseInt(loggedInUser.id)
@@ -104,6 +87,29 @@ const Connection = () => {
 
   const handleNavigateToHome = () => {
     navigate("/home"); // Go to home after connection (or skip)
+  };
+
+  const handleScanSuccess = async (scannedCode) => {
+    try {
+      console.log("ok");
+      const resultAction = await dispatch(
+        connectPartner({ code: scannedCode })
+      );
+      console.log(resultAction);
+
+      if (!resultAction.error) {
+        console.log("Connection successful");
+        setShowScanner(false); // 👈 hide scanner
+        handleNavigateToHome();
+      } else {
+        console.log("Connection rejected");
+        setMessage(resultAction.payload || "Falha na ligação.");
+        setShowScanner(false); // 👈 hide scanner even on failure
+      }
+    } catch (error) {
+      setMessage("Erro na ligação. Tente novamente.");
+      setShowScanner(false); // 👈 also close on unknown error
+    }
   };
 
   return (
@@ -201,13 +207,9 @@ const Connection = () => {
         </div>
       )}
 
-      {!isCodeInputVisible && !isConnected && showScanner && (
+      {showScanner && (
         <QRScanner
-          onScanSuccess={(data) => {
-            setPartnerCode(data);
-            setMessage("Código QR lido com sucesso!");
-            setShowScanner(false);
-          }}
+          onScanSuccess={handleScanSuccess}
           onClose={() => setShowScanner(false)}
         />
       )}
