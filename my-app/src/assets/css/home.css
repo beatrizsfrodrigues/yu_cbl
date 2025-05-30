@@ -84,6 +84,19 @@
   margin: 5% 0 0 0;
 }
 
+.side-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  color: var(--purple-darker);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 .buttonMid {
   width: 50%;
   background-color: var(--purple);
