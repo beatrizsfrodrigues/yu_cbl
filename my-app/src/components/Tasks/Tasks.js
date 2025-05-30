@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy, useMemo } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
@@ -27,7 +27,6 @@ function Tasks() {
 
   const [authUser] = useState(getAuthUser());
 
-  const [currentUser, setCurrentUser] = useState(false);
   const [partnerUser, setPartnerUser] = useState(false);
 
   const openFilter = useCallback(() => setIsFilterOpen(true), []);
@@ -47,14 +46,16 @@ function Tasks() {
   const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
+  const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
 
   useEffect(() => {
     if (authUser?._id) {
+      console.log(authUser);
       const fetchTasks = async () => {
         try {
           const myResult = await dispatch(getTasks(authUser._id)).unwrap();
-          if (JSON.stringify(myResult) !== JSON.stringify(myTasks)) {
-            setMyTasks(myResult || []);
+          if (Array.isArray(myResult)) {
+            setMyTasks(myResult);
           }
         } catch (err) {
           console.error("Failed to fetch tasks:", err);
@@ -62,7 +63,7 @@ function Tasks() {
       };
       fetchTasks();
     }
-  }, [authUser?._id, dispatch, myTasks]);
+  }, [authUser?._id, partnerUser?._id, dispatch]);
 
   useEffect(() => {
     if (authUser?.partnerId) {
@@ -71,63 +72,56 @@ function Tasks() {
           const result = await dispatch(
             fetchPartnerUser(authUser.partnerId)
           ).unwrap();
-          if (JSON.stringify(result) !== JSON.stringify(partnerUser)) {
-            setPartnerUser(result || {});
-          }
+          setPartnerUser(result || {});
         } catch (err) {
           console.error("Failed to fetch partner user:", err);
         }
       };
-
       fetchPartner();
     }
-  }, [authUser?.partnerId, dispatch, partnerUser]);
+  }, [authUser?.partnerId, dispatch]);
+
+  const prevMyTasksRef = React.useRef([]);
+  const prevPartnerTasksRef = React.useRef([]);
 
   useEffect(() => {
-    if (partnerUser?._id) {
-      const fetchTasks = async () => {
-        try {
-          const result = await dispatch(getTasks(partnerUser._id)).unwrap();
-          if (JSON.stringify(result) !== JSON.stringify(partnerTasks)) {
-            setPartnerTasks(result || []);
-          }
-        } catch (err) {
-          console.error("Failed to fetch tasks:", err);
-        }
-      };
-      fetchTasks();
-    }
-  }, [partnerUser?._id, dispatch, partnerTasks]);
-
-  useEffect(() => {
-    const POLL_INTERVAL = 15000; // 15 seconds
-
+    let isMounted = true;
+    const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
       try {
         if (authUser?._id) {
           const myResult = await dispatch(getTasks(authUser._id)).unwrap();
-          if (JSON.stringify(myResult) !== JSON.stringify(myTasks)) {
+          if (
+            JSON.stringify(myResult) !== JSON.stringify(prevMyTasksRef.current)
+          ) {
             setMyTasks(myResult || []);
+            prevMyTasksRef.current = myResult || [];
           }
         }
-
         if (partnerUser?._id) {
           const partnerResult = await dispatch(
             getTasks(partnerUser._id)
           ).unwrap();
-          if (JSON.stringify(partnerResult) !== JSON.stringify(partnerTasks)) {
+          if (
+            JSON.stringify(partnerResult) !==
+            JSON.stringify(prevPartnerTasksRef.current)
+          ) {
             setPartnerTasks(partnerResult || []);
+            prevPartnerTasksRef.current = partnerResult || [];
           }
         }
+        if (isMounted && !hasPolled) setHasPolled(true);
       } catch (err) {
         console.error("Failed to poll tasks:", err);
       }
     };
-
+    pollTasks(); // Run once immediately
     const intervalId = setInterval(pollTasks, POLL_INTERVAL);
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, [authUser?._id, partnerUser?._id, dispatch, myTasks, partnerTasks]);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [authUser?._id, partnerUser?._id, dispatch, hasPolled]);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {
@@ -141,7 +135,8 @@ function Tasks() {
     }
   }, [tasks, authUser?._id, dispatch]);
 
-  const filteredTasks = useMemo(() => {
+  // Use useMemo to memoize filteredTasks for referential stability
+  const filteredTasks = React.useMemo(() => {
     const baseTasks = filter === "received" ? myTasks : partnerTasks;
     return baseTasks.filter((task) => {
       const isReceived = filter === "received" && task.userId === authUser._id;
@@ -165,7 +160,7 @@ function Tasks() {
     filterCriteria,
     myTasks,
     partnerTasks,
-    authUser._id,
+    authUser?._id,
     partnerUser?._id,
   ]);
 
@@ -174,8 +169,6 @@ function Tasks() {
   };
 
   useEffect(() => {
-    setCurrentUser(authUser); // You may not even need this if it's just copying state
-
     const fetchPartner = async () => {
       if (!authUser?.partnerId) return;
       try {
@@ -203,20 +196,20 @@ function Tasks() {
   };
 
   //* open and close conclude task window
-  const handleOpenConcludeTaskModal = (task) => {
+  const handleOpenConcludeTaskModal = React.useCallback((task) => {
     setSelectedTask(task);
     setIsConcludeTaskOpen(true);
-  };
+  }, []);
 
   const handleCloseConcludeTaskModal = () => {
     setIsConcludeTaskOpen(false);
   };
 
   //* open and close verify task window
-  const handleOpenVerifyTaskModal = () => {
+  const handleOpenVerifyTaskModal = React.useCallback(() => {
     setShowVerifyTask(false);
     setIsVerifyTaskOpen(true);
-  };
+  }, []);
 
   const handleCloseVerifyTaskModal = () => {
     setIsVerifyTaskOpen(false);
@@ -248,21 +241,120 @@ function Tasks() {
     setTaskToVerify(null);
   };
 
-  if (tasksStatus === "loading") {
-    return <div>Loading tarefas…</div>;
-  }
-
-  if (tasksStatus === "failed") {
-    return <div>Error: {tasksError}</div>;
-  }
-
-  if (!tasks) {
-    return <div>A carregar...</div>;
-  }
-
-  const handleToggleTaskExpand = (index) => {
+  const handleToggleTaskExpand = React.useCallback((index) => {
     setExpandedTaskIndex((prev) => (prev === index ? null : index));
-  };
+  }, []);
+
+  // Use React.memo with custom areEqual for TasksList
+  const TasksList = React.memo(
+    function TasksList({
+      currentUser,
+      filteredTasks,
+      expandedTaskIndex,
+      filter,
+      tasksStatus,
+      tasksError,
+      tasks,
+      handleToggleTaskExpand,
+      handleOpenConcludeTaskModal,
+      handleOpenVerifyTaskModal,
+      hasPolled,
+    }) {
+      console.log("🔄 <TasksList /> rendered");
+      return (
+        <div id="tasks">
+          {tasksStatus === "loading" && !hasPolled ? (
+            <div>A carregar tarefas…</div>
+          ) : tasksStatus === "failed" ? (
+            <div>Error: {tasksError}</div>
+          ) : !tasks ? (
+            <div>A carregar...</div>
+          ) : currentUser && filteredTasks.length > 0 ? (
+            filteredTasks.map((task, index) => (
+              <div className="taskDivOp" key={task._id}>
+                <div className="taskItemContainer">
+                  <button
+                    className={`task-item ${
+                      expandedTaskIndex === index ? "expanded" : ""
+                    }`}
+                    onClick={() => handleToggleTaskExpand(index)}
+                  >
+                    <p className="taskTitle">{task.title}</p>
+                    {expandedTaskIndex === index && (
+                      <p className="taskDescription">
+                        Descrição:
+                        <br />
+                        {task.description}
+                      </p>
+                    )}
+                  </button>
+                  {expandedTaskIndex === index &&
+                    !task.completed &&
+                    !task.verified &&
+                    task.userId === currentUser._id && (
+                      <div className="btnTaskGroupVertical">
+                        <button
+                          className="btnTaskCircle conclude"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenConcludeTaskModal(task);
+                          }}
+                          aria-label="Concluir tarefa"
+                        >
+                          <ion-icon name="checkmark" class="icons"></ion-icon>
+                        </button>
+                      </div>
+                    )}
+                  {expandedTaskIndex === index &&
+                    task.completed &&
+                    !task.verified &&
+                    task.userId === currentUser.partnerId && (
+                      <div className="btnTaskGroupVertical">
+                        <button
+                          className="btnTaskCircle verify"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenVerifyTaskModal();
+                          }}
+                          aria-label="Verificar tarefa"
+                        >
+                          <ion-icon
+                            name="checkmark-circle"
+                            class="icons"
+                          ></ion-icon>
+                        </button>
+                      </div>
+                    )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div>
+              {filter === "received"
+                ? "Não existem tarefas recebidas."
+                : "Não existem tarefas atribuídas."}
+            </div>
+          )}
+        </div>
+      );
+    },
+    (prevProps, nextProps) => {
+      // Compare filteredTasks by length and _ids for shallow equality
+      const prevTasks = prevProps.filteredTasks;
+      const nextTasks = nextProps.filteredTasks;
+      const tasksEqual =
+        prevTasks.length === nextTasks.length &&
+        prevTasks.every((t, i) => t._id === nextTasks[i]._id);
+      return (
+        tasksEqual &&
+        prevProps.expandedTaskIndex === nextProps.expandedTaskIndex &&
+        prevProps.filter === nextProps.filter &&
+        prevProps.tasksStatus === nextProps.tasksStatus &&
+        prevProps.tasksError === nextProps.tasksError &&
+        prevProps.currentUser?._id === nextProps.currentUser?._id
+      );
+    }
+  );
 
   return (
     <div className="mainBody" id="tasksBody">
@@ -287,74 +379,19 @@ function Tasks() {
           Atribuídas
         </button>
       </div>
-      <div id="tasks">
-        {currentUser && filteredTasks.length > 0 ? (
-          filteredTasks.map((task, index) => (
-            <div className="taskDivOp" key={index}>
-              <div className="taskItemContainer">
-                <button
-                  className={`task-item ${
-                    expandedTaskIndex === index ? "expanded" : ""
-                  }`}
-                  onClick={() => handleToggleTaskExpand(index)}
-                >
-                  <p className="taskTitle">{task.title}</p>
-                  {expandedTaskIndex === index && (
-                    <p className="taskDescription">
-                      Descrição:<br></br>
-                      {task.description}
-                    </p>
-                  )}
-                </button>
-                {expandedTaskIndex === index &&
-                  !task.completed &&
-                  !task.verified &&
-                  task.userId === currentUser._id && (
-                    <div className="btnTaskGroupVertical">
-                      <button
-                        className="btnTaskCircle conclude"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenConcludeTaskModal(task);
-                        }}
-                        aria-label="Concluir tarefa"
-                      >
-                        <ion-icon name="checkmark" class="icons"></ion-icon>
-                      </button>
-                    </div>
-                  )}
-                {expandedTaskIndex === index &&
-                  task.completed &&
-                  !task.verified &&
-                  task.userId === currentUser.partnerId && (
-                    <div className="btnTaskGroupVertical">
-                      <button
-                        className="btnTaskCircle verify"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenVerifyTaskModal();
-                        }}
-                        aria-label="Verificar tarefa"
-                      >
-                        <ion-icon
-                          name="checkmark-circle"
-                          class="icons"
-                        ></ion-icon>
-                      </button>
-                    </div>
-                  )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div>
-            {filter === "received"
-              ? "Não existem tarefas recebidas."
-              : "Não existem tarefas atribuídas."}
-          </div>
-        )}
-      </div>
-
+      <TasksList
+        currentUser={authUser}
+        filteredTasks={filteredTasks}
+        expandedTaskIndex={expandedTaskIndex}
+        filter={filter}
+        tasksStatus={tasksStatus}
+        tasksError={tasksError}
+        tasks={tasks}
+        handleToggleTaskExpand={handleToggleTaskExpand}
+        handleOpenConcludeTaskModal={handleOpenConcludeTaskModal}
+        handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
+        hasPolled={hasPolled}
+      />
       <button
         aria-label="Botão para adicionar nova tarefa"
         id="newTask"
@@ -390,7 +427,7 @@ function Tasks() {
         <Suspense fallback={<div>Loading nova tarefa...</div>}>
           <NewTask
             onClose={handleCloseNewTaskModal}
-            currentUser={currentUser}
+            currentUser={authUser}
             onShowPopUpInfo={handleShowPopUpInfo}
           />
         </Suspense>
@@ -399,7 +436,7 @@ function Tasks() {
         <Suspense fallback={<div>Loading nova tarefa...</div>}>
           <ConcludeTask
             onClose={handleCloseConcludeTaskModal}
-            currentUser={currentUser}
+            currentUser={authUser}
             task={selectedTask}
             onShowPopUpInfo={handleShowPopUpInfo}
           />

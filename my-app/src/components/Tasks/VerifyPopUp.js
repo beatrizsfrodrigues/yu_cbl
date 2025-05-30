@@ -5,7 +5,7 @@ import { notifyTasks } from "../../redux/taskSlice.js";
 
 function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {
   const [isVerifyTaskOpen, setIsVerifyTaskOpen] = useState(false);
-  const [isFlashing, setIsFlashing] = useState(false);
+
   const dispatch = useDispatch();
 
   const handleOpenVerifyTaskModal = () => {
@@ -30,7 +30,7 @@ function VerifyPopUp({ onClose, partnerUser, task, onVerify }) {
 
   return (
     <div className="modal" onClick={handleOutsideClick}>
-      <div className={`popup ${isFlashing ? "flash" : ""}`}>
+      <div className={`popup`}>
         <p>
           <b>@{partnerUser.username}</b> concluiu a tarefa <b>{task.title}</b>
         </p>

@@ -11,6 +11,7 @@
     "chart.js": "^4.4.8",
     "cra-template": "1.2.0",
     "framer-motion": "^11.18.0",
+    "html5-qrcode": "^2.3.8",
     "https-browserify": "^1.0.0",
     "ionicons": "^5.5.4",
     "motion": "^11.18.0",
@@ -21,7 +22,6 @@
     "react-dom": "^18.0.0",
     "react-feather": "^2.0.10",
     "react-icons": "^5.5.0",
-    "react-qr-reader": "^3.0.0-beta-1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.0.0",
     "react-scripts": "^5.0.0",
@@ -41,7 +41,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint \"src/**/*.{js,jsx}\" --fix"
+    "lint": "eslint \"src/**/*.{js,jsx}\" --fix",
+    "vercel-build": "npm install --legacy-peer-deps && npm run build"
   },
   "eslintConfig": {
     "extends": [

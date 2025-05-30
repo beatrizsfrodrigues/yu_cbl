@@ -1,11 +1,11 @@
 // src/components/Definicoes/InfoPessoal.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../../redux/usersSlice";
 
-import visibleIcon    from "../../../assets/imgs/Icons/visible.png";
+import visibleIcon from "../../../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../../../assets/imgs/Icons/notvisible.png";
 
 const InfoPessoal = () => {
@@ -13,17 +13,18 @@ const InfoPessoal = () => {
   const navigate = useNavigate();
 
   // current user from redux
-  const currentUser = useSelector((state) => state.user.authUser) || {};
+  const rawUser = useSelector((state) => state.user.authUser);
+  const currentUser = useMemo(() => rawUser || {}, [rawUser]);
 
-  const [showPassword, setShowPassword]     = useState(false);
-  const [alert, setAlert]                   = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [alert, setAlert] = useState("");
   const [showNotification, setShowNotification] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [formData, setFormData] = useState({
     nomeUtilizador: currentUser.username || "",
     email: currentUser.email || "",
-    palavraChave: "",  // blank for security
+    palavraChave: "", // blank for security
   });
 
   const [originalData, setOriginalData] = useState(formData);
@@ -38,12 +39,12 @@ const InfoPessoal = () => {
   useEffect(() => {
     setFormData({
       nomeUtilizador: currentUser.username || "",
-      email: currentUser.email     || "",
-      palavraChave: "", 
+      email: currentUser.email || "",
+      palavraChave: "",
     });
     setOriginalData({
       nomeUtilizador: currentUser.username || "",
-      email: currentUser.email     || "",
+      email: currentUser.email || "",
       palavraChave: "",
     });
   }, [currentUser]);
@@ -68,8 +69,8 @@ const InfoPessoal = () => {
     e.preventDefault();
     const errs = {
       nomeUtilizador: formData.nomeUtilizador.trim() === "",
-      email:          formData.email.trim()          === "",
-      palavraChave:   formData.palavraChave.trim()   === "",
+      email: formData.email.trim() === "",
+      palavraChave: formData.palavraChave.trim() === "",
     };
     setValidationErrors(errs);
     if (Object.values(errs).some(Boolean)) {
@@ -88,7 +89,7 @@ const InfoPessoal = () => {
     const updated = {
       ...currentUser,
       username: formData.nomeUtilizador,
-      email:    formData.email,
+      email: formData.email,
       password: formData.palavraChave,
     };
     dispatch(updateUser(updated));
@@ -133,7 +134,9 @@ const InfoPessoal = () => {
             type="text"
             value={formData.nomeUtilizador}
             onChange={handleChange}
-            className={`form-input ${validationErrors.nomeUtilizador ? "error" : ""}`}
+            className={`form-input ${
+              validationErrors.nomeUtilizador ? "error" : ""
+            }`}
           />
         </div>
 
@@ -158,7 +161,9 @@ const InfoPessoal = () => {
               type={showPassword ? "text" : "password"}
               value={formData.palavraChave}
               onChange={handleChange}
-              className={`form-input ${validationErrors.palavraChave ? "error" : ""}`}
+              className={`form-input ${
+                validationErrors.palavraChave ? "error" : ""
+              }`}
             />
             <button
               type="button"
@@ -174,7 +179,9 @@ const InfoPessoal = () => {
         </div>
 
         <div className="form-buttons">
-          <button type="submit" className="save-button">Guardar</button>
+          <button type="submit" className="save-button">
+            Guardar
+          </button>
         </div>
       </form>
 
@@ -183,8 +190,12 @@ const InfoPessoal = () => {
           <div className="confirm-modal-content">
             <h3>Tens a certeza que queres alterar os teus dados?</h3>
             <div className="confirm-modal-buttons">
-              <button onClick={confirmSave} className="confirm-button">Sim</button>
-              <button onClick={cancelSave}  className="cancel-button">Não</button>
+              <button onClick={confirmSave} className="confirm-button">
+                Sim
+              </button>
+              <button onClick={cancelSave} className="cancel-button">
+                Não
+              </button>
             </div>
           </div>
         </div>

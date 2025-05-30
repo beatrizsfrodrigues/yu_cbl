@@ -21,46 +21,51 @@ export default function Home() {
   const dispatch = useDispatch();
 
   /* ─── Redux state ────────────────────────── */
-  const user        = useSelector((s) => s.user.authUser);
-  const owned       = useSelector((s) => s.user.ownedAccessories);
-  const equipped    = useSelector((s) => s.user.equippedAccessories);
+  const user = useSelector((s) => s.user.authUser);
+  const owned = useSelector((s) => s.user.ownedAccessories);
+  const equipped = useSelector((s) => s.user.equippedAccessories);
   const accessories = useSelector((s) => s.accessories.data);
 
   /* ─── UI state ───────────────────────────── */
-  const [showCloset, setShowCloset]   = useState(false);
-  const [showStore,  setShowStore]    = useState(false);
+  const [showCloset, setShowCloset] = useState(false);
+  const [showStore, setShowStore] = useState(false);
 
-  const [isPop,  setIsPop]            = useState(false);
-  const [msgPop, setMsgPop]           = useState("");
+  const [isPop, setIsPop] = useState(false);
+  const [msgPop, setMsgPop] = useState("");
 
   const [selectedFit, setSelectedFit] = useState(null);
 
   // itens atualmente no ecrã (equipados ou preview)
   const [selectedBackground, setSelectedBackground] = useState(null);
-  const [selectedShirt,      setSelectedShirt]      = useState(null);
-  const [selectedAcc,        setSelectedAcc]        = useState(null);
-  const [selectedColor,      setSelectedColor]      = useState(null);
+  const [selectedShirt, setSelectedShirt] = useState(null);
+  const [selectedAcc, setSelectedAcc] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
 
   // novos tipos
-  const [selectedBigode,     setSelectedBigode]     = useState(null);
-  const [selectedCachecol,   setSelectedCachecol]   = useState(null);
-  const [selectedChapeu,     setSelectedChapeu]     = useState(null);
-  const [selectedOuvidos,    setSelectedOuvidos]    = useState(null);
-  const [selectedOculos,     setSelectedOculos]     = useState(null);
+  const [selectedBigode, setSelectedBigode] = useState(null);
+  const [selectedCachecol, setSelectedCachecol] = useState(null);
+  const [selectedChapeu, setSelectedChapeu] = useState(null);
+  const [selectedOuvidos, setSelectedOuvidos] = useState(null);
+  const [selectedOculos, setSelectedOculos] = useState(null);
 
   /* ─── Backup para cancelamento de preview ─── */
   const [origBackground, setOrigBackground] = useState(null);
-  const [origShirt,      setOrigShirt]      = useState(null);
-  const [origAcc,        setOrigAcc]        = useState(null);
-  const [origColor,      setOrigColor]      = useState(null);
+  const [origShirt, setOrigShirt] = useState(null);
+  const [origAcc, setOrigAcc] = useState(null);
+  const [origColor, setOrigColor] = useState(null);
 
-  const [origBigode,   setOrigBigode]   = useState(null);
+  const [origBigode, setOrigBigode] = useState(null);
   const [origCachecol, setOrigCachecol] = useState(null);
-  const [origChapeu,   setOrigChapeu]   = useState(null);
-  const [origOuvidos,  setOrigOuvidos]  = useState(null);
-  const [origOculos,   setOrigOculos]   = useState(null);
+  const [origChapeu, setOrigChapeu] = useState(null);
+  const [origOuvidos, setOrigOuvidos] = useState(null);
+  const [origOculos, setOrigOculos] = useState(null);
 
   const [pendingEquip, setPendingEquip] = useState({});
+
+  const findById = React.useCallback(
+    (id) => accessories?.find((a) => a && a._id === id) || null,
+    [accessories]
+  );
 
   /* ─── Carregamento inicial ───────────────── */
   useEffect(() => {
@@ -70,41 +75,43 @@ export default function Home() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
-  const findById = (id) =>
-    accessories?.find((a) => a && a._id === id) || null;
-
   /* ─── Quando equipped chegar, atualiza layers ─── */
   useEffect(() => {
     if (!accessories) return;
     setSelectedBackground(findById(equipped.background));
-    setSelectedShirt(     findById(equipped.shirt));
-    setSelectedAcc(       findById(equipped.hat));       // slot “Decor” antigo
-    setSelectedColor(     findById(equipped.color));
+    setSelectedShirt(findById(equipped.shirt));
+    setSelectedAcc(findById(equipped.hat)); // slot “Decor” antigo
+    setSelectedColor(findById(equipped.color));
 
     // novos
-    setSelectedBigode(   findById(equipped.bigode));
-    setSelectedCachecol( findById(equipped.cachecol));
-    setSelectedChapeu(   findById(equipped.chapeu));
-    setSelectedOuvidos(  findById(equipped.ouvidos));
-    setSelectedOculos(   findById(equipped.oculos));
-  }, [accessories, equipped]);
+    setSelectedBigode(findById(equipped.bigode));
+    setSelectedCachecol(findById(equipped.cachecol));
+    setSelectedChapeu(findById(equipped.chapeu));
+    setSelectedOuvidos(findById(equipped.ouvidos));
+    setSelectedOculos(findById(equipped.oculos));
+  }, [accessories, equipped, findById]);
 
   /* ─── Helpers ───────────────────────────── */
-  const pop = (m) => { setMsgPop(m); setIsPop(true); };
+  const pop = (m) => {
+    setMsgPop(m);
+    setIsPop(true);
+  };
   const closePop = () => setIsPop(false);
 
   const formatPoints = (p) =>
-    p >= 1e7 ? (p/1e6).toFixed(1).replace(".0","")+"M+" :
-    p >= 1e4 ? (p/1e3).toFixed(1).replace(".0","")+"K+" :
-    p;
+    p >= 1e7
+      ? (p / 1e6).toFixed(1).replace(".0", "") + "M+"
+      : p >= 1e4
+      ? (p / 1e3).toFixed(1).replace(".0", "") + "K+"
+      : p;
 
   /* ─── Store ─────────────────────────────── */
   const openStore = () => {
     // guarda estado atual
     setOrigBackground(selectedBackground);
-    setOrigShirt(     selectedShirt);
-    setOrigAcc(       selectedAcc);
-    setOrigColor(     selectedColor);
+    setOrigShirt(selectedShirt);
+    setOrigAcc(selectedAcc);
+    setOrigColor(selectedColor);
 
     setOrigBigode(selectedBigode);
     setOrigCachecol(selectedCachecol);
@@ -130,9 +137,9 @@ export default function Home() {
     resetFit();
     // restaura
     setSelectedBackground(origBackground);
-    setSelectedShirt(     origShirt);
-    setSelectedAcc(       origAcc);
-    setSelectedColor(     origColor);
+    setSelectedShirt(origShirt);
+    setSelectedAcc(origAcc);
+    setSelectedColor(origColor);
 
     setSelectedBigode(origBigode);
     setSelectedCachecol(origCachecol);
@@ -154,32 +161,30 @@ export default function Home() {
 
   /* ─── Closet preview ────────────────────── */
   const typeBySlot = {
-    hat:        "Decor",
-    shirt:      "Shirts",
+    hat: "Decor",
+    shirt: "Shirts",
     background: "Backgrounds",
-    color:      "SkinColor",
+    color: "SkinColor",
 
-    bigode:   "Bigode",
+    bigode: "Bigode",
     cachecol: "Cachecol",
-    chapeu:   "Chapeu",
-    ouvidos:  "Ouvidos",
-    oculos:   "Oculos",
+    chapeu: "Chapeu",
+    ouvidos: "Ouvidos",
+    oculos: "Oculos",
   };
 
-
   const openCloset = () => {
-  
     setOrigBackground(selectedBackground);
-    setOrigShirt(     selectedShirt);
-    setOrigAcc(       selectedAcc);
-    setOrigColor(     selectedColor);
-    setOrigBigode(origBigode   => setOrigBigode(selectedBigode));
-    setOrigCachecol(origCachecol => setOrigCachecol(selectedCachecol));
-    setOrigChapeu(origChapeu   => setOrigChapeu(selectedChapeu));
-    setOrigOuvidos(origOuvidos => setOrigOuvidos(selectedOuvidos));
-    setOrigOculos(origOculos   => setOrigOculos(selectedOculos));
+    setOrigShirt(selectedShirt);
+    setOrigAcc(selectedAcc);
+    setOrigColor(selectedColor);
+    setOrigBigode((origBigode) => setOrigBigode(selectedBigode));
+    setOrigCachecol((origCachecol) => setOrigCachecol(selectedCachecol));
+    setOrigChapeu((origChapeu) => setOrigChapeu(selectedChapeu));
+    setOrigOuvidos((origOuvidos) => setOrigOuvidos(selectedOuvidos));
+    setOrigOculos((origOculos) => setOrigOculos(selectedOculos));
 
-    setPendingEquip({}); 
+    setPendingEquip({});
     setShowCloset(true);
   };
 
@@ -190,16 +195,34 @@ export default function Home() {
     }));
 
     switch (slot) {
-      case "background":   setSelectedBackground(findById(id)); break;
-      case "shirt":        setSelectedShirt(findById(id));      break;
-      case "hat":          setSelectedAcc(findById(id));        break;
-      case "color":        setSelectedColor(findById(id));      break;
+      case "background":
+        setSelectedBackground(findById(id));
+        break;
+      case "shirt":
+        setSelectedShirt(findById(id));
+        break;
+      case "hat":
+        setSelectedAcc(findById(id));
+        break;
+      case "color":
+        setSelectedColor(findById(id));
+        break;
 
-      case "bigode":       setSelectedBigode(findById(id));     break;
-      case "cachecol":     setSelectedCachecol(findById(id));   break;
-      case "chapeu":       setSelectedChapeu(findById(id));     break;
-      case "ouvidos":      setSelectedOuvidos(findById(id));    break;
-      case "oculos":       setSelectedOculos(findById(id));     break;
+      case "bigode":
+        setSelectedBigode(findById(id));
+        break;
+      case "cachecol":
+        setSelectedCachecol(findById(id));
+        break;
+      case "chapeu":
+        setSelectedChapeu(findById(id));
+        break;
+      case "ouvidos":
+        setSelectedOuvidos(findById(id));
+        break;
+      case "oculos":
+        setSelectedOculos(findById(id));
+        break;
 
       default:
     }
@@ -223,15 +246,33 @@ export default function Home() {
     if (!item) {
       // desfaz apenas o slot indicado
       switch (type) {
-        case "Shirts":      setSelectedShirt(null);      break;
-        case "Decor":       setSelectedAcc(null);        break;
-        case "SkinColor":   setSelectedColor(null);      break;
-        case "Backgrounds": setSelectedBackground(null); break;
-        case "Bigode":      setSelectedBigode(null);     break;
-        case "Cachecol":    setSelectedCachecol(null);   break;
-        case "Chapeu":      setSelectedChapeu(null);     break;
-        case "Ouvidos":     setSelectedOuvidos(null);    break;
-        case "Oculos":      setSelectedOculos(null);     break;
+        case "Shirts":
+          setSelectedShirt(null);
+          break;
+        case "Decor":
+          setSelectedAcc(null);
+          break;
+        case "SkinColor":
+          setSelectedColor(null);
+          break;
+        case "Backgrounds":
+          setSelectedBackground(null);
+          break;
+        case "Bigode":
+          setSelectedBigode(null);
+          break;
+        case "Cachecol":
+          setSelectedCachecol(null);
+          break;
+        case "Chapeu":
+          setSelectedChapeu(null);
+          break;
+        case "Ouvidos":
+          setSelectedOuvidos(null);
+          break;
+        case "Oculos":
+          setSelectedOculos(null);
+          break;
         case "all":
           setSelectedBackground(null);
           setSelectedShirt(null);
@@ -248,15 +289,33 @@ export default function Home() {
     } else {
       // aplica preview conforme item.type
       switch (item.type) {
-        case "Shirts":    setSelectedShirt(item);      break;
-        case "Decor":     setSelectedAcc(item);        break;
-        case "SkinColor": setSelectedColor(item);      break;
-        case "Backgrounds": setSelectedBackground(item); break;
-        case "Bigode":    setSelectedBigode(item);     break;
-        case "Cachecol":  setSelectedCachecol(item);   break;
-        case "Chapeu":    setSelectedChapeu(item);     break;
-        case "Ouvidos":   setSelectedOuvidos(item);    break;
-        case "Oculos":    setSelectedOculos(item);     break;
+        case "Shirts":
+          setSelectedShirt(item);
+          break;
+        case "Decor":
+          setSelectedAcc(item);
+          break;
+        case "SkinColor":
+          setSelectedColor(item);
+          break;
+        case "Backgrounds":
+          setSelectedBackground(item);
+          break;
+        case "Bigode":
+          setSelectedBigode(item);
+          break;
+        case "Cachecol":
+          setSelectedCachecol(item);
+          break;
+        case "Chapeu":
+          setSelectedChapeu(item);
+          break;
+        case "Ouvidos":
+          setSelectedOuvidos(item);
+          break;
+        case "Oculos":
+          setSelectedOculos(item);
+          break;
         default:
       }
     }
@@ -280,8 +339,7 @@ export default function Home() {
 
   return (
     <div className="homeContainer">
-
-    <div id="decorBackground" />
+      <div id="decorBackground" />
       <div
         id="backgroundDiv"
         style={{
@@ -293,7 +351,9 @@ export default function Home() {
         }}
       />
 
-      <div className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}>
+      <div
+        className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
+      >
         <TopBar>
           <div className="ClassStar">
             <ion-icon name="star-outline" class="icons" />
@@ -310,69 +370,49 @@ export default function Home() {
         </TopBar>
 
         {/* Mascote + camadas */}
-       <div className={`mascotContainer ${showCloset ? "moveUpCloset" : showStore ? "moveUpStore" : ""}`}>
+        <div
+          className={`mascotContainer ${
+            showCloset ? "moveUpCloset" : showStore ? "moveUpStore" : ""
+          }`}
+        >
+          <img src={user.mascot} className="base" alt="Mascote" />
+          {selectedCachecol && (
             <img
-              src={user.mascot}
-              className="base"
-              alt="Mascote"
+              src={selectedCachecol.src}
+              className="cachecol"
+              alt="Cachecol"
             />
-            {selectedCachecol && (
-              <img
-                src={selectedCachecol.src}
-                className="cachecol"
-                alt="Cachecol"
-              />
-            )}
-            {selectedChapeu && (
-              <img
-                src={selectedChapeu.src}
-                className="chapeu"
-                alt="Chapéu"
-              />
-            )}
-            {selectedOuvidos && (
-              <img
-                src={selectedOuvidos.src}
-                className="ouvidos"
-                alt="Ouvidos"
-              />
-            )}
-            {selectedOculos && (
-              <img
-                src={selectedOculos.src}
-                className="oculos"
-                alt="Óculos"
-              />
-            )}
-            {selectedShirt && (
-              <img
-                src={selectedShirt.src}
-                className="shirt"
-                alt="Camisola"
-              />
-            )}
-            {selectedBigode && (
-              <img
-                src={selectedBigode.src}
-                className="bigode"
-                alt="Bigode"
-              />
-            )}
-          </div>
+          )}
+          {selectedChapeu && (
+            <img src={selectedChapeu.src} className="chapeu" alt="Chapéu" />
+          )}
+          {selectedOuvidos && (
+            <img src={selectedOuvidos.src} className="ouvidos" alt="Ouvidos" />
+          )}
+          {selectedOculos && (
+            <img src={selectedOculos.src} className="oculos" alt="Óculos" />
+          )}
+          {selectedShirt && (
+            <img src={selectedShirt.src} className="shirt" alt="Camisola" />
+          )}
+          {selectedBigode && (
+            <img src={selectedBigode.src} className="bigode" alt="Bigode" />
+          )}
+        </div>
         {/* Closet */}
         {showCloset && (
           <Closet
             ownedAccessories={owned}
             equipped={{
               background: selectedBackground?._id || null,
-              shirt:      selectedShirt?._id      || null,
-              hat:        selectedAcc?._id        || null,
-              color:      selectedColor?._id      || null,
-              bigode:     selectedBigode?._id     || null,
-              cachecol:   selectedCachecol?._id   || null,
-              chapeu:     selectedChapeu?._id     || null,
-              ouvidos:    selectedOuvidos?._id    || null,
-              oculos:     selectedOculos?._id     || null,
+              shirt: selectedShirt?._id || null,
+              hat: selectedAcc?._id || null,
+              color: selectedColor?._id || null,
+              bigode: selectedBigode?._id || null,
+              cachecol: selectedCachecol?._id || null,
+              chapeu: selectedChapeu?._id || null,
+              ouvidos: selectedOuvidos?._id || null,
+              oculos: selectedOculos?._id || null,
             }}
             onPreview={previewEquip}
             onSave={saveOutfit}

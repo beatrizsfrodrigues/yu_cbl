@@ -11,8 +11,6 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
   const handleAddTask = (e) => {
     e.preventDefault();
     if (currentUser.partnerId) {
-      const partnerId = currentUser.partnerId;
-      console.log("ok");
       dispatch(addTask({ title, description }));
 
       setTitle("");

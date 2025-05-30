@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAuthToken } from "../utils/cookieUtils";
+// import { getAuthToken } from "../utils/cookieUtils";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -8,12 +8,11 @@ export const getTasks = createAsyncThunk(
   "tasks/getTasks",
   async (id, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
+      console.log(id);
 
       const res = await axios.get(`${API_URL}/tasks?userId=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true, // <-- important!
       });
 
       return res.data.tasks;
@@ -27,14 +26,12 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async ({ title, description }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
       const res = await axios.post(
         `${API_URL}/tasks`,
         { title, description },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true, // <-- important!
         }
       );
 
@@ -49,15 +46,13 @@ export const completeTask = createAsyncThunk(
   "tasks/completeTask",
   async ({ picture, id }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/complete`,
         { picture },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true, // <-- important!
         }
       );
 
@@ -72,15 +67,13 @@ export const verifyTask = createAsyncThunk(
   "tasks/verifyTask",
   async ({ id, rejectMessage, verify }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/verify`,
         { rejectMessage, verify },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true, // <-- important!
         }
       );
 
@@ -95,15 +88,13 @@ export const removeRejectMessage = createAsyncThunk(
   "tasks/removeRejectMessage",
   async (id, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/remove-reject-message`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true, // <-- important!
         }
       );
 
@@ -118,15 +109,13 @@ export const notifyTasks = createAsyncThunk(
   "tasks/notifyTasks",
   async (id, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
+      // const token = getAuthToken();
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/notification`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true, // <-- important!
         }
       );
 
