@@ -86,7 +86,7 @@ export default function Profile() {
           aria-label="Abrir definições"
           onClick={() => {
             setShowSettings(true);
-            navigate("/definicoes");
+            // navigate("/definicoes");
           }}
         >
           <ion-icon name="settings-outline" className="icons" />
@@ -189,6 +189,7 @@ export default function Profile() {
 
       {showSettings && (
         <Definicoes
+          show={showSettings}
           onClose={() => setShowSettings(false)}
           onInfoPessoalClick={() => navigate("/informacoes-pessoais")}
           onArquivoClick={() => navigate("/arquivo")}
