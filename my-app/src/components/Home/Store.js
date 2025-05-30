@@ -100,7 +100,7 @@ export default function Store({
         {/* Footer */}
         <div className="closetFooter">
           <button
-            className="profile-button btnHomeActive"
+            className="side-button btnHomeActive"
             onClick={() => {
               resetFit();
               closeStore();
@@ -140,7 +140,7 @@ export default function Store({
           )}
 
           <button
-            className="profile-button btnHomeActive"
+            className="side-button btnHomeActive"
             onClick={() => {
               resetFit();
               onShowPopUpInfo("Preview resetado");
