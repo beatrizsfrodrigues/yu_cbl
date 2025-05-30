@@ -12,7 +12,7 @@ import Avatar from "../Avatar.jsx";
 // Memoized selectors
 const selectMessages = createSelector(
   (state) => state.messages?.data,
-  (messages) => (messages ? { ...messages } : { messages: [] }) // Ensure a new object is returned
+  (messages) => messages || { messages: [] }
 );
 
 const selectPresetMessages = createSelector(
@@ -42,29 +42,59 @@ function Messages() {
   const textSpaceRef = useRef(null);
   const textOptionsRef = useRef(null);
   const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
-  const [hasPolled, setHasPolled] = useState(false); // Add hasPolled state for messages
+  const [hasPolled, setHasPolled] = useState(false);
+
+  const [myMessages, setMyMessages] = useState([]);
+
+  const prevMyMessagesRef = React.useRef([]);
 
   //* fetch text messages
 
   useEffect(() => {
     if (authUser?._id) {
-      console.log("[Messages] Initial fetch triggered");
-      dispatch(getMessages(authUser._id)).then(() => setHasPolled(true));
+      const fetchMessages = async () => {
+        try {
+          const myResult = await dispatch(getMessages(authUser._id)).unwrap();
+
+          if (myResult) {
+            setMyMessages(myResult);
+          }
+        } catch (err) {
+          console.error("Failed to fetch tasks:", err);
+        }
+      };
+      fetchMessages();
     }
-  }, [dispatch, authUser?._id]); // Ensure the dependency is stable and correct
+  }, [authUser?._id, dispatch]);
 
   useEffect(() => {
-    if (!authUser?._id) return;
-    console.log("[Messages] Polling interval set");
-    const intervalId = setInterval(() => {
-      console.log("[Messages] Polling fetch triggered");
-      dispatch(getMessages(authUser._id));
-    }, 5000);
+    let isMounted = true;
+    const POLL_INTERVAL = 5000;
+    const pollMessages = async () => {
+      try {
+        if (authUser?._id) {
+          const myResult = await dispatch(getMessages(authUser._id)).unwrap();
+          if (
+            JSON.stringify(myResult) !==
+            JSON.stringify(prevMyMessagesRef.current)
+          ) {
+            setMyMessages(myResult || []);
+            prevMyMessagesRef.current = myResult || [];
+          }
+        }
+
+        if (isMounted && !hasPolled) setHasPolled(true);
+      } catch (err) {
+        console.error("Failed to poll messages:", err);
+      }
+    };
+    pollMessages();
+    const intervalId = setInterval(pollMessages, POLL_INTERVAL);
     return () => {
-      console.log("[Messages] Polling interval cleared");
+      isMounted = false;
       clearInterval(intervalId);
-    }; // Cleanup interval on unmount
-  }, [dispatch, authUser?._id]); // Use stable dependency for the interval
+    };
+  }, [authUser?._id, partnerUser?._id, dispatch, hasPolled]);
 
   useEffect(() => {
     if (authUser?.partnerId) {
@@ -72,13 +102,6 @@ function Messages() {
       dispatch(fetchPartnerUser(authUser.partnerId));
     }
   }, [authUser?.partnerId, dispatch]);
-
-  useEffect(() => {
-    if (textSpaceRef.current && messages) {
-      textSpaceRef.current.scrollTop = textSpaceRef.current.scrollHeight;
-      textSpaceRef.current.style.scrollBehavior = "auto"; // This disables smooth scrolling
-    }
-  }, [messages]);
 
   //* fetch preset text messages
   useEffect(() => {
@@ -98,9 +121,53 @@ function Messages() {
   };
 
   //* send a text message
-  const handleAddMessage = (text) => {
-    dispatch(sendMessage({ message: text, id: messages._id }));
+  const handleAddMessage = async (text) => {
+    try {
+      await dispatch(sendMessage({ message: text, id: messages._id })).unwrap();
+
+      // Poll immediately after sending
+      const myResult = await dispatch(getMessages(authUser._id)).unwrap();
+      if (
+        JSON.stringify(myResult) !== JSON.stringify(prevMyMessagesRef.current)
+      ) {
+        setMyMessages(myResult || []);
+        prevMyMessagesRef.current = myResult || [];
+      }
+    } catch (error) {
+      console.error("Failed to send or fetch messages:", error);
+    }
   };
+
+  const MessageBubble = React.memo(({ message, authUser }) => {
+    const dateString = String(message.date);
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+    const day = dateString.slice(6, 8);
+    const hours = dateString.slice(8, 10);
+    const minutes = dateString.slice(10, 12);
+
+    const time = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+    const isSent = message.receiverId === authUser.partnerId;
+    const isFromApp =
+      message.senderType === "app" || message.senderId === "app";
+
+    let bubbleClass = "bubble";
+    if (isFromApp) bubbleClass += " bubbleDotted";
+    if (isSent && !isFromApp) bubbleClass += " bubbleBlue";
+
+    const alignmentClass = isSent ? "textRight" : "textLeft";
+
+    return (
+      <div className="textMessage">
+        <p
+          className={`${bubbleClass} ${alignmentClass}`}
+          dangerouslySetInnerHTML={{ __html: message.message }}
+        ></p>
+        <p className={`dateText ${alignmentClass}`}>{time}</p>
+      </div>
+    );
+  });
 
   //* text messages
   let messageContent;
@@ -116,72 +183,16 @@ function Messages() {
   } else if (
     authUser &&
     authUser.partnerId &&
-    messagesStatus === "succeeded" &&
-    messages &&
-    Array.isArray(messages.messages) &&
-    messages.messages.length > 0
+    Array.isArray(myMessages.messages) &&
+    myMessages.messages.length > 0
   ) {
-    console.log("[Messages] Render: messages list");
-    const conversation = messages;
-
-    const sortedMessages = [...conversation.messages].sort(
-      (a, b) => +a.date - +b.date
+    const sortedMessages = [...myMessages.messages].sort(
+      (a, b) => +b.date - +a.date
     );
-    messageContent = sortedMessages.map((message, index) => {
-      const dateString = String(message.date);
-      const year = dateString.slice(0, 4);
-      const month = dateString.slice(4, 6);
-      const day = dateString.slice(6, 8);
-      const hours = dateString.slice(8, 10);
-      const minutes = dateString.slice(10, 12);
 
-      if (message.receiverId === authUser.partnerId) {
-        if (message.senderType === "app") {
-          return (
-            <div key={message._id} className="textMessage">
-              <p
-                className="bubble bubbleDotted textRight"
-                dangerouslySetInnerHTML={{ __html: message.message }}
-              ></p>
-              <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-            </div>
-          );
-        } else {
-          return (
-            <div key={message._id} className="textMessage">
-              <p
-                className="bubble bubbleBlue"
-                dangerouslySetInnerHTML={{ __html: message.message }}
-              ></p>
-
-              <p className="dateText textRight">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-            </div>
-          );
-        }
-      } else {
-        if (message.senderId === "app") {
-          return (
-            <div key={message._id} className="textMessage">
-              <p
-                className="bubble bubbleDotted"
-                dangerouslySetInnerHTML={{ __html: message.message }}
-              ></p>
-              <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-            </div>
-          );
-        } else {
-          return (
-            <div key={message._id} className="textMessage">
-              <p
-                className="bubble"
-                dangerouslySetInnerHTML={{ __html: message.message }}
-              ></p>
-              <p className="dateText textLeft">{`${day}/${month}/${year} ${hours}:${minutes}`}</p>
-            </div>
-          );
-        }
-      }
-    });
+    messageContent = sortedMessages.map((message) => (
+      <MessageBubble key={message._id} message={message} authUser={authUser} />
+    ));
   } else {
     console.log("[Messages] Render: no messages");
     messageContent = <div>Não existem mensagens</div>;
@@ -214,8 +225,14 @@ function Messages() {
           </p>
         )}
       </div>
+      <div
+        className="inputMessage"
+        onClick={handleOpenPresetMessages}
+        aria-label="Abrir opções de mensagens predefinidas"
+      >
+        <p>Deixa uma mensagem</p>
+      </div>
 
-      {/* Aqui o WRAPPER com opções acima do input */}
       <div className="inputMessageWrapper">
         {isPresetMessagesOpen && (
           <div id="textOptions" ref={textOptionsRef}>
@@ -233,22 +250,6 @@ function Messages() {
               ))}
           </div>
         )}
-
-        {/* {isPresetMessagesOpen && (
-          <div id="textOptions" ref={textOptionsRef}>
-            <div>{presetMsgs}</div>
-            <div>{presetMsgs2}</div>
-          </div>
-        )} */}
-
-        {/* Input vira botão ou textarea */}
-        <div
-          className="inputMessage"
-          onClick={handleOpenPresetMessages}
-          aria-label="Abrir opções de mensagens predefinidas"
-        >
-          <p>Deixa uma mensagem</p>
-        </div>
       </div>
     </div>
   );
