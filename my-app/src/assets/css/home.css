@@ -45,7 +45,7 @@
 
 .mascotContainer img:not(.base) {
   max-width: 80%;
-  transform: translate(-49%, -55%) scale(1) !important;;
+  transform: translate(-51%, -50%) scale(1) !important;;
 }
 
 
@@ -82,6 +82,19 @@
   align-items: center;
   padding: 0px 10px;
   margin: 5% 0 0 0;
+}
+
+.side-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  color: var(--purple-darker);
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .buttonMid {
