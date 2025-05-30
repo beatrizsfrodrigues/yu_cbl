@@ -37,7 +37,8 @@ div .line {
   margin: 0px 0px;
   overflow-y: auto;
   flex: 1;
-  margin-top: -32px;
+  margin-top: -20px;
+  flex-direction: column-reverse;
 }
 
 #textSpace {
@@ -128,6 +129,7 @@ div .line {
   font-size: 16px;
   font-family: "Quicksand", serif;
   box-sizing: border-box;
+  background-color: var(--white);
 }
 
 /* #textOptions {
@@ -156,17 +158,13 @@ div .line {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  background-color: white;
-  border: 1px solid var(--purple-darker);
+  background-color: var(--white);
+  border: 2px solid var(--purple-dark);
   border-radius: 12px;
   padding: 10px;
   max-height: 30vh;
   overflow-y: auto;
   transition: all 0.3s ease;
-}
-
-#textOptions {
-  transform: translateY(-10px);
   opacity: 0;
   animation: slideIn 0.3s forwards;
 }
@@ -191,11 +189,13 @@ div .line {
   gap: 8px;
   width: 100%;
   box-sizing: border-box;
+  margin-top: 8px;
+  margin-bottom: -40px;
 }
 
 .optionText {
   background-color: var(--white);
-  border: 1px solid var(--purple-dark);
+  border: 1.5px solid var(--purple);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 14px;
@@ -204,14 +204,12 @@ div .line {
   transition: background-color 0.2s ease;
 }
 
-
 .avatarWrapper {
   position: relative;
-  width: 54px;   
-  height: 54px;  
+  width: 54px;
+  height: 54px;
   overflow: hidden;
 }
-
 
 .avatarWrapper img {
   position: absolute;
@@ -223,12 +221,27 @@ div .line {
   object-fit: contain;
 }
 
-
-.avatarWrapper img.base    { z-index: 1; }
-.avatarWrapper img.color   { z-index: 2; }
-.avatarWrapper img.shirt   { z-index: 3; }
-.avatarWrapper img.bigode  { z-index: 4; }
-.avatarWrapper img.cachecol{ z-index: 5; }
-.avatarWrapper img.chapeu  { z-index: 6; }
-.avatarWrapper img.ouvidos { z-index: 7; }
-.avatarWrapper img.oculos  { z-index: 8; }
+.avatarWrapper img.base {
+  z-index: 1;
+}
+.avatarWrapper img.color {
+  z-index: 2;
+}
+.avatarWrapper img.shirt {
+  z-index: 3;
+}
+.avatarWrapper img.bigode {
+  z-index: 4;
+}
+.avatarWrapper img.cachecol {
+  z-index: 5;
+}
+.avatarWrapper img.chapeu {
+  z-index: 6;
+}
+.avatarWrapper img.ouvidos {
+  z-index: 7;
+}
+.avatarWrapper img.oculos {
+  z-index: 8;
+}
