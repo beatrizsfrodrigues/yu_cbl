@@ -375,7 +375,12 @@ export default function Home() {
             showCloset ? "moveUpCloset" : showStore ? "moveUpStore" : ""
           }`}
         >
-          <img src={user.mascot} className="base" alt="Mascote" />
+          <img
+              src={selectedColor ? selectedColor.src : user.mascot}
+              className="base"
+             alt="Mascote"
+           />
+
           {selectedCachecol && (
             <img
               src={selectedCachecol.src}

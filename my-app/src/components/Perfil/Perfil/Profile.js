@@ -74,12 +74,7 @@ export default function Profile() {
   return (
     <div className="profile-container mainBody">
       <div className="backgroundDiv" />
-      {selectedBackground && (
-        <div
-          className="equippedBackground"
-          style={{ backgroundImage: `url(${selectedBackground.src})` }}
-        />
-      )}
+
 
       <TopBar title="Perfil">
         <button
