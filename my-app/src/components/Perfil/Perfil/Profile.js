@@ -75,7 +75,6 @@ export default function Profile() {
     <div className="profile-container mainBody">
       <div className="backgroundDiv" />
 
-
       <TopBar title="Perfil">
         <button
           aria-label="Abrir definições"
@@ -84,7 +83,7 @@ export default function Profile() {
             // navigate("/definicoes");
           }}
         >
-          <ion-icon name="settings-outline" className="icons" />
+          <ion-icon name="settings-outline" class="icons" />
         </button>
       </TopBar>
 
