@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
 import "../Definicoes/Arquivo.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 function parseCompletionDate(dateString) {
   if (!dateString || dateString.length < 14) return null;
@@ -15,13 +15,11 @@ function parseCompletionDate(dateString) {
   return new Date(year, month, day, hour, minute, second);
 }
 const Arquivo = ({ show, onBack }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users.data);
   const currentUserId = JSON.parse(localStorage.getItem("loggedInUser")).id;
   const activeUser = users?.find((user) => user.id === currentUserId);
-
-
 
   if (!show) return null;
 

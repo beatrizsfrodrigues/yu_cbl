@@ -4,16 +4,14 @@ import axios from "axios";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 
-
-
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
- const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
   // Pré-carregar o logo
   useEffect(() => {
     const link = document.createElement("link");
@@ -28,7 +26,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-         `${API_URL}/users/login`,
+        `${API_URL}/users/login`,
         {
           emailOrUsername,
           password,
@@ -38,14 +36,8 @@ const Login = () => {
         }
       );
 
-      if (response.data && response.data.token) {
-        const user = response.data.user;
-        const token = response.data.token;
-
-        document.cookie = `token=${token}; Path=/; SameSite=Lax;`;
-        document.cookie = `loggedInUser=${encodeURIComponent(
-          JSON.stringify(user)
-        )}; Path=/; SameSite=Lax;`;
+      if (response.data && response.data.userWithoutPassword) {
+        const user = response.data.userWithoutPassword;
 
         if (user.role === "admin") {
           window.location.href = "http://localhost:3002/";

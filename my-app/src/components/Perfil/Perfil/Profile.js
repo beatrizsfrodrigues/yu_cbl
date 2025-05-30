@@ -17,14 +17,13 @@ export default function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [showGrafico, setShowGrafico]   = useState(false);
+  const [showGrafico, setShowGrafico] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   const {
     authUser: currentUser,
     status: userStatus,
     error: userError,
-    ownedAccessories,
     equippedAccessories,
   } = useSelector((state) => state.user);
 
@@ -37,34 +36,35 @@ export default function Profile() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
-  const findById = (id) =>
-    accessories?.find((a) => a && a._id === id) || null;
-
   const [selectedBackground, setSelectedBackground] = useState(null);
-  const [selectedShirt,      setSelectedShirt]      = useState(null);
-  const [selectedHat,        setSelectedHat]        = useState(null);
-  const [selectedColor,      setSelectedColor]      = useState(null);
-  const [selectedBigode,     setSelectedBigode]     = useState(null);
-  const [selectedCachecol,   setSelectedCachecol]   = useState(null);
-  const [selectedChapeu,     setSelectedChapeu]     = useState(null);
-  const [selectedOuvidos,    setSelectedOuvidos]    = useState(null);
-  const [selectedOculos,     setSelectedOculos]     = useState(null);
+  const [selectedShirt, setSelectedShirt] = useState(null);
+  const [selectedHat, setSelectedHat] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedBigode, setSelectedBigode] = useState(null);
+  const [selectedCachecol, setSelectedCachecol] = useState(null);
+  const [selectedChapeu, setSelectedChapeu] = useState(null);
+  const [selectedOuvidos, setSelectedOuvidos] = useState(null);
+  const [selectedOculos, setSelectedOculos] = useState(null);
 
   useEffect(() => {
     if (!accessories) return;
+
+    const findById = (id) =>
+      accessories?.find((a) => a && a._id === id) || null;
+
     setSelectedBackground(findById(equippedAccessories.background));
-    setSelectedShirt(    findById(equippedAccessories.shirt));
-    setSelectedHat(      findById(equippedAccessories.hat));
-    setSelectedColor(    findById(equippedAccessories.color));
-    setSelectedBigode(   findById(equippedAccessories.bigode));
-    setSelectedCachecol( findById(equippedAccessories.cachecol));
-    setSelectedChapeu(   findById(equippedAccessories.chapeu));
-    setSelectedOuvidos(  findById(equippedAccessories.ouvidos));
-    setSelectedOculos(   findById(equippedAccessories.oculos));
+    setSelectedShirt(findById(equippedAccessories.shirt));
+    setSelectedHat(findById(equippedAccessories.hat));
+    setSelectedColor(findById(equippedAccessories.color));
+    setSelectedBigode(findById(equippedAccessories.bigode));
+    setSelectedCachecol(findById(equippedAccessories.cachecol));
+    setSelectedChapeu(findById(equippedAccessories.chapeu));
+    setSelectedOuvidos(findById(equippedAccessories.ouvidos));
+    setSelectedOculos(findById(equippedAccessories.oculos));
   }, [accessories, equippedAccessories]);
 
   if (userStatus === "loading") return <div>Loading perfil…</div>;
-  if (userStatus === "failed")  return <div>Error: {userError}</div>;
+  if (userStatus === "failed") return <div>Error: {userError}</div>;
 
   if (!currentUser?._id) {
     navigate("/login");
@@ -74,17 +74,20 @@ export default function Profile() {
   return (
     <div className="profile-container mainBody">
       <div className="backgroundDiv" />
-        {selectedBackground && (
-          <div
-            className="equippedBackground"
-            style={{ backgroundImage: `url(${selectedBackground.src})` }}
-          />
-        )}
+      {selectedBackground && (
+        <div
+          className="equippedBackground"
+          style={{ backgroundImage: `url(${selectedBackground.src})` }}
+        />
+      )}
 
       <TopBar title="Perfil">
         <button
           aria-label="Abrir definições"
-          onClick={() => { setShowSettings(true); navigate("/definicoes"); }}
+          onClick={() => {
+            setShowSettings(true);
+            navigate("/definicoes");
+          }}
         >
           <ion-icon name="settings-outline" className="icons" />
         </button>
@@ -187,7 +190,7 @@ export default function Profile() {
       {showSettings && (
         <Definicoes
           onClose={() => setShowSettings(false)}
-          onInfoPessoalClick={() => navigate("/informacoes-pessoais")}        
+          onInfoPessoalClick={() => navigate("/informacoes-pessoais")}
           onArquivoClick={() => navigate("/arquivo")}
         />
       )}

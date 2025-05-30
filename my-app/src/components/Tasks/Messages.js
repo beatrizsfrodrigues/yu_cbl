@@ -5,9 +5,9 @@ import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { getAuthUser } from "../../utils/cookieUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice";
-import { X } from "react-feather";
+
 import "./messages.css";
-import Avatar from "../Avatar.jsx";  
+import Avatar from "../Avatar.jsx";
 
 // Memoized selectors
 const selectMessages = createSelector(
@@ -15,58 +15,55 @@ const selectMessages = createSelector(
   (messages) => (messages ? { ...messages } : { messages: [] }) // Ensure a new object is returned
 );
 
-const selectUsers = createSelector(
-  (state) => state.users?.data,
-  (users) => (users ? [...users] : []) // Ensure a new array is returned
-);
-
 const selectPresetMessages = createSelector(
   (state) => state.presetMessages?.data,
   (presetMessages) => (presetMessages ? [...presetMessages] : []) // Ensure a new array is returned
 );
 
-function Messages({}) {
+function Messages() {
   const dispatch = useDispatch();
 
   const accessories = useSelector((state) => state.accessories.data);
   // Use memoized selectors
   const messages = useSelector(selectMessages);
 
-  const users = useSelector(selectUsers);
   const presetMessages = useSelector(selectPresetMessages);
 
   const authUser = getAuthUser();
-  console.log(messages);
-  const currentUserId = authUser?._id;
 
-  const currentUser = useSelector((state) => state.user.authUser);
   const partnerUser = useSelector((state) => state.user.partnerUser);
 
-  const messagesStatus = useSelector((state) => state.messages.status);
+  const messagesStatus = useSelector((state) => state.messages.fetchStatus);
+
   const presetMessagesStatus = useSelector(
     (state) => state.presetMessages.status
   );
-  const error = useSelector((state) => state.messages.error);
+
   const textSpaceRef = useRef(null);
   const textOptionsRef = useRef(null);
   const [isPresetMessagesOpen, setIsPresetMessagesOpen] = useState(false);
+  const [hasPolled, setHasPolled] = useState(false); // Add hasPolled state for messages
 
   //* fetch text messages
 
   useEffect(() => {
     if (authUser?._id) {
-      dispatch(getMessages(authUser._id));
+      console.log("[Messages] Initial fetch triggered");
+      dispatch(getMessages(authUser._id)).then(() => setHasPolled(true));
     }
   }, [dispatch, authUser?._id]); // Ensure the dependency is stable and correct
 
   useEffect(() => {
     if (!authUser?._id) return;
-
+    console.log("[Messages] Polling interval set");
     const intervalId = setInterval(() => {
+      console.log("[Messages] Polling fetch triggered");
       dispatch(getMessages(authUser._id));
     }, 5000);
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
+    return () => {
+      console.log("[Messages] Polling interval cleared");
+      clearInterval(intervalId);
+    }; // Cleanup interval on unmount
   }, [dispatch, authUser?._id]); // Use stable dependency for the interval
 
   useEffect(() => {
@@ -75,10 +72,6 @@ function Messages({}) {
       dispatch(fetchPartnerUser(authUser.partnerId));
     }
   }, [authUser?.partnerId, dispatch]);
-
-
-
-  
 
   useEffect(() => {
     if (textSpaceRef.current && messages) {
@@ -106,17 +99,17 @@ function Messages({}) {
 
   //* send a text message
   const handleAddMessage = (text) => {
-    console.log(messages);
     dispatch(sendMessage({ message: text, id: messages._id }));
   };
 
   //* text messages
   let messageContent;
-  console.log(messagesStatus);
-  console.log(authUser);
-  if (messagesStatus === "loading") {
+
+  if (messagesStatus === "loading" && !hasPolled) {
+    console.log("[Messages] Render: loading spinner (first fetch)");
     messageContent = <div className="loadingMessage">A carregar...</div>;
   } else if (messagesStatus === "failed") {
+    console.log("[Messages] Render: error");
     messageContent = (
       <div className="errorMessage">Erro ao carregar mensagens</div>
     );
@@ -124,11 +117,12 @@ function Messages({}) {
     authUser &&
     authUser.partnerId &&
     messagesStatus === "succeeded" &&
-    messages != {}
+    messages &&
+    Array.isArray(messages.messages) &&
+    messages.messages.length > 0
   ) {
-    console.log("ola");
+    console.log("[Messages] Render: messages list");
     const conversation = messages;
-    console.log(conversation.messages);
 
     const sortedMessages = [...conversation.messages].sort(
       (a, b) => +a.date - +b.date
@@ -142,10 +136,9 @@ function Messages({}) {
       const minutes = dateString.slice(10, 12);
 
       if (message.receiverId === authUser.partnerId) {
-        console.log("olaaa");
         if (message.senderType === "app") {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble bubbleDotted textRight"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -155,7 +148,7 @@ function Messages({}) {
           );
         } else {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble bubbleBlue"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -168,7 +161,7 @@ function Messages({}) {
       } else {
         if (message.senderId === "app") {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble bubbleDotted"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -178,7 +171,7 @@ function Messages({}) {
           );
         } else {
           return (
-            <div key={index} className="textMessage">
+            <div key={message._id} className="textMessage">
               <p
                 className="bubble"
                 dangerouslySetInnerHTML={{ __html: message.message }}
@@ -190,73 +183,25 @@ function Messages({}) {
       }
     });
   } else {
+    console.log("[Messages] Render: no messages");
     messageContent = <div>Não existem mensagens</div>;
-  }
-
-  //* preset text messages column 1
-  let presetMsgs;
-  if (presetMessages && presetMessages.length > 0) {
-    presetMsgs = presetMessages.map((message, index) => {
-      if (index % 2 === 0) {
-        return (
-          <button
-            key={index}
-            className="optionText"
-            onClick={
-              partnerUser ? () => handleAddMessage(message.message) : null
-            }
-          >
-            {message.message}
-          </button>
-        );
-      }
-      return null;
-    });
-  } else {
-    presetMsgs = <div>Não existem mensagens</div>;
-  }
-
-  //* preset text messages column 2
-  let presetMsgs2;
-  if (presetMessages && presetMessages.length > 0) {
-    presetMsgs2 = presetMessages.map((message, index) => {
-      if (index % 2 !== 0) {
-        return (
-          <button
-            key={index}
-            className="optionText"
-            aria-label={`Enviar mensagem: ${message.message}`}
-            onClick={
-              partnerUser ? () => handleAddMessage(message.message) : null
-            }
-          >
-            {message.message}
-          </button>
-        );
-      }
-      return null;
-    });
-  } else {
-    presetMsgs2 = <div>Não existem mensagens</div>;
   }
 
   return (
     <div className="mainBody mainBodyMessages">
       <div className="backgroundDiv"></div>
 
-     <header className="header headerMessages">
+      <header className="header headerMessages">
         {partnerUser && (
-        <Avatar
+          <Avatar
             mascot={partnerUser.mascot}
             equipped={partnerUser.accessoriesEquipped || {}}
             accessoriesList={accessories}
             size={54}
           />
-
         )}
         {partnerUser ? <h3>@{partnerUser.username}</h3> : <h3>parceiro</h3>}
       </header>
-
 
       <div className="line"></div>
 

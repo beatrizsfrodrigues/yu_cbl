@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchMessages, newConversation } from "../../redux/messagesSlice";
+// import { fetchMessages, newConversation } from "../../redux/messagesSlice";
 import "./connection.css";
 import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
 
 const Connection = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
   const [userCode, setUserCode] = useState(null);
   const [userName, setUserName] = useState("");
@@ -16,7 +16,7 @@ const Connection = () => {
   const [partnerCode, setPartnerCode] = useState("");
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  const messagesStatus = useSelector((state) => state.messages.status);
+  // const messagesStatus = useSelector((state) => state.messages.status);
   const navigate = useNavigate();
   const [showScanner, setShowScanner] = useState(false);
 
@@ -222,21 +222,54 @@ const Connection = () => {
       {!isConnected && (
         <p className="footer-text">
           {isCodeInputVisible ? (
-            <a href="#" className="create-link" onClick={handleClick}>
+            <button
+              type="button"
+              className="create-link"
+              onClick={handleClick}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                color: "inherit",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
               Quero inserir um código.
-            </a>
+            </button>
           ) : (
-            <a href="#" className="create-link" onClick={handleClick}>
+            <button
+              type="button"
+              className="create-link"
+              onClick={handleClick}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                color: "inherit",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
               Quero mostrar o meu código.
-            </a>
-          )}{" "}
-          {/* <a href="#" className="create-link" onClick={handleClick}>
-            aqui.
-          </a> */}
-          <div class="skip-section">
-            <a href="#" className="skip-button" onClick={handleNavigateToHome}>
+            </button>
+          )}
+          <div className="skip-section">
+            <button
+              type="button"
+              className="skip-button"
+              onClick={handleNavigateToHome}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                color: "inherit",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
               Fazer a ligação mais tarde.
-            </a>
+            </button>
           </div>
         </p>
       )}
