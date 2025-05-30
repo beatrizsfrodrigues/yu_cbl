@@ -354,20 +354,22 @@ export default function Home() {
       <div
         className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
       >
-        <TopBar>
-          <div className="ClassStar">
-            <ion-icon name="star-outline" class="icons" />
-            <p>{formatPoints(user.points)}</p>
-          </div>
-          <div className="buttonsCloset">
-            <button className="btnHomeHeader" onClick={openCloset}>
-              <ion-icon name="brush-outline" class="icons" />
-            </button>
-            <button className="btnHomeHeader" onClick={openStore}>
-              <ion-icon name="bag-outline" class="icons" />
-            </button>
-          </div>
-        </TopBar>
+        <div className="topbar">
+          <TopBar>
+            <div className="ClassStar">
+              <ion-icon name="star-outline" class="icons" />
+              <p>{formatPoints(user.points)}</p>
+            </div>
+            <div className="buttonsCloset">
+              <button className="btnHomeHeader" onClick={openCloset}>
+                <ion-icon name="brush-outline" class="icons" />
+              </button>
+              <button className="btnHomeHeader" onClick={openStore}>
+                <ion-icon name="bag-outline" class="icons" />
+              </button>
+            </div>
+          </TopBar>
+        </div>
 
         {/* Mascote + camadas */}
         <div
@@ -376,10 +378,10 @@ export default function Home() {
           }`}
         >
           <img
-              src={selectedColor ? selectedColor.src : user.mascot}
-              className="base"
-             alt="Mascote"
-           />
+            src={selectedColor ? selectedColor.src : user.mascot}
+            className="base"
+            alt="Mascote"
+          />
 
           {selectedCachecol && (
             <img
