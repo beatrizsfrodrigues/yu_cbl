@@ -144,15 +144,15 @@ button[aria-label="Abrir definições"] {
 
 /* ─── Profile Avatar ──────────────────────────────────────────────────────── */
 
-/* Container do avatar no Perfil */
+
 .profile-mascotContainer {
   position: relative;
-  width: 60vw;   
-  height: 60vw; 
+  width: 70vw;   
+  height: 70vw; 
   margin: 0 auto;
 }
 
-/* Todas as imagens dentro do container partilham as mesmas dimensões e posição */
+
 .profile-mascotContainer img {
   position: absolute;
   top: 0;
@@ -163,25 +163,7 @@ button[aria-label="Abrir definições"] {
   pointer-events: none;
 }
 
-.backgroundDiv {
-  /* O teu fundo “por defeito” (blur, cor, etc) */
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  z-index: -50;
-  /* background-repeat / size / position que já tinhas */
-}
 
-.equippedBackground {
-  /* Só vai existir se o user tiver um fundo equipado */
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  z-index: -49; /* por cima do backgroundDiv, mas atrás de tudo o resto */
-}
 
 
 .profile-mascotContainer img.base {
@@ -192,12 +174,11 @@ button[aria-label="Abrir definições"] {
 
 .profile-mascotContainer img:not(.base) {
   max-width: 100%;
-  transform: translate(1%, -5%) scale(1.2) !important;;
+  transform: translate(-1%, 0%) scale(1) !important;;
 }
 
 
 
-/* Camadas — quanto maior o z-index, mais “por cima” */
 .profile-accessory.bg      { z-index: 0; }
 .profile-Yu                { z-index: 1; }
 .profile-accessory.cachecol{ z-index: 2; }
