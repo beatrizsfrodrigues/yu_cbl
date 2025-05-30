@@ -2,12 +2,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import { getAuthToken } from "../utils/cookieUtils";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export const fetchAccessories = createAsyncThunk(
   "accessories/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
       // const token = getAuthToken();
-      const res = await fetch("http://localhost:3000/accessories", {
+      const res = await fetch(`${API_URL}/accessories`, {
         withCredentials: true, // <-- important!
       });
       if (!res.ok) throw new Error("Falha a buscar acessórios");
