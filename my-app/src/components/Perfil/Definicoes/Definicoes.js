@@ -1,14 +1,14 @@
+// src/components/Definicoes/Definicoes.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Definicoes/Definicoes.css";
-import { X } from "react-feather";
 
-const Definicoes = () => {
+const Definicoes = ({ show, onClose }) => {
   const [canAccessQuestions, setCanAccessQuestions] = useState(false);
   const [partnerName, setPartnerName] = useState("");
   const [partnerCode, setPartnerCode] = useState("");
-  const [timeRemaining, setTimeRemaining] = useState(""); // To store the time remaining in readable format
-  const [showPopup, setShowPopup] = useState(false); // Estado para controlar o popup
+  const [timeRemaining, setTimeRemaining] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,43 +20,32 @@ const Definicoes = () => {
     if (lastTime) {
       const now = Date.now();
       const diffInMilliseconds = now - Number(lastTime);
-
-      // Calculate time remaining in seconds
       const diffInSeconds = diffInMilliseconds / 1000;
-      const remainingTime = Math.max(2592000 - diffInSeconds, 0); // Ensures no negative time
+      const remainingTime = Math.max(2592000 - diffInSeconds, 0);
 
       if (remainingTime <= 0) {
         setCanAccessQuestions(true);
       } else {
         setCanAccessQuestions(false);
-
-        // Convert remaining time to a human-readable format (hours, minutes)
         const hoursTotal = Math.floor(remainingTime / 3600);
         const days = Math.floor(hoursTotal / 24);
         const hours = hoursTotal % 24;
         const minutes = Math.floor((remainingTime % 3600) / 60);
 
         let formattedTime = "";
-        if (days > 0) {
-          formattedTime += `${days} dia${days > 1 ? "s" : ""}, `;
-        }
-        if (hours > 0) {
+        if (days > 0) formattedTime += `${days} dia${days > 1 ? "s" : ""}, `;
+        if (hours > 0)
           formattedTime += `${hours} hora${hours > 1 ? "s" : ""}, `;
-        }
-        if (minutes > 0 || (hours === 0 && days === 0)) {
+        if (minutes > 0 || (hours === 0 && days === 0))
           formattedTime += `${minutes} minuto${minutes > 1 ? "s" : ""}`;
-        }
 
         setTimeRemaining(formattedTime);
       }
     } else {
-      // Se o utilizador nunca tiver respondido ao questionário, permitir acesso imediato
       setCanAccessQuestions(true);
     }
 
-    // User's partner info handling (keeping it as it was)
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-
     if (loggedInUser) {
       const currentUser = storedUsers.find((u) => u.id === loggedInUser.id);
       if (currentUser?.partnerId) {
@@ -76,58 +65,45 @@ const Definicoes = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
     const currentUser = storedUsers.find((u) => u.id === loggedInUser?.id);
-
     if (currentUser?.partnerId) {
-      setShowPopup(true); // Mostra o popup
+      setShowPopup(true);
     } else {
       navigate("/connection");
     }
   };
 
-  const closePopup = () => {
-    setShowPopup(false); // Fecha o popup
-  };
-
-  const handleClose = () => {
-    navigate("/profile");
-  };
-
-  const goToInfoPessoal = () => {
-    navigate("/infopessoal");
-  };
+  const closePopup = () => setShowPopup(false);
+  const goToInfoPessoal = () => navigate("/infopessoal");
+  if (!show) return null;
 
   return (
-    <div className="definicoes-page">
-      <div className="settings-header">
-        <header>Definições</header>
-        <button
-          className="closeWindow"
-          onClick={handleClose}
-          aria-label="Fechar janela"
-        >
-          <X className="icons" />
-        </button>
-      </div>
-      <div className="line"></div>
+    <div className="modal" onClick={onClose}>
+      <div className="window" onClick={(e) => e.stopPropagation()}>
+        <div className="settings-header">
+          <h3>Definições</h3>
+          <ion-icon
+            name="close-outline"
+            onClick={onClose}
+            class="icons"
+          ></ion-icon>
+        </div>
 
-      <div className="settings-content">
-        <div>
+        <div className="line"></div>
+
+        <div className="settings-content">
           <div className="settings-section">
             <h3>A tua conta</h3>
             <button className="settings-button" onClick={goToInfoPessoal}>
               Os meus dados
             </button>
-
             <button className="settings-button" onClick={onConnectionClick}>
               Fazer Ligação
             </button>
-
-            {/* Popup */}
             {showPopup && (
               <div className="popup-overlay" onClick={closePopup}>
                 <div
                   className="popup-content"
-                  onClick={(e) => e.stopPropagation()} // Evita fechar ao clicar no conteúdo
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <h3>Ligação Existente</h3>
                   <p>
@@ -143,7 +119,6 @@ const Definicoes = () => {
                 </div>
               </div>
             )}
-
             <button
               className="settings-button"
               disabled={!canAccessQuestions}
@@ -165,9 +140,8 @@ const Definicoes = () => {
                 </>
               )}
             </button>
-          </div>
+            <button className="settings-button">Arquivo de respostas</button>
 
-          <div className="settings-section">
             <Link
               to="/login"
               style={{ textDecoration: "none", color: "inherit" }}

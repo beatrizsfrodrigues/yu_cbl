@@ -75,16 +75,15 @@ export default function Profile() {
     <div className="profile-container mainBody">
       <div className="backgroundDiv" />
 
-
       <TopBar title="Perfil">
         <button
           aria-label="Abrir definições"
           onClick={() => {
             setShowSettings(true);
-            navigate("/definicoes");
+            // navigate("/definicoes");
           }}
         >
-          <ion-icon name="settings-outline" className="icons" />
+          <ion-icon name="settings-outline" class="icons" />
         </button>
       </TopBar>
 
@@ -184,6 +183,7 @@ export default function Profile() {
 
       {showSettings && (
         <Definicoes
+          show={showSettings}
           onClose={() => setShowSettings(false)}
           onInfoPessoalClick={() => navigate("/informacoes-pessoais")}
           onArquivoClick={() => navigate("/arquivo")}
