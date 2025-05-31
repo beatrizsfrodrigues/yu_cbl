@@ -3,26 +3,28 @@
 /** home  */
 #backgroundDiv {
   position: absolute;
-  top:0; left:0;
-  width:100vw; height:100vh;
-  z-index:-49;  /* sits above the decorative blur but behind everything else */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -49; /* sits above the decorative blur but behind everything else */
 }
 #decorBackground {
   position: absolute;
-  top:0; left:0;
-  width:100vw; height:100vh;
-  z-index:-50;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -50;
 }
 
-
 .mascotContainer {
-   position: relative;
-    z-index: 1001;
+  position: relative;
+  z-index: 1001;
   height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
 .mascotContainer img {
@@ -35,30 +37,40 @@
   object-fit: contain;
 }
 
-
-
 .mascotContainer img.base {
   max-width: 100%;
   max-height: 110%;
 }
 
-
 .mascotContainer img:not(.base) {
   max-width: 80%;
-  transform: translate(-51%, -50%) scale(1) !important;;
+  transform: translate(-51%, -50%) scale(1) !important;
 }
 
-
-.mascotContainer img.background { z-index: 0; }
-.mascotContainer img.base       { z-index: 1; }
-.mascotContainer img.cachecol    { z-index: 2; }
-.mascotContainer img.chapeu      { z-index: 3; }
-.mascotContainer img.ouvidos     { z-index: 4; }
-.mascotContainer img.oculos      { z-index: 5; }
-.mascotContainer img.shirt       { z-index: 6; }
-.mascotContainer img.bigode      { z-index: 7; }
-
-
+.mascotContainer img.background {
+  z-index: 0;
+}
+.mascotContainer img.base {
+  z-index: 1;
+}
+.mascotContainer img.cachecol {
+  z-index: 2;
+}
+.mascotContainer img.chapeu {
+  z-index: 3;
+}
+.mascotContainer img.ouvidos {
+  z-index: 4;
+}
+.mascotContainer img.oculos {
+  z-index: 5;
+}
+.mascotContainer img.shirt {
+  z-index: 6;
+}
+.mascotContainer img.bigode {
+  z-index: 7;
+}
 
 .mascotContainer.moveUp {
   transform: translateY(-20%); /* Adjust the value as needed */
@@ -72,9 +84,6 @@
   transform: translateY(-10%);
 }
 
-
-
-
 /** closet amd store  */
 .closetFooter {
   display: flex;
@@ -82,6 +91,19 @@
   align-items: center;
   padding: 0px 10px;
   margin: 5% 0 0 0;
+}
+
+.side-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  color: var(--purple-darker);
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .buttonMid {
@@ -329,7 +351,7 @@ button.avatarcircle.activeFit {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1100; 
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -386,4 +408,8 @@ button.avatarcircle.activeFit {
   100% {
     filter: brightness(100%);
   }
+}
+
+.topbar {
+  margin-top: 6%;
 }

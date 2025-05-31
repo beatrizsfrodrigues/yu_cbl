@@ -187,3 +187,12 @@ body {
 .qrBtn {
   margin-top: 16px;
 }
+
+.scanner-container {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--white);
+}

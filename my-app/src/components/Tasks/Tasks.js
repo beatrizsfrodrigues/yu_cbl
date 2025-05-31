@@ -50,7 +50,6 @@ function Tasks() {
 
   useEffect(() => {
     if (authUser?._id) {
-      console.log(authUser);
       const fetchTasks = async () => {
         try {
           const myResult = await dispatch(getTasks(authUser._id)).unwrap();
@@ -260,7 +259,6 @@ function Tasks() {
       handleOpenVerifyTaskModal,
       hasPolled,
     }) {
-      console.log("🔄 <TasksList /> rendered");
       return (
         <div id="tasks">
           {tasksStatus === "loading" && !hasPolled ? (

@@ -8,9 +8,6 @@ export const getTasks = createAsyncThunk(
   "tasks/getTasks",
   async (id, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
-      console.log(id);
-
       const res = await axios.get(`${API_URL}/tasks?userId=${id}`, {
         withCredentials: true, // <-- important!
       });
