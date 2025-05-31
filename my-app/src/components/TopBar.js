@@ -20,8 +20,8 @@ const TopBar = ({ title, children }) => {
            accessoriesList={allAccessories}
             size={48}
             accScale={0.7}      
-          accOffsetX={-9}     
-          accOffsetY={-7}     
+           accOffsetX={-9}     
+             accOffsetY={-7}     
           />
         </div>
         <h1 className="topBar-title">{title}</h1>

@@ -1,3 +1,5 @@
+// src/components/Connection/Connection.js
+
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -6,22 +8,41 @@ import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
 import { getAuthUser } from "../../utils/cookieUtils";
-import { connectPartner } from "../../redux/usersSlice.js";
+import { connectPartner, fetchPartnerUser } from "../../redux/usersSlice.js";
 
 const Connection = () => {
   const dispatch = useDispatch();
-  const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
-  const [userCode, setUserCode] = useState(null);
-  const [userName, setUserName] = useState("");
-  const [connectedUserName, setConnectedUserName] = useState("");
-  const [partnerCode, setPartnerCode] = useState("");
-  const [message, setMessage] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
   const navigate = useNavigate();
+
+  // controla se o input de código deve aparecer
+  const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
+
+  // valor que o utilizador digita (o código do parceiro)
+  const [partnerCode, setPartnerCode] = useState("");
+
+  // infos do próprio utilizador (do cookie)
+  const [authUser] = useState(getAuthUser());
+  const [userCode, setUserCode] = useState("");
+  const [userName, setUserName] = useState("");
+
+  // nome do parceiro depois de conectar
+  const [connectedUserName, setConnectedUserName] = useState("");
+
+  // mensagens de erro/sucesso
+  const [message, setMessage] = useState("");
+
+  // flag para saber se já nos conectamos com sucesso
+  const [isConnected, setIsConnected] = useState(false);
+
+  // controla se o scanner de QRCode está visível
   const [showScanner, setShowScanner] = useState(false);
 
-  const [authUser] = useState(getAuthUser());
+  // 1) pega o parceiro do estado Redux (após um fetchPartnerUser)
+  const partner = useSelector((state) => state.user.partnerUser);
 
+  // ───────────────────────────────────────────────
+  // Ao montar o componente, preenche userCode e userName
+  // ───────────────────────────────────────────────
   useEffect(() => {
     if (authUser) {
       setUserCode(authUser.code);
@@ -29,93 +50,83 @@ const Connection = () => {
     } else {
       setMessage("Nenhum utilizador autenticado.");
     }
-  }, []);
+  }, [authUser]);
 
+  // ───────────────────────────────────────────────
+  // Quando `partner` no Redux muda (após o `fetchPartnerUser`),
+  // e se já estivermos em estado `isConnected = true`, atualizamos
+  // o `connectedUserName` para exibir na UI.
+  // ───────────────────────────────────────────────
+  useEffect(() => {
+    if (isConnected && partner && partner.username) {
+      setConnectedUserName(partner.username);
+    }
+  }, [partner, isConnected]);
+
+  // ───────────────────────────────────────────────
+  // Alterna entre mostrar input de código ou não
+  // ───────────────────────────────────────────────
   const handleClick = () => {
-    setIsCodeInputVisible(!isCodeInputVisible);
+    setIsCodeInputVisible((v) => !v);
+    setMessage("");
   };
 
-  const handleConfirmConnection = () => {
-    const users = "";
-    const partner = "";
-    const loggedInUser = "";
-
-    const currentUser = users.find(
-      (user) => user.id === parseInt(loggedInUser.id)
-    );
-
-    if (!partner) {
-      setMessage("Este código não existe.");
+  // ───────────────────────────────────────────────
+  // Disparado ao clicar em “Confirmar” no input de código
+  // ───────────────────────────────────────────────
+  const handleConfirmConnection = async () => {
+    if (!partnerCode || partnerCode.trim() === "") {
+      setMessage("Por favor, insira um código válido.");
       return;
     }
 
-    if (partner.id === currentUser.id) {
-      setMessage("Não é possível conectar contigo mesmo.");
-      return;
+    try {
+      // 1) chama o thunk connectPartner com o código inserido
+      const resultAction = await dispatch(
+        connectPartner({ code: partnerCode.trim() })
+      ).unwrap();
+
+      // Se `unwrap()` não lançar erro, significa que a ligação foi bem‐sucedida.
+      // Aqui `resultAction` é o payload que o seu “connect-partner” devolve
+      // (normalmente o utilizador atualizado com partnerId preenchido).
+
+      // 2) Disparamos o fetchPartnerUser para que o Redux carregue os dados completos
+      //    do parceiro recém‐conectado (username, mascot, accessoriesEquipped, etc.).
+      await dispatch(fetchPartnerUser());
+
+      // 3) Agora impostamos o flag que diz “já estamos conectados” e limpamos o input
+      setPartnerCode("");
+      setIsConnected(true);
+      setMessage("Conexão realizada com sucesso ✔");
+    } catch (err) {
+      // Se a promise foi rejeitada, `err` conterá a mensagem de falha do backend
+      setMessage(err || "Falha na ligação. Tente novamente.");
     }
-
-    if (partner.partnerId) {
-      setMessage("Este utilizador já tem um parceiro.");
-      return;
-    }
-
-    // Update partnerId for the connected users
-    const updatedCurrentUser = { ...currentUser, partnerId: partner.id };
-    const updatedPartner = { ...partner, partnerId: currentUser.id };
-
-    console.log(partner.id);
-
-    const updatedUsers = users.map((user) =>
-      user.id === updatedCurrentUser.id
-        ? updatedCurrentUser
-        : user.id === updatedPartner.id
-        ? updatedPartner
-        : user
-    );
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-    //* create msg object
-    // dispatch(
-    //   newConversation({ userId: currentUser.id, partnerId: partner.id })
-    // );
-    setConnectedUserName(partner.username);
-    setMessage("Conexão realizada com sucesso ✔");
-    setPartnerCode(""); // Clear input
-
-    setIsConnected(true);
   };
 
   const handleNavigateToHome = () => {
-    navigate("/home"); // Go to home after connection (or skip)
+    navigate("/home");
   };
 
   const handleScanSuccess = async (scannedCode) => {
     try {
-      console.log("ok");
       const resultAction = await dispatch(
         connectPartner({ code: scannedCode })
-      );
-      console.log(resultAction);
+      ).unwrap();
 
-      if (!resultAction.error) {
-        console.log("Connection successful");
-        setShowScanner(false); // 👈 hide scanner
-        handleNavigateToHome();
-      } else {
-        console.log("Connection rejected");
-        setMessage(resultAction.payload || "Falha na ligação.");
-        setShowScanner(false); // 👈 hide scanner even on failure
-      }
+      // se deu certo, fetchPartnerUser e redireciona
+      await dispatch(fetchPartnerUser());
+      setShowScanner(false);
+      navigate("/home");
     } catch (error) {
-      setMessage("Erro na ligação. Tente novamente.");
-      setShowScanner(false); // 👈 also close on unknown error
+      setMessage(error || "Falha na ligação via QR. Tente novamente.");
+      setShowScanner(false);
     }
   };
 
   return (
     <div className="connection-page mainBody">
       <h1>Cria uma ligação mútua</h1>
-      {/* <p className="page-desc">Cria uma ligação com alguém.</p> */}
 
       {!isCodeInputVisible ? (
         <div className="connection-placeholder">
@@ -148,13 +159,17 @@ const Connection = () => {
         <div></div>
       )}
 
-      {/* Show message above input section */}
+      {/* Mensagem de erro / sucesso */}
       {message && <p className="message">{message}</p>}
 
+      {/* Botão para abrir scanner de QR ou insistir em usar input de código */}
       {!isCodeInputVisible && !showScanner && (
         <button
           className="confirm-button qrBtn"
-          onClick={() => setShowScanner(true)}
+          onClick={() => {
+            setShowScanner(true);
+            setMessage("");
+          }}
         >
           Faz scan do código QR
         </button>
@@ -162,10 +177,10 @@ const Connection = () => {
 
       {!isCodeInputVisible && !showScanner && <p>Ou</p>}
 
-      {/* Only show input section if not connected */}
+      {/* Se não estiver conectado e não estiver mostrando scanner, exibe input de código */}
       {!isConnected && !showScanner && (
         <div className="input-section">
-          <label className="input-label" for="input-connection">
+          <label className="input-label" htmlFor="input-connection">
             {isCodeInputVisible
               ? "Este é o teu código:"
               : "Insere o código do teu parceiro"}
@@ -193,20 +208,18 @@ const Connection = () => {
                 value={partnerCode}
                 onChange={(e) => setPartnerCode(e.target.value)}
               />
-              {/* Button to confirm the connection */}
-              {!isCodeInputVisible && (
-                <button
-                  className="confirm-button"
-                  onClick={handleConfirmConnection}
-                >
-                  Confirmar
-                </button>
-              )}
+              <button
+                className="confirm-button"
+                onClick={handleConfirmConnection}
+              >
+                Confirmar
+              </button>
             </div>
           )}
         </div>
       )}
 
+      {/* Se o scanner estiver visível, renderiza o componente QRScanner */}
       {showScanner && (
         <QRScanner
           onScanSuccess={handleScanSuccess}
@@ -214,48 +227,33 @@ const Connection = () => {
         />
       )}
 
-      {/* Button remains visible during connection */}
+      {/* Se já estiver conectado, oferece botão “Terminar” para ir ao home */}
       {isConnected && (
         <button className="confirm-button" onClick={handleNavigateToHome}>
           Terminar
         </button>
       )}
 
+      {/* Rodapé: alterna entre “quero inserir código” ou “quero ver meu código” */}
       {!isConnected && (
         <p className="footer-text">
-          {isCodeInputVisible ? (
-            <button
-              type="button"
-              className="create-link"
-              onClick={handleClick}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                color: "inherit",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              Quero inserir um código.
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="create-link"
-              onClick={handleClick}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                color: "inherit",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              Quero mostrar o meu código.
-            </button>
-          )}
+          <button
+            type="button"
+            className="create-link"
+            onClick={handleClick}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              color: "inherit",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            {isCodeInputVisible
+              ? "Quero mostrar o meu código."
+              : "Quero inserir um código."}
+          </button>
           <div className="skip-section">
             <button
               type="button"

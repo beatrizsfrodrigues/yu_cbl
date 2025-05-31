@@ -37,7 +37,7 @@ body {
   width: 100vw;
   position: fixed;
   z-index: -50;
-  background-image: url("/public/assets/Fundos/background.png");
+  background-image: url("../public/assets/Fundos/background.png");
   opacity: 70%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -285,9 +285,7 @@ p {
 }
 
 .avatarWrapper {
-  position: relative;
-  width: 150px;     
-  height: 150px;    
+  position: relative;   
   overflow: hidden;
   border-radius: 50%; 
 
@@ -333,4 +331,8 @@ p {
   height: 40px;
   border-radius: 50%;
   background-color: var(--purple-darker);
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
 }

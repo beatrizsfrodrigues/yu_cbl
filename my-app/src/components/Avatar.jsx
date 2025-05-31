@@ -5,9 +5,9 @@ export default function Avatar({
   mascot,
   equipped = {}, 
   accessoriesList,
-  size = 150, // tamanho em px do container
+  size = 150, 
 }) {
-  // destructura todos os tipos de acessório que agora tens
+
   const {
     background: bgId,
     shirt: shirtId,
