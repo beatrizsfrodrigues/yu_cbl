@@ -1,4 +1,4 @@
-// src/components/Definicoes/InfoPessoal.js
+
 import React, { useEffect, useState, useMemo } from "react";
 import "../Definicoes/InfoPessoal.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -106,7 +106,7 @@ const InfoPessoal = () => {
   const handleBack = () => {
     setFormData(originalData);
     setAlert("");
-    navigate("/definicoes");
+    navigate(-1);
   };
 
   return (
