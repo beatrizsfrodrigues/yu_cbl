@@ -72,10 +72,10 @@ export default function Profile() {
   }
 
   return (
-    <div className="profile-container mainBody">
+    <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv" />
 
-      <div className="homeContainer">
+      <div className="topbar">
         <TopBar title="Perfil">
           <button
             aria-label="Abrir definições"
