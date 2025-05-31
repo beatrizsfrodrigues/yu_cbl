@@ -358,7 +358,7 @@ function Tasks() {
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
 
-      <div className="homeContainer">
+      <div className="topbar">
         <TopBar title="Tarefas">
           <button onClick={openFilter} aria-label="Abrir filtro">
             <ion-icon name="options-outline" class="icons"></ion-icon>
