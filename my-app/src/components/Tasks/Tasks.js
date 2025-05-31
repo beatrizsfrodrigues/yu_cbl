@@ -357,11 +357,15 @@ function Tasks() {
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
-      <TopBar title="Tarefas">
-        <button onClick={openFilter} aria-label="Abrir filtro">
-          <ion-icon name="options-outline" class="icons"></ion-icon>
-        </button>
-      </TopBar>
+
+      <div className="homeContainer">
+        <TopBar title="Tarefas">
+          <button onClick={openFilter} aria-label="Abrir filtro">
+            <ion-icon name="options-outline" class="icons"></ion-icon>
+          </button>
+        </TopBar>
+      </div>
+
       <div className="filter-buttons">
         <button
           className={`filter-button ${filter === "received" ? "active" : ""}`}
