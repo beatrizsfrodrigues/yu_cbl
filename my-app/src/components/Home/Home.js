@@ -8,6 +8,7 @@ import {
   fetchEquippedAccessories,
   buyAccessory,
   equipAccessories,
+  updateUser
 } from "../../redux/usersSlice.js";
 import { fetchAccessories } from "../../redux/accessoriesSlice.js";
 
@@ -228,11 +229,23 @@ export default function Home() {
     }
   };
 
-  const saveOutfit = async () => {
+   const saveOutfit = async () => {
     try {
       for (const { id, type } of Object.values(pendingEquip)) {
-        await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
+        if (type === "SkinColor") {
+  
+          const item = findById(id);
+          if (item) {
+       
+            const payload = { ...user, mascot: item.src };
+            await dispatch(updateUser(payload)).unwrap();
+          }
+        } else {
+     
+          await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
+        }
       }
+
       setPendingEquip({});
       pop("Alterações guardadas!");
       setShowCloset(false);

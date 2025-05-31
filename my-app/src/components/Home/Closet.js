@@ -78,8 +78,6 @@ function unequipAllAndSave() {
  
 }
 
-  // −−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−
-
   return (
     <div className="closetOverlay">
       <div className="closetContainer">
