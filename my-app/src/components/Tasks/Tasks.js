@@ -84,6 +84,9 @@ function Tasks() {
   const prevPartnerTasksRef = React.useRef([]);
 
   useEffect(() => {
+    console.log("authUser ID:", authUser?._id);
+    console.log("authUser partnerId:", authUser?.partnerId);
+
     let isMounted = true;
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
@@ -247,7 +250,7 @@ function Tasks() {
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
     function TasksList({
-      currentUser,
+      authUser,
       filteredTasks,
       expandedTaskIndex,
       filter,
@@ -267,7 +270,7 @@ function Tasks() {
             <div>Error: {tasksError}</div>
           ) : !tasks ? (
             <div>A carregar...</div>
-          ) : currentUser && filteredTasks.length > 0 ? (
+          ) : authUser && filteredTasks.length > 0 ? (
             filteredTasks.map((task, index) => (
               <div className="taskDivOp" key={task._id}>
                 <div className="taskItemContainer">
@@ -289,7 +292,7 @@ function Tasks() {
                   {expandedTaskIndex === index &&
                     !task.completed &&
                     !task.verified &&
-                    task.userId === currentUser._id && (
+                    task.userId === authUser._id && (
                       <div className="btnTaskGroupVertical">
                         <button
                           className="btnTaskCircle conclude"
@@ -306,7 +309,7 @@ function Tasks() {
                   {expandedTaskIndex === index &&
                     task.completed &&
                     !task.verified &&
-                    task.userId === currentUser.partnerId && (
+                    task.userId === authUser.partnerId && (
                       <div className="btnTaskGroupVertical">
                         <button
                           className="btnTaskCircle verify"
@@ -349,7 +352,7 @@ function Tasks() {
         prevProps.filter === nextProps.filter &&
         prevProps.tasksStatus === nextProps.tasksStatus &&
         prevProps.tasksError === nextProps.tasksError &&
-        prevProps.currentUser?._id === nextProps.currentUser?._id
+        prevProps.authUser?._id === nextProps.authUser?._id
       );
     }
   );
@@ -425,7 +428,7 @@ function Tasks() {
           />
         </Suspense>
       )}
-      {isNewTaskModalOpen && (
+      {isNewTaskModalOpen && authUser && (
         <Suspense fallback={<div>Loading nova tarefa...</div>}>
           <NewTask
             onClose={handleCloseNewTaskModal}
@@ -434,6 +437,7 @@ function Tasks() {
           />
         </Suspense>
       )}
+
       {isConcludeTaskOpen && (
         <Suspense fallback={<div>Loading nova tarefa...</div>}>
           <ConcludeTask
