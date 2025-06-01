@@ -8,6 +8,7 @@ import {
   fetchEquippedAccessories,
   buyAccessory,
   equipAccessories,
+  updateUser
 } from "../../redux/usersSlice.js";
 import { fetchAccessories } from "../../redux/accessoriesSlice.js";
 
@@ -228,11 +229,23 @@ export default function Home() {
     }
   };
 
-  const saveOutfit = async () => {
+   const saveOutfit = async () => {
     try {
       for (const { id, type } of Object.values(pendingEquip)) {
-        await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
+        if (type === "SkinColor") {
+  
+          const item = findById(id);
+          if (item) {
+       
+            const payload = { ...user, mascot: item.src };
+            await dispatch(updateUser(payload)).unwrap();
+          }
+        } else {
+     
+          await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
+        }
       }
+
       setPendingEquip({});
       pop("Alterações guardadas!");
       setShowCloset(false);
@@ -354,20 +367,22 @@ export default function Home() {
       <div
         className={`home mainBody ${showCloset || showStore ? "locked" : ""}`}
       >
-        <TopBar>
-          <div className="ClassStar">
-            <ion-icon name="star-outline" class="icons" />
-            <p>{formatPoints(user.points)}</p>
-          </div>
-          <div className="buttonsCloset">
-            <button className="btnHomeHeader" onClick={openCloset}>
-              <ion-icon name="brush-outline" class="icons" />
-            </button>
-            <button className="btnHomeHeader" onClick={openStore}>
-              <ion-icon name="bag-outline" class="icons" />
-            </button>
-          </div>
-        </TopBar>
+        <div className="topbar">
+          <TopBar>
+            <div className="ClassStar">
+              <ion-icon name="star-outline" class="icons" />
+              <p>{formatPoints(user.points)}</p>
+            </div>
+            <div className="buttonsCloset">
+              <button className="btnHomeHeader" onClick={openCloset}>
+                <ion-icon name="brush-outline" class="icons" />
+              </button>
+              <button className="btnHomeHeader" onClick={openStore}>
+                <ion-icon name="bag-outline" class="icons" />
+              </button>
+            </div>
+          </TopBar>
+        </div>
 
         {/* Mascote + camadas */}
         <div
@@ -376,10 +391,10 @@ export default function Home() {
           }`}
         >
           <img
-              src={selectedColor ? selectedColor.src : user.mascot}
-              className="base"
-             alt="Mascote"
-           />
+            src={selectedColor ? selectedColor.src : user.mascot}
+            className="base"
+            alt="Mascote"
+          />
 
           {selectedCachecol && (
             <img

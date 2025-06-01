@@ -8,14 +8,22 @@ const Welcome = () => {
 
   // Verifica se o usuário está logado e redireciona para a Home
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (loggedInUser && loggedInUser.id) {
-      navigate("/home"); // Redireciona para a página Home
-    }
+    fetch("/api/me", { credentials: "include" })
+      .then((res) => {
+        //console.log("Resposta do /api/me:", res.status); // <-- Adicionado para debug
+        if (res.ok) {
+          console.log("Utilizador autenticado, a redirecionar para /home");
+          navigate("/home");
+        } else {
+          //console.log("Utilizador NÃO autenticado, permanece na Welcome");
+        }
+      })
+      .catch((err) => {
+        console.log("Erro ao verificar autenticação:", err);
+      });
   }, [navigate]);
 
   const handleClickRegister = useCallback(() => {
-    console.log("Register button clicked");
     navigate("/register");
   }, [navigate]);
 
