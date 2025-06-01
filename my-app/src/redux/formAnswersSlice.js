@@ -1,15 +1,35 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getAuthToken } from "../utils/storageUtils";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+function authorizedConfig() {
+  const token = getAuthToken();
+  if (!token) {
+    return {};
+  }
+  return {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+}
+
+// ======================
+// 1) GET para buscar as perguntas do formulário
+// ======================
 export const fetchFormAnswers = createAsyncThunk(
   "formAnswers/fetchFormAnswers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/form-answers`, {
-        withCredentials: true,
-      });
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token ausente).");
+      }
+
+      const response = await axios.get(`${API_URL}/form-answers`, config);
 
       console.log("Dados recebidos do /form-answers:", response.data);
       return response.data.questions;
@@ -21,27 +41,34 @@ export const fetchFormAnswers = createAsyncThunk(
   }
 );
 
+// ======================
+// 2) POST para enviar as respostas do formulário
+// ======================
 export const postFormAnswers = createAsyncThunk(
   "formAnswers/postFormAnswers",
   async ({ answers }, { rejectWithValue }) => {
     try {
+      const config = authorizedConfig();
+
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token ausente).");
+      }
+
       const res = await axios.post(
         `${API_URL}/form-answers`,
         { answers },
-        {
-          withCredentials: true,
-        }
+        config
       );
 
-      console.log("elo");
-
+      console.log("Resposta de POST /form-answers:", res.data);
       return res.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      const message =
+        error.response?.data || error.message || "Erro ao enviar respostas";
+      return rejectWithValue(message);
     }
   }
 );
-
 const formAnswersSlice = createSlice({
   name: "formAnswers",
   initialState: {
