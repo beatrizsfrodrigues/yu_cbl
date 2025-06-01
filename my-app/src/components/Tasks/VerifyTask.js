@@ -4,6 +4,9 @@ import { verifyTask } from "../../redux/taskSlice.js";
 
 function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
   const dispatch = useDispatch();
+  if (!task) {
+    return null; // or a loader/message while waiting for task to be set
+  }
 
   const handleVerifyTask = (e) => {
     e.preventDefault();
