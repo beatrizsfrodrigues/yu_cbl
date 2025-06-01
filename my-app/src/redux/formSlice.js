@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import { getAuthToken } from "../utils/cookieUtils"; // podes remover se não usares auth
+// import { getAuthToken } from "../utils/storageUtils"; // podes remover se não usares auth
 
 const API_URL = process.env.REACT_APP_API_URL;
 

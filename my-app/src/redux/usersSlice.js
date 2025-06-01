@@ -1,8 +1,14 @@
-// src/redux/usersSlice.js
+
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import { getAuthToken } from "../utils/cookieUtils";
+import {
+  getAuthToken,
+  setAuthUser,
+  clearAuthStorage,
+  getAuthUser as getStoredUser,
+} from "../utils/storageUtils";
+
 import {
   getTasks,
   completeTask,
@@ -14,17 +20,32 @@ import {
 // import { rejectTask, addTask } from "./taskSlice";
 import { sendMessage } from "./messagesSlice";
 
+function authorizedConfig() {
+  const token = getAuthToken();
+  if (!token) return {};
+  return {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+}
+
+
 const API_URL = process.env.REACT_APP_API_URL;
+
 
 export const registerUser = createAsyncThunk(
   "user/register",
   async ({ username, email, password }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/users/signup`, {
-        username,
-        email,
-        password,
-      });
+      const res = await axios.post(
+        `${API_URL}/users/signup`,
+        { username, email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       return res.data.user;
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
@@ -33,15 +54,40 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// 1) Procurar utilizador autenticado
+export const loginUser = createAsyncThunk(
+  "user/login",
+  async ({ emailOrUsername, password }, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/users/login`,
+        { emailOrUsername, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      const { token, user } = res.data;
+      setAuthUser(user);
+      localStorage.setItem("authToken", token);
+
+      return { user, token };
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      return rejectWithValue(msg);
+    }
+  }
+);
+
+
 export const fetchAuthUser = createAsyncThunk(
   "user/fetchAuthUser",
   async (_, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
-      const res = await axios.get(`${API_URL}/users/me`, {
-        withCredentials: true, // <-- important!
-      });
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
+      const res = await axios.get(`${API_URL}/users/me`, config);
+      setAuthUser(res.data);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -99,15 +145,16 @@ export const createNewTaskAfterRejection = createAsyncThunk(
 //   }
 // );
 
-// 4) Parceiro
+
 export const fetchPartnerUser = createAsyncThunk(
   "user/fetchPartnerUser",
   async (_, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
-      const res = await axios.get(`${API_URL}/users/partner`, {
-        withCredentials: true, // <-- important!
-      });
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
+      const res = await axios.get(`${API_URL}/users/partner`, config);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -120,13 +167,14 @@ export const connectPartner = createAsyncThunk(
   "user/connectPartner",
   async ({ code }, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
       const res = await axios.put(
         `${API_URL}/users/connect-partner`,
         { code },
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
       return res.data;
     } catch (err) {
@@ -140,10 +188,11 @@ export const fetchOwnedAccessories = createAsyncThunk(
   "user/fetchOwnedAccessories",
   async (_, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
-      const res = await axios.get(`${API_URL}/users/accessories`, {
-        withCredentials: true, // <-- important!
-      });
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Usuário não autenticado (token em falta).");
+      }
+      const res = await axios.get(`${API_URL}/users/accessories`, config);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -156,30 +205,37 @@ export const fetchEquippedAccessories = createAsyncThunk(
   "user/fetchEquippedAccessories",
   async (_, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
-      const res = await axios.get(`${API_URL}/users/accessories-equipped`, {
-        withCredentials: true, // <-- important!
-      });
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Usuário não autenticado (token em falta).");
+      }
+      const res = await axios.get(
+        `${API_URL}/users/accessories-equipped`,
+        config
+      );
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
-);
 
+);
 // 8) Atualizar utilizador
 export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (updatedUser, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Usuário não autenticado (token em falta).");
+      }
       const res = await axios.put(
         `${API_URL}/users/${updatedUser._id}`,
         updatedUser,
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
+      // Se a API devolve o user atualizado, podes regravar no localStorage:
+      setAuthUser(res.data);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -192,13 +248,14 @@ export const buyAccessory = createAsyncThunk(
   "user/buyAccessory",
   async ({ accessoryId }, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Usuário não autenticado (token em falta).");
+      }
       const res = await axios.post(
         `${API_URL}/users/accessories`,
         { accessoryId },
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
       return res.data;
     } catch (err) {
@@ -207,18 +264,20 @@ export const buyAccessory = createAsyncThunk(
   }
 );
 
+
 // 10) Equipar/desequipar acessório
 export const equipAccessories = createAsyncThunk(
   "user/equipAccessories",
   async ({ accessoryId, type }, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Usuário não autenticado (token em falta).");
+      }
       const res = await axios.put(
         `${API_URL}/users/accessories/equip`,
         { accessoryId: accessoryId ?? null, type },
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
       return res.data.accessoriesEquipped;
     } catch (err) {
@@ -233,7 +292,7 @@ export const equipAccessories = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    authUser: null,
+    authUser: getStoredUser(),
     partnerUser: null,
     ownedAccessories: [],
     equippedAccessories: {
@@ -251,7 +310,10 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    // se ainda quiseres algum reducer local, adiciona aqui…
+     logout(state) {
+      state.authUser = null;
+      clearAuthStorage();
+    },
   },
   extraReducers: (builder) => {
     builder

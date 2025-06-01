@@ -4,6 +4,8 @@ import axios from "axios";
 import "../assets/css/Login.css";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 
+import { setAuthToken, setAuthUser } from "../utils/storageUtils";
+
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +14,8 @@ const Login = () => {
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
-  // Pré-carregar o logo
+
+
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "preload";
@@ -25,6 +28,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+
       const response = await axios.post(
         `${API_URL}/users/login`,
         {
@@ -32,15 +36,20 @@ const Login = () => {
           password,
         },
         {
-          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      if (response.data && response.data.userWithoutPassword) {
-        const user = response.data.userWithoutPassword;
+      const { token, user } = response.data;
 
+      if (token && user) {
+
+        setAuthToken(token);
+        setAuthUser(user);
+
+ 
         if (user.role === "admin") {
-          window.location.href = "http://localhost:3002/";
+          window.location.href = `http://localhost:3002?token=${token}`;
         } else {
           navigate("/home");
         }
@@ -49,12 +58,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Erro no login:", error);
-      // Se a API retornar uma mensagem de erro, exiba-a; caso contrário, uma mensagem genérica.
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response && error.response.data && error.response.data.message) {
         setAlert(error.response.data.message);
       } else {
         setAlert("Erro ao fazer login.");
@@ -62,7 +66,7 @@ const Login = () => {
     }
   };
 
-  // Apenas permite submeter o formulário se ambos os campos estiverem preenchidos
+
   const isFormComplete =
     emailOrUsername.trim() !== "" && password.trim() !== "";
 

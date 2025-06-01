@@ -2,7 +2,7 @@ import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
-import { getAuthUser } from "../../utils/cookieUtils";
+import { getAuthUser } from "../../utils/storageUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice.js";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
