@@ -1,37 +1,70 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import { getAuthToken } from "../utils/cookieUtils";
+import { getAuthToken } from "../utils/storageUtils";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+/**
+ * Retorna um objeto { headers: { Authorization: "Bearer <token>" } }
+ * ou {} se não houver token.
+ */
+function authorizedConfig() {
+  const token = getAuthToken();
+  if (!token) return {};
+  return {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+}
+
+// ======================
+// 1) Obter todas as tasks
+// ======================
 export const getTasks = createAsyncThunk(
   "tasks/getTasks",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${API_URL}/tasks?userId=${id}`, {
-        withCredentials: true, // <-- important!
-      });
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
 
+      const res = await axios.get(`${API_URL}/tasks?userId=${id}`, config);
       return res.data.tasks;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      const apiError = error.response?.data;
+     if (apiError && typeof apiError === "object" && apiError.msg) {
+       return rejectWithValue(apiError.msg);
+     }
+     return rejectWithValue(
+       typeof error.response?.data === "string"
+         ? error.response.data
+         : error.message
+     );
     }
   }
 );
 
+// ======================
+// 2) Adicionar nova task
+// ======================
 export const addTask = createAsyncThunk(
   "tasks/addTask",
   async ({ title, description }, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
+
       const res = await axios.post(
         `${API_URL}/tasks`,
         { title, description },
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
-
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -39,20 +72,23 @@ export const addTask = createAsyncThunk(
   }
 );
 
+// ======================
+// 3) Completar task
+// ======================
 export const completeTask = createAsyncThunk(
   "tasks/completeTask",
   async ({ picture, id }, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/complete`,
         { picture },
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
-
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -60,20 +96,23 @@ export const completeTask = createAsyncThunk(
   }
 );
 
+// ======================
+// 4) Verificar task 
+// ======================
 export const verifyTask = createAsyncThunk(
   "tasks/verifyTask",
   async ({ id, rejectMessage, verify }, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/verify`,
         { rejectMessage, verify },
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
-
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -81,20 +120,23 @@ export const verifyTask = createAsyncThunk(
   }
 );
 
+// ======================
+// 5) Remover mensagem de rejeição
+// ======================
 export const removeRejectMessage = createAsyncThunk(
   "tasks/removeRejectMessage",
   async (id, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/remove-reject-message`,
         {},
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
-
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -102,20 +144,23 @@ export const removeRejectMessage = createAsyncThunk(
   }
 );
 
+// ======================
+// 6) Notificar task
+// ======================
 export const notifyTasks = createAsyncThunk(
   "tasks/notifyTasks",
   async (id, { rejectWithValue }) => {
     try {
-      // const token = getAuthToken();
+      const config = authorizedConfig();
+      if (!config.headers) {
+        return rejectWithValue("Utilizador não autenticado (token em falta).");
+      }
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/notification`,
         {},
-        {
-          withCredentials: true, // <-- important!
-        }
+        config
       );
-
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -123,6 +168,7 @@ export const notifyTasks = createAsyncThunk(
   }
 );
 
+// Funções auxiliares de estado
 const setLoading = (state) => {
   state.status = "loading";
   state.error = null;
@@ -130,7 +176,7 @@ const setLoading = (state) => {
 
 const setError = (state, action) => {
   state.status = "failed";
-  state.error = action.error.message;
+  state.error = action.payload || action.error.message;
 };
 
 const updateTaskInState = (state, action) => {
@@ -155,7 +201,6 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       // getTasks
       .addCase(getTasks.pending, setLoading)
       .addCase(getTasks.fulfilled, (state, action) => {
@@ -172,19 +217,22 @@ const tasksSlice = createSlice({
       })
       .addCase(addTask.rejected, setError)
 
-      // update-related thunks
+      // completeTask
       .addCase(completeTask.pending, setLoading)
       .addCase(completeTask.fulfilled, updateTaskInState)
       .addCase(completeTask.rejected, setError)
 
+      // verifyTask
       .addCase(verifyTask.pending, setLoading)
       .addCase(verifyTask.fulfilled, updateTaskInState)
       .addCase(verifyTask.rejected, setError)
 
+      // removeRejectMessage
       .addCase(removeRejectMessage.pending, setLoading)
       .addCase(removeRejectMessage.fulfilled, updateTaskInState)
       .addCase(removeRejectMessage.rejected, setError)
 
+      // notifyTasks
       .addCase(notifyTasks.pending, setLoading)
       .addCase(notifyTasks.fulfilled, updateTaskInState)
       .addCase(notifyTasks.rejected, setError);

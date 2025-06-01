@@ -16,6 +16,13 @@ import TopBar from "../TopBar";
 import Closet from "./Closet";
 import Store from "./Store";
 import PopUpInfo from "../PopUpInfo.js";
+
+
+
+
+
+
+
 import "../../assets/css/home.css";
 
 export default function Home() {

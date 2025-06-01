@@ -7,7 +7,7 @@ import "./connection.css";
 import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
-import { getAuthUser } from "../../utils/cookieUtils";
+import { getAuthUser } from "../../utils/storageUtils";
 import { connectPartner, fetchPartnerUser } from "../../redux/usersSlice.js";
 
 const Connection = () => {

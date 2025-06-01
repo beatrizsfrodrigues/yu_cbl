@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 import axios from "axios";
-// import { getAuthToken } from "./utils/cookieUtils";
+// import { getAuthToken } from "./utils/storageUtils";
 import store from "./redux//store";
 import { Provider } from "react-redux";
 

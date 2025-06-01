@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Definicoes/Definicoes.css";
 
-import { getAuthUser } from "../../../utils/cookieUtils";
+import { getAuthUser ,clearAuthStorage } from "../../../utils/storageUtils";
 import { fetchPartnerUser } from "../../../redux/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../Avatar.jsx";
@@ -191,14 +191,15 @@ const Definicoes = ({ show, onClose }) => {
                 )}
               </button>
               <button className="settings-button">Arquivo de respostas</button>
-
-              <Link
-                to="/login"
-                style={{ textDecoration: "none", color: "inherit" }}
-                onClick={() => localStorage.removeItem("loggedInUser")}
-              >
-                <button className="settings-button logout">Sair</button>
-              </Link>
+                <Link
+                  to="/login"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                  onClick={() => {
+                    clearAuthStorage();
+                  }}
+                >
+                  <button className="settings-button logout">Sair</button>
+                </Link>
             </div>
           </div>
         </div>

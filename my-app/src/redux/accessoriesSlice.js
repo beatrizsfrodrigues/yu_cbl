@@ -1,6 +1,6 @@
 // src/redux/accessoriesSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { getAuthToken } from "../utils/cookieUtils";
+// import { getAuthToken } from "../utils/storageUtils";
 
 const API_URL = process.env.REACT_APP_API_URL;
 

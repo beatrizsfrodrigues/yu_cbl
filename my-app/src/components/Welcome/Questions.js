@@ -3,7 +3,7 @@ import "./questions.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchForm } from "../../redux/formSlice";
-import { getAuthUser } from "../../utils/cookieUtils";
+import { getAuthUser } from "../../utils/storageUtils";
 import { postFormAnswers } from "../../redux/formAnswersSlice";
 
 const Questions = () => {

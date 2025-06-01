@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
-import { getAuthUser } from "../../utils/cookieUtils";
+import { getAuthUser } from "../../utils/storageUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice";
 
 import "./messages.css";
