@@ -87,12 +87,15 @@ function Tasks() {
     console.log("authUser ID:", authUser?._id);
     console.log("authUser partnerId:", authUser?.partnerId);
 
+    console.log("tasks:", tasks);
+
     let isMounted = true;
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
       try {
         if (authUser?._id) {
           const myResult = await dispatch(getTasks(authUser._id)).unwrap();
+
           if (
             JSON.stringify(myResult) !== JSON.stringify(prevMyTasksRef.current)
           ) {
@@ -140,13 +143,9 @@ function Tasks() {
   // Use useMemo to memoize filteredTasks for referential stability
   const filteredTasks = React.useMemo(() => {
     const baseTasks = filter === "received" ? myTasks : partnerTasks;
-    return baseTasks.filter((task) => {
-      const isReceived = filter === "received" && task.userId === authUser._id;
-      const isAssigned =
-        filter === "assigned" &&
-        partnerUser?._id &&
-        task.userId === partnerUser._id;
+    console.log("Base tasks:", baseTasks);
 
+    return baseTasks.filter((task) => {
       const matchesCriteria =
         filterCriteria === "todas" ||
         (filterCriteria === "concluidas" && task.completed && task.verified) ||
@@ -155,16 +154,11 @@ function Tasks() {
           !task.verified) ||
         (filterCriteria === "espera" && task.completed && !task.verified);
 
-      return (isReceived || isAssigned) && matchesCriteria;
+      console.log(matchesCriteria, task.title);
+
+      return matchesCriteria;
     });
-  }, [
-    filter,
-    filterCriteria,
-    myTasks,
-    partnerTasks,
-    authUser?._id,
-    partnerUser?._id,
-  ]);
+  }, [filter, filterCriteria, myTasks, partnerTasks]);
 
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
@@ -208,7 +202,8 @@ function Tasks() {
   };
 
   //* open and close verify task window
-  const handleOpenVerifyTaskModal = React.useCallback(() => {
+  const handleOpenVerifyTaskModal = React.useCallback((task) => {
+    setTaskToVerify(task);
     setShowVerifyTask(false);
     setIsVerifyTaskOpen(true);
   }, []);
@@ -250,7 +245,7 @@ function Tasks() {
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
     function TasksList({
-      authUser,
+      currentUser,
       filteredTasks,
       expandedTaskIndex,
       filter,
@@ -270,8 +265,8 @@ function Tasks() {
             <div>Error: {tasksError}</div>
           ) : !tasks ? (
             <div>A carregar...</div>
-          ) : authUser && filteredTasks.length > 0 ? (
-            filteredTasks.map((task, index) => (
+          ) : currentUser && filteredTasks.length > 0 ? (
+            filteredTasks?.map((task, index) => (
               <div className="taskDivOp" key={task._id}>
                 <div className="taskItemContainer">
                   <button
@@ -309,13 +304,13 @@ function Tasks() {
                   {expandedTaskIndex === index &&
                     task.completed &&
                     !task.verified &&
-                    task.userId === authUser.partnerId && (
+                    task.userId === currentUser.partnerId && (
                       <div className="btnTaskGroupVertical">
                         <button
                           className="btnTaskCircle verify"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleOpenVerifyTaskModal();
+                            handleOpenVerifyTaskModal(task);
                           }}
                           aria-label="Verificar tarefa"
                         >
