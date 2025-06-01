@@ -34,6 +34,10 @@ const Definicoes = ({ show, onClose }) => {
 
  
   useEffect(() => {
+    if (authUserRedux?.partnerId) {
+      dispatch(fetchPartnerUser(authUserRedux.partnerId));
+    }
+
     const questionTimes =
       JSON.parse(localStorage.getItem("questionTimes")) || {};
     const lastTime = authUser?.id ? questionTimes[authUser.id] : null;
@@ -64,16 +68,17 @@ const Definicoes = ({ show, onClose }) => {
     } else {
       setCanAccessQuestions(true);
     }
-  }, [authUser]);
+  }, [authUserRedux?.partnerId, dispatch]);
 
 
   const onConnectionClick = () => {
-    if (partner && partner.username) {
+    if (authUserRedux?.partnerId) {
       setShowPopup(true);
     } else {
       navigate("/connection");
     }
   };
+  
 
   const closePopup = () => setShowPopup(false);
   const goToInfoPessoal = () => navigate("/infopessoal");

@@ -10,15 +10,21 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
 
   const handleAddTask = (e) => {
     e.preventDefault();
+    console.log(currentUser);
+    if (!currentUser) {
+      onShowPopUpInfo?.("Erro: utilizador não definido.");
+      return;
+    }
+
     if (currentUser.partnerId) {
       dispatch(addTask({ title, description }));
 
       setTitle("");
       setDescription("");
-      onClose();
-      onShowPopUpInfo(`Tarefa <b>${title}</b> foi criada com sucesso.`);
+      onClose?.();
+      onShowPopUpInfo?.(`Tarefa <b>${title}</b> foi criada com sucesso.`);
     } else {
-      onShowPopUpInfo(`Cria uma ligação para criares tarefas!`);
+      onShowPopUpInfo?.(`Cria uma ligação para criares tarefas!`);
     }
   };
 

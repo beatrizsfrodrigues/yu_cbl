@@ -72,20 +72,22 @@ export default function Profile() {
   }
 
   return (
-    <div className="profile-container mainBody">
+    <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv" />
 
-      <TopBar title="Perfil">
-        <button
-          aria-label="Abrir definições"
-          onClick={() => {
-            setShowSettings(true);
-            // navigate("/definicoes");
-          }}
-        >
-          <ion-icon name="settings-outline" class="icons" />
-        </button>
-      </TopBar>
+      <div className="topbar">
+        <TopBar title="Perfil">
+          <button
+            aria-label="Abrir definições"
+            onClick={() => {
+              setShowSettings(true);
+              // navigate("/definicoes");
+            }}
+          >
+            <ion-icon name="settings-outline" class="icons" />
+          </button>
+        </TopBar>
+      </div>
 
       <div className="profile-avatar">
         <div className="profile-mascotContainer">
