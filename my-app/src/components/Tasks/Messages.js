@@ -123,6 +123,12 @@ function Messages() {
   //* send a text message
   const handleAddMessage = async (text) => {
     try {
+      if (!messages || !messages._id) {
+        console.error(
+          "Thread de mensagens não encontrada. messages._id está undefined."
+        );
+        return;
+      }
       await dispatch(sendMessage({ message: text, id: messages._id })).unwrap();
 
       // Poll immediately after sending
@@ -242,7 +248,9 @@ function Messages() {
                   key={index}
                   className="optionText"
                   onClick={
-                    partnerUser ? () => handleAddMessage(message.message) : null
+                    partnerUser && messages?._id
+                      ? () => handleAddMessage(message.message)
+                      : null
                   }
                 >
                   {message.message}
