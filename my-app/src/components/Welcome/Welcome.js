@@ -3,12 +3,14 @@ import "./welcome.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/imgs/YU_logo/YU.webp";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Welcome = () => {
   const navigate = useNavigate();
 
   // Verifica se o usuário está logado e redireciona para a Home
   useEffect(() => {
-    fetch("/api/me", { credentials: "include" })
+    fetch(`${API_URL}/api/me`, { credentials: "include" })
       .then((res) => {
         //console.log("Resposta do /api/me:", res.status); // <-- Adicionado para debug
         if (res.ok) {
