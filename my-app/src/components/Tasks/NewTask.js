@@ -10,7 +10,7 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
 
   const handleAddTask = (e) => {
     e.preventDefault();
-
+    console.log(currentUser);
     if (!currentUser) {
       onShowPopUpInfo?.("Erro: utilizador não definido.");
       return;
