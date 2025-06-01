@@ -46,7 +46,15 @@ export const registerUser = createAsyncThunk(
           headers: { "Content-Type": "application/json" },
         }
       );
-      return res.data.user;
+
+   
+      const { user, token } = res.data;
+
+ 
+      setAuthUser(user);
+      localStorage.setItem("authToken", token);
+
+      return { user, token };
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
       return rejectWithValue(msg);
@@ -293,6 +301,7 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     authUser: getStoredUser(),
+    token: getAuthToken() || null,
     partnerUser: null,
     ownedAccessories: [],
     equippedAccessories: {
@@ -317,18 +326,21 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+     
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.authUser = action.payload;
+        state.authUser = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
+
       .addCase(fetchAuthUser.pending, (s) => {
         s.status = "loading";
       })

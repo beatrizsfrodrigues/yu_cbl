@@ -1,4 +1,4 @@
-// src/components/Register.js
+
 import React, { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,18 +11,17 @@ import { registerUser } from "../redux/usersSlice";
 const Modal = lazy(() => import("./PasswordRequirementsRegister"));
 
 const Register = () => {
-  // estados de form
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // mensagens / alerts
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const [alertPass, setAlertPass] = useState("");
 
-  // requisitos de password
+
   const [passwordRequirements, setPasswordRequirements] = useState({
     minLength: false,
     hasUpperCase: false,
@@ -31,20 +30,19 @@ const Register = () => {
     hasSpecialChar: false,
   });
 
-  // modal de requisitos
+  
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const togglePasswordModal = () => setIsPasswordModalOpen((open) => !open);
 
-  // toggles de visibilidade
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Redux + navegação
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status } = useSelector((state) => state.user);
 
-  // validação de password
+
   const validatePassword = (pwd) => {
     const minLength = 6;
     const hasUpperCase = /[A-Z]/.test(pwd);
@@ -75,9 +73,9 @@ const Register = () => {
     validatePassword(nova);
   };
 
-  // envio do form
+  // validações locais e disparo do thunk de registro
   const handleRegister = () => {
-    // 1) validações locais
+    // 1) validações de nome de usuário
     const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
     if (invalidUsernameChars.test(username)) {
       setAlert("Nome de utilizador contém caracteres inválidos!");
@@ -86,6 +84,7 @@ const Register = () => {
     }
     setAlert("");
 
+    // 2) validações da senha
     if (!validatePassword(password)) {
       setAlertPass("A palavra-passe não atende aos requisitos mínimos!");
       return;
@@ -96,21 +95,22 @@ const Register = () => {
     }
     setAlertPass("");
 
-    // 2) dispara o thunk de registo
+    // 3) dispara o thunk registerUser
     dispatch(registerUser({ username, email, password }))
       .unwrap()
       .then(() => {
+        // O thunk já salvou token e user em localStorage.
         setMessage("Utilizador registado com sucesso!");
-        // limpar form
+        // limpar campos
         setUsername("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        // navegar
-        navigate("/apresentacao");
+        // redirecionar para a página de perguntas (ou outra rota)
+        navigate("/questions"); // ajuste para /apresentacao se for o caso
       })
       .catch((errMsg) => {
-        // mostra o erro do servidor
+        // se der erro, mostra no alerta
         setAlert(errMsg);
       });
   };
@@ -140,7 +140,7 @@ const Register = () => {
             <h1>Registo</h1>
           </header>
 
-          {/* Alertas de erro */}
+          {/* Mostra alertas de erro vindos do estado local */}
           {alert && <p className="alert">{alert}</p>}
 
           <div className="label-container">
@@ -241,11 +241,11 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Erro de password */}
+            {/* Mostra erro relacionado à senha */}
             {alertPass && <p className="alert">{alertPass}</p>}
           </div>
 
-          {/* Modal de requisitos */}
+          {/* Modal que exibe requisitos de senha */}
           <Suspense fallback={<div>Loading...</div>}>
             <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
               <ul className="password-requirements">
@@ -316,11 +316,11 @@ const Register = () => {
 
         <div className="register-link">
           <p>
-            Já tens conta? <a href="/Login">Iniciar Sessão</a>
+            Já tens conta? <a href="/login">Iniciar Sessão</a>
           </p>
         </div>
 
-        {/* feedback de API */}
+        {/* Feedback de API */}
         {status === "loading" && <p>Registando…</p>}
         {message && <p className="success">{message}</p>}
 
