@@ -66,6 +66,7 @@ export default function Store({
                   setActiveSection(idx);
                   resetFit(); // limpa preview
                 }}
+                aria-label="Mudar secção de acessórios"
               >
                 {sec.icon}
                 {activeSection === idx && <span className="dot"></span>}
@@ -105,6 +106,7 @@ export default function Store({
               resetFit();
               closeStore();
             }}
+            aria-label="Fechar loja"
           >
             <ion-icon name="close-outline" class="iconswhite" />
           </button>
@@ -145,6 +147,7 @@ export default function Store({
               resetFit();
               onShowPopUpInfo("Preview resetado");
             }}
+            aria-label="Resetar mascote"
           >
             <ion-icon name="refresh-outline" class="iconswhite" />
           </button>

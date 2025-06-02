@@ -8,7 +8,7 @@ import {
   fetchEquippedAccessories,
   buyAccessory,
   equipAccessories,
-  updateUser
+  updateUser,
 } from "../../redux/usersSlice.js";
 import { fetchAccessories } from "../../redux/accessoriesSlice.js";
 
@@ -16,12 +16,6 @@ import TopBar from "../TopBar";
 import Closet from "./Closet";
 import Store from "./Store";
 import PopUpInfo from "../PopUpInfo.js";
-
-
-
-
-
-
 
 import "../../assets/css/home.css";
 
@@ -236,19 +230,16 @@ export default function Home() {
     }
   };
 
-   const saveOutfit = async () => {
+  const saveOutfit = async () => {
     try {
       for (const { id, type } of Object.values(pendingEquip)) {
         if (type === "SkinColor") {
-  
           const item = findById(id);
           if (item) {
-       
             const payload = { ...user, mascot: item.src };
             await dispatch(updateUser(payload)).unwrap();
           }
         } else {
-     
           await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
         }
       }
@@ -381,10 +372,18 @@ export default function Home() {
               <p>{formatPoints(user.points)}</p>
             </div>
             <div className="buttonsCloset">
-              <button className="btnHomeHeader" onClick={openCloset}>
+              <button
+                className="btnHomeHeader"
+                onClick={openCloset}
+                aria-label="Abrir closet"
+              >
                 <ion-icon name="brush-outline" class="icons" />
               </button>
-              <button className="btnHomeHeader" onClick={openStore}>
+              <button
+                className="btnHomeHeader"
+                onClick={openStore}
+                aria-label="Abrir loja"
+              >
                 <ion-icon name="bag-outline" class="icons" />
               </button>
             </div>
