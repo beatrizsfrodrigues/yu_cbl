@@ -43,7 +43,11 @@ function Tasks() {
   const [popUpMessage, setPopUpMessage] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("porConcluir");
   const [filter, setFilter] = useState("received");
-  const [expandedTaskIndex, setExpandedTaskIndex] = useState(null);
+  const [expandedTaskIndices, setExpandedTaskIndices] = useState({
+    received: null,
+    attributed: null,
+  });
+  
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
   const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
@@ -239,8 +243,12 @@ function Tasks() {
   };
 
   const handleToggleTaskExpand = React.useCallback((index) => {
-    setExpandedTaskIndex((prev) => (prev === index ? null : index));
-  }, []);
+    setExpandedTaskIndices((prev) => ({
+      ...prev,
+      [filter]: prev[filter] === index ? null : index,
+    }));
+  }, [filter]);
+  
 
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
@@ -272,7 +280,7 @@ function Tasks() {
                   <button
                     className={`task-item ${
                       expandedTaskIndex === index ? "expanded" : ""
-                    }`}
+                    } assignedTask`}
                     onClick={() => handleToggleTaskExpand(index)}
                   >
                     <p className="taskTitle">{task.title}</p>
@@ -382,7 +390,7 @@ function Tasks() {
       <TasksList
         currentUser={authUser}
         filteredTasks={filteredTasks}
-        expandedTaskIndex={expandedTaskIndex}
+        expandedTaskIndex={expandedTaskIndices[filter]}
         filter={filter}
         tasksStatus={tasksStatus}
         tasksError={tasksError}
@@ -391,6 +399,7 @@ function Tasks() {
         handleOpenConcludeTaskModal={handleOpenConcludeTaskModal}
         handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
         hasPolled={hasPolled}
+
       />
       <button
         aria-label="Botão para adicionar nova tarefa"
