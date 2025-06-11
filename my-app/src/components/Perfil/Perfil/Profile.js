@@ -84,7 +84,11 @@ export default function Profile() {
               // navigate("/definicoes");
             }}
           >
-            <ion-icon name="settings-outline" class="icons" />
+            <ion-icon
+              name="settings-outline"
+              class="icons"
+              aria-label="Configurações"
+            />
           </button>
         </TopBar>
       </div>

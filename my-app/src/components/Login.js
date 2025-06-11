@@ -15,7 +15,6 @@ const Login = () => {
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
 
-
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "preload";
@@ -28,7 +27,6 @@ const Login = () => {
     e.preventDefault();
 
     try {
-
       const response = await axios.post(
         `${API_URL}/users/login`,
         {
@@ -43,11 +41,9 @@ const Login = () => {
       const { token, user } = response.data;
 
       if (token && user) {
-
         setAuthToken(token);
         setAuthUser(user);
 
- 
         if (user.role === "admin") {
           window.location.href = `http://localhost:3002?token=${token}`;
         } else {
@@ -58,14 +54,17 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Erro no login:", error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         setAlert(error.response.data.message);
       } else {
         setAlert("Erro ao fazer login.");
       }
     }
   };
-
 
   const isFormComplete =
     emailOrUsername.trim() !== "" && password.trim() !== "";
@@ -118,6 +117,11 @@ const Login = () => {
                 type="button"
                 className="password-toggle-button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={
+                  showPassword
+                    ? "Esconder palavra-passe"
+                    : "Mostrar palavra-passe"
+                }
               >
                 <ion-icon
                   name={showPassword ? "eye-off-outline" : "eye-outline"}

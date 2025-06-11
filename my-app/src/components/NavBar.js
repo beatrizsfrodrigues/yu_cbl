@@ -98,6 +98,7 @@ function NavBar() {
         style={{
           transform: indicatorTransform,
         }}
+        aria-label="indicador de navegação"
       />
 
       {navItems.map((item, index) => (
