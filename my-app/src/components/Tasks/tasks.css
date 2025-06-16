@@ -377,10 +377,21 @@ button[aria-label="Abrir filtro"] .sliders {
   text-align:left
 }
 
-.task-item.expanded {
+.task-item.expanded:not(.assignedTask) {
   flex-direction: column;
   align-items: flex-start;
   width: 80%;
+  /* Encolhe horizontalmente */
+  height: 120px;
+  /* Expande verticalmente */
+  background-color: var(--orange-lighter);
+  position: relative;
+}
+
+.task-item.expanded {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
   /* Encolhe horizontalmente */
   height: 120px;
   /* Expande verticalmente */
