@@ -35,7 +35,7 @@ function NewTask({ onClose, currentUser, onShowPopUpInfo }) {
       <div className="window slide-up">
         <div>
           <h3>Nova tarefa</h3>
-          <X className="closeWindow" onClick={onClose} />
+          <ion-icon className="close-outline" onClick={onClose}></ion-icon>
         </div>
         <div className="line"></div>
         <form id="newTaskForm" onSubmit={handleAddTask}>

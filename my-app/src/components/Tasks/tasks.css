@@ -67,6 +67,11 @@
   margin-top: 40px;
 }
 
+#tasksSpace {
+  overflow-y: auto;
+  max-height: 66vh;
+}
+
 .taskTitle {
   margin: 10px 0px;
   width: 80%;
@@ -372,9 +377,9 @@ button[aria-label="Abrir filtro"] .sliders {
   overflow: hidden;
 }
 
-.taskDescription{
+.taskDescription {
   margin-top: 0px;
-  text-align:left
+  text-align: left;
 }
 
 .task-item.expanded:not(.assignedTask) {
