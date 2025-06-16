@@ -47,7 +47,7 @@ function Tasks() {
     received: null,
     attributed: null,
   });
-  
+
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
   const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
@@ -242,13 +242,15 @@ function Tasks() {
     setTaskToVerify(null);
   };
 
-  const handleToggleTaskExpand = React.useCallback((index) => {
-    setExpandedTaskIndices((prev) => ({
-      ...prev,
-      [filter]: prev[filter] === index ? null : index,
-    }));
-  }, [filter]);
-  
+  const handleToggleTaskExpand = React.useCallback(
+    (index) => {
+      setExpandedTaskIndices((prev) => ({
+        ...prev,
+        [filter]: prev[filter] === index ? null : index,
+      }));
+    },
+    [filter]
+  );
 
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
@@ -387,29 +389,29 @@ function Tasks() {
           Atribuídas
         </button>
       </div>
-      <TasksList
-        currentUser={authUser}
-        filteredTasks={filteredTasks}
-        expandedTaskIndex={expandedTaskIndices[filter]}
-        filter={filter}
-        tasksStatus={tasksStatus}
-        tasksError={tasksError}
-        tasks={tasks}
-        handleToggleTaskExpand={handleToggleTaskExpand}
-        handleOpenConcludeTaskModal={handleOpenConcludeTaskModal}
-        handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
-        hasPolled={hasPolled}
-
-      />
-      <button
-        aria-label="Botão para adicionar nova tarefa"
-        id="newTask"
-        className="profile-button"
-        onClick={handleOpenNewTaskModal}
-      >
-        <ion-icon name="add-outline" class="iconswhite"></ion-icon>
-      </button>
-
+      <div id="tasksSpace">
+        <TasksList
+          currentUser={authUser}
+          filteredTasks={filteredTasks}
+          expandedTaskIndex={expandedTaskIndices[filter]}
+          filter={filter}
+          tasksStatus={tasksStatus}
+          tasksError={tasksError}
+          tasks={tasks}
+          handleToggleTaskExpand={handleToggleTaskExpand}
+          handleOpenConcludeTaskModal={handleOpenConcludeTaskModal}
+          handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
+          hasPolled={hasPolled}
+        />
+        <button
+          aria-label="Botão para adicionar nova tarefa"
+          id="newTask"
+          className="profile-button"
+          onClick={handleOpenNewTaskModal}
+        >
+          <ion-icon name="add-outline" class="iconswhite"></ion-icon>
+        </button>
+      </div>
       {/* Modais */}
       {showVerifyTask && partnerUser && (
         <Suspense fallback={<div>Loading rejeição...</div>}>
