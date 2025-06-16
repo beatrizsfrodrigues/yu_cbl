@@ -176,6 +176,14 @@ export default function Profile() {
         >
           <ion-icon name="information-outline" className="icons" />
         </Link>
+
+        <Link
+          to="/acessibilidade"
+          className="profile-button acc"
+          aria-label="Informações"
+        >
+          <ion-icon name="accessibility-outline" className="icons"></ion-icon>
+        </Link>
       </div>
 
       {showGrafico && (

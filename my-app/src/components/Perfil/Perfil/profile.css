@@ -127,11 +127,11 @@ button[aria-label="Abrir definições"] {
   background-color: var(--orange);
 }
 
-.dots:active {
+.acc:active {
   background-color: var(--blue-dark); /* Catarina a mexer */
 }
 
-.dots {
+.acc {
   background-color: var(--blue);
 }
 
@@ -141,17 +141,14 @@ button[aria-label="Abrir definições"] {
   color: #fff;
 }
 
-
 /* ─── Profile Avatar ──────────────────────────────────────────────────────── */
-
 
 .profile-mascotContainer {
   position: relative;
-  width: 70vw;   
-  height: 70vw; 
+  width: 70vw;
+  height: 70vw;
   margin: 0 auto;
 }
-
 
 .profile-mascotContainer img {
   position: absolute;
@@ -163,29 +160,43 @@ button[aria-label="Abrir definições"] {
   pointer-events: none;
 }
 
-
-
-
 .profile-mascotContainer img.base {
   max-width: 100%;
   max-height: 110%;
 }
 
-
 .profile-mascotContainer img:not(.base) {
   max-width: 100%;
-  transform: translate(-1%, 0%) scale(1) !important;;
+  transform: translate(-1%, 0%) scale(1) !important;
 }
 
-
-
-.profile-accessory.bg      { z-index: 0; }
-.profile-Yu                { z-index: 1; }
-.profile-accessory.cachecol{ z-index: 2; }
-.profile-accessory.chapeu  { z-index: 3; }
-.profile-accessory.ouvidos { z-index: 4; }
-.profile-accessory.oculos  { z-index: 5; }
-.profile-accessory.shirt   { z-index: 6; }
-.profile-accessory.bigode  { z-index: 7; }
-.profile-accessory.hat     { z-index: 8; }
-.profile-accessory.color   { z-index: 9; }
+.profile-accessory.bg {
+  z-index: 0;
+}
+.profile-Yu {
+  z-index: 1;
+}
+.profile-accessory.cachecol {
+  z-index: 2;
+}
+.profile-accessory.chapeu {
+  z-index: 3;
+}
+.profile-accessory.ouvidos {
+  z-index: 4;
+}
+.profile-accessory.oculos {
+  z-index: 5;
+}
+.profile-accessory.shirt {
+  z-index: 6;
+}
+.profile-accessory.bigode {
+  z-index: 7;
+}
+.profile-accessory.hat {
+  z-index: 8;
+}
+.profile-accessory.color {
+  z-index: 9;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/css/Login.css";
@@ -64,6 +64,30 @@ const Login = () => {
         setAlert("Erro ao fazer login.");
       }
     }
+  };
+
+  const googleButton = useRef(null);
+
+  useEffect(() => {
+    /* global google */
+    if (window.google && googleButton.current) {
+      window.google.accounts.id.initialize({
+        client_id:
+          "470997168294-gih5icq4crbtnktfugobt0tvj8cplfdf.apps.googleusercontent.com", // substitui pelo teu client_id
+        callback: handleGoogleResponse,
+      });
+      window.google.accounts.id.renderButton(googleButton.current, {
+        theme: "outline",
+        size: "large",
+      });
+    }
+  }, []);
+
+  const handleGoogleResponse = (response) => {
+    // O token JWT do Google está em response.credential
+    // Envia este token para o backend para autenticação
+    console.log("Google JWT:", response.credential);
+    // Exemplo: axios.post(`${API_URL}/users/google-login`, { token: response.credential })
   };
 
   const isFormComplete =
@@ -141,6 +165,7 @@ const Login = () => {
         <button className="buttonBig" type="submit" disabled={!isFormComplete}>
           Iniciar Sessão
         </button>
+        <div ref={googleButton}></div>
       </form>
     </div>
   );
