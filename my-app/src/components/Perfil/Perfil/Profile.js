@@ -178,7 +178,7 @@ export default function Profile() {
         </Link>
 
         <Link
-          to="/informacoes"
+          to="/acessibilidade"
           className="profile-button acc"
           aria-label="Informações"
         >
