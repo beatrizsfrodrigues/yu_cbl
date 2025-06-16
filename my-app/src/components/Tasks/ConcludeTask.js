@@ -35,13 +35,11 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
       <div className="window">
         <div className="header">
           <h3>Concluir tarefa</h3>
-          <button
-            className="closeWindow"
+          <ion-icon
+            name="close-outline"
             onClick={onClose}
-            aria-label="Fechar janela"
-          >
-            <X aria-label="Fechar janela" />
-          </button>
+            class="icons"
+          ></ion-icon>
         </div>
         <div className="line"></div>
         <div id="concludeTaskDiv">
