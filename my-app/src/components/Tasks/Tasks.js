@@ -88,11 +88,6 @@ function Tasks() {
   const prevPartnerTasksRef = React.useRef([]);
 
   useEffect(() => {
-    console.log("authUser ID:", authUser?._id);
-    console.log("authUser partnerId:", authUser?.partnerId);
-
-    console.log("tasks:", tasks);
-
     let isMounted = true;
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
@@ -134,7 +129,7 @@ function Tasks() {
     authUser?._id,
     partnerUser?._id,
     authUser?.partnerId,
-    tasks,
+
     dispatch,
     hasPolled,
   ]);
