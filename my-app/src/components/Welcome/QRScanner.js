@@ -1,85 +1,85 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 
 const QRScanner = ({ onScanSuccess, onClose }) => {
   const scannerRef = useRef(null);
   const html5QrCodeRef = useRef(null);
-  const [scannerRunning, setScannerRunning] = useState(false);
-  const hasScannedRef = useRef(false); // Flag to prevent multiple scans
+  const hasScannedRef = useRef(false);
+
+  const stopScanner = useCallback(async () => {
+    if (html5QrCodeRef.current) {
+      const state = html5QrCodeRef.current.getState();
+      if (state === 2 /* RUNNING */ || state === 1 /* PAUSED */) {
+        try {
+          await html5QrCodeRef.current.stop();
+          await html5QrCodeRef.current.clear();
+        } catch (err) {
+          console.warn("Erro ao parar o scanner:", err.message);
+        }
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    if (!scannerRef.current) {
-      console.error("Scanner element not found");
-      return;
-    }
-
-    html5QrCodeRef.current = new Html5Qrcode(scannerRef.current.id);
-
     const startScanner = async () => {
       try {
+        if (!scannerRef.current) {
+          console.error("Elemento do scanner não foi montado ainda.");
+          return;
+        }
+
+        const readerId = scannerRef.current.id;
+        if (!readerId) {
+          console.error("Elemento scannerRef precisa ter um ID.");
+          return;
+        }
+
+        html5QrCodeRef.current = new Html5Qrcode(readerId);
         const devices = await Html5Qrcode.getCameras();
         if (!devices || devices.length === 0) {
-          console.error("No cameras found.");
+          console.error("Nenhuma câmera encontrada.");
           return;
         }
-        const cameraId = devices[0].id;
 
-        if (scannerRunning) {
-          console.warn("Scanner already running");
-          return;
-        }
+        const backCamera = devices.find(
+          (d) =>
+            d.label.toLowerCase().includes("back") ||
+            d.label.toLowerCase().includes("trás") ||
+            d.label.toLowerCase().includes("rear")
+        );
+
+        const selectedCamera = backCamera || devices[0];
 
         await html5QrCodeRef.current.start(
-          cameraId,
+          selectedCamera.id,
           { fps: 10, qrbox: 250 },
           (decodedText) => {
             if (!hasScannedRef.current) {
-              hasScannedRef.current = true; // Mark as scanned
-              onScanSuccess(decodedText); // Notify parent
-              stopScanner(); // Stop scanner immediately
+              hasScannedRef.current = true;
+              onScanSuccess(decodedText);
+              stopScanner();
             }
           },
           (errorMessage) => {
-            // Ignore expected parse errors
             if (!errorMessage.includes("NotFoundException")) {
-              console.warn("QR scan error:", errorMessage);
+              console.warn("Erro no scan:", errorMessage);
             }
           }
         );
-        setScannerRunning(true);
       } catch (err) {
-        console.error("Error starting scanner:", err);
+        console.error("Erro ao iniciar o scanner:", err.message);
       }
     };
 
-    const stopScanner = async () => {
-      if (!scannerRunning) return;
-      try {
-        await html5QrCodeRef.current.stop();
-        await html5QrCodeRef.current.clear();
-        setScannerRunning(false);
-      } catch (err) {
-        // Ignore errors if scanner not running
-        if (
-          !(
-            err?.message?.includes("not running") ||
-            err?.message?.includes("not running or paused") ||
-            (typeof err === "string" &&
-              (err.includes("not running") ||
-                err.includes("not running or paused")))
-          )
-        ) {
-          console.error("Stop failed", err);
-        }
-      }
-    };
-
-    startScanner();
+    const timeout = setTimeout(() => {
+      startScanner();
+    }, 100); // pequeno delay para garantir que o DOM existe
 
     return () => {
+      clearTimeout(timeout);
       stopScanner();
     };
-  }, [onScanSuccess, scannerRunning]);
+  }, [onScanSuccess, stopScanner]);
 
   return (
     <div className="scanner-container">
@@ -87,17 +87,10 @@ const QRScanner = ({ onScanSuccess, onClose }) => {
       <div id="qr-reader" ref={scannerRef} style={{ width: "300px" }} />
       <button
         className="submitBtn orangeBtn"
-        onClick={() => {
-          if (!hasScannedRef.current) {
-            hasScannedRef.current = true; // Prevent further scans
-            html5QrCodeRef.current.stop().then(() => {
-              html5QrCodeRef.current.clear();
-              setScannerRunning(false);
-              onClose();
-            });
-          } else {
-            onClose();
-          }
+        onClick={async () => {
+          hasScannedRef.current = true;
+          await stopScanner();
+          onClose();
         }}
       >
         Cancelar
