@@ -69,7 +69,7 @@ const Login = () => {
   const googleButton = useRef(null);
 
   useEffect(() => {
-    /* global google */
+    // /* global google */
     if (window.google && googleButton.current) {
       window.google.accounts.id.initialize({
         client_id:

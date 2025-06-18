@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Definicoes/Definicoes.css";
 
-import { getAuthUser ,clearAuthStorage } from "../../../utils/storageUtils";
+import { getAuthUser, clearAuthStorage } from "../../../utils/storageUtils";
 import { fetchPartnerUser } from "../../../redux/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../Avatar.jsx";
@@ -13,18 +12,15 @@ const Definicoes = ({ show, onClose }) => {
   const [timeRemaining, setTimeRemaining] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
-
   const [authUser] = useState(getAuthUser());
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const partner = useSelector((state) => state.user.partnerUser);
 
-
   const authUserRedux = useSelector((state) => state.user.authUser);
 
   const accessories = useSelector((state) => state.accessories.data);
-
 
   useEffect(() => {
     if (authUser?.partnerId) {
@@ -32,7 +28,6 @@ const Definicoes = ({ show, onClose }) => {
     }
   }, [authUser?.partnerId, dispatch]);
 
- 
   useEffect(() => {
     if (authUserRedux?.partnerId) {
       dispatch(fetchPartnerUser(authUserRedux.partnerId));
@@ -59,7 +54,8 @@ const Definicoes = ({ show, onClose }) => {
 
         let formattedTime = "";
         if (days > 0) formattedTime += `${days} dia${days > 1 ? "s" : ""}, `;
-        if (hours > 0) formattedTime += `${hours} hora${hours > 1 ? "s" : ""}, `;
+        if (hours > 0)
+          formattedTime += `${hours} hora${hours > 1 ? "s" : ""}, `;
         if (minutes > 0 || (hours === 0 && days === 0))
           formattedTime += `${minutes} minuto${minutes > 1 ? "s" : ""}`;
 
@@ -68,8 +64,7 @@ const Definicoes = ({ show, onClose }) => {
     } else {
       setCanAccessQuestions(true);
     }
-  }, [authUserRedux?.partnerId, dispatch]);
-
+  }, [authUserRedux?.partnerId, authUser?.id, dispatch]);
 
   const onConnectionClick = () => {
     if (authUserRedux?.partnerId) {
@@ -78,17 +73,14 @@ const Definicoes = ({ show, onClose }) => {
       navigate("/connection");
     }
   };
-  
 
   const closePopup = () => setShowPopup(false);
   const goToInfoPessoal = () => navigate("/infopessoal");
-
 
   if (!show) return null;
 
   return (
     <>
-    
       {showPopup && partner && (
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
@@ -101,9 +93,7 @@ const Definicoes = ({ show, onClose }) => {
               <strong>Código do Parceiro:</strong> {partner.code}
             </p>
 
- 
             <div className="avatars-container-popup">
-            
               <div className="avatar-item-popup">
                 <div className="avatar-username-popup">
                   {authUserRedux?.username || authUser?.username || "–"}
@@ -113,19 +103,15 @@ const Definicoes = ({ show, onClose }) => {
                     mascot={authUserRedux?.mascot || null}
                     equipped={authUserRedux?.accessoriesEquipped || {}}
                     accessoriesList={accessories}
-                    size={64} 
+                    size={64}
                   />
                 </div>
               </div>
 
-        
               <div className="dotted-line-popup"></div>
 
-      
               <div className="avatar-item-popup">
-                <div className="avatar-username-popup">
-                  {partner.username}
-                </div>
+                <div className="avatar-username-popup">{partner.username}</div>
                 <div className="avatar-wrapper">
                   <Avatar
                     mascot={partner.mascot}
@@ -136,7 +122,6 @@ const Definicoes = ({ show, onClose }) => {
                 </div>
               </div>
             </div>
-         
 
             <button className="close-popup-button" onClick={closePopup}>
               Fechar
@@ -144,7 +129,6 @@ const Definicoes = ({ show, onClose }) => {
           </div>
         </div>
       )}
-
 
       <div className="modal" onClick={onClose}>
         <div className="window" onClick={(e) => e.stopPropagation()}>
@@ -191,20 +175,19 @@ const Definicoes = ({ show, onClose }) => {
                 )}
               </button>
               <button className="settings-button">Arquivo de respostas</button>
-                <Link
-                  to="/login"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                  onClick={() => {
-                    clearAuthStorage();
-                  }}
-                >
-                  <button className="settings-button logout">Sair</button>
-                </Link>
+              <Link
+                to="/login"
+                style={{ textDecoration: "none", color: "inherit" }}
+                onClick={() => {
+                  clearAuthStorage();
+                }}
+              >
+                <button className="settings-button logout">Sair</button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-     
     </>
   );
 };

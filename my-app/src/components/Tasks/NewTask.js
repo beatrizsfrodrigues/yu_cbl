@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { X } from "react-feather";
+// import { X } from "react-feather";
 import { addTask } from "../../redux/taskSlice.js";
 
 function NewTask({ onClose, currentUser, onShowPopUpInfo }) {

@@ -8,11 +8,12 @@ import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
 import { getAuthUser } from "../../utils/storageUtils";
-import { connectPartner, fetchPartnerUser } from "../../redux/usersSlice.js";
+import { fetchPartnerUser } from "../../redux/usersSlice.js";
 
 const Connection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [hasPolled, setHasPolled] = React.useState(false);
 
   // controla se o input de código deve aparecer
   const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
@@ -63,12 +64,46 @@ const Connection = () => {
     }
   }, [partner, isConnected]);
 
+  useEffect(() => {
+    console.log("authUser ID:", authUser?._id);
+    console.log("authUser partnerId:", authUser?.partnerId);
+
+    let isMounted = true;
+    const POLL_INTERVAL = 2000;
+    const pollUser = async () => {
+      try {
+        if (authUser?.partnerId) {
+          navigate("/home");
+        }
+
+        if (isMounted && !hasPolled) setHasPolled(true);
+      } catch (err) {
+        console.error("Failed to poll tasks:", err);
+      }
+    };
+    pollUser(); // Run once immediately
+    const intervalId = setInterval(pollUser, POLL_INTERVAL);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [authUser?._id, authUser?.partnerId, navigate, hasPolled]);
+
   // ───────────────────────────────────────────────
   // Alterna entre mostrar input de código ou não
   // ───────────────────────────────────────────────
   const handleClick = () => {
-    setIsCodeInputVisible((v) => !v);
-    setMessage("");
+    if (showScanner) {
+      setShowScanner(false);
+      // Aguarda desmontar o QRScanner antes de mostrar o código
+      setTimeout(() => {
+        setIsCodeInputVisible((v) => !v);
+        setMessage("");
+      }, 300); // dá tempo do QRScanner limpar câmera
+    } else {
+      setIsCodeInputVisible((v) => !v);
+      setMessage("");
+    }
   };
 
   // ───────────────────────────────────────────────
@@ -82,9 +117,6 @@ const Connection = () => {
 
     try {
       // 1) chama o thunk connectPartner com o código inserido
-      const resultAction = await dispatch(
-        connectPartner({ code: partnerCode.trim() })
-      ).unwrap();
 
       // Se `unwrap()` não lançar erro, significa que a ligação foi bem‐sucedida.
       // Aqui `resultAction` é o payload que o seu “connect-partner” devolve
@@ -110,10 +142,6 @@ const Connection = () => {
 
   const handleScanSuccess = async (scannedCode) => {
     try {
-      const resultAction = await dispatch(
-        connectPartner({ code: scannedCode })
-      ).unwrap();
-
       // se deu certo, fetchPartnerUser e redireciona
       await dispatch(fetchPartnerUser());
       setShowScanner(false);
@@ -251,8 +279,8 @@ const Connection = () => {
             }}
           >
             {isCodeInputVisible
-              ? "Quero mostrar o meu código."
-              : "Quero inserir um código."}
+              ? "Quero inserir um código."
+              : "Quero mostrar o meu código."}
           </button>
           <div className="skip-section">
             <button

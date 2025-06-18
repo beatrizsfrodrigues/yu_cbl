@@ -130,7 +130,14 @@ function Tasks() {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, [authUser?._id, partnerUser?._id, dispatch, hasPolled]);
+  }, [
+    authUser?._id,
+    partnerUser?._id,
+    authUser?.partnerId,
+    tasks,
+    dispatch,
+    hasPolled,
+  ]);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {
