@@ -84,10 +84,13 @@ const Login = () => {
   }, []);
 
   const handleGoogleResponse = (response) => {
-    // O token JWT do Google está em response.credential
-    // Envia este token para o backend para autenticação
-    console.log("Google JWT:", response.credential);
-    // Exemplo: axios.post(`${API_URL}/users/google-login`, { token: response.credential })
+    // Envia o token para o backend
+    axios
+      .post(`${API_URL}/users/google-login`, { token: response.credential })
+      .then((res) => {
+        // Aqui podes guardar o utilizador autenticado no frontend
+        // Exemplo: setAuthUser(res.data.user);
+      });
   };
 
   const isFormComplete =
