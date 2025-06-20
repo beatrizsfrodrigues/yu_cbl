@@ -1,11 +1,15 @@
+// src/components/Perfil/Profile.js
+
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../Perfil/profile.css";
 import Grafico from "../Grafico/Grafico";
-import Definicoes from "../Definicoes/Definicoes.js";
-import TopBar from "../../TopBar.js";
+import Definicoes from "../Definicoes/Definicoes";
+import Acess from "./Acess";
+import Informacoes from "../Informacoes/Informacoes";  
 
+import TopBar from "../../TopBar";
 import {
   fetchAuthUser,
   fetchOwnedAccessories,
@@ -17,8 +21,11 @@ export default function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // estados para controlar cada modal
   const [showGrafico, setShowGrafico] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAcess,    setShowAcess]    = useState(false);
+  const [showInfo,    setShowInfo]     = useState(false);   
 
   const {
     authUser: currentUser,
@@ -26,9 +33,9 @@ export default function Profile() {
     error: userError,
     equippedAccessories,
   } = useSelector((state) => state.user);
-
   const accessories = useSelector((state) => state.accessories.data);
 
+  // fetch inicial
   useEffect(() => {
     dispatch(fetchAuthUser());
     dispatch(fetchOwnedAccessories());
@@ -36,21 +43,21 @@ export default function Profile() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
+  // lógica para aplicar acessórios ao avatar
   const [selectedBackground, setSelectedBackground] = useState(null);
-  const [selectedShirt, setSelectedShirt] = useState(null);
-  const [selectedHat, setSelectedHat] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedBigode, setSelectedBigode] = useState(null);
-  const [selectedCachecol, setSelectedCachecol] = useState(null);
-  const [selectedChapeu, setSelectedChapeu] = useState(null);
-  const [selectedOuvidos, setSelectedOuvidos] = useState(null);
-  const [selectedOculos, setSelectedOculos] = useState(null);
+  const [selectedShirt,      setSelectedShirt]      = useState(null);
+  const [selectedHat,        setSelectedHat]        = useState(null);
+  const [selectedColor,      setSelectedColor]      = useState(null);
+  const [selectedBigode,     setSelectedBigode]     = useState(null);
+  const [selectedCachecol,   setSelectedCachecol]   = useState(null);
+  const [selectedChapeu,     setSelectedChapeu]     = useState(null);
+  const [selectedOuvidos,    setSelectedOuvidos]    = useState(null);
+  const [selectedOculos,     setSelectedOculos]     = useState(null);
 
   useEffect(() => {
     if (!accessories) return;
-
     const findById = (id) =>
-      accessories?.find((a) => a && a._id === id) || null;
+      accessories.find((a) => a && a._id === id) || null;
 
     setSelectedBackground(findById(equippedAccessories.background));
     setSelectedShirt(findById(equippedAccessories.shirt));
@@ -64,7 +71,7 @@ export default function Profile() {
   }, [accessories, equippedAccessories]);
 
   if (userStatus === "loading") return <div>Loading perfil…</div>;
-  if (userStatus === "failed") return <div>Error: {userError}</div>;
+  if (userStatus === "failed")  return <div>Error: {userError}</div>;
 
   if (!currentUser?._id) {
     navigate("/login");
@@ -79,16 +86,9 @@ export default function Profile() {
         <TopBar title="Perfil">
           <button
             aria-label="Abrir definições"
-            onClick={() => {
-              setShowSettings(true);
-              // navigate("/definicoes");
-            }}
+            onClick={() => setShowSettings(true)}
           >
-            <ion-icon
-              name="settings-outline"
-              class="icons"
-              aria-label="Configurações"
-            />
+            <ion-icon name="settings-outline" class="icons" />
           </button>
         </TopBar>
       </div>
@@ -161,30 +161,38 @@ export default function Profile() {
       </div>
 
       <div className="profile-buttons">
+        {/* Abrir gráfico */}
         <button
           aria-label="Botão para abrir gráficos"
           className="profile-button award"
-          onClick={() => setShowGrafico((v) => !v)}
+          onClick={() => setShowGrafico(true)}
         >
           <ion-icon name="podium-outline" className="icons" />
         </button>
 
-        <Link
-          to="/informacoes"
-          className="profile-button circle"
+        {/* Abrir modal de Informações em vez de link */}
+        <button
           aria-label="Informações"
+          className="profile-button circle"
+          onClick={() => setShowInfo(true)}
         >
           <ion-icon name="information-outline" className="icons" />
-        </Link>
+        </button>
+
+        {/* Abrir acessibilidade */}
+        <button
+          aria-label="Acessibilidade"
+          className="profile-button circle"
+          onClick={() => setShowAcess(true)}
+          style={{ backgroundColor: "#8DD4D1" }}
+        >
+          <ion-icon name="accessibility-outline" className="icons" />
+        </button>
       </div>
 
+      {/* Modais */}
       {showGrafico && (
-        <Grafico
-          show={showGrafico}
-          onClose={() => setShowGrafico(false)}
-          monthlyData={[5, 10, 15, 20, 25]}
-          yearlyData={[100, 200, 300, 400, 500]}
-        />
+        <Grafico show={showGrafico} onClose={() => setShowGrafico(false)} />
       )}
 
       {showSettings && (
@@ -195,6 +203,16 @@ export default function Profile() {
           onArquivoClick={() => navigate("/arquivo")}
         />
       )}
+
+      {showAcess && (
+        <Acess show={showAcess} onClose={() => setShowAcess(false)} />
+      )}
+
+     {showInfo && (
+        <Informacoes show={showInfo} onClose={() => setShowInfo(false)}/>
+)}
+
+      
     </div>
   );
 }

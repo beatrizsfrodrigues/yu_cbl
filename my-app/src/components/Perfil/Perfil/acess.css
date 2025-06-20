@@ -1,0 +1,51 @@
+.modal .window > div {
+  /* repõe o comportamento padrão (sem justificar os itens) */
+  justify-content: initial !important;
+}
+/* Ajusta o título dos gráficos (ou títulos das sections) */
+.grafico-section h3 {
+  font-size: 1.4rem;
+  color: var(--purple-darker);
+  text-align: center;
+  margin-bottom: 10px;
+  width: 100%;
+  display: block;
+}
+
+/* Organizar todo o conteúdo em coluna e centralizar */
+.grafico-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-height: calc(80vh - 3.5rem); /* opcional, para scroll interno */
+  overflow-y: auto;               /* garante scroll quando ultrapassar */
+  padding: 0.5rem 1rem;
+}
+
+/* Cada section com largura limitada e centra o texto */
+.grafico-section {
+  width: 100%;
+  max-width: 350px;
+  margin: auto;
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilo para containers de gráfico — não necessário no modal de texto */
+.grafico-chart {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.acess-link {
+  color: var(--purple) !important; /* assume que tens esta variável definida */
+  text-decoration: underline;       /* só se quiseres sublinhado */
+}
