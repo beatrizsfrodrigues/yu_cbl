@@ -364,7 +364,7 @@ function Tasks() {
     }
   );
 
-  const hasUnverified = teste.some(
+  const hasUnverified = tasks.some(
     (task) => task.status === "atribuidas" && !task.verified
   );
 
