@@ -386,12 +386,12 @@ function Tasks() {
           Recebidas
         </button>
         <span className="divider">|</span>
+        {hasTaskNotification && <span className="badge"></span>}
         <button
           className={`filter-button ${filter === "assigned" ? "active" : ""}`}
           onClick={() => handleFilterChange("assigned")}
         >
           Atribuídas
-          {hasTaskNotification && <span className="badge"></span>}
         </button>
       </div>
       <div id="tasksSpace">
