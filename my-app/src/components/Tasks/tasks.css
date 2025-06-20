@@ -70,6 +70,7 @@
 #tasksSpace {
   overflow-y: auto;
   max-height: 66vh;
+  padding: 2px;
 }
 
 .taskTitle {
@@ -465,4 +466,12 @@ button[aria-label="Abrir filtro"] .sliders {
 
 .btnTaskCircle .icons {
   color: var(--purple-darker);
+}
+
+.load-more-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px;
+  margin-bottom: 150px;
 }
