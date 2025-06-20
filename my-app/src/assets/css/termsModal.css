@@ -1,0 +1,72 @@
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0,0,0,0.5) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 9999 !important;
+}
+
+.modal-content {
+  background: #fff !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  width: 90% !important;
+  max-width: 500px !important;
+  max-height: 80% !important;
+  overflow-y: auto !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  position: relative !important;
+}
+
+.modal-close {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  background: none !important;
+  border: none !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+}
+
+.terms-scroll {
+  margin: 16px 0 !important;
+  line-height: 1.5 !important;
+}
+
+.terms-scroll hr {
+  margin: 16px 0 !important;
+}
+
+.terms-scroll h3 {
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+}
+
+.terms-scroll ul {
+  list-style: disc inside !important;
+  margin: 8px 0 16px !important;
+  padding: 0 !important;
+}
+
+.terms-scroll ul li {
+  margin-bottom: 8px !important;
+}
+
+.privacy-note {
+  font-size: 0.9em !important;
+  color: #555 !important;
+  margin-bottom: 16px !important;
+}
+
+.buttonBig.active {
+  background: #b49bc7 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+}

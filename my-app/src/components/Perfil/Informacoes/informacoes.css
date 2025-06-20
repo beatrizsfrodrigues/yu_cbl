@@ -1,178 +1,83 @@
-/**********************************
- * Container Principal
- **********************************/
-.informacoes-container {
-  font-family: "Quicksand", sans-serif;
-}
+/* Wrapper do slider */
+.contact-slider { width: 100%; padding: 1rem 0; }
 
-/**********************************
-* Cabeçalho
-**********************************/
-.informacoes-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.back-button {
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  border: none;
-  transition: transform 0.2s ease;
-  margin-top: -6%;
-  font-size: 2rem;
-  color: var(--purple-darker);
-  border-radius: 50%;
-}
-
-.bi-arrow-left {
-  font-size: 1.3rem;
-  -webkit-text-stroke: 1px var(--purple-darker);
-  color: var(--purple-darker);
-}
-
-.back-button:hover {
-  background-color: var(--purple-light);
-  transform: scale(1.1);
-}
-
-.back-link {
-  text-decoration: none;
-  color: #ffffff;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.h1 {
-  font-size: 2rem;
-  color: var(--purple-darker);
-  font-weight: bold;
-}
-
-/**********************************
-* Secção de "Sabias que..."
-**********************************/
-.informacoes-content h2 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: var(--purple-darker);
-}
-
-.informacoes-list {
-  margin: 20px 0;
-}
-
-.informacao-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.informacao-item h3 {
-  font-size: 3rem;
-  color: var(--purple-darker);
-  line-height: 1;
-  margin-top: 1%;
-}
-
-.informacao-item p {
-  font-size: 1.2rem;
-  margin: 0;
-  line-height: 1.5;
-}
-
-/**********************************
-* Contactos (Apoios) - Slider Swiper.js
-**********************************/
+/* Wrapper do slider */
 .contact-slider {
   width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
-  overflow: hidden;
+  padding: 1rem 0;
 }
 
-.contact-info {
-  background-color: #d8f3dc;
-  padding: 20px;
-  border-radius: 15px;
-  margin-top: 20px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+/* Estilos globais do Swiper */
+.mySwiper {
+  width: 100%;
+  padding-bottom: 30px; /* espaço para os bullets */
+}
+
+/* Layout dos slides */
+.mySwiper .swiper-wrapper {
+  display: flex;
+}
+.mySwiper .swiper-slide {
+  flex-shrink: 0;
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Estilos dos cards */
+.contact-card {
+  width: 90%;
+  max-width: 300px;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+.card-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.card-description {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+.contact-item {
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+.card-email {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+.card-link {
+  margin-top: auto;
+  align-self: flex-end;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Paginação */
+.mySwiper .swiper-pagination {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   text-align: center;
 }
-
-.contact-info h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #1b4332;
-}
-
-.contact-info p {
-  font-size: 1rem;
-  margin: 5px 0;
-  color: var(--purple-darker);
-}
-
-.contact-info a {
-  text-decoration: none;
-  color: #1b4332;
-  font-weight: bold;
-  display: block;
-  margin-top: 10px;
-}
-
-/**********************************
-* Swiper.js - Estilização da Paginação
-**********************************/
-.swiper-pagination {
-  position: relative;
-  margin-top: 15px;
-}
-
-.swiper-pagination-bullet {
-  width: 12px;
-  height: 12px;
-  background: var(--purple-darker) !important;
-  opacity: 0.5;
-  transition: all 0.3s ease;
-}
-
-.swiper-pagination-bullet-active {
-  background: var(--purple-darker) !important;
+.mySwiper .swiper-pagination-bullet {
+  background: #888;
   opacity: 1;
-  transform: scale(1.3);
+  margin: 0 4px !important;
 }
-
-/**********************************
-* Responsividade
-**********************************/
-@media (max-width: 768px) {
-  .contact-slider {
-    max-width: 100%;
-  }
-
-  .contact-info {
-    padding: 15px;
-  }
-
-  .informacoes-content h2 {
-    font-size: 1.5rem;
-  }
-
-  .informacao-item h3 {
-    font-size: 2rem;
-  }
-
-  .informacao-item p {
-    font-size: 1rem;
-  }
+.mySwiper .swiper-pagination-bullet-active {
+  background: #333;
 }
