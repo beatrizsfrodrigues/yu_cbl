@@ -364,8 +364,8 @@ function Tasks() {
     }
   );
 
-  const hasUnverified = tasks.some(
-    (task) => task.status === "atribuidas" && !task.verified
+  const hasTaskNotification = tasks.some(
+    (task) => task.notification === true && task.status === "atribuidas"
   );
 
   return (
@@ -393,7 +393,7 @@ function Tasks() {
           onClick={() => handleFilterChange("assigned")}
         >
           Atribuídas
-          {hasUnverified && <span className="badge"></span>}
+          {hasTaskNotification && <span className="badge"></span>}
         </button>
       </div>
       <div id="tasksSpace">
