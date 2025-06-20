@@ -364,7 +364,11 @@ function Tasks() {
     }
   );
 
-  const hasTaskNotification = tasks.some((task) => task.notification === true);
+  const hasTaskNotification = tasks.some(
+    (task) => task.notification === true && task.verified === false //&&
+    //task.assigned === true && // tarefa do parceiro
+    //task.completed === true // marcada como concluída
+  );
 
   return (
     <div className="mainBody" id="tasksBody">
@@ -386,12 +390,13 @@ function Tasks() {
           Recebidas
         </button>
         <span className="divider">|</span>
-        {hasTaskNotification && <span className="badge"></span>}
         <button
+          style={{ position: "relative" }}
           className={`filter-button ${filter === "assigned" ? "active" : ""}`}
           onClick={() => handleFilterChange("assigned")}
         >
           Atribuídas
+          {hasTaskNotification && <span className="badge"></span>}
         </button>
       </div>
       <div id="tasksSpace">
