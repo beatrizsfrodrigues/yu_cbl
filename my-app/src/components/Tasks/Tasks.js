@@ -364,6 +364,17 @@ function Tasks() {
     }
   );
 
+  // Para testar notificações de tarefas atribuídas
+  const teste = [
+    { id: 1, status: "atribuidas", verified: false },
+    { id: 2, status: "atribuidas", verified: true },
+    { id: 3, status: "outra", verified: false },
+  ];
+
+  const hasUnverified = teste.some(
+    (task) => task.status === "atribuidas" && !task.verified
+  );
+
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
@@ -389,6 +400,7 @@ function Tasks() {
           onClick={() => handleFilterChange("assigned")}
         >
           Atribuídas
+          {hasUnverified && <span className="badge"></span>}
         </button>
       </div>
       <div id="tasksSpace">
