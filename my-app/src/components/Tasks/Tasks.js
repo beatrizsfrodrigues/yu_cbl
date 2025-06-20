@@ -47,7 +47,7 @@ function Tasks() {
     received: null,
     attributed: null,
   });
-  
+
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
   const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
@@ -88,11 +88,6 @@ function Tasks() {
   const prevPartnerTasksRef = React.useRef([]);
 
   useEffect(() => {
-    console.log("authUser ID:", authUser?._id);
-    console.log("authUser partnerId:", authUser?.partnerId);
-
-    console.log("tasks:", tasks);
-
     let isMounted = true;
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
@@ -130,7 +125,14 @@ function Tasks() {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, [authUser?._id, partnerUser?._id, dispatch, hasPolled]);
+  }, [
+    authUser?._id,
+    partnerUser?._id,
+    authUser?.partnerId,
+
+    dispatch,
+    hasPolled,
+  ]);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {
@@ -242,13 +244,15 @@ function Tasks() {
     setTaskToVerify(null);
   };
 
-  const handleToggleTaskExpand = React.useCallback((index) => {
-    setExpandedTaskIndices((prev) => ({
-      ...prev,
-      [filter]: prev[filter] === index ? null : index,
-    }));
-  }, [filter]);
-  
+  const handleToggleTaskExpand = React.useCallback(
+    (index) => {
+      setExpandedTaskIndices((prev) => ({
+        ...prev,
+        [filter]: prev[filter] === index ? null : index,
+      }));
+    },
+    [filter]
+  );
 
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
@@ -360,6 +364,10 @@ function Tasks() {
     }
   );
 
+  const hasTaskNotification = tasks.some(
+    (task) => task.notification === true && task.status === "atribuidas"
+  );
+
   return (
     <div className="mainBody" id="tasksBody">
       <div className="backgroundDiv"></div>
@@ -385,31 +393,32 @@ function Tasks() {
           onClick={() => handleFilterChange("assigned")}
         >
           Atribuídas
+          {hasTaskNotification && <span className="badge"></span>}
         </button>
       </div>
-      <TasksList
-        currentUser={authUser}
-        filteredTasks={filteredTasks}
-        expandedTaskIndex={expandedTaskIndices[filter]}
-        filter={filter}
-        tasksStatus={tasksStatus}
-        tasksError={tasksError}
-        tasks={tasks}
-        handleToggleTaskExpand={handleToggleTaskExpand}
-        handleOpenConcludeTaskModal={handleOpenConcludeTaskModal}
-        handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
-        hasPolled={hasPolled}
-
-      />
-      <button
-        aria-label="Botão para adicionar nova tarefa"
-        id="newTask"
-        className="profile-button"
-        onClick={handleOpenNewTaskModal}
-      >
-        <ion-icon name="add-outline" class="iconswhite"></ion-icon>
-      </button>
-
+      <div id="tasksSpace">
+        <TasksList
+          currentUser={authUser}
+          filteredTasks={filteredTasks}
+          expandedTaskIndex={expandedTaskIndices[filter]}
+          filter={filter}
+          tasksStatus={tasksStatus}
+          tasksError={tasksError}
+          tasks={tasks}
+          handleToggleTaskExpand={handleToggleTaskExpand}
+          handleOpenConcludeTaskModal={handleOpenConcludeTaskModal}
+          handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
+          hasPolled={hasPolled}
+        />
+        <button
+          aria-label="Botão para adicionar nova tarefa"
+          id="newTask"
+          className="profile-button"
+          onClick={handleOpenNewTaskModal}
+        >
+          <ion-icon name="add-outline" class="iconswhite"></ion-icon>
+        </button>
+      </div>
       {/* Modais */}
       {showVerifyTask && partnerUser && (
         <Suspense fallback={<div>Loading rejeição...</div>}>

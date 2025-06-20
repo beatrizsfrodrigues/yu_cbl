@@ -7,12 +7,17 @@ import "./connection.css";
 import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
-import { getAuthUser } from "../../utils/storageUtils";
-import { connectPartner, fetchPartnerUser } from "../../redux/usersSlice.js";
+import { setAuthUser, getAuthUser } from "../../utils/storageUtils";
+import {
+  fetchAuthUser,
+  connectPartner,
+  fetchPartnerUser,
+} from "../../redux/usersSlice.js";
 
 const Connection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [hasPolled, setHasPolled] = React.useState(false);
 
   // controla se o input de código deve aparecer
   const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
@@ -52,28 +57,59 @@ const Connection = () => {
     }
   }, [authUser]);
 
-  // ───────────────────────────────────────────────
-  // Quando `partner` no Redux muda (após o `fetchPartnerUser`),
-  // e se já estivermos em estado `isConnected = true`, atualizamos
-  // o `connectedUserName` para exibir na UI.
-  // ───────────────────────────────────────────────
   useEffect(() => {
     if (isConnected && partner && partner.username) {
       setConnectedUserName(partner.username);
     }
   }, [partner, isConnected]);
 
+  useEffect(() => {
+    let isMounted = true;
+    const POLL_INTERVAL = 2000;
+
+    const pollUser = async () => {
+      try {
+        // 1. Atualiza o Redux + espera o resultado
+        const resultAction = await dispatch(fetchAuthUser());
+
+        if (resultAction.payload !== authUser) {
+          const freshUser = resultAction.payload;
+          setAuthUser(freshUser);
+          if (freshUser?.partnerId) {
+            navigate("/home");
+          }
+        }
+      } catch (err) {
+        console.error("Polling falhou:", err);
+      }
+    };
+
+    pollUser(); // Executa imediatamente
+    const intervalId = setInterval(pollUser, POLL_INTERVAL);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [hasPolled, navigate]);
+
   // ───────────────────────────────────────────────
   // Alterna entre mostrar input de código ou não
   // ───────────────────────────────────────────────
   const handleClick = () => {
-    setIsCodeInputVisible((v) => !v);
-    setMessage("");
+    if (showScanner) {
+      setShowScanner(false);
+      // Aguarda desmontar o QRScanner antes de mostrar o código
+      setTimeout(() => {
+        setIsCodeInputVisible((v) => !v);
+        setMessage("");
+      }, 300); // dá tempo do QRScanner limpar câmera
+    } else {
+      setIsCodeInputVisible((v) => !v);
+      setMessage("");
+    }
   };
 
-  // ───────────────────────────────────────────────
-  // Disparado ao clicar em “Confirmar” no input de código
-  // ───────────────────────────────────────────────
   const handleConfirmConnection = async () => {
     if (!partnerCode || partnerCode.trim() === "") {
       setMessage("Por favor, insira um código válido.");
@@ -81,25 +117,13 @@ const Connection = () => {
     }
 
     try {
-      // 1) chama o thunk connectPartner com o código inserido
-      const resultAction = await dispatch(
-        connectPartner({ code: partnerCode.trim() })
-      ).unwrap();
-
-      // Se `unwrap()` não lançar erro, significa que a ligação foi bem‐sucedida.
-      // Aqui `resultAction` é o payload que o seu “connect-partner” devolve
-      // (normalmente o utilizador atualizado com partnerId preenchido).
-
-      // 2) Disparamos o fetchPartnerUser para que o Redux carregue os dados completos
-      //    do parceiro recém‐conectado (username, mascot, accessoriesEquipped, etc.).
       await dispatch(fetchPartnerUser());
+      await dispatch(connectPartner({ code: partnerCode }));
 
-      // 3) Agora impostamos o flag que diz “já estamos conectados” e limpamos o input
       setPartnerCode("");
       setIsConnected(true);
       setMessage("Conexão realizada com sucesso ✔");
     } catch (err) {
-      // Se a promise foi rejeitada, `err` conterá a mensagem de falha do backend
       setMessage(err || "Falha na ligação. Tente novamente.");
     }
   };
@@ -110,14 +134,18 @@ const Connection = () => {
 
   const handleScanSuccess = async (scannedCode) => {
     try {
-      const resultAction = await dispatch(
-        connectPartner({ code: scannedCode })
-      ).unwrap();
-
       // se deu certo, fetchPartnerUser e redireciona
       await dispatch(fetchPartnerUser());
-      setShowScanner(false);
-      navigate("/home");
+      const result = await dispatch(connectPartner({ code: scannedCode }));
+
+      if (connectPartner.fulfilled.match(result)) {
+        await dispatch(fetchPartnerUser()); // Agora faz sentido: já há parceiro ligado
+        setShowScanner(false);
+        navigate("/home");
+      } else {
+        setMessage(result.payload || "Falha na ligação. Tente novamente.");
+        setShowScanner(false);
+      }
     } catch (error) {
       setMessage(error || "Falha na ligação via QR. Tente novamente.");
       setShowScanner(false);
@@ -251,8 +279,8 @@ const Connection = () => {
             }}
           >
             {isCodeInputVisible
-              ? "Quero mostrar o meu código."
-              : "Quero inserir um código."}
+              ? "Quero inserir um código."
+              : "Quero mostrar o meu código."}
           </button>
           <div className="skip-section">
             <button

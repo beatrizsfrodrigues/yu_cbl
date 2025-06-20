@@ -28,6 +28,11 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
       <div className="window">
         <div className="header">
           <h3>Verificação da tarefa</h3>
+          <ion-icon
+            name="close-outline"
+            onClick={onClose}
+            class="icons"
+          ></ion-icon>
         </div>
         <div className="line"></div>
         <div id="concludeTaskDiv">

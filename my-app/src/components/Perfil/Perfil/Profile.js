@@ -43,23 +43,24 @@ export default function Profile() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
+
   // lógica para aplicar acessórios ao avatar
   const [selectedBackground, setSelectedBackground] = useState(null);
-  const [selectedShirt,      setSelectedShirt]      = useState(null);
-  const [selectedHat,        setSelectedHat]        = useState(null);
-  const [selectedColor,      setSelectedColor]      = useState(null);
-  const [selectedBigode,     setSelectedBigode]     = useState(null);
-  const [selectedCachecol,   setSelectedCachecol]   = useState(null);
-  const [selectedChapeu,     setSelectedChapeu]     = useState(null);
-  const [selectedOuvidos,    setSelectedOuvidos]    = useState(null);
-  const [selectedOculos,     setSelectedOculos]     = useState(null);
+  const [selectedShirt, setSelectedShirt] = useState(null);
+  const [selectedHat, setSelectedHat] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedBigode, setSelectedBigode] = useState(null);
+  const [selectedCachecol, setSelectedCachecol] = useState(null);
+  const [selectedChapeu, setSelectedChapeu] = useState(null);
+  const [selectedOuvidos, setSelectedOuvidos] = useState(null);
+  const [selectedOculos, setSelectedOculos] = useState(null);
+
 
   useEffect(() => {
     if (!accessories) return;
     const findById = (id) =>
       accessories.find((a) => a && a._id === id) || null;
 
-    setSelectedBackground(findById(equippedAccessories.background));
     setSelectedShirt(findById(equippedAccessories.shirt));
     setSelectedHat(findById(equippedAccessories.hat));
     setSelectedColor(findById(equippedAccessories.color));
@@ -177,6 +178,7 @@ export default function Profile() {
           onClick={() => setShowInfo(true)}
         >
           <ion-icon name="information-outline" className="icons" />
+
         </button>
 
         {/* Abrir acessibilidade */}
@@ -188,6 +190,7 @@ export default function Profile() {
         >
           <ion-icon name="accessibility-outline" className="icons" />
         </button>
+
       </div>
 
       {/* Modais */}
