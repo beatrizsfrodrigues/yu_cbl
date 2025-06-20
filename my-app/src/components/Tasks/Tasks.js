@@ -364,9 +364,7 @@ function Tasks() {
     }
   );
 
-  const hasTaskNotification = tasks.some(
-    (task) => task.notification === true && task.status === "atribuidas"
-  );
+  const hasTaskNotification = tasks.some((task) => task.notification === true);
 
   return (
     <div className="mainBody" id="tasksBody">
