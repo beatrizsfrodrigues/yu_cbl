@@ -49,13 +49,17 @@ label {
   border-radius: 20px;
   color: white;
   border: none;
-  background-color: #bababa;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .buttonBig.active {
-  background-color: #b49bc7;
+  background-color: var(--purple-dark) !important;
+}
+
+.buttonBig:disabled {
+  background-color: var(--purple-light) !important;
+  cursor: not-allowed;
 }
 
 .terms-checkbox-label {
@@ -92,6 +96,27 @@ label {
 .password-requirements {
   list-style: none;
   padding: 0;
+  margin: 0 0 12px 0;
+  width: auto;
+  height: auto;
+}
+
+.password-requirements i {
+  margin-right: 2%;
+}
+
+.icon-green {
+  color: #28a745 !important; /* verde */
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.icon-red {
+  color: #dc3545 !important; /* vermelho */
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .password-requirements li {
