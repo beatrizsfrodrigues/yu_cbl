@@ -475,3 +475,10 @@ button[aria-label="Abrir filtro"] .sliders {
   margin: 16px;
   margin-bottom: 150px;
 }
+
+.load-more-container-messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px;
+}

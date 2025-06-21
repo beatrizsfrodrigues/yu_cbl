@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getAuthToken } from "../utils/storageUtils";
@@ -25,15 +24,25 @@ function authorizedConfig() {
 // ======================
 export const getMessages = createAsyncThunk(
   "messages/getMessages",
-  async (userId, { rejectWithValue }) => {
+  async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
       }
 
-      const res = await axios.get(`${API_URL}/messages/user/${userId}`, config);
-      return res.data.chat;
+      const queryParams = new URLSearchParams({
+        userId,
+        page,
+        limit,
+      });
+
+      const res = await axios.get(
+        `${API_URL}/messages/user/${userId}?page=${page}&limit=${limit}`,
+        config
+      );
+
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
