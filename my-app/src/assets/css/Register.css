@@ -39,12 +39,12 @@ label {
   font-size: 16px;
 }
 
- /* Botões centrais */
+/* Botões centrais */
 .buttonBig {
-  display: block;          /* transforma em bloco */
-  width: 80%;              /* mantém 80% de largura */
-  max-width: 300px;        /* largura máxima */
-  margin: 12px auto;       /* 12px vertical e auto horizontal = centro */
+  display: block; /* transforma em bloco */
+  width: 80%; /* mantém 80% de largura */
+  max-width: 300px; /* largura máxima */
+  margin: 12px auto; /* 12px vertical e auto horizontal = centro */
   padding: 12px 0;
   border-radius: 20px;
   color: white;
@@ -58,14 +58,19 @@ label {
   background-color: #b49bc7;
 }
 
- 
-.terms-container {
-  margin: 0;               
+.terms-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  flex-wrap: nowrap; /* impede quebra de linha */
+  white-space: nowrap; /* impede quebra de linha no texto */
 }
-/* Se quiseres ajustar só o gap vertical, podes usar */
-.terms-container .buttonBig {
-  margin-top: 16px;
-  margin-bottom: 8px;
+
+.terms-checkbox-label input[type="checkbox"] {
+  margin: 0 6px 0 0;
+  accent-color: #007bff;
 }
 
 .register-link {
@@ -142,7 +147,3 @@ label {
   justify-content: center;
   margin: 16px 0 12px;
 }
-
- 
-
- 
