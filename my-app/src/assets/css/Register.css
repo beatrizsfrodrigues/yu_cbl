@@ -12,36 +12,21 @@ label {
   font-size: 18px;
   margin-top: 26px;
   margin-bottom: 5px;
-  font-style: normal;
   font-weight: 600;
-  line-height: normal;
 }
 
 .logo-container {
   width: 100%;
-  height: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 28px;
-  margin-top: 20px;
-  position: relative; /* Ensures better stacking behavior */
+  margin: 20px 0 28px;
 }
 
 .logo {
-  width: 80%; /* Adjusts dynamically */
-  max-width: 250px; /* Prevents it from getting too large */
+  width: 80%;
+  max-width: 250px;
   height: auto;
   z-index: 2;
-  display: block;
-}
-
-.bolas {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  margin-top: 50px;
-  z-index: 1;
 }
 
 .form-container input {
@@ -54,28 +39,39 @@ label {
   font-size: 16px;
 }
 
+ /* Botões centrais */
 .buttonBig {
-  margin-top: 98px;
+  display: block;          /* transforma em bloco */
+  width: 80%;              /* mantém 80% de largura */
+  max-width: 300px;        /* largura máxima */
+  margin: 12px auto;       /* 12px vertical e auto horizontal = centro */
+  padding: 12px 0;
   border-radius: 20px;
   color: white;
   border: none;
-  cursor: not-allowed;
+  background-color: #bababa;
+  cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .buttonBig.active {
-  background: #b49bc7;
-  cursor: pointer;
+  background-color: #b49bc7;
 }
 
-.buttonBig:disabled {
-  background-color: #bababa;
-  opacity: 0.7;
+ 
+.terms-container {
+  margin: 0;               
+}
+/* Se quiseres ajustar só o gap vertical, podes usar */
+.terms-container .buttonBig {
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
 .register-link {
   font-size: 14px;
   text-align: center;
+  margin: 8px 0;
 }
 
 .register-link a {
@@ -84,6 +80,8 @@ label {
 
 .alert {
   color: red;
+  text-align: center;
+  margin: 8px 0;
 }
 
 .password-requirements {
@@ -98,54 +96,32 @@ label {
   color: red;
 }
 
-.password-requirements li i {
-  margin-right: 10px;
-}
-
 .password-requirements li.valid {
   color: green;
 }
 
 .password-input-wrapper {
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
-  width: 100%;
   gap: 8px;
 }
 
 .password-label-container {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   gap: 8px;
-  align-self: flex-start;
-  width: 100%;
 }
 
 .password-input-container {
   position: relative;
   width: 100%;
-  display: flex;
-  align-items: center;
 }
 
-.password-info-button {
+.password-info-button,
+.password-toggle-button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.2em;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  margin-bottom: 6px;
-}
-
-.password-input-container input {
-  width: 100%;
-  padding-right: 40px; /* Espaço para o botão de visibilidade */
-  box-sizing: border-box;
 }
 
 .password-toggle-button {
@@ -153,10 +129,6 @@ label {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2em;
 }
 
 .password-toggle-button img {
@@ -164,32 +136,13 @@ label {
   height: 20px;
 }
 
-.modal-overlay {
-  position: fixed; /* Garante que o modal cobre todo o ecrã */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+/* Espaçamento do botão de termos */
+.terms-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Certifica-te de que está acima de outros elementos */
+  margin: 16px 0 12px;
 }
 
-.modal-content {
-  position: relative;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-}
+ 
 
-.modal-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
+ 

@@ -1,4 +1,3 @@
-
 import React, { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,21 +6,24 @@ import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 import { registerUser } from "../redux/usersSlice";
+import TermsModal from "./TermsModal";
 
-const Modal = lazy(() => import("./PasswordRequirementsRegister"));
+const PasswordModal = lazy(() => import("./PasswordRequirementsRegister"));
 
 const Register = () => {
-
+  // Estados de formulário
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
+  // Mensagens / alerts
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState("");
   const [alertPass, setAlertPass] = useState("");
 
-
+  // Requisitos de password
   const [passwordRequirements, setPasswordRequirements] = useState({
     minLength: false,
     hasUpperCase: false,
@@ -30,25 +32,28 @@ const Register = () => {
     hasSpecialChar: false,
   });
 
-  
+  // Modais
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const togglePasswordModal = () => setIsPasswordModalOpen((open) => !open);
+  const togglePasswordModal = () => setIsPasswordModalOpen(open => !open);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const toggleTermsModal = () => setIsTermsModalOpen(open => !open);
 
+  // Toggles de visibilidade
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
+  // Redux + navegação
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { status } = useSelector((state) => state.user);
+  const { status } = useSelector(state => state.user);
 
-
-  const validatePassword = (pwd) => {
+  // Validação de password
+  const validatePassword = pwd => {
     const minLength = 6;
     const hasUpperCase = /[A-Z]/.test(pwd);
     const hasLowerCase = /[a-z]/.test(pwd);
     const hasNumbers = /[0-9]/.test(pwd);
-    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<->]/.test(pwd);
+    const hasSpecialChar = /[!@#$%^&*(),._?":{}|<>-]/.test(pwd);
 
     setPasswordRequirements({
       minLength: pwd.length >= minLength,
@@ -67,15 +72,21 @@ const Register = () => {
     );
   };
 
-  const handlePasswordChange = (e) => {
-    const nova = e.target.value;
-    setPassword(nova);
-    validatePassword(nova);
+  const handlePasswordChange = e => {
+    const value = e.target.value;
+    setPassword(value);
+    validatePassword(value);
   };
 
-  // validações locais e disparo do thunk de registro
+  // Envio do formulário
   const handleRegister = () => {
-    // 1) validações de nome de usuário
+    // 1) Verificar termos aceites
+    if (!termsAccepted) {
+      setAlert("É necessário aceitar os termos antes de registar.");
+      return;
+    }
+
+    // 2) Validação de nome de utilizador
     const invalidUsernameChars = /[\\/"[\]:|<>+=;,?*@\s]/;
     if (invalidUsernameChars.test(username)) {
       setAlert("Nome de utilizador contém caracteres inválidos!");
@@ -84,7 +95,7 @@ const Register = () => {
     }
     setAlert("");
 
-    // 2) validações da senha
+    // 3) Validação de password
     if (!validatePassword(password)) {
       setAlertPass("A palavra-passe não atende aos requisitos mínimos!");
       return;
@@ -95,34 +106,33 @@ const Register = () => {
     }
     setAlertPass("");
 
-    // 3) dispara o thunk registerUser
+    // 4) Dispatch do thunk de registo
     dispatch(registerUser({ username, email, password }))
       .unwrap()
       .then(() => {
-        // O thunk já salvou token e user em localStorage.
         setMessage("Utilizador registado com sucesso!");
-        // limpar campos
+        // Limpar formulário
         setUsername("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        // redirecionar para a página de perguntas (ou outra rota)
-        navigate("/questions"); // ajuste para /apresentacao se for o caso
+        setTermsAccepted(false);
+        // Navegar para próxima etapa
+        navigate("/questions");
       })
-      .catch((errMsg) => {
-        // se der erro, mostra no alerta
+      .catch(errMsg => {
         setAlert(errMsg);
       });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     handleRegister();
   };
 
   return (
     <div className="mainBody">
-      <div className="backgroundDiv backgroundDiv2"></div>
+      <div className="backgroundDiv backgroundDiv2" />
       <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="logo-container">
@@ -140,7 +150,6 @@ const Register = () => {
             <h1>Registo</h1>
           </header>
 
-          {/* Mostra alertas de erro vindos do estado local */}
           {alert && <p className="alert">{alert}</p>}
 
           <div className="label-container">
@@ -149,13 +158,13 @@ const Register = () => {
             </label>
             <input
               rel="preload"
-              required
               id="input-email"
               type="email"
+              required
               className="input"
               placeholder="Inserir email..."
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
             />
           </div>
 
@@ -164,13 +173,13 @@ const Register = () => {
               Nome de Utilizador <span className="alert">*</span>
             </label>
             <input
-              required
               id="input-utilizador"
               type="text"
+              required
               className="input"
               placeholder="Inserir nome de utilizador..."
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={e => setUsername(e.target.value)}
             />
           </div>
 
@@ -181,19 +190,19 @@ const Register = () => {
                   Palavra-passe <span className="alert">*</span>
                 </label>
                 <button
-                  aria-label="Requisitos para password"
                   type="button"
+                  aria-label="Requisitos para password"
                   className="password-info-button"
                   onClick={togglePasswordModal}
                 >
-                  <i className="bi bi-question-circle"></i>
+                  <i className="bi bi-question-circle" />
                 </button>
               </div>
               <div className="password-input-container">
                 <input
                   id="password_input"
-                  required
                   type={showPassword ? "text" : "password"}
+                  required
                   className="input"
                   placeholder="Inserir uma palavra-passe..."
                   value={password}
@@ -202,7 +211,7 @@ const Register = () => {
                 <button
                   type="button"
                   className="password-toggle-button"
-                  onClick={() => setShowPassword((v) => !v)}
+                  onClick={() => setShowPassword(v => !v)}
                 >
                   <img
                     src={showPassword ? visibleIcon : notVisibleIcon}
@@ -213,24 +222,24 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="pass-container">
+            <div className="password-confirm-container">
               <label htmlFor="input-password2">
                 Confirmar Palavra-passe <span className="alert">*</span>
               </label>
               <div className="password-input-container">
                 <input
-                  required
                   id="input-password2"
                   type={showConfirmPassword ? "text" : "password"}
+                  required
                   className="input"
                   placeholder="Confirmar palavra-passe..."
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={e => setConfirmPassword(e.target.value)}
                 />
                 <button
                   type="button"
                   className="password-toggle-button"
-                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  onClick={() => setShowConfirmPassword(v => !v)}
                 >
                   <img
                     src={showConfirmPassword ? visibleIcon : notVisibleIcon}
@@ -241,77 +250,18 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Mostra erro relacionado à senha */}
             {alertPass && <p className="alert">{alertPass}</p>}
           </div>
 
-          {/* Modal que exibe requisitos de senha */}
-          <Suspense fallback={<div>Loading...</div>}>
-            <Modal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
-              <ul className="password-requirements">
-                <li
-                  className={
-                    passwordRequirements.minLength ? "valid" : "invalid"
-                  }
-                >
-                  {passwordRequirements.minLength ? (
-                    <i className="bi bi-check-circle"></i>
-                  ) : (
-                    <i className="bi bi-x-circle"></i>
-                  )}
-                  Pelo menos 6 caracteres
-                </li>
-                <li
-                  className={
-                    passwordRequirements.hasUpperCase ? "valid" : "invalid"
-                  }
-                >
-                  {passwordRequirements.hasUpperCase ? (
-                    <i className="bi bi-check-circle"></i>
-                  ) : (
-                    <i className="bi bi-x-circle"></i>
-                  )}
-                  Pelo menos uma letra maiúscula
-                </li>
-                <li
-                  className={
-                    passwordRequirements.hasLowerCase ? "valid" : "invalid"
-                  }
-                >
-                  {passwordRequirements.hasLowerCase ? (
-                    <i className="bi bi-check-circle"></i>
-                  ) : (
-                    <i className="bi bi-x-circle"></i>
-                  )}
-                  Pelo menos uma letra minúscula
-                </li>
-                <li
-                  className={
-                    passwordRequirements.hasNumbers ? "valid" : "invalid"
-                  }
-                >
-                  {passwordRequirements.hasNumbers ? (
-                    <i className="bi bi-check-circle"></i>
-                  ) : (
-                    <i className="bi bi-x-circle"></i>
-                  )}
-                  Pelo menos um número
-                </li>
-                <li
-                  className={
-                    passwordRequirements.hasSpecialChar ? "valid" : "invalid"
-                  }
-                >
-                  {passwordRequirements.hasSpecialChar ? (
-                    <i className="bi bi-check-circle"></i>
-                  ) : (
-                    <i className="bi bi-x-circle"></i>
-                  )}
-                  Pelo menos um caractere especial
-                </li>
-              </ul>
-            </Modal>
-          </Suspense>
+          <div className="terms-container">
+            <button
+              type="button"
+              className={`buttonBig terms-button ${termsAccepted ? "active" : ""}`}
+              onClick={toggleTermsModal}
+            >
+              Li e aceito os termos e condições
+            </button>
+          </div>
         </div>
 
         <div className="register-link">
@@ -320,14 +270,64 @@ const Register = () => {
           </p>
         </div>
 
-        {/* Feedback de API */}
         {status === "loading" && <p>Registando…</p>}
         {message && <p className="success">{message}</p>}
 
-        <button className="buttonBig" type="submit">
+        <button className={`buttonBig ${termsAccepted ? "active" : ""}`} type="submit">
           Registar
         </button>
       </form>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <PasswordModal isOpen={isPasswordModalOpen} onClose={togglePasswordModal}>
+          <ul className="password-requirements">
+            <li className={passwordRequirements.minLength ? "valid" : "invalid"}>
+              {passwordRequirements.minLength ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{' '}Pelo menos 6 caracteres
+            </li>
+            <li className={passwordRequirements.hasUpperCase ? "valid" : "invalid"}>
+              {passwordRequirements.hasUpperCase ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{' '}Pelo menos uma letra maiúscula
+            </li>
+            <li className={passwordRequirements.hasLowerCase ? "valid" : "invalid"}>
+              {passwordRequirements.hasLowerCase ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{' '}Pelo menos uma letra minúscula
+            </li>
+            <li className={passwordRequirements.hasNumbers ? "valid" : "invalid"}>
+              {passwordRequirements.hasNumbers ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{' '}Pelo menos um número
+            </li>
+            <li className={passwordRequirements.hasSpecialChar ? "valid" : "invalid"}>
+              {passwordRequirements.hasSpecialChar ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{' '}Pelo menos um caractere especial
+            </li>
+          </ul>
+        </PasswordModal>
+      </Suspense>
+
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={toggleTermsModal}
+        onAccept={() => {
+          setTermsAccepted(true);
+          setAlert("");
+        }}
+      />
     </div>
   );
 };

@@ -7,65 +7,89 @@ import { fetchPartnerUser } from "../../../redux/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../Avatar.jsx";
 
+import Termos from "./Termos";
+import Privacidade from "./Privacidade";
+import TermosUso from "./TermosUso";
+import InfoPessoal from "./InfoPessoal";
+
 const Definicoes = ({ show, onClose }) => {
-  const [canAccessQuestions, setCanAccessQuestions] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+  const [isOpen, setIsOpen] = useState(show);
 
+  // Estados dos modais secundários
+  const [showTermos, setShowTermos] = useState(false);
+  const [showPriv, setShowPriv] = useState(false);
+  const [showUso, setShowUso] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  // Autenticação e partner
   const [authUser] = useState(getAuthUser());
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const partner = useSelector((state) => state.user.partnerUser);
+  const navigate = useNavigate();
 
   const authUserRedux = useSelector((state) => state.user.authUser);
-
+  const partner = useSelector((state) => state.user.partnerUser);
   const accessories = useSelector((state) => state.accessories.data);
 
+  // Popup de ligação existente
+  const [showPopup, setShowPopup] = useState(false);
+
+  // Controle de acesso ao questionário
+  const [canAccessQuestions, setCanAccessQuestions] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState("");
+
+  // Quando abre o modal principal
   useEffect(() => {
-    if (authUser?.partnerId) {
-      dispatch(fetchPartnerUser(authUser.partnerId));
-    }
-  }, [authUser?.partnerId, dispatch]);
+    setIsOpen(show);
+  }, [show]);
 
+  // Buscar partner do Redux
   useEffect(() => {
-    if (authUserRedux?.partnerId) {
-      dispatch(fetchPartnerUser(authUserRedux.partnerId));
+    const partnerId = authUserRedux?.partnerId || authUser?.partnerId;
+    if (partnerId) {
+      dispatch(fetchPartnerUser(partnerId));
     }
+  }, [authUserRedux?.partnerId, authUser?.partnerId, dispatch]);
 
-    const questionTimes =
-      JSON.parse(localStorage.getItem("questionTimes")) || {};
-    const lastTime = authUser?.id ? questionTimes[authUser.id] : null;
+  // Lógica de cooldown do questionário (30 dias = 2.592.000 segundos)
+  useEffect(() => {
+    const times = JSON.parse(localStorage.getItem("questionTimes")) || {};
+    const last = authUser?.id ? times[authUser.id] : null;
 
-    if (lastTime) {
-      const now = Date.now();
-      const diffInMilliseconds = now - Number(lastTime);
-      const diffInSeconds = diffInMilliseconds / 1000;
-      const remainingTime = Math.max(2592000 - diffInSeconds, 0);
-
-      if (remainingTime <= 0) {
-        setCanAccessQuestions(true);
-      } else {
-        setCanAccessQuestions(false);
-        const hoursTotal = Math.floor(remainingTime / 3600);
-        const days = Math.floor(hoursTotal / 24);
-        const hours = hoursTotal % 24;
-        const minutes = Math.floor((remainingTime % 3600) / 60);
-
-        let formattedTime = "";
-        if (days > 0) formattedTime += `${days} dia${days > 1 ? "s" : ""}, `;
-        if (hours > 0)
-          formattedTime += `${hours} hora${hours > 1 ? "s" : ""}, `;
-        if (minutes > 0 || (hours === 0 && days === 0))
-          formattedTime += `${minutes} minuto${minutes > 1 ? "s" : ""}`;
-
-        setTimeRemaining(formattedTime);
-      }
-    } else {
+    if (!last) {
       setCanAccessQuestions(true);
+      return;
     }
-  }, [authUserRedux?.partnerId, authUser?.id, dispatch]);
 
+    const now = Date.now();
+    const elapsed = (now - Number(last)) / 1000; // em segundos
+    const remaining = Math.max(2_592_000 - elapsed, 0);
+
+    if (remaining === 0) {
+      setCanAccessQuestions(true);
+    } else {
+      setCanAccessQuestions(false);
+      const days = Math.floor(remaining / 86400);
+      const hours = Math.floor((remaining % 86400) / 3600);
+      const minutes = Math.floor((remaining % 3600) / 60);
+      const parts = [];
+      if (days) parts.push(`${days} dia${days > 1 ? "s" : ""}`);
+      if (hours) parts.push(`${hours} hora${hours > 1 ? "s" : ""}`);
+      parts.push(`${minutes} minuto${minutes > 1 ? "s" : ""}`);
+      setTimeRemaining(parts.join(", "));
+    }
+  }, [authUser?.id]);
+
+  // Handlers de abertura/fecho dos modais
+  const openTermos = () => { setIsOpen(false); setShowTermos(true); };
+  const closeTermos = () => { setShowTermos(false); setIsOpen(true); };
+  const openPriv = () => { setShowTermos(false); setShowPriv(true); };
+  const closePriv = () => { setShowPriv(false); setIsOpen(true); };
+  const openUso = () => { setShowTermos(false); setShowUso(true); };
+  const closeUso = () => { setShowUso(false); setIsOpen(true); };
+  const openInfo = () => { setIsOpen(false); setShowInfo(true); };
+  const closeInfo = () => { setShowInfo(false); setIsOpen(true); };
+
+  // Conexão / popup
   const onConnectionClick = () => {
     if (authUserRedux?.partnerId) {
       setShowPopup(true);
@@ -73,56 +97,54 @@ const Definicoes = ({ show, onClose }) => {
       navigate("/connection");
     }
   };
-
   const closePopup = () => setShowPopup(false);
+
+  // Navegar p/ InfoPessoal direto, caso queiras
   const goToInfoPessoal = () => navigate("/infopessoal");
 
   if (!show) return null;
 
   return (
     <>
+      {/* Modais Secundários */}
+      <InfoPessoal show={showInfo} onClose={closeInfo} />
+      <TermosUso show={showUso} onClose={closeUso} onBackToTermos={openTermos} />
+      <Privacidade show={showPriv} onClose={closePriv} onBackToTermos={openTermos} />
+      <Termos show={showTermos} onClose={closeTermos} onOpenPrivacidade={openPriv} onOpenTermosUso={openUso} />
+
+      {/* Popup Ligação Existente */}
       {showPopup && partner && (
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>Ligação Existente</h3>
             <p>
-              Já tens uma ligação com:
-              <br />
-              <strong>Parceiro:</strong> {partner.username}
-              <br />
-              <strong>Código do Parceiro:</strong> {partner.code}
+              Já tens uma ligação com:<br/>
+              <strong>Parceiro:</strong> {partner.username}<br/>
+              <strong>Código:</strong> {partner.code}
             </p>
-
             <div className="avatars-container-popup">
               <div className="avatar-item-popup">
                 <div className="avatar-username-popup">
                   {authUserRedux?.username || authUser?.username || "–"}
                 </div>
-                <div className="avatar-wrapper">
-                  <Avatar
-                    mascot={authUserRedux?.mascot || null}
-                    equipped={authUserRedux?.accessoriesEquipped || {}}
-                    accessoriesList={accessories}
-                    size={64}
-                  />
-                </div>
+                <Avatar
+                  mascot={authUserRedux?.mascot || null}
+                  equipped={authUserRedux?.accessoriesEquipped || {}}
+                  accessoriesList={accessories}
+                  size={64}
+                />
               </div>
-
               <div className="dotted-line-popup"></div>
-
               <div className="avatar-item-popup">
                 <div className="avatar-username-popup">{partner.username}</div>
-                <div className="avatar-wrapper">
-                  <Avatar
-                    mascot={partner.mascot}
-                    equipped={partner.accessoriesEquipped || {}}
-                    accessoriesList={accessories}
-                    size={64}
-                  />
-                </div>
+                <Avatar
+                  mascot={partner.mascot}
+                  equipped={partner.accessoriesEquipped || {}}
+                  accessoriesList={accessories}
+                  size={64}
+                />
               </div>
             </div>
-
             <button className="close-popup-button" onClick={closePopup}>
               Fechar
             </button>
@@ -130,66 +152,73 @@ const Definicoes = ({ show, onClose }) => {
         </div>
       )}
 
-      <div className="modal" onClick={onClose}>
-        <div className="window" onClick={(e) => e.stopPropagation()}>
-          <div className="settings-header">
-            <h3>Definições</h3>
-            <ion-icon
-              name="close-outline"
-              onClick={onClose}
-              class="icons"
-            ></ion-icon>
-          </div>
-
-          <div className="line"></div>
-
-          <div className="settings-content">
-            <div className="settings-section">
-              <h3>A tua conta</h3>
-
-              <button className="settings-button" onClick={goToInfoPessoal}>
-                Os meus dados
-              </button>
-              <button className="settings-button" onClick={onConnectionClick}>
-                Fazer Ligação
-              </button>
-              <button
-                className="settings-button"
-                disabled={!canAccessQuestions}
-                onClick={
-                  canAccessQuestions ? () => navigate("/questions") : undefined
-                }
-                style={{
-                  opacity: canAccessQuestions ? 1 : 0.5,
-                  cursor: canAccessQuestions ? "pointer" : "not-allowed",
-                }}
-              >
-                {canAccessQuestions ? (
-                  "Refazer questionário"
-                ) : (
-                  <>
-                    Próximo questionário em:
-                    <br />
-                    {timeRemaining}
-                  </>
-                )}
-              </button>
-              <button className="settings-button">Arquivo de respostas</button>
-              <Link
-                to="/login"
-                style={{ textDecoration: "none", color: "inherit" }}
-                onClick={() => {
-                  clearAuthStorage();
-                }}
-              >
-                <button className="settings-button logout">Sair</button>
-              </Link>
+      {/* Modal Principal Definições */}
+      {isOpen && (
+        <div className="modal modal-definicoes" onClick={onClose}>
+          <div className="window" onClick={(e) => e.stopPropagation()}>
+            <div className="settings-header">
+              <h3>Definições</h3>
+              <ion-icon
+                name="close-outline"
+                onClick={onClose}
+                className="icons"
+                style={{ fontSize: "28px" }}
+              />
+            </div>
+            <div className="line"></div>
+            <div className="settings-content">
+              <div className="settings-section">
+                <h3>A tua conta</h3>
+                <button className="settings-button" onClick={openInfo}>
+                  Os meus dados
+                </button>
+                <button className="settings-button" onClick={onConnectionClick}>
+                  Fazer Ligação
+                </button>
+                <button
+                  className="settings-button"
+                  disabled={!canAccessQuestions}
+                  onClick={
+                    canAccessQuestions
+                      ? () => navigate("/questions")
+                      : undefined
+                  }
+                  style={{
+                    opacity: canAccessQuestions ? 1 : 0.5,
+                    cursor: canAccessQuestions ? "pointer" : "not-allowed",
+                  }}
+                >
+                  {canAccessQuestions
+                    ? "Refazer questionário"
+                    : (
+                      <>
+                        Próximo questionário em:
+                        <br />
+                        {timeRemaining}
+                      </>
+                    )}
+                </button>
+                <button className="settings-button">
+                  Arquivo de respostas
+                </button>
+                <button className="settings-button" onClick={openTermos}>
+                  Sobre a YU
+                </button>
+                <Link
+                  to="/login"
+                  onClick={clearAuthStorage}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <button className="settings-button logout">Sair</button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
 
 export default Definicoes;
+

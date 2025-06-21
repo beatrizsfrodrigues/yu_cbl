@@ -78,6 +78,7 @@ const messagesSlice = createSlice({
   initialState: {
     data: {},
     fetchStatus: "idle",
+    hasUnreadMessages: false,
     sendStatus: "idle",
     fetchError: null,
     sendError: null,
@@ -93,6 +94,9 @@ const messagesSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.fetchStatus = "succeeded";
         state.data = action.payload;
+        state.hasUnreadMessages = Array.isArray(action.payload)
+          ? action.payload.some((msg) => msg.seen === false)
+          : false;
       })
       .addCase(getMessages.rejected, (state, action) => {
         state.fetchStatus = "failed";

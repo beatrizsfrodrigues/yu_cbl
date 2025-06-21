@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
+  const hasUnreadMessages = useSelector(
+    (state) => state.messages.hasUnreadMessages
+  );
+
   const navItems = useMemo(
     () => [
       {
@@ -30,11 +35,14 @@ function NavBar() {
       {
         path: "/messages",
         icon: (
-          <ion-icon
-            name="chatbubble-ellipses-outline"
-            className="iconsNav"
-            size="large"
-          ></ion-icon>
+          <div>
+            <ion-icon
+              name="chatbubble-ellipses-outline"
+              className="iconsNav"
+              size="large"
+            ></ion-icon>
+            {hasUnreadMessages && <span className="messageBadge" />}
+          </div>
         ),
         label: "Mensagens",
       },
@@ -50,6 +58,7 @@ function NavBar() {
         label: "Perfil",
       },
     ],
+    [hasUnreadMessages],
     []
   );
 

@@ -1,4 +1,5 @@
 // src/components/Grafico/Grafico.js
+
 import React, { useEffect, useState } from "react";
 import "../Grafico/grafico.css";
 import { Line, Bar } from "react-chartjs-2";
@@ -27,9 +28,9 @@ ChartJS.register(
 );
 
 const Grafico = ({ show, onClose }) => {
-  // all tasks come from the tasks slice
+  // todas as tarefas vêm do slice tasks
   const tasks = useSelector((state) => state.tasks.data || []);
-  // current user from user slice
+  // utilizador atual do slice user
   const currentUser = useSelector((state) => state.user.authUser);
 
   const [monthlyData, setMonthlyData] = useState(new Array(31).fill(0));
@@ -39,7 +40,7 @@ const Grafico = ({ show, onClose }) => {
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    // filter only this user's completed tasks
+    // filtrar só as tarefas concluídas deste utilizador
     const completedTasks = tasks.filter(
       (t) => t.userId === currentUser._id && t.completed
     );
@@ -56,20 +57,20 @@ const Grafico = ({ show, onClose }) => {
 
     const parseDate = (ds) => {
       if (!ds || ds.length !== 14) return null;
-      const y = +ds.slice(0,4),
-            mo= +ds.slice(4,6)-1,
-            d = +ds.slice(6,8),
-            h = +ds.slice(8,10),
-            mi= +ds.slice(10,12),
-            s = +ds.slice(12,14);
-      return new Date(y,mo,d,h,mi,s);
+      const y  = +ds.slice(0,4),
+            mo = +ds.slice(4,6)-1,
+            d  = +ds.slice(6,8),
+            h  = +ds.slice(8,10),
+            mi = +ds.slice(10,12),
+            s  = +ds.slice(12,14);
+      return new Date(y, mo, d, h, mi, s);
     };
 
     completedTasks.forEach((task) => {
       const dt = parseDate(task.completedDate);
       if (!dt || isNaN(dt)) return;
-      monthly[dt.getDate()-1] += 1;
-      yearly[dt.getMonth()]    += 1;
+      monthly[dt.getDate() - 1] += 1;
+      yearly[dt.getMonth()]     += 1;
     });
 
     setHasCompletedTasks(true);
@@ -80,15 +81,18 @@ const Grafico = ({ show, onClose }) => {
   if (!show) return null;
 
   return (
-    <div className="modal">
-      <div className="window">
+    // Backdrop: fecha o modal ao clicar fora da window
+    <div className="modal" onClick={onClose}>
+      {/* Window: impede que cliques interiores fechem o modal */}
+      <div className="window" onClick={e => e.stopPropagation()}>
         <div className="grafico-header">
           <h3>Estatísticas</h3>
           <ion-icon
             name="close-outline"
             onClick={onClose}
-            class="icons"
-          ></ion-icon>
+            className="icons"
+            style={{ fontSize: "28px" }}
+          />
         </div>
         <div className="line" />
 
