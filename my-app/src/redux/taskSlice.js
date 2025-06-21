@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getAuthToken } from "../utils/storageUtils";
@@ -25,25 +24,35 @@ function authorizedConfig() {
 // ======================
 export const getTasks = createAsyncThunk(
   "tasks/getTasks",
-  async (id, { rejectWithValue }) => {
+  async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
       }
 
-      const res = await axios.get(`${API_URL}/tasks?userId=${id}`, config);
-      return res.data.tasks;
+      const queryParams = new URLSearchParams({
+        userId,
+        page,
+        limit,
+      });
+
+      const res = await axios.get(
+        `${API_URL}/tasks?${queryParams.toString()}`,
+        config
+      );
+
+      return res.data; // retorna tudo (tasks, page, total, etc.)
     } catch (error) {
       const apiError = error.response?.data;
-     if (apiError && typeof apiError === "object" && apiError.msg) {
-       return rejectWithValue(apiError.msg);
-     }
-     return rejectWithValue(
-       typeof error.response?.data === "string"
-         ? error.response.data
-         : error.message
-     );
+      if (apiError && typeof apiError === "object" && apiError.msg) {
+        return rejectWithValue(apiError.msg);
+      }
+      return rejectWithValue(
+        typeof error.response?.data === "string"
+          ? error.response.data
+          : error.message
+      );
     }
   }
 );
@@ -97,7 +106,7 @@ export const completeTask = createAsyncThunk(
 );
 
 // ======================
-// 4) Verificar task 
+// 4) Verificar task
 // ======================
 export const verifyTask = createAsyncThunk(
   "tasks/verifyTask",
