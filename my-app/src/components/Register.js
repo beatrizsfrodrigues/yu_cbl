@@ -130,6 +130,13 @@ const Register = () => {
     handleRegister();
   };
 
+  const isFormComplete =
+    email.trim() !== "" &&
+    username.trim() !== "" &&
+    password.trim() !== "" &&
+    confirmPassword.trim() !== "" &&
+    termsAccepted;
+
   return (
     <div className="mainBody">
       <div className="backgroundDiv backgroundDiv2" />
@@ -188,15 +195,21 @@ const Register = () => {
               <div className="password-label-container">
                 <label htmlFor="password_input">
                   Palavra-passe <span className="alert">*</span>
+                  <button
+                    type="button"
+                    aria-label="Requisitos para password"
+                    className="password-info-button"
+                    onClick={togglePasswordModal}
+                  >
+                    <i
+                      className={`bi bi-question-circle icons ${
+                        Object.values(passwordRequirements).every(Boolean)
+                          ? "icon-green"
+                          : "icon-red"
+                      }`}
+                    />
+                  </button>
                 </label>
-                <button
-                  type="button"
-                  aria-label="Requisitos para password"
-                  className="password-info-button"
-                  onClick={togglePasswordModal}
-                >
-                  <i className="bi bi-question-circle" />
-                </button>
               </div>
               <div className="password-input-container">
                 <input
@@ -292,9 +305,10 @@ const Register = () => {
         {message && <p className="success">{message}</p>}
 
         <button
-          className={`buttonBig ${termsAccepted ? "active" : ""}`}
+          className="buttonBig"
           type="submit"
-          disabled={!termsAccepted}
+          disabled={!isFormComplete}
+          onClick={handleRegister}
         >
           Registar
         </button>
