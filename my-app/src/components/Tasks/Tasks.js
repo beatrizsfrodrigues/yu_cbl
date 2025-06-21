@@ -427,11 +427,11 @@ function Tasks() {
     }
   );
 
-  const hasTaskNotification = tasks.some(
-    (task) => task.notification === true && task.verified === false //&&
-    //task.assigned === true && // tarefa do parceiro
-    //task.completed === true // marcada como concluída
-  );
+  const hasTaskNotification = Array.isArray(tasks)
+    ? tasks.some(
+        (task) => task.notification === true && task.verified === false
+      )
+    : false;
 
   return (
     <div className="mainBody" id="tasksBody">
