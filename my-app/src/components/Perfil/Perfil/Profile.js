@@ -160,33 +160,44 @@ export default function Profile() {
       </div>
 
       <div className="profile-buttons">
-        {/* Abrir gráfico */}
-        <button
-          aria-label="Botão para abrir gráficos"
-          className="profile-button award"
-          onClick={() => setShowGrafico(true)}
-        >
-          <ion-icon name="podium-outline" className="icons" />
-        </button>
+        
+        <div className="profile-button-container progress">
+          <button
+            aria-label="Gráficos"
+            className="profile-button award"
+            onClick={() => setShowGrafico(true)}
+          >
+            <ion-icon name="podium-outline" className="icons" />
+          </button>
+          <span className="profile-button-label">Progresso</span>
+        </div>
 
-        {/* Abrir modal de Informações em vez de link */}
-        <button
-          aria-label="Informações"
-          className="profile-button circle"
-          onClick={() => setShowInfo(true)}
+       <div className="profile-button-container info">
+          <button
+            aria-label="Informações"
+            className="profile-button circle"
+            onClick={() => setShowInfo(true)}
         >
-          <ion-icon name="information-outline" className="icons" />
-        </button>
+            <ion-icon name="information-outline" className="icons" />
+          </button>
+          <span className="profile-button-label">Informações</span>
+        </div>
 
-        {/* Abrir acessibilidade */}
-        <button
-          aria-label="Acessibilidade"
-          className="profile-button circle"
-          onClick={() => setShowAcess(true)}
-          style={{ backgroundColor: "#8DD4D1" }}
-        >
-          <ion-icon name="accessibility-outline" className="icons" />
-        </button>
+
+        <div className="profile-button-container accessibility">
+            <button
+              aria-label="Acessibilidade"
+              className="profile-button circle"
+              style={{ backgroundColor: "#8DD4D1" }}
+              onClick={() => setShowAcess(true)}
+            >
+              <ion-icon name="accessibility-outline" className="icons" />
+            </button>
+            <span className="profile-button-label">
+              Acessibilidade
+            </span>
+          </div>
+
       </div>
 
       {/* Modais */}
