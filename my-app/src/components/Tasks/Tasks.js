@@ -570,14 +570,16 @@ function Tasks() {
             </div>
           )}
 
-        <button
-          aria-label="Botão para adicionar nova tarefa"
-          id="newTask"
-          className="profile-button"
-          onClick={handleOpenNewTaskModal}
-        >
-          <ion-icon name="add-outline" class="iconswhite"></ion-icon>
-        </button>
+        {authUser?.partnerId && (
+          <button
+            aria-label="Botão para adicionar nova tarefa"
+            id="newTask"
+            className="profile-button"
+            onClick={handleOpenNewTaskModal}
+          >
+            <ion-icon name="add-outline" class="iconswhite"></ion-icon>
+          </button>
+        )}
       </div>
       {/* Modais */}
       {showVerifyTask && partnerUser && (

@@ -287,7 +287,7 @@ function Messages() {
         )}
       </div>
       <div
-        className="inputMessage"
+        className={`inputMessage ${!partnerUser ? "disabled-input" : ""}`}
         onClick={handleOpenPresetMessages}
         aria-label="Abrir opções de mensagens predefinidas"
       >
@@ -295,7 +295,7 @@ function Messages() {
       </div>
 
       <div className="inputMessageWrapper">
-        {isPresetMessagesOpen && (
+        {partnerUser && isPresetMessagesOpen && (
           <div id="textOptions" ref={textOptionsRef}>
             {presetMessages &&
               presetMessages.map((message, index) => (
