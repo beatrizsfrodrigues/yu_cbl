@@ -60,6 +60,10 @@ function Tasks() {
   const limit = 5;
 
   useEffect(() => {
+    console.log("authUser changed", authUser);
+  }, [authUser]);
+
+  useEffect(() => {
     if (authUser?._id) {
       const fetchTasks = async () => {
         try {
@@ -148,19 +152,33 @@ function Tasks() {
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
       try {
+        console.log("page", currentPagePartner);
+        const tasksChanged = (a = [], b = []) => {
+          if (a.length !== b.length) return true;
+          const aMap = new Map(a.map((t) => [t._id, t.updatedAt]));
+          for (const task of b) {
+            if (aMap.get(task._id) !== task.updatedAt) return true;
+          }
+          return false;
+        };
+
         if (authUser?._id) {
           const myResult = await dispatch(
             getTasks({ userId: authUser._id, page: currentPage, limit })
           ).unwrap();
 
-          if (
-            JSON.stringify(myResult.tasks) !==
-            JSON.stringify(prevMyTasksRef.current.tasks)
-          ) {
-            setMyTasks(myResult.tasks || []);
-            prevMyTasksRef.current = myResult || [];
+          if (tasksChanged(myResult.tasks, prevMyTasksRef.current.tasks)) {
+            setMyTasks((prev) => {
+              const combined = [...prev, ...(myResult.tasks || [])];
+              const unique = Array.from(
+                new Map(combined.map((t) => [t._id, t])).values()
+              );
+              return unique;
+            });
+            prevMyTasksRef.current = { tasks: myResult.tasks || [] };
           }
         }
+
         if (partnerUser?._id) {
           const partnerResult = await dispatch(
             getTasks({
@@ -169,13 +187,30 @@ function Tasks() {
               limit,
             })
           ).unwrap();
+
           if (
-            JSON.stringify(partnerResult.tasks) !==
-            JSON.stringify(prevPartnerTasksRef.current.tasks)
+            tasksChanged(partnerResult.tasks, prevPartnerTasksRef.current.tasks)
           ) {
-            setPartnerTasks(partnerResult.tasks || []);
-            prevPartnerTasksRef.current = partnerResult || [];
+            setPartnerTasks((prev) => {
+              const combined = [...prev, ...(partnerResult.tasks || [])];
+              const unique = Array.from(
+                new Map(combined.map((t) => [t._id, t])).values()
+              );
+              return unique;
+            });
+            prevPartnerTasksRef.current = { tasks: partnerResult.tasks || [] };
           }
+
+          // console.log(currentPagePartner);
+          // console.log("fetch", partnerResult.page);
+          // console.log("partnerUser", prevPartnerTasksRef.current);
+          // if (
+          //   JSON.stringify(partnerResult.tasks) !==
+          //   JSON.stringify(prevPartnerTasksRef.current.tasks)
+          // ) {
+          //   setPartnerTasks(partnerResult.tasks || []);
+          //   prevPartnerTasksRef.current = partnerResult || [];
+          // }
         }
         if (isMounted && !hasPolled) setHasPolled(true);
       } catch (err) {
@@ -192,9 +227,10 @@ function Tasks() {
     authUser?._id,
     partnerUser?._id,
     authUser?.partnerId,
-
     dispatch,
     hasPolled,
+    currentPagePartner,
+    currentPage,
   ]);
 
   useEffect(() => {
@@ -222,8 +258,6 @@ function Tasks() {
           !task.completed &&
           !task.verified) ||
         (filterCriteria === "espera" && task.completed && !task.verified);
-
-      console.log(matchesCriteria, task.title);
 
       return matchesCriteria;
     });
@@ -316,6 +350,20 @@ function Tasks() {
     },
     [filter]
   );
+
+  const handleLoadMore = async () => {
+    setCurrentPage((prev) => {
+      console.log("Next page:", prev + 1);
+      return prev + 1;
+    });
+  };
+
+  const handleLoadMore2 = async () => {
+    setCurrentPagePartner((prev) => {
+      console.log("Next page:", prev + 1);
+      return prev + 1;
+    });
+  };
 
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
@@ -422,7 +470,7 @@ function Tasks() {
         prevProps.filter === nextProps.filter &&
         prevProps.tasksStatus === nextProps.tasksStatus &&
         prevProps.tasksError === nextProps.tasksError &&
-        prevProps.authUser?._id === nextProps.authUser?._id
+        prevProps.currentUser?._id === nextProps.currentUser?._id
       );
     }
   );
@@ -480,10 +528,7 @@ function Tasks() {
           hasMoreTasks &&
           myTasks.length >= currentPage * limit && (
             <div className="load-more-container">
-              <button
-                className="submitBtn"
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-              >
+              <button className="submitBtn" onClick={() => handleLoadMore()}>
                 Carregar mais
               </button>
             </div>
@@ -493,10 +538,7 @@ function Tasks() {
           hasMoreTasks2 &&
           partnerTasks.length >= currentPagePartner * limit && (
             <div className="load-more-container">
-              <button
-                className="submitBtn"
-                onClick={() => setCurrentPagePartner((prev) => prev + 1)}
-              >
+              <button className="submitBtn" onClick={() => handleLoadMore2()}>
                 Carregar mais
               </button>
             </div>
