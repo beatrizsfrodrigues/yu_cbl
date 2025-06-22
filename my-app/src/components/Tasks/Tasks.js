@@ -50,7 +50,7 @@ function Tasks() {
 
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
-  const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
+  const [hasPolled, setHasPolled] = React.useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPagePartner, setCurrentPagePartner] = useState(1);
@@ -155,10 +155,27 @@ function Tasks() {
         console.log("page", currentPagePartner);
         const tasksChanged = (a = [], b = []) => {
           if (a.length !== b.length) return true;
-          const aMap = new Map(a.map((t) => [t._id, t.updatedAt]));
+
+          const taskMap = new Map(a.map((t) => [t._id, t]));
+
           for (const task of b) {
-            if (aMap.get(task._id) !== task.updatedAt) return true;
+            const prevTask = taskMap.get(task._id);
+            if (!prevTask) return true;
+
+            // Compare relevant fields — you can tweak which fields to include
+            const keysToCompare = [
+              "completed",
+              "verified",
+              "completedDate",
+              "rejectMessage",
+              "notification",
+              "picture",
+            ];
+            for (const key of keysToCompare) {
+              if (prevTask[key] !== task[key]) return true;
+            }
           }
+
           return false;
         };
 
@@ -200,17 +217,6 @@ function Tasks() {
             });
             prevPartnerTasksRef.current = { tasks: partnerResult.tasks || [] };
           }
-
-          // console.log(currentPagePartner);
-          // console.log("fetch", partnerResult.page);
-          // console.log("partnerUser", prevPartnerTasksRef.current);
-          // if (
-          //   JSON.stringify(partnerResult.tasks) !==
-          //   JSON.stringify(prevPartnerTasksRef.current.tasks)
-          // ) {
-          //   setPartnerTasks(partnerResult.tasks || []);
-          //   prevPartnerTasksRef.current = partnerResult || [];
-          // }
         }
         if (isMounted && !hasPolled) setHasPolled(true);
       } catch (err) {

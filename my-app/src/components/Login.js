@@ -72,8 +72,7 @@ const Login = () => {
     // /* global google */
     if (window.google && googleButton.current) {
       window.google.accounts.id.initialize({
-        client_id:
-          "470997168294-gih5icq4crbtnktfugobt0tvj8cplfdf.apps.googleusercontent.com", // substitui pelo teu client_id
+        client_id: process.env.REACT_APP_CLIENT_ID, // substitui pelo teu client_id
         callback: handleGoogleResponse,
       });
       window.google.accounts.id.renderButton(googleButton.current, {
@@ -84,12 +83,29 @@ const Login = () => {
   }, []);
 
   const handleGoogleResponse = (response) => {
-    // Envia o token para o backend
     axios
-      .post(`${API_URL}/users/google-login`, { token: response.credential })
+      .post(`${API_URL}/users/google-login`, {
+        credential: response.credential,
+      })
       .then((res) => {
-        // Aqui podes guardar o utilizador autenticado no frontend
-        // Exemplo: setAuthUser(res.data.user);
+        console.log("Google login successful (frontend):", res.data);
+
+        if (res.data.user) {
+          navigate("/home");
+        } else {
+          setAlert("Google login succeeded, but user data was missing.");
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Error sending Google token to backend:",
+          error.response ? error.response.data : error.message
+        );
+        setAlert(
+          error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : "Erro ao fazer login com Google."
+        );
       });
   };
 
