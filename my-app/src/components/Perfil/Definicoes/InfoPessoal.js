@@ -1,7 +1,6 @@
-// src/components/Definicoes/InfoPessoal.js
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import "../Definicoes/InfoPessoal.css";
+import "../Definicoes/InfoPessoal.css"; // mantém o mesmo ficheiro de estilos
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAuthToken } from "../../../utils/storageUtils";
@@ -11,11 +10,20 @@ import notVisibleIcon from "../../../assets/imgs/Icons/notvisible.png";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+/**
+ * Mantivemos exactamente a mesma estrutura HTML/CSS do ficheiro original.
+ * A única alteração funcional: contas Google (detectadas por `googleId` ou `authProvider`)
+ * não precisam de passo‑2 nem de confirmação de password.
+ */
 const InfoPessoal = ({ show = false, onClose = () => {} }) => {
   const navigate = useNavigate();
   const rawUser = useSelector((state) => state.user.authUser);
   const currentUser = useMemo(() => rawUser || {}, [rawUser]);
   const token = getAuthToken();
+
+  /* ▸ Novo: detectar login por Google ◂ */
+  const isGoogleUser =
+    !!currentUser.googleId || currentUser.authProvider === "google";
 
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
@@ -68,16 +76,54 @@ const InfoPessoal = ({ show = false, onClose = () => {} }) => {
     setAlert("");
   };
 
-  const handleNext = (e) => {
+  /* ───────────── PRÓXIMO (passo‑1) ───────────── */
+  const handleNext = async (e) => {
     e.preventDefault();
     if (!formData.nomeUtilizador.trim() || !formData.email.trim()) {
       setAlert("Nome de utilizador e email são obrigatórios.");
       return;
     }
-    setAlert("");
-    setStep(2);
+
+    // ✱ Se for conta Google → salta a password e faz update já aqui
+    if (isGoogleUser) {
+      if (
+        formData.nomeUtilizador === originalData.username &&
+        formData.email === originalData.email
+      ) {
+        setAlert("Nenhuma alteração detectada nos dados pessoais.");
+        return;
+      }
+      try {
+        await axios.put(
+          `${API_URL}/users/${currentUser._id}`,
+          {
+            username: formData.nomeUtilizador,
+            email: formData.email,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setNotification("Dados alterados com sucesso!");
+        setTimeout(() => {
+          setNotification("");
+          onClose();
+        }, 2000);
+      } catch (err) {
+        console.error(err);
+        setAlert(err.response?.data?.message || "Erro ao atualizar dados.");
+      }
+    } else {
+      // Conta normal → continua para confirmação de password (passo‑2)
+      setAlert("");
+      setStep(2);
+    }
   };
 
+  /* ───────────── CONFIRMAR (passo‑2) ──────────── */
   const handleConfirm = async (e) => {
     e.preventDefault();
     if (!formData.senhaAtual.trim()) {
@@ -193,6 +239,7 @@ const InfoPessoal = ({ show = false, onClose = () => {} }) => {
                     />
                   </div>
                   <button type="submit" className="settings-button">
+                    {/* texto mantém‑se igual */}
                     Próximo
                   </button>
                 </>
@@ -214,14 +261,23 @@ const InfoPessoal = ({ show = false, onClose = () => {} }) => {
                         className="password-toggle-button"
                         onClick={() => setShowPassword((v) => !v)}
                       >
-                        <img
-                          src={showPassword ? notVisibleIcon : visibleIcon}
+                        <img  
+                        src={showPassword ? notVisibleIcon : visibleIcon}
                           alt="Mostrar/esconder"
                         />
                       </button>
                     </div>
                   </div>
-                  <div className="confirm-buttons" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", width: "100%" }}>
+                  <div
+                    className="confirm-buttons"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "1rem",
+                      width: "100%",
+                    }}
+                  >
                     <button type="submit" className="confirm-button">
                       Confirmar
                     </button>
@@ -242,20 +298,52 @@ const InfoPessoal = ({ show = false, onClose = () => {} }) => {
 
       {/* Discard confirmation modal */}
       {showDiscardConfirm && (
-        <div className="modal modal-confirm" onClick={() => setShowDiscardConfirm(false)}>
-          <div className="window small" onClick={(e) => e.stopPropagation()}>
-            <p style={{ textAlign: "center" }}>Tens a certeza que queres sair sem guardar as alterações?</p>
-            <div className="confirm-buttons" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", width: "100%" }}>
+        <div
+          className="modal modal-confirm"
+          onClick={() => setShowDiscardConfirm(false)}
+        >
+          <div
+            className="window small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p style={{ textAlign: "center" }}>
+              Tens a certeza que queres sair sem guardar as alterações?
+            </p>
+            <div
+              className="confirm-buttons"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "1rem",
+                width: "100%",
+              }}
+            >
               <button
                 className="confirm-button"
-                style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-                onClick={() => { setShowDiscardConfirm(false); onClose(); }}
-              >Sim</button>
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onClick={() => {
+                  setShowDiscardConfirm(false);
+                  onClose();
+                }}
+              >
+                Sim
+              </button>
               <button
                 className="cancel-button"
-                style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
                 onClick={() => setShowDiscardConfirm(false)}
-              >Não</button>
+              >
+                Não
+              </button>
             </div>
           </div>
         </div>
@@ -265,3 +353,4 @@ const InfoPessoal = ({ show = false, onClose = () => {} }) => {
 };
 
 export default InfoPessoal;
+

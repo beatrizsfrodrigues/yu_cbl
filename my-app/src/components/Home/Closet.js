@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { equipAccessories } from "../../redux/usersSlice.js";
 
+const DEFAULT_COLOR_URL =
+  "https://res.cloudinary.com/dinzra2oo/image/upload/v1748611193/YU-119_weajgx.svg";
+
+
 export default function Closet({
   ownedAccessories, // array
   equipped, // { background, shirt, hat, color, bigode, cachecol, chapeu, ouvidos, oculos }
@@ -30,11 +34,25 @@ export default function Closet({
 
   const { type, slot } = sections[active];
 
-  // filtra items: se Decor, junta todos os tipos em DECOR_TYPES; senão, só aquele tipo
-  const items =
-    type === "Decor"
-      ? ownedAccessories.filter((i) => DECOR_TYPES.includes(i.type))
-      : ownedAccessories.filter((i) => i.type === type);
+
+  let items = [];
+  if (type === "Decor") {
+    items = ownedAccessories.filter((i) => DECOR_TYPES.includes(i.type));
+  } else if (type === "SkinColor") {
+    // injeta a cor default no início da lista para que apareça sempre
+    const defaultItem = {
+      _id: "defaultColor", // id virtual
+      type: "SkinColor",
+      name: "Cor padrão",
+      src: DEFAULT_COLOR_URL,
+      value: 0,
+    };
+    const colorsOwned = ownedAccessories.filter((i) => i.type === "SkinColor");
+
+    items = [defaultItem, ...colorsOwned];
+  } else {
+    items = ownedAccessories.filter((i) => i.type === type);
+  }
 
   const typeBySlot = {
     background: "Backgrounds",
@@ -56,20 +74,18 @@ export default function Closet({
     "oculos",
   ];
 
-  function unequipAllAndSave() {
-    ALL_SLOTS.forEach((slot) => {
-      const type = typeBySlot[slot];
-      dispatch(equipAccessories({ accessoryId: null, type }))
-        .unwrap()
-        .catch((err) => {
-          console.error(`Erro a desiquipar ${slot}:`, err);
-        });
-    });
+function unequipAllAndSave() {
+ 
+  ALL_SLOTS.forEach((s) => {
+    const t = typeBySlot[s];
+    dispatch(equipAccessories({ accessoryId: null, type: t }));
+  });
 
-    setTimeout(() => {
-      onSave();
-    }, 50);
-  }
+  onPreview("color", null);
+
+  setTimeout(onSave, 50);
+}
+
 
   return (
     <div className="closetOverlay">
@@ -99,19 +115,22 @@ export default function Closet({
           ) : (
             <div className="avatarcontent">
               {items.map((it) => {
-                // para Decor, usamos it.type.toLowerCase() (bigode, cachecol, etc.)
-                // caso contrário, usamos o slot “normal” (shirt, color ou background)
-                const currSlot =
-                  type === "Decor" ? it.type.toLowerCase() : slot;
-                const isActive = equipped[currSlot] === it._id;
+                // se for Decor, slot é o type em minúsculas; caso contrário, é o slot padrão
+                const currSlot = type === "Decor" ? it.type.toLowerCase() : slot;
+
+                // ativo se: (1) item normal e id coincidem OU (2) é cor default e nada equipado
+                const isActive =
+                  equipped[currSlot] === it._id ||
+                  (currSlot === "color" && !equipped[currSlot] && it._id === "defaultColor");
+
+                // id a enviar para preview: para "defaultColor" usamos null
+                const nextId = it._id === "defaultColor" ? null : isActive ? null : it._id;
+
                 return (
                   <button
                     key={it._id}
                     className={`avatarcircle ${isActive ? "activeFit" : ""}`}
-                    onClick={() => {
-                      const next = isActive ? null : it._id;
-                      onPreview(currSlot, next);
-                    }}
+                    onClick={() => onPreview(currSlot, nextId)}
                   >
                     <img src={it.src} alt={it.name} />
                   </button>

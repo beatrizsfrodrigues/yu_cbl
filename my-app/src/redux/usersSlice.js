@@ -352,6 +352,9 @@ const userSlice = createSlice({
         s.status = "failed";
         s.error = a.payload;
       })
+       .addCase(updateUser.fulfilled, (state, action) => {
+        state.authUser = action.payload;  
+        })
 
       // tarefas
       .addCase(getTasks.fulfilled, (s, a) => {
