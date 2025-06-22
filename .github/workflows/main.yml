@@ -36,6 +36,7 @@ jobs:
         working-directory: my-app
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}   
+          REACT_APP_CLIENT_ID: ${{secrets.REACT_APP_CLIENT_ID}}
 
       - name: Deploy to Vercel
         run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes

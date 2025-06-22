@@ -21,13 +21,41 @@ function ConcludeTask({ onClose, currentUser, task, onShowPopUpInfo }) {
     }
   };
 
-  const handleSubmit = () => {
-    dispatch(completeTask({ picture: selectedFile.name, id: task._id }));
+  const handleSubmit = async () => {
+    if (!selectedFile) return;
 
-    onClose();
-    onShowPopUpInfo(
-      `Tarefa <b>${task.title}</b> foi marcada como concluída. Espera pela verificação para obteres pontos.`
+    try {
+      const imageUrl = await uploadToCloudinary(selectedFile);
+
+      dispatch(
+        completeTask({ picture: imageUrl, id: task._id }) // use the Cloudinary URL
+      );
+
+      onClose();
+      onShowPopUpInfo(
+        `Tarefa <b>${task.title}</b> foi marcada como concluída. Espera pela verificação para obteres pontos.`
+      );
+    } catch (err) {
+      console.error("Erro ao fazer upload para Cloudinary:", err);
+      onShowPopUpInfo("Falha ao enviar imagem. Tenta novamente.");
+    }
+  };
+
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "task_image"); // replace with yours
+
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/dinzra2oo/image/upload", // replace with your cloud name
+      {
+        method: "POST",
+        body: formData,
+      }
     );
+
+    const data = await response.json();
+    return data.secure_url; // Cloudinary hosted image URL
   };
 
   return (

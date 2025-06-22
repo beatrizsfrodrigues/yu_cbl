@@ -1,5 +1,3 @@
-
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
@@ -31,9 +29,7 @@ function authorizedConfig() {
   };
 }
 
-
 const API_URL = process.env.REACT_APP_API_URL;
-
 
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -47,10 +43,8 @@ export const registerUser = createAsyncThunk(
         }
       );
 
-   
       const { user, token } = res.data;
 
- 
       setAuthUser(user);
       localStorage.setItem("authToken", token);
 
@@ -84,7 +78,6 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
 
 export const fetchAuthUser = createAsyncThunk(
   "user/fetchAuthUser",
@@ -152,7 +145,6 @@ export const createNewTaskAfterRejection = createAsyncThunk(
 //     }
 //   }
 // );
-
 
 export const fetchPartnerUser = createAsyncThunk(
   "user/fetchPartnerUser",
@@ -226,7 +218,6 @@ export const fetchEquippedAccessories = createAsyncThunk(
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
-
 );
 // 8) Atualizar utilizador
 export const updateUser = createAsyncThunk(
@@ -271,7 +262,6 @@ export const buyAccessory = createAsyncThunk(
     }
   }
 );
-
 
 // 10) Equipar/desequipar acessório
 export const equipAccessories = createAsyncThunk(
@@ -319,14 +309,14 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-     logout(state) {
+    logout(state) {
       state.authUser = null;
       clearAuthStorage();
     },
   },
   extraReducers: (builder) => {
     builder
-     
+
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -357,10 +347,24 @@ const userSlice = createSlice({
       .addCase(getTasks.fulfilled, (s, a) => {
         s.tasks = a.payload;
       })
-      .addCase(completeTask.fulfilled, (s, a) => {
-        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
-        if (idx > -1) s.tasks[idx] = a.payload;
+      .addCase(completeTask.fulfilled, (state, action) => {
+        // Defensive: ensure tasks is an array
+        if (!Array.isArray(state.tasks)) {
+          state.tasks = [];
+        }
+
+        const updatedTask = action.payload.task;
+        if (!updatedTask) return;
+
+        const idx = state.tasks.findIndex((t) => t._id === updatedTask._id);
+        if (idx > -1) {
+          state.tasks[idx] = updatedTask;
+        } else {
+          // Optionally add it if not found
+          state.tasks.push(updatedTask);
+        }
       })
+
       .addCase(verifyTask.fulfilled, (s, a) => {
         const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
