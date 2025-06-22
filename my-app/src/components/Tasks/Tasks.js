@@ -6,6 +6,7 @@ import { getAuthUser } from "../../utils/storageUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice.js";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
+import LoadingScreen from "../LoadingScreen.js";
 
 const ConcludeTask = lazy(() => import("./ConcludeTask.js"));
 const VerifyTask = lazy(() => import("./VerifyTask.js"));
@@ -389,7 +390,7 @@ function Tasks() {
       return (
         <div id="tasks">
           {tasksStatus === "loading" && !hasPolled ? (
-            <div>A carregar tarefas…</div>
+            <LoadingScreen isOverlay />
           ) : tasksStatus === "failed" ? (
             <div>Error: {tasksError}</div>
           ) : !tasks ? (
@@ -561,7 +562,7 @@ function Tasks() {
       </div>
       {/* Modais */}
       {showVerifyTask && partnerUser && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <VerifyPopUp
             task={taskToVerify}
             partnerUser={partnerUser}
@@ -571,7 +572,7 @@ function Tasks() {
         </Suspense>
       )}
       {isVerifyTaskOpen && (
-        <Suspense fallback={<div>Loading nova tarefa...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <VerifyTask
             onClose={handleCloseVerifyTaskModal}
             partnerUser={partnerUser}
@@ -582,7 +583,7 @@ function Tasks() {
         </Suspense>
       )}
       {isNewTaskModalOpen && authUser && (
-        <Suspense fallback={<div>Loading nova tarefa...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <NewTask
             onClose={handleCloseNewTaskModal}
             currentUser={authUser}
@@ -592,7 +593,7 @@ function Tasks() {
       )}
 
       {isConcludeTaskOpen && (
-        <Suspense fallback={<div>Loading nova tarefa...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <ConcludeTask
             onClose={handleCloseConcludeTaskModal}
             currentUser={authUser}
@@ -602,12 +603,12 @@ function Tasks() {
         </Suspense>
       )}
       {isPopUpInfoOpen && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <PopUpInfo onClose={handleClosePopUpInfo} message={popUpMessage} />
         </Suspense>
       )}
       {isFilterOpen && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <Filter
             filterCriteria={filterCriteria}
             onFilterChange={handleTaskFilterChange}
@@ -616,7 +617,7 @@ function Tasks() {
         </Suspense>
       )}
       {isRejectOpen && (
-        <Suspense fallback={<div>Loading rejeição...</div>}>
+        <Suspense fallback={<LoadingScreen isOverlay />}>
           <Reject
             onClose={handleCloseRejectModal}
             task={taskToVerify}

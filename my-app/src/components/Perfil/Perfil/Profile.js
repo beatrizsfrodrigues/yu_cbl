@@ -7,7 +7,8 @@ import "../Perfil/profile.css";
 import Grafico from "../Grafico/Grafico";
 import Definicoes from "../Definicoes/Definicoes";
 import Acess from "./Acess";
-import Informacoes from "../Informacoes/Informacoes";  
+import Informacoes from "../Informacoes/Informacoes";
+import LoadingScreen from "../../LoadingScreen";
 
 import TopBar from "../../TopBar";
 import {
@@ -24,8 +25,8 @@ export default function Profile() {
   // estados para controlar cada modal
   const [showGrafico, setShowGrafico] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showAcess,    setShowAcess]    = useState(false);
-  const [showInfo,    setShowInfo]     = useState(false);   
+  const [showAcess, setShowAcess] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const {
     authUser: currentUser,
@@ -43,7 +44,6 @@ export default function Profile() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
-
   // lógica para aplicar acessórios ao avatar
   const [selectedBackground, setSelectedBackground] = useState(null);
   const [selectedShirt, setSelectedShirt] = useState(null);
@@ -55,11 +55,9 @@ export default function Profile() {
   const [selectedOuvidos, setSelectedOuvidos] = useState(null);
   const [selectedOculos, setSelectedOculos] = useState(null);
 
-
   useEffect(() => {
     if (!accessories) return;
-    const findById = (id) =>
-      accessories.find((a) => a && a._id === id) || null;
+    const findById = (id) => accessories.find((a) => a && a._id === id) || null;
 
     setSelectedShirt(findById(equippedAccessories.shirt));
     setSelectedHat(findById(equippedAccessories.hat));
@@ -71,8 +69,8 @@ export default function Profile() {
     setSelectedOculos(findById(equippedAccessories.oculos));
   }, [accessories, equippedAccessories]);
 
-  if (userStatus === "loading") return <div>Loading perfil…</div>;
-  if (userStatus === "failed")  return <div>Error: {userError}</div>;
+  if (userStatus === "loading") return <LoadingScreen isOverlay />;
+  if (userStatus === "failed") return <div>Error: {userError}</div>;
 
   if (!currentUser?._id) {
     navigate("/login");
@@ -178,7 +176,6 @@ export default function Profile() {
           onClick={() => setShowInfo(true)}
         >
           <ion-icon name="information-outline" className="icons" />
-
         </button>
 
         {/* Abrir acessibilidade */}
@@ -190,7 +187,6 @@ export default function Profile() {
         >
           <ion-icon name="accessibility-outline" className="icons" />
         </button>
-
       </div>
 
       {/* Modais */}
@@ -211,11 +207,9 @@ export default function Profile() {
         <Acess show={showAcess} onClose={() => setShowAcess(false)} />
       )}
 
-     {showInfo && (
-        <Informacoes show={showInfo} onClose={() => setShowInfo(false)}/>
-)}
-
-      
+      {showInfo && (
+        <Informacoes show={showInfo} onClose={() => setShowInfo(false)} />
+      )}
     </div>
   );
 }
