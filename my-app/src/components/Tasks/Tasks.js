@@ -61,33 +61,38 @@ function Tasks() {
   const limit = 5;
 
   useEffect(() => {
-    console.log("authUser changed", authUser);
-  }, [authUser]);
-
-  useEffect(() => {
     if (authUser?._id) {
       const fetchTasks = async () => {
         try {
           const myResult = await dispatch(
-            getTasks({ userId: authUser._id, page: currentPage, limit })
+            getTasks({
+              userId: authUser._id,
+              page: currentPage,
+              limit,
+              filterCriteria,
+            })
           ).unwrap();
 
           if (Array.isArray(myResult.tasks)) {
             setMyTasks((prevTasks) => {
-              const allTasks = [
-                ...(Array.isArray(prevTasks) ? prevTasks : []),
-                ...myResult.tasks,
-              ];
+              const newTasks =
+                currentPage === 1
+                  ? myResult.tasks
+                  : [
+                      ...(Array.isArray(prevTasks) ? prevTasks : []),
+                      ...myResult.tasks,
+                    ];
               const uniqueTasks = Array.from(
-                new Map(allTasks.map((t) => [t._id, t])).values()
+                new Map(newTasks.map((t) => [t._id, t])).values()
               );
               return uniqueTasks;
             });
             console.log(myResult);
             // Verifica se ainda há mais tarefas
-            if (myResult.total < limit) {
-              setHasMoreTasks(false);
-            }
+            setHasMoreTasks(myResult.total > currentPage * limit);
+          } else {
+            console.warn("Unexpected task result for myTasks:", myResult);
+            setHasMoreTasks(false); // No tasks or unexpected format, so no more tasks
           }
         } catch (err) {
           console.error("Failed to fetch tasks:", err);
@@ -97,42 +102,46 @@ function Tasks() {
 
       fetchTasks();
     }
-  }, [authUser?._id, currentPage, dispatch]);
+  }, [authUser?._id, currentPage, dispatch, limit, filterCriteria]);
 
   useEffect(() => {
     if (authUser?.partnerId) {
-      const fetchPartner = async () => {
+      const fetchPartnerTasks = async () => {
         try {
-          const part = await dispatch(
-            fetchPartnerUser(authUser.partnerId)
-          ).unwrap();
-
-          if (part) {
-            setPartnerUser(part);
+          if (!partnerUser) {
+            const part = await dispatch(
+              fetchPartnerUser(authUser.partnerId)
+            ).unwrap();
+            if (part) {
+              setPartnerUser(part);
+            }
           }
 
           const result = await dispatch(
             getTasks({
-              userId: part?._id,
+              userId: partnerUser?._id || authUser.partnerId,
               page: currentPagePartner,
               limit,
+              filterCriteria,
             })
           ).unwrap();
+
           if (Array.isArray(result?.tasks)) {
             setPartnerTasks((prevTasks) => {
-              const allTasks = [
-                ...(Array.isArray(prevTasks) ? prevTasks : []),
-                ...result.tasks,
-              ];
+              const newTasks =
+                currentPagePartner === 1
+                  ? result.tasks
+                  : [
+                      ...(Array.isArray(prevTasks) ? prevTasks : []),
+                      ...result.tasks,
+                    ];
               const uniqueTasks = Array.from(
-                new Map(allTasks.map((t) => [t._id, t])).values()
+                new Map(newTasks.map((t) => [t._id, t])).values()
               );
               return uniqueTasks;
             });
 
-            if (result.total < limit) {
-              setHasMoreTasks2(false);
-            }
+            setHasMoreTasks2(result.total > currentPagePartner * limit);
           } else {
             console.warn("Unexpected partner task result:", result);
             setHasMoreTasks2(false);
@@ -141,9 +150,16 @@ function Tasks() {
           console.error("Failed to fetch partner user:", err);
         }
       };
-      fetchPartner();
+      fetchPartnerTasks();
     }
-  }, [authUser?.partnerId, currentPagePartner, dispatch]);
+  }, [
+    authUser?.partnerId,
+    currentPagePartner,
+    dispatch,
+    limit,
+    filterCriteria,
+    partnerUser,
+  ]);
 
   const prevMyTasksRef = React.useRef([]);
   const prevPartnerTasksRef = React.useRef([]);
@@ -153,47 +169,50 @@ function Tasks() {
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
       try {
-        console.log("page", currentPagePartner);
-        const tasksChanged = (a = [], b = []) => {
-          if (a.length !== b.length) return true;
+        // const tasksChanged = (a = [], b = []) => {
+        //   if (a.length !== b.length) return true;
 
-          const taskMap = new Map(a.map((t) => [t._id, t]));
+        //   const taskMap = new Map(a.map((t) => [t._id, t]));
 
-          for (const task of b) {
-            const prevTask = taskMap.get(task._id);
-            if (!prevTask) return true;
+        //   for (const task of b) {
+        //     const prevTask = taskMap.get(task._id);
+        //     if (!prevTask) return true;
 
-            // Compare relevant fields — you can tweak which fields to include
-            const keysToCompare = [
-              "completed",
-              "verified",
-              "completedDate",
-              "rejectMessage",
-              "notification",
-              "picture",
-            ];
-            for (const key of keysToCompare) {
-              if (prevTask[key] !== task[key]) return true;
-            }
-          }
+        //     // Compare relevant fields — you can tweak which fields to include
+        //     const keysToCompare = [
+        //       "completed",
+        //       "verified",
+        //       "completedDate",
+        //       "rejectMessage",
+        //       "notification",
+        //       "picture",
+        //     ];
+        //     for (const key of keysToCompare) {
+        //       if (prevTask[key] !== task[key]) return true;
+        //     }
+        //   }
 
-          return false;
-        };
+        //   return false;
+        // };
 
         if (authUser?._id) {
           const myResult = await dispatch(
-            getTasks({ userId: authUser._id, page: currentPage, limit })
+            getTasks({
+              userId: authUser._id,
+              page: currentPage,
+              limit,
+              filterCriteria,
+            })
           ).unwrap();
 
-          if (tasksChanged(myResult.tasks, prevMyTasksRef.current.tasks)) {
-            setMyTasks((prev) => {
-              const combined = [...prev, ...(myResult.tasks || [])];
-              const unique = Array.from(
-                new Map(combined.map((t) => [t._id, t])).values()
+          if (myResult && Array.isArray(myResult.tasks)) {
+            setMyTasks((prevTasks) => {
+              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
+              myResult.tasks.forEach((task) =>
+                updatedTasksMap.set(task._id, task)
               );
-              return unique;
+              return Array.from(updatedTasksMap.values());
             });
-            prevMyTasksRef.current = { tasks: myResult.tasks || [] };
           }
         }
 
@@ -203,20 +222,20 @@ function Tasks() {
               userId: partnerUser._id,
               page: currentPagePartner,
               limit,
+              filterCriteria,
             })
           ).unwrap();
 
-          if (
-            tasksChanged(partnerResult.tasks, prevPartnerTasksRef.current.tasks)
-          ) {
-            setPartnerTasks((prev) => {
-              const combined = [...prev, ...(partnerResult.tasks || [])];
-              const unique = Array.from(
-                new Map(combined.map((t) => [t._id, t])).values()
+          console.log("Partner tasks result:", partnerResult);
+
+          if (partnerResult && Array.isArray(partnerResult.tasks)) {
+            setPartnerTasks((prevTasks) => {
+              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
+              partnerResult.tasks.forEach((task) =>
+                updatedTasksMap.set(task._id, task)
               );
-              return unique;
+              return Array.from(updatedTasksMap.values());
             });
-            prevPartnerTasksRef.current = { tasks: partnerResult.tasks || [] };
           }
         }
         if (isMounted && !hasPolled) setHasPolled(true);

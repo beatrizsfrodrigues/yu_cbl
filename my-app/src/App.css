@@ -77,6 +77,13 @@ p {
   cursor: pointer;
 }
 
+.buttonGoogle {
+  display: block;
+  width: 80%;
+  max-width: 300px;
+  margin: 12px auto;
+}
+
 .buttonBig:active {
   background-color: var(--purple);
 }
