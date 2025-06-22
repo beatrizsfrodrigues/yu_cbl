@@ -1,11 +1,11 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, lazy, Suspense, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../assets/css/Register.css";
 import visibleIcon from "../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../assets/imgs/Icons/notvisible.png";
 import logo from "../assets/imgs/YU_logo/YU.webp";
-import { registerUser } from "../redux/usersSlice";
+import { registerUser, googleLogin } from "../redux/usersSlice";
 import TermsModal from "./TermsModal";
 
 const PasswordModal = lazy(() => import("./PasswordRequirementsRegister"));
@@ -46,6 +46,46 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status } = useSelector((state) => state.user);
+
+  const googleButton = useRef(null);
+
+  useEffect(() => {
+    if (window.google && googleButton.current) {
+      window.google.accounts.id.initialize({
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        callback: handleGoogleResponse,
+      });
+      window.google.accounts.id.renderButton(googleButton.current, {
+        theme: "outline",
+        size: "large",
+        width: 300,
+      });
+    }
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
+    setAlert("");
+    setMessage("");
+
+    try {
+      const resultAction = await dispatch(googleLogin(response)).unwrap();
+
+      const { user, isNewUser } = resultAction;
+      console.log("newUser", isNewUser);
+      if (user) {
+        if (isNewUser) {
+          navigate("/questions");
+        } else {
+          navigate("/home");
+        }
+      } else {
+        setAlert("Resposta inesperada da API após login com Google.");
+      }
+    } catch (err) {
+      console.error("Erro ao fazer login com Google (componente):", err);
+      setAlert(err || "Erro ao fazer login com Google.");
+    }
+  };
 
   // Validação de password
   const validatePassword = (pwd) => {
@@ -312,6 +352,7 @@ const Register = () => {
         >
           Registar
         </button>
+        <div className="buttonGoogle" ref={googleButton}></div>
       </form>
 
       <Suspense fallback={<div>Loading...</div>}>

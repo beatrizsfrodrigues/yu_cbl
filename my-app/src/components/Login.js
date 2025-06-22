@@ -2,9 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/css/Login.css";
+import { useDispatch, useSelector } from "react-redux";
 import logo from "../assets/imgs/YU_logo/YU.webp";
 
 import { setAuthToken, setAuthUser } from "../utils/storageUtils";
+import { googleLogin } from "../redux/usersSlice.js";
 
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -13,7 +15,9 @@ const Login = () => {
   const [message] = useState("");
   const [alert, setAlert] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const API_URL = process.env.REACT_APP_API_URL;
+  const { status, error, authUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -69,10 +73,9 @@ const Login = () => {
   const googleButton = useRef(null);
 
   useEffect(() => {
-    // /* global google */
     if (window.google && googleButton.current) {
       window.google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_CLIENT_ID, // substitui pelo teu client_id
+        client_id: process.env.REACT_APP_CLIENT_ID,
         callback: handleGoogleResponse,
       });
       window.google.accounts.id.renderButton(googleButton.current, {
@@ -82,31 +85,30 @@ const Login = () => {
     }
   }, []);
 
-  const handleGoogleResponse = (response) => {
-    axios
-      .post(`${API_URL}/users/google-login`, {
-        credential: response.credential,
-      })
-      .then((res) => {
-        console.log("Google login successful (frontend):", res.data);
+  const handleGoogleResponse = async (response) => {
+    setAlert("");
 
-        if (res.data.user) {
-          navigate("/home");
+    try {
+      const resultAction = await dispatch(googleLogin(response)).unwrap();
+
+      const { user, isNewUser } = resultAction;
+      console.log(resultAction);
+      console.log("newUser", isNewUser);
+      console.log("newUser", user);
+      if (user) {
+        if (isNewUser) {
+          navigate("/questions");
         } else {
-          setAlert("Google login succeeded, but user data was missing.");
+          navigate("/home");
         }
-      })
-      .catch((error) => {
-        console.error(
-          "Error sending Google token to backend:",
-          error.response ? error.response.data : error.message
-        );
-        setAlert(
-          error.response && error.response.data && error.response.data.message
-            ? error.response.data.message
-            : "Erro ao fazer login com Google."
-        );
-      });
+      } else {
+        setAlert("Resposta inesperada da API após login com Google.");
+      }
+    } catch (err) {
+      // This part executes if googleLogin.rejected
+      console.error("Erro ao fazer login com Google (componente):", err);
+      setAlert(err || "Erro ao fazer login com Google.");
+    }
   };
 
   const isFormComplete =
@@ -184,7 +186,7 @@ const Login = () => {
         <button className="buttonBig" type="submit" disabled={!isFormComplete}>
           Iniciar Sessão
         </button>
-        <div ref={googleButton}></div>
+        <div className="buttonGoogle" ref={googleButton}></div>
       </form>
     </div>
   );
