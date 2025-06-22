@@ -24,23 +24,19 @@ function authorizedConfig() {
 // ======================
 export const getMessages = createAsyncThunk(
   "messages/getMessages",
-  async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
+  async ({ userId, page, limit }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
       }
 
-      const queryParams = new URLSearchParams({
-        userId,
-        page,
-        limit,
-      });
-
       const res = await axios.get(
         `${API_URL}/messages/user/${userId}?page=${page}&limit=${limit}`,
         config
       );
+
+      console.log(res.data);
 
       return res.data;
     } catch (error) {

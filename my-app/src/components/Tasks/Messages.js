@@ -153,13 +153,17 @@ function Messages() {
   //* send a text message
   const handleAddMessage = async (text) => {
     try {
-      if (!messages || !messages._id) {
+      console.log("add", messages);
+      console.log("text", text);
+      if (!messages || !messages.chatId) {
         console.error(
           "Thread de mensagens não encontrada. messages._id está undefined."
         );
         return;
       }
-      await dispatch(sendMessage({ message: text, id: messages._id })).unwrap();
+      await dispatch(
+        sendMessage({ message: text, id: messages.chatId })
+      ).unwrap();
 
       // Poll immediately after sending
       const myResult = await dispatch(
@@ -169,7 +173,10 @@ function Messages() {
         JSON.stringify(myResult.messages) !==
         JSON.stringify(prevMyMessagesRef.current)
       ) {
-        setMyMessages(myResult.messages || []);
+        setMyMessages((prev) => ({
+          ...prev,
+          messages: myResult.messages || [],
+        }));
         prevMyMessagesRef.current = myResult.messages || [];
       }
     } catch (error) {
@@ -294,11 +301,7 @@ function Messages() {
                 <button
                   key={index}
                   className="optionText"
-                  onClick={
-                    partnerUser && messages?._id
-                      ? () => handleAddMessage(message.message)
-                      : null
-                  }
+                  onClick={() => handleAddMessage(message.message)}
                 >
                   {message.message}
                 </button>

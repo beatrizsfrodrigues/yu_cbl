@@ -24,7 +24,7 @@ function authorizedConfig() {
 // ======================
 export const getTasks = createAsyncThunk(
   "tasks/getTasks",
-  async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
+  async ({ userId, page, limit }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
@@ -64,6 +64,7 @@ export const addTask = createAsyncThunk(
   "tasks/addTask",
   async ({ title, description }, { rejectWithValue }) => {
     try {
+      console.log(title, description);
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
@@ -74,6 +75,7 @@ export const addTask = createAsyncThunk(
         { title, description },
         config
       );
+      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -214,8 +216,18 @@ const tasksSlice = createSlice({
       .addCase(getTasks.pending, setLoading)
       .addCase(getTasks.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload;
+
+        const { tasks, page } = action.payload;
+
+        if (page === 1) {
+          // first page, replace tasks
+          state.data = tasks;
+        } else {
+          // append to existing tasks
+          state.data = [...state.data, ...tasks];
+        }
       })
+
       .addCase(getTasks.rejected, setError)
 
       // addTask
