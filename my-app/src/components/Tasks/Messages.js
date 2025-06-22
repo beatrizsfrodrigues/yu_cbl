@@ -5,6 +5,7 @@ import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
 import { getAuthUser } from "../../utils/storageUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice";
+import LoadingScreen from "../LoadingScreen";
 
 import "./messages.css";
 import Avatar from "../Avatar.jsx";
@@ -219,7 +220,7 @@ function Messages() {
   let messageContent;
 
   if (messagesStatus === "loading" && !hasPolled) {
-    messageContent = <div className="loadingMessage">A carregar...</div>;
+    messageContent = <LoadingScreen isOverlay />;
   } else if (messagesStatus === "failed") {
     messageContent = (
       <div className="errorMessage">Erro ao carregar mensagens</div>
