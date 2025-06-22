@@ -151,7 +151,14 @@ function unequipAllAndSave() {
             <ion-icon name="close-outline" class="iconswhite" />
           </button>
 
-          {/* 2. Botão “lixo” para desiquipar TUDO e guardar na BD */}
+        
+
+          {/* 3. Botão “Guardar” (aplica apenas o que estiver em pendingEquip) */}
+          <button className="buttonMid btnHomeActive" onClick={onSave}>
+            Guardar
+          </button>
+
+            {/* 2. Botão “lixo” para desiquipar TUDO e guardar na BD */}
           <button
             className="profile-button btnHomeActive"
             onClick={unequipAllAndSave}
@@ -159,11 +166,6 @@ function unequipAllAndSave() {
             style={{ margin: "0 8px" }}
           >
             <ion-icon name="trash-outline" class="iconswhite" />
-          </button>
-
-          {/* 3. Botão “Guardar” (aplica apenas o que estiver em pendingEquip) */}
-          <button className="buttonMid btnHomeActive" onClick={onSave}>
-            Guardar
           </button>
         </div>
       </div>

@@ -117,8 +117,8 @@ const Register = () => {
         setPassword("");
         setConfirmPassword("");
         setTermsAccepted(false);
-        // Navegar para a página de apresentação
-        navigate("/apresentacao");
+        // Navegar para a página de apresentação com estado
+        navigate("/apresentacao", { state: { from: "signup" } });
       })
       .catch((errMsg) => {
         setAlert(errMsg);
@@ -206,7 +206,7 @@ const Register = () => {
                         Object.values(passwordRequirements).every(Boolean)
                           ? "icon-green"
                           : "icon-red"
-                      }`}
+                      }`} 
                     />
                   </button>
                 </label>
@@ -318,9 +318,7 @@ const Register = () => {
         <PasswordModal
           isOpen={isPasswordModalOpen}
           onClose={togglePasswordModal}
-        >
-          {/* ... requisitos de password ... */}
-        </PasswordModal>
+        />
       </Suspense>
 
       <TermsModal

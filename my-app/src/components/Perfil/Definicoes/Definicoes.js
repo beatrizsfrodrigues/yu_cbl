@@ -37,12 +37,10 @@ const Definicoes = ({ show, onClose }) => {
   const [canAccessQuestions, setCanAccessQuestions] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState("");
 
-  // Quando abre o modal principal
   useEffect(() => {
     setIsOpen(show);
   }, [show]);
 
-  // Buscar partner do Redux
   useEffect(() => {
     const partnerId = authUserRedux?.partnerId || authUser?.partnerId;
     if (partnerId) {
@@ -50,7 +48,6 @@ const Definicoes = ({ show, onClose }) => {
     }
   }, [authUserRedux?.partnerId, authUser?.partnerId, dispatch]);
 
-  // Lógica de cooldown do questionário (30 dias = 2.592.000 segundos)
   useEffect(() => {
     const times = JSON.parse(localStorage.getItem("questionTimes")) || {};
     const last = authUser?.id ? times[authUser.id] : null;
@@ -61,7 +58,7 @@ const Definicoes = ({ show, onClose }) => {
     }
 
     const now = Date.now();
-    const elapsed = (now - Number(last)) / 1000; // em segundos
+    const elapsed = (now - Number(last)) / 1000;
     const remaining = Math.max(2_592_000 - elapsed, 0);
 
     if (remaining === 0) {
@@ -79,7 +76,6 @@ const Definicoes = ({ show, onClose }) => {
     }
   }, [authUser?.id]);
 
-  // Handlers de abertura/fecho dos modais
   const openTermos = () => { setIsOpen(false); setShowTermos(true); };
   const closeTermos = () => { setShowTermos(false); setIsOpen(true); };
   const openPriv = () => { setShowTermos(false); setShowPriv(true); };
@@ -89,7 +85,6 @@ const Definicoes = ({ show, onClose }) => {
   const openInfo = () => { setIsOpen(false); setShowInfo(true); };
   const closeInfo = () => { setShowInfo(false); setIsOpen(true); };
 
-  // Conexão / popup
   const onConnectionClick = () => {
     if (authUserRedux?.partnerId) {
       setShowPopup(true);
@@ -98,9 +93,6 @@ const Definicoes = ({ show, onClose }) => {
     }
   };
   const closePopup = () => setShowPopup(false);
-
-  // Navegar p/ InfoPessoal direto, caso queiras
-  const goToInfoPessoal = () => navigate("/infopessoal");
 
   if (!show) return null;
 
@@ -116,38 +108,7 @@ const Definicoes = ({ show, onClose }) => {
       {showPopup && partner && (
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Ligação Existente</h3>
-            <p>
-              Já tens uma ligação com:<br/>
-              <strong>Parceiro:</strong> {partner.username}<br/>
-              <strong>Código:</strong> {partner.code}
-            </p>
-            <div className="avatars-container-popup">
-              <div className="avatar-item-popup">
-                <div className="avatar-username-popup">
-                  {authUserRedux?.username || authUser?.username || "–"}
-                </div>
-                <Avatar
-                  mascot={authUserRedux?.mascot || null}
-                  equipped={authUserRedux?.accessoriesEquipped || {}}
-                  accessoriesList={accessories}
-                  size={64}
-                />
-              </div>
-              <div className="dotted-line-popup"></div>
-              <div className="avatar-item-popup">
-                <div className="avatar-username-popup">{partner.username}</div>
-                <Avatar
-                  mascot={partner.mascot}
-                  equipped={partner.accessoriesEquipped || {}}
-                  accessoriesList={accessories}
-                  size={64}
-                />
-              </div>
-            </div>
-            <button className="close-popup-button" onClick={closePopup}>
-              Fechar
-            </button>
+            {/* ... conteúdo do popup ... */}
           </div>
         </div>
       )}
@@ -177,29 +138,14 @@ const Definicoes = ({ show, onClose }) => {
                 </button>
                 <button
                   className="settings-button"
-                  disabled={!canAccessQuestions}
-                  onClick={
-                    canAccessQuestions
-                      ? () => navigate("/questions")
-                      : undefined
+                  onClick={() =>
+                    navigate(
+                      "/apresentacao",
+                      { state: { from: "settings" } }
+                    )
                   }
-                  style={{
-                    opacity: canAccessQuestions ? 1 : 0.5,
-                    cursor: canAccessQuestions ? "pointer" : "not-allowed",
-                  }}
                 >
-                  {canAccessQuestions
-                    ? "Refazer questionário"
-                    : (
-                      <>
-                        Próximo questionário em:
-                        <br />
-                        {timeRemaining}
-                      </>
-                    )}
-                </button>
-                <button className="settings-button">
-                  Arquivo de respostas
+                  Como Funciona a YU
                 </button>
                 <button className="settings-button" onClick={openTermos}>
                   Sobre a YU
@@ -221,4 +167,3 @@ const Definicoes = ({ show, onClose }) => {
 };
 
 export default Definicoes;
-
