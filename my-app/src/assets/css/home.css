@@ -109,7 +109,7 @@
 
 .buttonMid {
   width: 50%;
-  background-color: var(--purple);
+  background-color: var(--purple-dark);
   color: white;
   border-radius: 20px;
   height: 48px;

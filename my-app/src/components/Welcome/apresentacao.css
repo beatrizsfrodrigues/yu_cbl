@@ -1,181 +1,193 @@
-.apresentacao-container {
+.ap-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-}
-
-.apresentacao-content {
-  flex-grow: 1; /* Faz o conteúdo expandir para preencher o espaço */
-  display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center; /* Centraliza verticalmente */
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.apresentacao-info {
-  max-width: 80%;
-  max-height: 80%;
-  margin: 20px auto;
-  padding: 30px;
-  font-size: 1.125rem;
-  border-radius: 15px;
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
-}
-
-.apresentacao-info h2 {
-  font-family: "Sour Gummy", serif;
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: var(--purple-dark);
-}
-
-.apresentacao-info p {
-  font-size: 1.125rem;
-  margin: 5px 0;
-  color: var(--purple-darker);
-}
-
-.apresentacao-header {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1200px;
-  margin-bottom: 20px;
-  padding: 10px 30px; /* Espaçamento interno */
-}
-
-.apresentacao-title {
-  font-size: 2em;
-  font-weight: bold;
+  justify-content: center;
+  position: relative;
   margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-.button-link {
-  text-decoration: none; /* Remove o sublinhado */
+/* Header: Logo, Back and Skip */
+.skip-prev-container {
+  position: absolute;
+  top: 40px; /* posiciona acima da barra de progresso (barra em 48px) */
+  left: 16px;
+  z-index: 30;
 }
-
-.button-outside-slide {
-  padding: 10px 20px;
-  background-color: var(--purple); /* Certifique-se de definir --purple */
+.skip-prev-btn {
+  background: var(--purple-dark);
   color: #fff;
   border: none;
-  border-radius: 5px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 24px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.button-outside-slide:hover {
-  background-color: var(--purple-darker); /* Tom mais escuro no hover */
-}
-
-.image-container {
   display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s;
+}
+.skip-voltar-btn {
+ position: absolute;
+  top: 1%;      /* mesma distância vertical do logo */
+  left: 16px;     /* mesma margem esquerda do logo */
+  z-index: 30;    /* acima da progress bar */
+  background: var(--purple-dark);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s;
+}
+
+
+.skip-prev-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.skip-prev-btn:hover:not(:disabled) {
+  background: var(--purple);
+}
+
+.skip-container {
+  position: absolute;
+  top: 72px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+}
+.skip-logo {
+  height: 32px;
+  object-fit: contain;
+}
+.skip-btn {
+  background: var(--purple);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.skip-btn:hover {
+  background: var(--purple-dark);
+}
+.skip-btn:hover {
+  background: var(--purple-dark);
+}
+
+/* Progress bar */
+.progresss-bar {
+  position: absolute;
+  top: 48px;
+  left: 0;
   width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
-  gap: 10px;
-  justify-content: center;
+  height: 4px;
+  background: var(--purple-lighter);
+  z-index: 15;
+}
+.progresss {
+  height: 100%;
+  background: var(--purple);
+  transition: width 0.3s ease-in-out;
 }
 
-.image {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  align-items: center;
-  object-fit: cover;
-}
-
-.responsive-image {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-}
-
-.button-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.apresentacao-content {
-  flex-grow: 1;
+/* Slides */
+.slide {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  padding: 20px;
-  max-width: 1200px;
-}
-
-.apresentacao-info {
+  justify-content: center;
+  padding: 0 20px;
   text-align: center;
 }
-
-.responsive-image {
-  width: 100%;
-  max-width: 300px;
-  margin-top: 20px;
+.slide-title {
+  font-size: 2.2rem;
+  color: var(--purple);
+  margin-bottom: 8px;
+}
+.slide-text {
+  font-size: 1rem;
+  color: var(--text);
+  max-width: 90%;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.slide-media {
+  width: 90%;
+  max-width: 600px;
+  max-height: 50vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  margin-bottom: 24px;
 }
 
-.responsive-video {
-  width: 100%;
-  max-width: 300px;
-  margin-top: 20px;
-}
-
-.responsive-image-container {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.comecar-button-link {
-  text-decoration: none;
-}
-
-.comecar-button {
-  padding: 10px 20px;
-  background-color: var(--purple);
+/* CTA button */
+.cta-button {
+  background: var(--purple);
   color: #fff;
   border: none;
-  border-radius: 5px;
+  padding: 14px 32px;
+  border-radius: 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: background 0.2s;
+}
+.cta-button:hover {
+  background: var(--purple-dark);
 }
 
-.pagination {
+/* Navigation arrows */
+.controls {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 5px;
-  margin-top: 20px;
+  gap: 16px;
+  z-index: 20;
 }
-
-.pagination-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #ccc;
+.control-btn {
+  background: var(--purple);
   border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: background 0.2s;
 }
-
-.pagination-dot.active {
-  background-color: var(--purple);
+.control-btn:disabled {
+  background: var(--purple-lighter);
+  cursor: default;
 }
-
-@media (max-width: 768px) {
-  .apresentacao-title {
-    font-size: 1.5em;
-  }
-
-  .button-outside-slide {
-    padding: 8px 16px;
-  }
-
-  .comecar-button {
-    padding: 8px 16px;
-  }
+.control-btn:not(:disabled):hover {
+  background: var(--purple-dark);
+}
+ .small-video {
+  max-height: 30vh;
+  width: auto;
 }

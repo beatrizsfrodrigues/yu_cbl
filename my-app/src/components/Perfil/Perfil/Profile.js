@@ -7,7 +7,8 @@ import "../Perfil/profile.css";
 import Grafico from "../Grafico/Grafico";
 import Definicoes from "../Definicoes/Definicoes";
 import Acess from "./Acess";
-import Informacoes from "../Informacoes/Informacoes";  
+import Informacoes from "../Informacoes/Informacoes";
+import LoadingScreen from "../../LoadingScreen";
 
 import TopBar from "../../TopBar";
 import {
@@ -24,8 +25,8 @@ export default function Profile() {
   // estados para controlar cada modal
   const [showGrafico, setShowGrafico] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showAcess,    setShowAcess]    = useState(false);
-  const [showInfo,    setShowInfo]     = useState(false);   
+  const [showAcess, setShowAcess] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const {
     authUser: currentUser,
@@ -43,7 +44,6 @@ export default function Profile() {
     dispatch(fetchAccessories());
   }, [dispatch]);
 
-
   // lógica para aplicar acessórios ao avatar
   const [selectedBackground, setSelectedBackground] = useState(null);
   const [selectedShirt, setSelectedShirt] = useState(null);
@@ -55,11 +55,9 @@ export default function Profile() {
   const [selectedOuvidos, setSelectedOuvidos] = useState(null);
   const [selectedOculos, setSelectedOculos] = useState(null);
 
-
   useEffect(() => {
     if (!accessories) return;
-    const findById = (id) =>
-      accessories.find((a) => a && a._id === id) || null;
+    const findById = (id) => accessories.find((a) => a && a._id === id) || null;
 
     setSelectedShirt(findById(equippedAccessories.shirt));
     setSelectedHat(findById(equippedAccessories.hat));
@@ -71,8 +69,8 @@ export default function Profile() {
     setSelectedOculos(findById(equippedAccessories.oculos));
   }, [accessories, equippedAccessories]);
 
-  if (userStatus === "loading") return <div>Loading perfil…</div>;
-  if (userStatus === "failed")  return <div>Error: {userError}</div>;
+  if (userStatus === "loading") return <LoadingScreen isOverlay />;
+  if (userStatus === "failed") return <div>Error: {userError}</div>;
 
   if (!currentUser?._id) {
     navigate("/login");
@@ -162,34 +160,43 @@ export default function Profile() {
       </div>
 
       <div className="profile-buttons">
-        {/* Abrir gráfico */}
-        <button
-          aria-label="Botão para abrir gráficos"
-          className="profile-button award"
-          onClick={() => setShowGrafico(true)}
-        >
-          <ion-icon name="podium-outline" className="icons" />
-        </button>
+        
+        <div className="profile-button-container progress">
+          <button
+            aria-label="Gráficos"
+            className="profile-button award"
+            onClick={() => setShowGrafico(true)}
+          >
+            <ion-icon name="podium-outline" className="icons" />
+          </button>
+          <span className="profile-button-label">Progresso</span>
+        </div>
 
-        {/* Abrir modal de Informações em vez de link */}
-        <button
-          aria-label="Informações"
-          className="profile-button circle"
-          onClick={() => setShowInfo(true)}
+       <div className="profile-button-container info">
+          <button
+            aria-label="Informações"
+            className="profile-button circle"
+            onClick={() => setShowInfo(true)}
         >
-          <ion-icon name="information-outline" className="icons" />
+            <ion-icon name="information-outline" className="icons" />
+          </button>
+          <span className="profile-button-label">Informações</span>
+        </div>
 
-        </button>
 
-        {/* Abrir acessibilidade */}
-        <button
-          aria-label="Acessibilidade"
-          className="profile-button circle"
-          onClick={() => setShowAcess(true)}
-          style={{ backgroundColor: "#8DD4D1" }}
-        >
-          <ion-icon name="accessibility-outline" className="icons" />
-        </button>
+        <div className="profile-button-container accessibility">
+            <button
+              aria-label="Acessibilidade"
+              className="profile-button circle"
+              style={{ backgroundColor: "#8DD4D1" }}
+              onClick={() => setShowAcess(true)}
+            >
+              <ion-icon name="accessibility-outline" className="icons" />
+            </button>
+            <span className="profile-button-label">
+              Acessibilidade
+            </span>
+          </div>
 
       </div>
 
@@ -211,11 +218,9 @@ export default function Profile() {
         <Acess show={showAcess} onClose={() => setShowAcess(false)} />
       )}
 
-     {showInfo && (
-        <Informacoes show={showInfo} onClose={() => setShowInfo(false)}/>
-)}
-
-      
+      {showInfo && (
+        <Informacoes show={showInfo} onClose={() => setShowInfo(false)} />
+      )}
     </div>
   );
 }
