@@ -7,6 +7,7 @@ import "./connection.css";
 import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
+import qrIcon from '../../assets/imgs/Icons/qrcode-icon.svg';
 import { setAuthUser, getAuthUser } from "../../utils/storageUtils";
 import {
   fetchAuthUser,
@@ -193,12 +194,13 @@ const Connection = () => {
       {/* Botão para abrir scanner de QR ou insistir em usar input de código */}
       {!isCodeInputVisible && !showScanner && (
         <button
-          className="confirm-button qrBtn"
+          className="qrconnection-button qrBtn"
           onClick={() => {
             setShowScanner(true);
             setMessage("");
           }}
         >
+          <img src={qrIcon} alt="" className="qr-icon" />
           Faz scan do código QR
         </button>
       )}
@@ -237,7 +239,7 @@ const Connection = () => {
                 onChange={(e) => setPartnerCode(e.target.value)}
               />
               <button
-                className="confirm-button"
+                className="confirm-connection-button"
                 onClick={handleConfirmConnection}
               >
                 Confirmar
