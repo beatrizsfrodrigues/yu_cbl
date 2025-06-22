@@ -6,10 +6,12 @@ const Modal = ({ isOpen, onClose, children }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose}>
-          ×
-        </button>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <ion-icon
+          name="close-outline"
+          onClick={onClose}
+          class="icons"
+        ></ion-icon>
         {children}
       </div>
     </div>
