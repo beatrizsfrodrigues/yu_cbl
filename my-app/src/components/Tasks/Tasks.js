@@ -50,7 +50,7 @@ function Tasks() {
 
   const [myTasks, setMyTasks] = useState([]);
   const [partnerTasks, setPartnerTasks] = useState([]);
-  const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
+  const [hasPolled, setHasPolled] = React.useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPagePartner, setCurrentPagePartner] = useState(1);
@@ -217,17 +217,6 @@ function Tasks() {
             });
             prevPartnerTasksRef.current = { tasks: partnerResult.tasks || [] };
           }
-
-          // console.log(currentPagePartner);
-          // console.log("fetch", partnerResult.page);
-          // console.log("partnerUser", prevPartnerTasksRef.current);
-          // if (
-          //   JSON.stringify(partnerResult.tasks) !==
-          //   JSON.stringify(prevPartnerTasksRef.current.tasks)
-          // ) {
-          //   setPartnerTasks(partnerResult.tasks || []);
-          //   prevPartnerTasksRef.current = partnerResult || [];
-          // }
         }
         if (isMounted && !hasPolled) setHasPolled(true);
       } catch (err) {
