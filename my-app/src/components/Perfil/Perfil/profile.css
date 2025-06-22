@@ -1,14 +1,4 @@
-/* .profile-background {
-  background-image: url('/public/assets/Fundos/fundoPerfil.png') !important;
-  background-size: cover !important; 
-  background-position: center !important; 
-  background-repeat: no-repeat !important; 
-  overflow: hidden !important ; 
-  width: 100vw;
-  height: 90vh;
-  display:block !important ;
 
-} */
 
 /**********************************
  * Estilo do container principal
@@ -78,6 +68,51 @@ button[aria-label="Abrir definições"] {
 /**********************************
  * Botões abaixo do avatar
  **********************************/
+ .profile-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.profile-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+/* profile.css */
+
+.profile-button-label {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  /* tirar cor fixa daqui se quiser só pra acessibilidade */
+}
+
+/* 
+.profile-button-container.accessibility .profile-button-label {
+  background-color: rgba(141, 212, 209, 0.3); 
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+}
+
+.profile-button-container.info .profile-button-label {
+  background-color: rgba(255, 165, 0, 0.3);
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+}
+/* Label translúcido para Progresso 
+.profile-button-container.progress .profile-button-label {
+  background-color: rgba(176, 228, 181, 0.3);
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+}
+*/
+
+
+
 .profile-buttons {
   display: flex;
   justify-content: center;
@@ -200,3 +235,5 @@ button[aria-label="Abrir definições"] {
 .profile-accessory.color {
   z-index: 9;
 }
+
+

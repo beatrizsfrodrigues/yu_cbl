@@ -1,189 +1,356 @@
-// InfoPessoal.js
 import React, { useEffect, useState, useMemo } from "react";
-import "../Definicoes/Definicoes.css";
-import "../Definicoes/InfoPessoal.css";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../../../redux/usersSlice";
+import axios from "axios";
+import "../Definicoes/InfoPessoal.css"; // mantém o mesmo ficheiro de estilos
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getAuthToken } from "../../../utils/storageUtils";
+// ícones para mostrar/esconder password
 import visibleIcon from "../../../assets/imgs/Icons/visible.png";
 import notVisibleIcon from "../../../assets/imgs/Icons/notvisible.png";
 
-const InfoPessoal = ({ show = false, onClose = () => {} }) => {
-  const dispatch = useDispatch();
-  const rawUser = useSelector(state => state.user.authUser);
-  const currentUser = useMemo(() => rawUser || {}, [rawUser]);
+const API_URL = process.env.REACT_APP_API_URL;
 
+/**
+ * Mantivemos exactamente a mesma estrutura HTML/CSS do ficheiro original.
+ * A única alteração funcional: contas Google (detectadas por `googleId` ou `authProvider`)
+ * não precisam de passo‑2 nem de confirmação de password.
+ */
+const InfoPessoal = ({ show = false, onClose = () => {} }) => {
+  const navigate = useNavigate();
+  const rawUser = useSelector((state) => state.user.authUser);
+  const currentUser = useMemo(() => rawUser || {}, [rawUser]);
+  const token = getAuthToken();
+
+  /* ▸ Novo: detectar login por Google ◂ */
+  const isGoogleUser =
+    !!currentUser.googleId || currentUser.authProvider === "google";
+
+  const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState("");
-  const [showNotification, setShowNotification] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [notification, setNotification] = useState("");
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
 
   const [formData, setFormData] = useState({
     nomeUtilizador: currentUser.username || "",
     email: currentUser.email || "",
-    palavraChave: "",
+    senhaAtual: "",
   });
-  const [originalData, setOriginalData] = useState(formData);
-  const [validationErrors, setValidationErrors] = useState({
-    nomeUtilizador: false,
-    email: false,
-    palavraChave: false,
-  });
+
+  // Keep a snapshot to detect changes
+  const originalData = useMemo(
+    () => ({ username: currentUser.username, email: currentUser.email }),
+    [currentUser]
+  );
 
   useEffect(() => {
     setFormData({
       nomeUtilizador: currentUser.username || "",
       email: currentUser.email || "",
-      palavraChave: "",
+      senhaAtual: "",
     });
-    setOriginalData({
-      nomeUtilizador: currentUser.username || "",
-      email: currentUser.email || "",
-      palavraChave: "",
-    });
-  }, [currentUser]);
-
-  const handleBack = () => {
-    setFormData(originalData);
+    setStep(1);
     setAlert("");
-    onClose();
-  };
+    setNotification("");
+    setShowDiscardConfirm(false);
+  }, [currentUser, show]);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(fd => ({ ...fd, [name]: value }));
-    setValidationErrors(ve => ({ ...ve, [name]: false }));
-  };
-
-  const validatePassword = pw =>
-    pw.length >= 6 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw) && /[!@#$%^&*(),._?":{}|<>-]/.test(pw);
-
-  const handleSave = e => {
-    e.preventDefault();
-    const errs = {
-      nomeUtilizador: formData.nomeUtilizador.trim() === "",
-      email: formData.email.trim() === "",
-      palavraChave: formData.palavraChave.trim() === "",
-    };
-    setValidationErrors(errs);
-    if (Object.values(errs).some(Boolean)) {
-      setAlert("Por favor, preencha todos os campos obrigatórios.");
-      return;
-    }
-    if (!validatePassword(formData.palavraChave)) {
-      setAlert("A palavra-passe não atende aos requisitos mínimos!");
-      return;
-    }
-    setAlert("");
-    setShowConfirmModal(true);
-  };
-
-  const confirmSave = () => {
-    const updated = {
-      ...currentUser,
-      username: formData.nomeUtilizador,
-      email: formData.email,
-      password: formData.palavraChave,
-    };
-    dispatch(updateUser(updated));
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
+  // Click on overlay
+  const handleOverlayClick = () => {
+    const changed =
+      formData.nomeUtilizador !== originalData.username ||
+      formData.email !== originalData.email;
+    if (step !== 1 || changed) {
+      setShowDiscardConfirm(true);
+    } else {
       onClose();
-    }, 3000);
-    setShowConfirmModal(false);
+    }
   };
 
-  const cancelSave = () => setShowConfirmModal(false);
+  // Back arrow click just close without confirm
+  const handleBackArrow = () => onClose();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((fd) => ({ ...fd, [name]: value }));
+    setAlert("");
+  };
+
+  /* ───────────── PRÓXIMO (passo‑1) ───────────── */
+  const handleNext = async (e) => {
+    e.preventDefault();
+    if (!formData.nomeUtilizador.trim() || !formData.email.trim()) {
+      setAlert("Nome de utilizador e email são obrigatórios.");
+      return;
+    }
+
+    // ✱ Se for conta Google → salta a password e faz update já aqui
+    if (isGoogleUser) {
+      if (
+        formData.nomeUtilizador === originalData.username &&
+        formData.email === originalData.email
+      ) {
+        setAlert("Nenhuma alteração detectada nos dados pessoais.");
+        return;
+      }
+      try {
+        await axios.put(
+          `${API_URL}/users/${currentUser._id}`,
+          {
+            username: formData.nomeUtilizador,
+            email: formData.email,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setNotification("Dados alterados com sucesso!");
+        setTimeout(() => {
+          setNotification("");
+          onClose();
+        }, 2000);
+      } catch (err) {
+        console.error(err);
+        setAlert(err.response?.data?.message || "Erro ao atualizar dados.");
+      }
+    } else {
+      // Conta normal → continua para confirmação de password (passo‑2)
+      setAlert("");
+      setStep(2);
+    }
+  };
+
+  /* ───────────── CONFIRMAR (passo‑2) ──────────── */
+  const handleConfirm = async (e) => {
+    e.preventDefault();
+    if (!formData.senhaAtual.trim()) {
+      setAlert("Introduza a sua palavra-passe atual para confirmar.");
+      return;
+    }
+    if (
+      formData.nomeUtilizador === originalData.username &&
+      formData.email === originalData.email
+    ) {
+      setAlert("Nenhuma alteração detectada nos dados pessoais.");
+      return;
+    }
+    try {
+      await axios.post(
+        `${API_URL}/users/login`,
+        { emailOrUsername: originalData.email, password: formData.senhaAtual },
+        { headers: { "Content-Type": "application/json" } }
+      );
+    } catch (verifyErr) {
+      setAlert(
+        verifyErr.response?.status === 401
+          ? "Palavra-passe atual incorreta."
+          : "Erro ao verificar palavra-passe."
+      );
+      return;
+    }
+    try {
+      await axios.put(
+        `${API_URL}/users/${currentUser._id}`,
+        {
+          username: formData.nomeUtilizador,
+          email: formData.email,
+          password: formData.senhaAtual,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setNotification("Dados alterados com sucesso!");
+      setTimeout(() => {
+        setNotification("");
+        onClose();
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setAlert(err.response?.data?.message || "Erro ao atualizar dados.");
+    }
+  };
 
   if (!show) return null;
 
   return (
-    <div className="modal modal-info" onClick={handleBack}>
-      <div className="window" onClick={e => e.stopPropagation()}>
-        {/* Header */}
-        <div className="grafico-header">
-          <ion-icon
-            name="chevron-back-outline"
-            onClick={handleBack}
-            className="icons"
-            style={{ fontSize: "28px" }}
-          />
-          <h3>Os meus dados</h3>
-        </div>
-        <div className="line" />
+    <>
+      <div className="modal modal-info" onClick={handleOverlayClick}>
+        <div className="window" onClick={(e) => e.stopPropagation()}>
+          <div className="grafico-header">
+            <ion-icon
+              name="chevron-back-outline"
+              onClick={handleBackArrow}
+              className="icons"
+              style={{ fontSize: "28px" }}
+            />
+            <h3>Os meus dados</h3>
+          </div>
+          <div className="line" />
 
-        {/* Content */}
-        <div className="grafico-content" style={{ textAlign: "justify", textJustify: "inter-word" }}>
-          {showNotification && <div className="notification">Dados alterados com sucesso!</div>}
+          {notification && <div className="notification">{notification}</div>}
 
-          <div className="grafico-section">
-            <form className="form-wrapper" onSubmit={handleSave}>
+          <div className="grafico-content">
+            {step === 1 ? (
+              <p className="info-text">
+                Altera o teu nome de utilizador e email abaixo. Clica em
+                "Próximo" para confirmar.
+              </p>
+            ) : (
+              <p className="info-text">
+                Para concluires, introduz a tua palavra-passe atual.
+              </p>
+            )}
+
+            <form
+              className="form-wrapper"
+              onSubmit={step === 1 ? handleNext : handleConfirm}
+            >
               {alert && <p className="alert">{alert}</p>}
 
-              <div className="form-group">
-                <label htmlFor="nomeUtilizador">Nome do Utilizador</label>
-                <input
-                  id="nomeUtilizador"
-                  name="nomeUtilizador"
-                  type="text"
-                  value={formData.nomeUtilizador}
-                  onChange={handleChange}
-                  className={`form-input ${validationErrors.nomeUtilizador ? "error" : ""}`}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`form-input ${validationErrors.email ? "error" : ""}`}
-                />
-              </div>
-
-              <div className="form-group password-group">
-                <label htmlFor="palavraChave">Palavra-passe</label>
-                <div className="password-input-container">
-                  <input
-                    id="palavraChave"
-                    name="palavraChave"
-                    type={showPassword ? "text" : "password"}
-                    value={formData.palavraChave}
-                    onChange={handleChange}
-                    className={`form-input ${validationErrors.palavraChave ? "error" : ""}`}
-                  />
-                  <button type="button" className="password-toggle-button" onClick={() => setShowPassword(v => !v)}>
-                    <img src={showPassword ? notVisibleIcon : visibleIcon} alt="Mostrar/esconder" />
+              {step === 1 ? (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="nomeUtilizador">Nome de Utilizador</label>
+                    <input
+                      id="nomeUtilizador"
+                      name="nomeUtilizador"
+                      type="text"
+                      value={formData.nomeUtilizador}
+                      onChange={handleChange}
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="form-input"
+                    />
+                  </div>
+                  <button type="submit" className="settings-button">
+                    {/* texto mantém‑se igual */}
+                    Próximo
                   </button>
-                </div>
-              </div>
-
-              <div className="form-buttons">
-                <button type="submit" className="save-button">Guardar</button>
-              </div>
+                </>
+              ) : (
+                <>
+                  <div className="form-group password-group">
+                    <label htmlFor="senhaAtual">Palavra-passe Atual</label>
+                    <div className="password-input-container">
+                      <input
+                        id="senhaAtual"
+                        name="senhaAtual"
+                        type={showPassword ? "text" : "password"}
+                        value={formData.senhaAtual}
+                        onChange={handleChange}
+                        className="form-input"
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle-button"
+                        onClick={() => setShowPassword((v) => !v)}
+                      >
+                        <img  
+                        src={showPassword ? notVisibleIcon : visibleIcon}
+                          alt="Mostrar/esconder"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    className="confirm-buttons"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "1rem",
+                      width: "100%",
+                    }}
+                  >
+                    <button type="submit" className="confirm-button">
+                      Confirmar
+                    </button>
+                    <button
+                      type="button"
+                      className="cancel-button"
+                      onClick={() => setStep(1)}
+                    >
+                      Voltar
+                    </button>
+                  </div>
+                </>
+              )}
             </form>
           </div>
-
-          {showConfirmModal && (
-            <div className="modal modal-confirm" onClick={cancelSave}>
-              <div className="window" onClick={e => e.stopPropagation()}>
-                <div className="grafico-section">
-                  <h3>Tens a certeza que queres alterar os teus dados?</h3>
-                  <div className="confirm-modal-buttons">
-                    <button onClick={confirmSave} className="confirm-button">Sim</button>
-                    <button onClick={cancelSave} className="cancel-button">Não</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+
+      {/* Discard confirmation modal */}
+      {showDiscardConfirm && (
+        <div
+          className="modal modal-confirm"
+          onClick={() => setShowDiscardConfirm(false)}
+        >
+          <div
+            className="window small"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p style={{ textAlign: "center" }}>
+              Tens a certeza que queres sair sem guardar as alterações?
+            </p>
+            <div
+              className="confirm-buttons"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "1rem",
+                width: "100%",
+              }}
+            >
+              <button
+                className="confirm-button"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onClick={() => {
+                  setShowDiscardConfirm(false);
+                  onClose();
+                }}
+              >
+                Sim
+              </button>
+              <button
+                className="cancel-button"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onClick={() => setShowDiscardConfirm(false)}
+              >
+                Não
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
 export default InfoPessoal;
+

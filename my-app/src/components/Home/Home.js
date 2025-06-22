@@ -19,6 +19,10 @@ import PopUpInfo from "../PopUpInfo.js";
 
 import "../../assets/css/home.css";
 
+
+const DEFAULT_COLOR_URL =
+  "https://res.cloudinary.com/dinzra2oo/image/upload/v1748611193/YU-119_weajgx.svg";
+
 export default function Home() {
   const dispatch = useDispatch();
 
@@ -121,17 +125,6 @@ export default function Home() {
     setOrigOuvidos(selectedOuvidos);
     setOrigOculos(selectedOculos);
 
-    // limpa tudo para preview “nu”
-    setSelectedBackground(null);
-    setSelectedShirt(null);
-    setSelectedAcc(null);
-    setSelectedColor(null);
-
-    setSelectedBigode(null);
-    setSelectedCachecol(null);
-    setSelectedChapeu(null);
-    setSelectedOuvidos(null);
-    setSelectedOculos(null);
 
     setShowStore(true);
   };
@@ -156,10 +149,22 @@ export default function Home() {
     setSelectedFit(item);
     dressUp(item, item.type);
   };
-  const resetFit = () => {
-    setSelectedFit(null);
-    dressUp(null, "all");
-  };
+  
+const resetFit = () => {
+  setSelectedFit(null);       
+
+  setSelectedBackground(origBackground);
+  setSelectedShirt(origShirt);
+  setSelectedAcc(origAcc);
+  setSelectedColor(origColor);
+
+  setSelectedBigode(origBigode);
+  setSelectedCachecol(origCachecol);
+  setSelectedChapeu(origChapeu);
+  setSelectedOuvidos(origOuvidos);
+  setSelectedOculos(origOculos);
+};
+
 
   /* ─── Closet preview ────────────────────── */
   const typeBySlot = {
@@ -207,7 +212,11 @@ export default function Home() {
         setSelectedAcc(findById(id));
         break;
       case "color":
-        setSelectedColor(findById(id));
+        if (id === null) {
+          setSelectedColor({ _id: "defaultColor", src: DEFAULT_COLOR_URL });
+        } else {
+          setSelectedColor(findById(id));
+        }
         break;
 
       case "bigode":
@@ -234,11 +243,19 @@ export default function Home() {
     try {
       for (const { id, type } of Object.values(pendingEquip)) {
         if (type === "SkinColor") {
-          const item = findById(id);
-          if (item) {
-            const payload = { ...user, mascot: item.src };
-            await dispatch(updateUser(payload)).unwrap();
-          }
+          if (id === null) {
+         await dispatch(
+           updateUser({ ...user, mascot: DEFAULT_COLOR_URL })
+         ).unwrap();
+       } else {
+         const item = findById(id);         
+         if (item) {
+           await dispatch(
+             updateUser({ ...user, mascot: item.src })
+           ).unwrap();
+         }
+       }
+
         } else {
           await dispatch(equipAccessories({ accessoryId: id, type })).unwrap();
         }

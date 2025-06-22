@@ -3,77 +3,44 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "../assets/css/termsModal.css";
 
-const TermsModal = ({ isOpen, onClose, onAccept }) => {
+const TermsModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <ion-icon
-          name="close-outline"
-          onClick={onClose}
-          class="icons"
-        ></ion-icon>
-        <h2 style={{ textAlign: "center" }}>
-          Termos de Uso <br></br>& Privacidade
-        </h2>
-        <p>
-          <strong>Em vigor desde:</strong> 18 de Junho de 2025
-        </p>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <button className="close-btn" onClick={onClose}>
+          <ion-icon name="close-outline" />
+        </button>
+        <h2>Termos & Privacidade</h2>
+        <p className="effective-date">Em vigor desde 18 Junho 2025</p>
 
         <div className="terms-scroll">
-          <h3>Resumo dos Termos</h3>
-          <ul>
-            <li>
-              <strong>Aceitação:</strong> Ao criar conta, concordas com estes
-              Termos e a Política de Privacidade.
-            </li>
-            <li>
-              <strong>Conta:</strong> Fornece dados verdadeiros e mantém
-              email/password em segurança.
-            </li>
-            <li>
-              <strong>Licença:</strong> Uso limitado e não exclusivo; proibido
-              copiar ou distribuir o app.
-            </li>
-            <li>
-              <strong>Conteúdo:</strong> Manténs direitos sobre o que
-              submeteres; cedes à YU licença para uso na plataforma.
-            </li>
-            <li>
-              <strong>Conduta:</strong> Proibido spam, hacking, phishing ou
-              conteúdo ilegal.
-            </li>
-            <li>
-              <strong>Responsabilidade:</strong> App fornecida "tal como está";
-              YU não responde por danos indiretos.
-            </li>
-          </ul>
+          <details open>
+            <summary>Resumo dos Termos</summary>
+            <ul>
+              <li><strong>Aceitação:</strong> Ao criar conta, concordas com estes Termos e a Privacidade.</li>
+              <li><strong>Conta:</strong> Mantém email e password seguras.</li>
+              <li><strong>Licença:</strong> Uso limitado; não copiar ou distribuir.</li>
+              <li><strong>Conteúdo:</strong> Manténs direitos sobre o que submeteres.</li>
+              <li><strong>Conduta:</strong> Sem spam, phishing ou conteúdo ilegal.</li>
+              <li><strong>Responsabilidade:</strong> App “tal como está”, sem danos indiretos.</li>
+            </ul>
+          </details>
 
-          <h3>Resumo da Privacidade</h3>
-          <ul>
-            <li>
-              <strong>Dados:</strong> nome, email e histórico de tarefas.
-            </li>
-            <li>
-              <strong>Uso:</strong> personalização e estatísticas anónimas.
-            </li>
-            <li>
-              <strong>Armazenamento:</strong> servidores seguros e encriptação.
-            </li>
-            <li>
-              <strong>Direitos:</strong> aceder, retificar, apagar e solicitar
-              portabilidade.
-            </li>
-            <li>
-              <strong>Sem Marketing:</strong> não partilhamos nem usamos para
-              fins de marketing.
-            </li>
-          </ul>
+          <details>
+            <summary>Resumo da Privacidade</summary>
+            <ul>
+              <li><strong>Dados:</strong> nome, email e histórico de tarefas.</li>
+              <li><strong>Uso:</strong> personalização e análises anónimas.</li>
+              <li><strong>Armazenamento:</strong> servidores seguros e encriptação.</li>
+              <li><strong>Direitos:</strong> aceder, retificar, apagar e exportar dados.</li>
+              <li><strong>Sem Marketing:</strong> não partilhamos para marketing.</li>
+            </ul>
+          </details>
 
-          <p className="privacy-note">
-            Para detalhes completos, após o registo acede a{" "}
-            <em>Definições → Sobre a YU</em>.
+          <p className="note">
+            Para ver o texto completo, acede a <em>Definições → Sobre a YU</em>.
           </p>
         </div>
       </div>
