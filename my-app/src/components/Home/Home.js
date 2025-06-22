@@ -18,6 +18,7 @@ import Store from "./Store";
 import PopUpInfo from "../PopUpInfo.js";
 
 import "../../assets/css/home.css";
+import LoadingScreen from "../LoadingScreen.js";
 
 
 const DEFAULT_COLOR_URL =
@@ -363,7 +364,7 @@ const resetFit = () => {
   };
 
   /* ─── Render ────────────────────────────── */
-  if (!user || !accessories) return <div>Loading…</div>;
+  if (!user || !accessories) return <LoadingScreen isOverlay />;
 
   return (
     <div className="homeContainer">

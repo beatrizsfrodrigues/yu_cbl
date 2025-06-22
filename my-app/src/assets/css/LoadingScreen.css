@@ -1,0 +1,64 @@
+/* Tela completa */
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+}
+
+/* Versão overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999 !;
+  flex-direction: column;
+}
+
+/* Conteúdo central do loading */
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* padding: 0.5rem 1rem; */
+  /* transform: scale(0.4); */
+  max-height: 300px;
+}
+
+/* Barra de progresso */
+.progressbar-container {
+  width: 120px;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 3px;
+  margin-top: 2px;
+  overflow: hidden;
+  transform: scale(0.8);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #a86fc9;
+  width: 0;
+  transition: width 0.3s linear;
+}
+
+/* Texto do progresso */
+.progress-text {
+  font-size: 14px;
+  color: #444;
+  margin-top: 2px;
+}
