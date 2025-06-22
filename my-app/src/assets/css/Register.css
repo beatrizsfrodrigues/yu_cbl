@@ -39,33 +39,42 @@ label {
   font-size: 16px;
 }
 
- /* Botões centrais */
+/* Botões centrais */
 .buttonBig {
-  display: block;          /* transforma em bloco */
-  width: 80%;              /* mantém 80% de largura */
-  max-width: 300px;        /* largura máxima */
-  margin: 12px auto;       /* 12px vertical e auto horizontal = centro */
+  display: block; /* transforma em bloco */
+  width: 80%; /* mantém 80% de largura */
+  max-width: 300px; /* largura máxima */
+  margin: 12px auto; /* 12px vertical e auto horizontal = centro */
   padding: 12px 0;
   border-radius: 20px;
   color: white;
   border: none;
-  background-color: #bababa;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .buttonBig.active {
-  background-color: #b49bc7;
+  background-color: var(--purple-dark) !important;
 }
 
- 
-.terms-container {
-  margin: 0;               
+.buttonBig:disabled {
+  background-color: var(--purple-light) !important;
+  cursor: not-allowed;
 }
-/* Se quiseres ajustar só o gap vertical, podes usar */
-.terms-container .buttonBig {
-  margin-top: 16px;
-  margin-bottom: 8px;
+
+.terms-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  flex-wrap: nowrap; /* impede quebra de linha */
+  white-space: nowrap; /* impede quebra de linha no texto */
+}
+
+.terms-checkbox-label input[type="checkbox"] {
+  margin: 0 6px 0 0;
+  accent-color: #007bff;
 }
 
 .register-link {
@@ -87,6 +96,27 @@ label {
 .password-requirements {
   list-style: none;
   padding: 0;
+  margin: 0 0 12px 0;
+  width: auto;
+  height: auto;
+}
+
+.password-requirements i {
+  margin-right: 2%;
+}
+
+.icon-green {
+  color: #28a745 !important; /* verde */
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.icon-red {
+  color: #dc3545 !important; /* vermelho */
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .password-requirements li {
@@ -142,7 +172,3 @@ label {
   justify-content: center;
   margin: 16px 0 12px;
 }
-
- 
-
- 

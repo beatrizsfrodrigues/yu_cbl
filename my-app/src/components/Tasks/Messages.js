@@ -9,7 +9,6 @@ import { fetchPartnerUser } from "../../redux/usersSlice";
 import "./messages.css";
 import Avatar from "../Avatar.jsx";
 
-// Memoized selectors
 const selectMessages = createSelector(
   (state) => state.messages?.data,
   (messages) => messages || { messages: [] }
@@ -17,7 +16,7 @@ const selectMessages = createSelector(
 
 const selectPresetMessages = createSelector(
   (state) => state.presetMessages?.data,
-  (presetMessages) => (presetMessages ? [...presetMessages] : []) // Ensure a new array is returned
+  (presetMessages) => (presetMessages ? [...presetMessages] : [])
 );
 
 function Messages() {
@@ -46,26 +45,45 @@ function Messages() {
 
   const [myMessages, setMyMessages] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
+
+  const limit = 5;
+
   const prevMyMessagesRef = React.useRef([]);
 
   //* fetch text messages
 
   useEffect(() => {
-    if (authUser?._id) {
-      const fetchMessages = async () => {
-        try {
-          const myResult = await dispatch(getMessages(authUser._id)).unwrap();
+    if (!authUser?._id) return;
 
-          if (myResult) {
-            setMyMessages(myResult);
+    const fetchMessages = async () => {
+      try {
+        const myResult = await dispatch(
+          getMessages({ userId: authUser._id, page: currentPage, limit })
+        ).unwrap();
+
+        if (myResult.messages) {
+          setMyMessages((prev) => {
+            const prevMessages = prev.messages || [];
+            const combined = [...prevMessages, ...myResult.messages];
+            return {
+              ...myResult,
+              messages: [...new Map(combined.map((m) => [m._id, m])).values()],
+            };
+          });
+
+          if (myResult.messages.length < limit) {
+            setHasMoreMessages(false);
           }
-        } catch (err) {
-          console.error("Failed to fetch tasks:", err);
         }
-      };
-      fetchMessages();
-    }
-  }, [authUser?._id, dispatch]);
+      } catch (err) {
+        console.error("Failed to fetch messages:", err);
+      }
+    };
+
+    fetchMessages();
+  }, [authUser?._id, currentPage, dispatch]);
 
   useEffect(() => {
     let isMounted = true;
@@ -73,13 +91,25 @@ function Messages() {
     const pollMessages = async () => {
       try {
         if (authUser?._id) {
-          const myResult = await dispatch(getMessages(authUser._id)).unwrap();
+          const myResult = await dispatch(
+            getMessages({ userId: authUser._id, page: currentPage, limit })
+          ).unwrap();
+
           if (
-            JSON.stringify(myResult) !==
+            JSON.stringify(myResult.messages) !==
             JSON.stringify(prevMyMessagesRef.current)
           ) {
-            setMyMessages(myResult || []);
-            prevMyMessagesRef.current = myResult || [];
+            setMyMessages((prev) => {
+              const prevMessages = prev.messages || [];
+              const combined = [...prevMessages, ...myResult.messages];
+              return {
+                ...myResult,
+                messages: [
+                  ...new Map(combined.map((m) => [m._id, m])).values(),
+                ],
+              };
+            });
+            prevMyMessagesRef.current = myResult.messages;
           }
         }
 
@@ -123,21 +153,31 @@ function Messages() {
   //* send a text message
   const handleAddMessage = async (text) => {
     try {
-      if (!messages || !messages._id) {
+      console.log("add", messages);
+      console.log("text", text);
+      if (!messages || !messages.chatId) {
         console.error(
           "Thread de mensagens não encontrada. messages._id está undefined."
         );
         return;
       }
-      await dispatch(sendMessage({ message: text, id: messages._id })).unwrap();
+      await dispatch(
+        sendMessage({ message: text, id: messages.chatId })
+      ).unwrap();
 
       // Poll immediately after sending
-      const myResult = await dispatch(getMessages(authUser._id)).unwrap();
+      const myResult = await dispatch(
+        getMessages({ userId: authUser._id, page: currentPage, limit })
+      ).unwrap();
       if (
-        JSON.stringify(myResult) !== JSON.stringify(prevMyMessagesRef.current)
+        JSON.stringify(myResult.messages) !==
+        JSON.stringify(prevMyMessagesRef.current)
       ) {
-        setMyMessages(myResult || []);
-        prevMyMessagesRef.current = myResult || [];
+        setMyMessages((prev) => ({
+          ...prev,
+          messages: myResult.messages || [],
+        }));
+        prevMyMessagesRef.current = myResult.messages || [];
       }
     } catch (error) {
       console.error("Failed to send or fetch messages:", error);
@@ -179,10 +219,8 @@ function Messages() {
   let messageContent;
 
   if (messagesStatus === "loading" && !hasPolled) {
-    console.log("[Messages] Render: loading spinner (first fetch)");
     messageContent = <div className="loadingMessage">A carregar...</div>;
   } else if (messagesStatus === "failed") {
-    console.log("[Messages] Render: error");
     messageContent = (
       <div className="errorMessage">Erro ao carregar mensagens</div>
     );
@@ -195,12 +233,28 @@ function Messages() {
     const sortedMessages = [...myMessages.messages].sort(
       (a, b) => +b.date - +a.date
     );
-
-    messageContent = sortedMessages.map((message) => (
-      <MessageBubble key={message._id} message={message} authUser={authUser} />
-    ));
+    messageContent = (
+      <>
+        {sortedMessages.map((message) => (
+          <MessageBubble
+            key={message._id}
+            message={message}
+            authUser={authUser}
+          />
+        ))}
+        {hasMoreMessages && (
+          <div className="load-more-container-messages">
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="loadMoreBtn submitBtn"
+            >
+              Carregar mais mensagens
+            </button>
+          </div>
+        )}
+      </>
+    );
   } else {
-    console.log("[Messages] Render: no messages");
     messageContent = <div>Não existem mensagens</div>;
   }
 
@@ -247,11 +301,7 @@ function Messages() {
                 <button
                   key={index}
                   className="optionText"
-                  onClick={
-                    partnerUser && messages?._id
-                      ? () => handleAddMessage(message.message)
-                      : null
-                  }
+                  onClick={() => handleAddMessage(message.message)}
                 >
                   {message.message}
                 </button>

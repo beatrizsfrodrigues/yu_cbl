@@ -52,37 +52,97 @@ function Tasks() {
   const [partnerTasks, setPartnerTasks] = useState([]);
   const [hasPolled, setHasPolled] = React.useState(false); // Added hasPolled state
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPagePartner, setCurrentPagePartner] = useState(1);
+  const [hasMoreTasks, setHasMoreTasks] = useState(true);
+  const [hasMoreTasks2, setHasMoreTasks2] = useState(true);
+
+  const limit = 5;
+
+  useEffect(() => {
+    console.log("authUser changed", authUser);
+  }, [authUser]);
+
   useEffect(() => {
     if (authUser?._id) {
       const fetchTasks = async () => {
         try {
-          const myResult = await dispatch(getTasks(authUser._id)).unwrap();
-          if (Array.isArray(myResult)) {
-            setMyTasks(myResult);
+          const myResult = await dispatch(
+            getTasks({ userId: authUser._id, page: currentPage, limit })
+          ).unwrap();
+
+          if (Array.isArray(myResult.tasks)) {
+            setMyTasks((prevTasks) => {
+              const allTasks = [
+                ...(Array.isArray(prevTasks) ? prevTasks : []),
+                ...myResult.tasks,
+              ];
+              const uniqueTasks = Array.from(
+                new Map(allTasks.map((t) => [t._id, t])).values()
+              );
+              return uniqueTasks;
+            });
+            console.log(myResult);
+            // Verifica se ainda há mais tarefas
+            if (myResult.total < limit) {
+              setHasMoreTasks(false);
+            }
           }
         } catch (err) {
           console.error("Failed to fetch tasks:", err);
+          setHasMoreTasks(false);
         }
       };
+
       fetchTasks();
     }
-  }, [authUser?._id, partnerUser?._id, dispatch]);
+  }, [authUser?._id, currentPage, dispatch]);
 
   useEffect(() => {
     if (authUser?.partnerId) {
       const fetchPartner = async () => {
         try {
-          const result = await dispatch(
+          const part = await dispatch(
             fetchPartnerUser(authUser.partnerId)
           ).unwrap();
-          setPartnerUser(result || {});
+
+          if (part) {
+            setPartnerUser(part);
+          }
+
+          const result = await dispatch(
+            getTasks({
+              userId: part?._id,
+              page: currentPagePartner,
+              limit,
+            })
+          ).unwrap();
+          if (Array.isArray(result?.tasks)) {
+            setPartnerTasks((prevTasks) => {
+              const allTasks = [
+                ...(Array.isArray(prevTasks) ? prevTasks : []),
+                ...result.tasks,
+              ];
+              const uniqueTasks = Array.from(
+                new Map(allTasks.map((t) => [t._id, t])).values()
+              );
+              return uniqueTasks;
+            });
+
+            if (result.total < limit) {
+              setHasMoreTasks2(false);
+            }
+          } else {
+            console.warn("Unexpected partner task result:", result);
+            setHasMoreTasks2(false);
+          }
         } catch (err) {
           console.error("Failed to fetch partner user:", err);
         }
       };
       fetchPartner();
     }
-  }, [authUser?.partnerId, dispatch]);
+  }, [authUser?.partnerId, currentPagePartner, dispatch]);
 
   const prevMyTasksRef = React.useRef([]);
   const prevPartnerTasksRef = React.useRef([]);
@@ -92,27 +152,65 @@ function Tasks() {
     const POLL_INTERVAL = 5000;
     const pollTasks = async () => {
       try {
-        if (authUser?._id) {
-          const myResult = await dispatch(getTasks(authUser._id)).unwrap();
+        console.log("page", currentPagePartner);
+        const tasksChanged = (a = [], b = []) => {
+          if (a.length !== b.length) return true;
+          const aMap = new Map(a.map((t) => [t._id, t.updatedAt]));
+          for (const task of b) {
+            if (aMap.get(task._id) !== task.updatedAt) return true;
+          }
+          return false;
+        };
 
-          if (
-            JSON.stringify(myResult) !== JSON.stringify(prevMyTasksRef.current)
-          ) {
-            setMyTasks(myResult || []);
-            prevMyTasksRef.current = myResult || [];
+        if (authUser?._id) {
+          const myResult = await dispatch(
+            getTasks({ userId: authUser._id, page: currentPage, limit })
+          ).unwrap();
+
+          if (tasksChanged(myResult.tasks, prevMyTasksRef.current.tasks)) {
+            setMyTasks((prev) => {
+              const combined = [...prev, ...(myResult.tasks || [])];
+              const unique = Array.from(
+                new Map(combined.map((t) => [t._id, t])).values()
+              );
+              return unique;
+            });
+            prevMyTasksRef.current = { tasks: myResult.tasks || [] };
           }
         }
+
         if (partnerUser?._id) {
           const partnerResult = await dispatch(
-            getTasks(partnerUser._id)
+            getTasks({
+              userId: partnerUser._id,
+              page: currentPagePartner,
+              limit,
+            })
           ).unwrap();
+
           if (
-            JSON.stringify(partnerResult) !==
-            JSON.stringify(prevPartnerTasksRef.current)
+            tasksChanged(partnerResult.tasks, prevPartnerTasksRef.current.tasks)
           ) {
-            setPartnerTasks(partnerResult || []);
-            prevPartnerTasksRef.current = partnerResult || [];
+            setPartnerTasks((prev) => {
+              const combined = [...prev, ...(partnerResult.tasks || [])];
+              const unique = Array.from(
+                new Map(combined.map((t) => [t._id, t])).values()
+              );
+              return unique;
+            });
+            prevPartnerTasksRef.current = { tasks: partnerResult.tasks || [] };
           }
+
+          // console.log(currentPagePartner);
+          // console.log("fetch", partnerResult.page);
+          // console.log("partnerUser", prevPartnerTasksRef.current);
+          // if (
+          //   JSON.stringify(partnerResult.tasks) !==
+          //   JSON.stringify(prevPartnerTasksRef.current.tasks)
+          // ) {
+          //   setPartnerTasks(partnerResult.tasks || []);
+          //   prevPartnerTasksRef.current = partnerResult || [];
+          // }
         }
         if (isMounted && !hasPolled) setHasPolled(true);
       } catch (err) {
@@ -129,9 +227,10 @@ function Tasks() {
     authUser?._id,
     partnerUser?._id,
     authUser?.partnerId,
-
     dispatch,
     hasPolled,
+    currentPagePartner,
+    currentPage,
   ]);
 
   useEffect(() => {
@@ -149,9 +248,9 @@ function Tasks() {
   // Use useMemo to memoize filteredTasks for referential stability
   const filteredTasks = React.useMemo(() => {
     const baseTasks = filter === "received" ? myTasks : partnerTasks;
-    console.log("Base tasks:", baseTasks);
+    const taskArray = Array.isArray(baseTasks) ? baseTasks : [];
 
-    return baseTasks.filter((task) => {
+    return taskArray.filter((task) => {
       const matchesCriteria =
         filterCriteria === "todas" ||
         (filterCriteria === "concluidas" && task.completed && task.verified) ||
@@ -159,8 +258,6 @@ function Tasks() {
           !task.completed &&
           !task.verified) ||
         (filterCriteria === "espera" && task.completed && !task.verified);
-
-      console.log(matchesCriteria, task.title);
 
       return matchesCriteria;
     });
@@ -253,6 +350,20 @@ function Tasks() {
     },
     [filter]
   );
+
+  const handleLoadMore = async () => {
+    setCurrentPage((prev) => {
+      console.log("Next page:", prev + 1);
+      return prev + 1;
+    });
+  };
+
+  const handleLoadMore2 = async () => {
+    setCurrentPagePartner((prev) => {
+      console.log("Next page:", prev + 1);
+      return prev + 1;
+    });
+  };
 
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
@@ -359,16 +470,16 @@ function Tasks() {
         prevProps.filter === nextProps.filter &&
         prevProps.tasksStatus === nextProps.tasksStatus &&
         prevProps.tasksError === nextProps.tasksError &&
-        prevProps.authUser?._id === nextProps.authUser?._id
+        prevProps.currentUser?._id === nextProps.currentUser?._id
       );
     }
   );
 
-  const hasTaskNotification = tasks.some(
-    (task) => task.notification === true && task.verified === false //&&
-    //task.assigned === true && // tarefa do parceiro
-    //task.completed === true // marcada como concluída
-  );
+  const hasTaskNotification = Array.isArray(tasks)
+    ? tasks.some(
+        (task) => task.notification === true && task.verified === false
+      )
+    : false;
 
   return (
     <div className="mainBody" id="tasksBody">
@@ -413,6 +524,26 @@ function Tasks() {
           handleOpenVerifyTaskModal={handleOpenVerifyTaskModal}
           hasPolled={hasPolled}
         />
+        {filter === "received" &&
+          hasMoreTasks &&
+          myTasks.length >= currentPage * limit && (
+            <div className="load-more-container">
+              <button className="submitBtn" onClick={() => handleLoadMore()}>
+                Carregar mais
+              </button>
+            </div>
+          )}
+
+        {filter === "assigned" &&
+          hasMoreTasks2 &&
+          partnerTasks.length >= currentPagePartner * limit && (
+            <div className="load-more-container">
+              <button className="submitBtn" onClick={() => handleLoadMore2()}>
+                Carregar mais
+              </button>
+            </div>
+          )}
+
         <button
           aria-label="Botão para adicionar nova tarefa"
           id="newTask"

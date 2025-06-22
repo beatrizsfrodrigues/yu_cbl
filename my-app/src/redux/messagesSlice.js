@@ -24,15 +24,21 @@ function authorizedConfig() {
 // ======================
 export const getMessages = createAsyncThunk(
   "messages/getMessages",
-  async (userId, { rejectWithValue }) => {
+  async ({ userId, page, limit }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
       }
 
-      const res = await axios.get(`${API_URL}/messages/user/${userId}`, config);
-      return res.data.chat;
+      const res = await axios.get(
+        `${API_URL}/messages/user/${userId}?page=${page}&limit=${limit}`,
+        config
+      );
+
+      console.log(res.data);
+
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
