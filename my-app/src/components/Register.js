@@ -281,7 +281,7 @@ const Register = () => {
               <span
                 className="terms-link"
                 style={{
-                  color: "#007bff",
+                 color: "var(--purple-dark)",
                   textDecoration: "underline",
                   cursor: "pointer",
                 }}
