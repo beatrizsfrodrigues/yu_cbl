@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./apresentacao.css";
-import { Link, useNavigate } from "react-router-dom";
 
 const pages = [
-  { title: "1. Questionário", text: "Antes de entrares nesta aventura connosco precisamos que respondas a 3 perguntas.", media: { type: "image", src: "/assets/imgs_Apresentacao/questionario.webp" } },
-  { title: "2. Cria a tua ligação", text: "Na página de ligação deves introduzir o código que representa o teu amigo. Se não tens, podes passar este passo e voltar mais tarde nas definições.", media: { type: "image", src: "/assets/imgs_Apresentacao/amigo.webp" } },
-  { title: "3. Explora a YU", text: "Tens 3 áreas: Casa (personaliza a tua YU), Tarefas (tudo do teu amigo) e Perfil (os teus dados e definições).", media: { type: "image", src: "/assets/imgs_Apresentacao/menu.webp" } },
-  { title: "4. Realiza tarefas", text: "Seleciona a tarefa, completa-a e envia uma prova em imagem para o teu amigo. Não vale batota!", media: { type: "video", src: "/assets/imgs_Apresentacao/verTarefa.mp4" } },
-  { title: "5. Bem-vindo à YU!", text: "Tudo está pronto para começares a tua aventura.", media: { type: "image", src: "/assets/imgs_Apresentacao/YUsaiaAMAR.webp" }, cta: { text: "Começar!", link: "/questions" } },
+  { title: "1. Questionário", text: "Antes de entrares nesta aventura connosco precisamos que respondas a alguns perguntas.", media: { type: "image", src: "/assets/imgs_Apresentacao/questionario.webp" } },
+  { title: "2. Cria a tua ligação", text: "Na página de ligação deves introduzir o código/código QR que representa o teu amigo. Se ainda não tens, podes passar este passo á frente e voltar mais tarde.Basta ires às definições.", media: { type: "image", src: "/assets/imgs_Apresentacao/ligacao.webp" } },
+  { title: "3. Explora a YU", text: "Tens 3 áreas: Casa (personaliza a tua YU), Tarefas (que deves completar com sucesso), Mensagens (onde podes enviar mensagens pré defenidas ao teu amigo) Perfil (com os teus dados e as definições).", media: { type: "video", src: "/assets/imgs_Apresentacao/menu.mp4" } },
+  { title: "4. Personaliza o teu YU", text: "Na secção da 'casa', consegues personalizar o teu Yu podes ir ao teu closet ou comprar novos acessórios (Não te esqueças de colecionar as estrelas para conseguires comprar tudo o que queres!) .", media: { type: "video", src: "/assets/imgs_Apresentacao/home.mp4", className: "small-video"  } },
+  { title: "5. Realiza tarefas", text: "Seleciona a tarefa, completa-a e envia uma prova em imagem para o teu amigo. Não vale batota!", media: { type: "video", src: "/assets/imgs_Apresentacao/verTarefa.mp4" } },
+  { title: "6. Bem-vindo à YU!",  media: { type: "image", src: "/assets/imgs_Apresentacao/YU-principal.svg" }, cta: { text: "Começar!", link: "/questions" } },
 ];
 
 export default function Apresentacao() {
@@ -17,6 +18,7 @@ export default function Apresentacao() {
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const last = pages.length - 1;
   const minSwipeDistance = 50;
 
@@ -45,6 +47,15 @@ export default function Apresentacao() {
     setTouchEnd(null);
   };
 
+  // Voltar: se veio de definições, faz history.back; senão vai para registo
+  const handleBack = () => {
+    if (location.state?.from === 'settings') {
+      navigate(-1);
+    } else {
+      navigate('/register');
+    }
+  };
+
   return (
     <div
       className="ap-fullscreen"
@@ -53,17 +64,17 @@ export default function Apresentacao() {
       onTouchEnd={handleTouchEnd}
     >
       <button
-          onClick={() => navigate("/register")}
-          disabled={current === 0}
-          aria-label="Voltar"
-          className="skip-voltar-btn"
-        >
-          <FaChevronLeft size={16} /> Voltar
-        </button>
+        onClick={handleBack}
+        disabled={current === 0 && location.state?.from !== 'settings'}
+        aria-label="Voltar"
+        className="skip-voltar-btn"
+      >
+        <FaChevronLeft size={16} /> Voltar
+      </button>
+
       {/* Header: Logo, Back and Skip */}
       <div className="skip-container">
         <img src="/assets/Logo/YU_boneca_a_frente.svg" alt="Logo YU" className="skip-logo" />
-        
         <button
           onClick={() => navigate('/questions')}
           className="skip-btn"
@@ -87,8 +98,8 @@ export default function Apresentacao() {
           exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.15 }}
         >
-          <h2 className="slide-title">{pages[current].title}</h2>
-          <p className="slide-text">{pages[current].text}</p>
+          {pages[current].title && <h2 className="slide-title">{pages[current].title}</h2>}
+          {pages[current].text && <p className="slide-text">{pages[current].text}</p>}
 
           {pages[current].media.type === 'image' ? (
             <img
@@ -98,7 +109,7 @@ export default function Apresentacao() {
             />
           ) : (
             <video
-              className="slide-media"
+              className={`slide-media ${pages[current].media.className || ""}`}
               src={pages[current].media.src}
               preload="auto"
               autoPlay

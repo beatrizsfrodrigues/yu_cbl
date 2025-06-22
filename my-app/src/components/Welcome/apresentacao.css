@@ -187,3 +187,7 @@
 .control-btn:not(:disabled):hover {
   background: var(--purple-dark);
 }
+ .small-video {
+  max-height: 30vh;
+  width: auto;
+}
