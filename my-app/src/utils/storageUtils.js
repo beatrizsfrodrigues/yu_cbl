@@ -1,12 +1,11 @@
-
 export function setAuthToken(token) {
   try {
+    console.log(token);
     localStorage.setItem("authToken", token);
   } catch (err) {
     console.error("Não foi possível gravar o token no localStorage:", err);
   }
 }
-
 
 export function getAuthToken() {
   try {
@@ -19,12 +18,12 @@ export function getAuthToken() {
 
 export function setAuthUser(userObj) {
   try {
+    console.log(userObj);
     localStorage.setItem("authUser", JSON.stringify(userObj));
   } catch (err) {
     console.error("Não foi possível gravar o user no localStorage:", err);
   }
 }
-
 
 export function getAuthUser() {
   try {
