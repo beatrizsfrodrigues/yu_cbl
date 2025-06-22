@@ -155,10 +155,27 @@ function Tasks() {
         console.log("page", currentPagePartner);
         const tasksChanged = (a = [], b = []) => {
           if (a.length !== b.length) return true;
-          const aMap = new Map(a.map((t) => [t._id, t.updatedAt]));
+
+          const taskMap = new Map(a.map((t) => [t._id, t]));
+
           for (const task of b) {
-            if (aMap.get(task._id) !== task.updatedAt) return true;
+            const prevTask = taskMap.get(task._id);
+            if (!prevTask) return true;
+
+            // Compare relevant fields — you can tweak which fields to include
+            const keysToCompare = [
+              "completed",
+              "verified",
+              "completedDate",
+              "rejectMessage",
+              "notification",
+              "picture",
+            ];
+            for (const key of keysToCompare) {
+              if (prevTask[key] !== task[key]) return true;
+            }
           }
+
           return false;
         };
 
