@@ -69,6 +69,37 @@ export const sendMessage = createAsyncThunk(
   }
 );
 
+// ======================
+// 3) Mensagens não lidas
+// ======================
+export const selectHasUnseenMessages = (state, authUserId) => {
+  const messages = state.messages?.data?.messages || [];
+  if (!authUserId) return false;
+  return messages.some(
+    (msg) => msg.receiverId === authUserId && msg.seen === false
+  );
+};
+
+// ======================
+// 4) Marcar mensagens como lidas
+// ======================
+export const markMessagesAsSeen = createAsyncThunk(
+  "messages/markMessagesAsSeen",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const config = authorizedConfig();
+      const res = await axios.patch(
+        `${API_URL}/messages/mark-seen/${userId}`,
+        {},
+        config
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const messagesSlice = createSlice({
   name: "messages",
   initialState: {
@@ -90,8 +121,8 @@ const messagesSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.fetchStatus = "succeeded";
         state.data = action.payload;
-        state.hasUnreadMessages = Array.isArray(action.payload)
-          ? action.payload.some((msg) => msg.seen === false)
+        state.hasUnreadMessages = Array.isArray(action.payload.messages)
+          ? action.payload.messages.some((msg) => msg.seen === false)
           : false;
       })
       .addCase(getMessages.rejected, (state, action) => {
