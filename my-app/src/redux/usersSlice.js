@@ -373,9 +373,9 @@ const userSlice = createSlice({
         s.status = "failed";
         s.error = a.payload;
       })
-       .addCase(updateUser.fulfilled, (state, action) => {
-        state.authUser = action.payload;  
-        })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.authUser = action.payload;
+      })
 
       .addCase(googleLogin.pending, (state) => {
         state.status = "loading";
@@ -422,8 +422,19 @@ const userSlice = createSlice({
         if (idx > -1) s.tasks[idx] = a.payload;
       })
       .addCase(notifyTasks.fulfilled, (s, a) => {
-        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
-        if (idx > -1) s.tasks[idx] = a.payload;
+        // Garante que s.tasks é um array
+        if (!Array.isArray(s.tasks)) s.tasks = [];
+
+        // Usa _id para comparar, pois é o padrão do MongoDB
+        const updatedTask = a.payload.task || a.payload; // depende do que retorna o backend
+        const idToCompare = updatedTask._id || updatedTask.id;
+
+        const idx = s.tasks.findIndex((t) => (t._id || t.id) === idToCompare);
+        if (idx > -1) {
+          s.tasks[idx] = updatedTask;
+        } else {
+          s.tasks.push(updatedTask);
+        }
       })
 
       // partner
