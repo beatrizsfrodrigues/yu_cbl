@@ -24,7 +24,7 @@ function authorizedConfig() {
 // ======================
 export const getTasks = createAsyncThunk(
   "tasks/getTasks",
-  async ({ userId, page, limit }, { rejectWithValue }) => {
+  async ({ userId, page, limit, filterCriteria }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
@@ -36,6 +36,19 @@ export const getTasks = createAsyncThunk(
         page,
         limit,
       });
+
+      if (filterCriteria === "concluidas") {
+        queryParams.append("completed", true);
+        queryParams.append("verified", true);
+      } else if (filterCriteria === "porConcluir") {
+        queryParams.append("completed", false);
+        queryParams.append("verified", false);
+      } else if (filterCriteria === "espera") {
+        queryParams.append("completed", true);
+        queryParams.append("verified", false);
+      }
+
+      console.log(queryParams.toString());
 
       const res = await axios.get(
         `${API_URL}/tasks?${queryParams.toString()}`,
@@ -160,16 +173,15 @@ export const removeRejectMessage = createAsyncThunk(
 // ======================
 export const notifyTasks = createAsyncThunk(
   "tasks/notifyTasks",
-  async (id, { rejectWithValue }) => {
+  async ({ id, notification }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
       }
-
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/notification`,
-        {},
+        { notification },
         config
       );
       return res.data;

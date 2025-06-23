@@ -5,6 +5,7 @@ import {
   setAuthUser,
   clearAuthStorage,
   getAuthUser as getStoredUser,
+  setAuthToken as setTokenInStorage,
 } from "../utils/storageUtils";
 
 import {
@@ -75,6 +76,36 @@ export const loginUser = createAsyncThunk(
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
       return rejectWithValue(msg);
+    }
+  }
+);
+
+export const googleLogin = createAsyncThunk(
+  "user/googleLogin",
+  async (credentialResponse, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(`${API_URL}/users/google-login`, {
+        credential: credentialResponse.credential,
+      });
+
+      const { token, user } = res.data;
+
+      if (token && user) {
+        setAuthUser(user);
+        setTokenInStorage(token);
+        return res.data;
+      } else {
+        return rejectWithValue(
+          "Google login succeeded, but token or user data was missing."
+        );
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message;
+      console.error(
+        "Error sending Google token to backend:",
+        error.response ? error.response.data : error.message
+      );
+      return rejectWithValue(msg || "Erro ao fazer login com Google.");
     }
   }
 );
@@ -342,9 +373,23 @@ const userSlice = createSlice({
         s.status = "failed";
         s.error = a.payload;
       })
-       .addCase(updateUser.fulfilled, (state, action) => {
-        state.authUser = action.payload;  
-        })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.authUser = action.payload;
+      })
+
+      .addCase(googleLogin.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.authUser = action.payload.user;
+        state.token = action.payload.token;
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
 
       // tarefas
       .addCase(getTasks.fulfilled, (s, a) => {
@@ -377,8 +422,19 @@ const userSlice = createSlice({
         if (idx > -1) s.tasks[idx] = a.payload;
       })
       .addCase(notifyTasks.fulfilled, (s, a) => {
-        const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
-        if (idx > -1) s.tasks[idx] = a.payload;
+        // Garante que s.tasks é um array
+        if (!Array.isArray(s.tasks)) s.tasks = [];
+
+        // Usa _id para comparar, pois é o padrão do MongoDB
+        const updatedTask = a.payload.task || a.payload; // depende do que retorna o backend
+        const idToCompare = updatedTask._id || updatedTask.id;
+
+        const idx = s.tasks.findIndex((t) => (t._id || t.id) === idToCompare);
+        if (idx > -1) {
+          s.tasks[idx] = updatedTask;
+        } else {
+          s.tasks.push(updatedTask);
+        }
       })
 
       // partner
