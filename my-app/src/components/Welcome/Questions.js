@@ -34,7 +34,12 @@ const Questions = () => {
     return <p>Nenhuma pergunta disponível.</p>;
 
   const activeQuestions = questionData.filter((q) => q.active);
-  const currentQuestion = activeQuestions[currentQuestionIndex];
+  // Se o utilizador não tiver partnerId, remove a pergunta com ID 4
+  const filteredQuestions = !authUser?.partnerId
+    ? activeQuestions.filter((q) => q._id !== "682476ffc8d9a279e03ed766")
+    : activeQuestions;
+
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
 
   if (!currentQuestion) return <p>Nenhuma pergunta ativa encontrada.</p>;
 
@@ -73,7 +78,7 @@ const Questions = () => {
 
     setFormAnswers(updatedAnswers);
 
-    if (currentQuestionIndex === activeQuestions.length - 1) {
+    if (currentQuestionIndex === filteredQuestions.length - 1) {
       try {
         await dispatch(postFormAnswers({ answers: updatedAnswers })).unwrap();
         navigate("/connection");
