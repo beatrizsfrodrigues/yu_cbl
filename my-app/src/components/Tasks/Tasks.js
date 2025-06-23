@@ -440,12 +440,6 @@ function Tasks() {
             filteredTasks?.map((task, index) => (
               <div className="taskDivOp" key={task._id}>
                 <div className="taskItemContainer">
-                  {/* Badge individual no canto superior direito */}
-                  {filter === "assigned" &&
-                    task.completed === true &&
-                    task.notification === true && (
-                      <span className="badge badge-corner"></span>
-                    )}
                   <button
                     className={`task-item ${
                       expandedTaskIndex === index ? "expanded" : ""
@@ -453,6 +447,12 @@ function Tasks() {
                     onClick={() => handleToggleTaskExpand(index)}
                     style={{ position: "relative" }}
                   >
+                    {/* Badge individual no canto superior direito */}
+                    {filter === "assigned" &&
+                      task.completed === true &&
+                      task.notification === true && (
+                        <span className="badge badge-corner"></span>
+                      )}
                     <p className="taskTitle">{task.title}</p>
                     {expandedTaskIndex === index && (
                       <p className="taskDescription">
