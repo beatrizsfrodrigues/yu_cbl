@@ -76,13 +76,30 @@
 .badge {
   position: absolute;
   top: -8%;
-  right: 4%;
+  right: 6%;
   width: 12px;
   height: 12px;
   background: red;
   border-radius: 50%;
-  z-index: 2;
+  z-index: 0;
   pointer-events: none;
+}
+
+.badge-corner {
+  position: absolute;
+  top: -9%;
+  right: 4%;
+  width: 14px;
+  height: 14px;
+  background: red;
+  border-radius: 50%;
+  display: inline-block;
+  z-index: 1;
+}
+
+.task-item.expanded .badge-corner {
+  top: -5%;
+  right: 6%;
 }
 
 .taskTitle {
@@ -264,6 +281,7 @@
   position: absolute;
   top: 50px;
   right: 24px;
+  z-index: 2;
 }
 
 #filter button {
@@ -387,7 +405,7 @@ button[aria-label="Abrir filtro"] .sliders {
   transition: all 0.3s ease;
   width: 100%;
   height: 60px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .taskDescription {
