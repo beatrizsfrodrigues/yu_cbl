@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { getAuthUser } from "../utils/storageUtils";
+import { selectHasUnseenMessages } from "../redux/messagesSlice";
 import { NavLink, useLocation } from "react-router-dom";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
-  const hasUnreadMessages = useSelector(
-    (state) => state.messages.hasUnreadMessages
+  const authUser = getAuthUser();
+  const hasUnreadMessages = useSelector((state) =>
+    selectHasUnseenMessages(state, authUser?._id)
   );
+
+  console.log("hasUnreadMessages:", hasUnreadMessages);
 
   const navItems = useMemo(
     () => [
@@ -35,7 +40,7 @@ function NavBar() {
       {
         path: "/messages",
         icon: (
-          <div>
+          <div style={{ position: "relative", display: "inline-block" }}>
             <ion-icon
               name="chatbubble-ellipses-outline"
               className="iconsNav"
