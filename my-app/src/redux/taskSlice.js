@@ -173,16 +173,15 @@ export const removeRejectMessage = createAsyncThunk(
 // ======================
 export const notifyTasks = createAsyncThunk(
   "tasks/notifyTasks",
-  async (id, { rejectWithValue }) => {
+  async ({ id, notification }, { rejectWithValue }) => {
     try {
       const config = authorizedConfig();
       if (!config.headers) {
         return rejectWithValue("Utilizador não autenticado (token em falta).");
       }
-
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/notification`,
-        {},
+        { notification },
         config
       );
       return res.data;
