@@ -5,12 +5,12 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./apresentacao.css";
 
 const pages = [
-  { title: "1. Questionário", text: "Antes de entrares nesta aventura connosco precisamos que respondas a alguns perguntas.", media: { type: "image", src: "/assets/imgs_Apresentacao/questionario.webp" } },
+  { title: "1. Questionário", text: "Antes de entrares nesta aventura connosco precisamos que respondas a algumas perguntas.", media: { type: "image", src: "/assets/imgs_Apresentacao/questionario.webp" } },
   { title: "2. Cria a tua ligação", text: "Na página de ligação deves introduzir o código/código QR que representa o teu amigo. Se ainda não tens, podes passar este passo á frente e voltar mais tarde.Basta ires às definições.", media: { type: "image", src: "/assets/imgs_Apresentacao/ligacao.webp" } },
   { title: "3. Explora a YU", text: "Tens 3 áreas: Casa (personaliza a tua YU), Tarefas (que deves completar com sucesso), Mensagens (onde podes enviar mensagens pré defenidas ao teu amigo) Perfil (com os teus dados e as definições).", media: { type: "video", src: "/assets/imgs_Apresentacao/menu.mp4" } },
   { title: "4. Personaliza o teu YU", text: "Na secção da 'casa', consegues personalizar o teu Yu podes ir ao teu closet ou comprar novos acessórios (Não te esqueças de colecionar as estrelas para conseguires comprar tudo o que queres!) .", media: { type: "video", src: "/assets/imgs_Apresentacao/home.mp4", className: "small-video"  } },
-  { title: "5. Realiza tarefas", text: "Seleciona a tarefa, completa-a e envia uma prova em imagem para o teu amigo. Não vale batota!", media: { type: "video", src: "/assets/imgs_Apresentacao/verTarefa.mp4" } },
-  { title: "6. Bem-vindo à YU!",  media: { type: "image", src: "/assets/imgs_Apresentacao/YU-principal.svg" }, cta: { text: "Começar!", link: "/questions" } },
+  { title: "5. Realiza tarefas", text: "Seleciona a tarefa, completa-a e envia uma prova em imagem para o teu amigo. Não vale batota!", media: { type: "video", src: "/assets/imgs_Apresentacao/tarefas.mp4" } },
+  { title: "6. Bem-vindo à YU!",  media: { type: "image", src: "/assets/imgs_Apresentacao/logo.png" }, cta: { text: "Começar!", link: "/questions" } },
 ];
 
 export default function Apresentacao() {

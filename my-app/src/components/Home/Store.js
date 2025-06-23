@@ -92,7 +92,7 @@ export default function Store({
                 >
                   <img src={item.src} alt={item.name} />
                 </button>
-                <p>{item.value} ⭐️</p>
+                <p>{item.value} <ion-icon name="star"></ion-icon></p>
               </div>
             ))}
           </div>
@@ -122,7 +122,7 @@ export default function Store({
                 }}
               >
                 {selectedFit.value}
-                <ion-icon name="star-outline" class="iconswhite" />
+                <ion-icon name="star"></ion-icon>
                 Comprar
               </button>
             ) : (
@@ -133,7 +133,7 @@ export default function Store({
                 }}
               >
                 {selectedFit.value}
-                <ion-icon name="star-outline" class="iconswhite" />
+                <ion-icon name="star"></ion-icon>
                 Comprar
               </button>
             )
