@@ -64,7 +64,7 @@ export default function Store({
                 className={`icons ${activeSection === idx ? "active" : ""}`}
                 onClick={() => {
                   setActiveSection(idx);
-                  resetFit(); // limpa preview
+                  
                 }}
                 aria-label="Mudar secção de acessórios"
               >
