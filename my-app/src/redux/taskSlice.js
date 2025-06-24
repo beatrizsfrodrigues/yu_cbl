@@ -204,9 +204,13 @@ const setError = (state, action) => {
 
 const updateTaskInState = (state, action) => {
   state.status = "succeeded";
-  const index = state.data.findIndex((task) => task.id === action.payload.id);
+  const index = state.data.findIndex((task) => task._id === action.payload._id);
   if (index !== -1) {
     state.data[index] = action.payload;
+  } else {
+    console.warn(
+      `Task with _id ${action.payload._id} not found in state.data for update.`
+    );
   }
 };
 
