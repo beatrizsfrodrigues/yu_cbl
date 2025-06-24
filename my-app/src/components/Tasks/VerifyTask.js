@@ -23,10 +23,10 @@ function VerifyTask({
 
     await dispatch(
       verifyTask({ id: task._id, rejectMessage: "", verify: true })
-    );
+    ).unrap();
 
     const updatedTask = {
-      ...task,
+      task,
       completed: true,
       verified: true,
       rejectMessage: "",
