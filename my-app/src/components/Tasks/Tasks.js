@@ -462,6 +462,61 @@ useEffect(() => {
     });
   };
 
+  const handleTaskConcluded = React.useCallback((updatedTask) => {
+    // A task being concluded typically belongs to 'myTasks' (received tasks)
+    // as it's the current user marking it complete.
+    // However, if your app allows partners to conclude *their own* assigned tasks,
+    // you might need to check 'partnerTasks' as well.
+    if (updatedTask.userId === authUser._id) {
+      setMyTasks((prevTasks) => {
+        const newTasks = prevTasks.map((task) =>
+          task._id === updatedTask._id ? updatedTask : task
+        );
+        // Use a Map to ensure uniqueness and efficient updates in the array
+        return Array.from(new Map(newTasks.map(t => [t._id, t])).values());
+      });
+    } else if (partnerUser && updatedTask.userId === partnerUser._id) {
+        // This block handles cases where a task in the partner's list might be concluded,
+        // though typically `completeTask` is for the logged-in user's tasks.
+        setPartnerTasks((prevTasks) => {
+            const newTasks = prevTasks.map((task) =>
+                task._id === updatedTask._id ? updatedTask : task
+            );
+            return Array.from(new Map(newTasks.map(t => [t._id, t])).values());
+        });
+    }
+
+    // Close the conclude modal after update
+    handleCloseConcludeTaskModal();
+  }, [authUser._id, partnerUser]); 
+
+
+const handleTaskVerified = React.useCallback((updatedTask) => {
+  if (updatedTask.userId === authUser._id) {
+    // It's a task assigned to the current user (myTasks)
+    setMyTasks((prevTasks) => {
+      // Find the task by ID and replace it with the updated version
+      const newTasks = prevTasks.map((task) =>
+        task._id === updatedTask._id ? updatedTask : task
+      );
+      // Ensure no duplicates and return
+      return Array.from(new Map(newTasks.map(t => [t._id, t])).values());
+    });
+  } else if (updatedTask.userId === authUser.partnerId || (partnerUser && updatedTask.userId === partnerUser._id)) {
+    // It's a task assigned by the current user to their partner (partnerTasks)
+    setPartnerTasks((prevTasks) => {
+      const newTasks = prevTasks.map((task) =>
+        task._id === updatedTask._id ? updatedTask : task
+      );
+      return Array.from(new Map(newTasks.map(t => [t._id, t])).values());
+    });
+  }
+  // Close the verify modal after update
+  handleCloseVerifyTaskModal();
+  handleShowPopUpInfo("Tarefa verificada com sucesso!");
+}, [authUser._id, authUser.partnerId, partnerUser]); // Add partnerUser to dependencies
+// ...
+
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
     function TasksList({
@@ -675,16 +730,18 @@ useEffect(() => {
         </Suspense>
       )}
       {isVerifyTaskOpen && (
-        <Suspense fallback={<LoadingScreen isOverlay />}>
-          <VerifyTask
-            onClose={handleCloseVerifyTaskModal}
-            partnerUser={partnerUser}
-            task={taskToVerify}
-            onShowPopUpInfo={handleShowPopUpInfo}
-            onReject={handleOpenRejectModal}
-          />
-        </Suspense>
-      )}
+  <Suspense fallback={<LoadingScreen isOverlay />}>
+    <VerifyTask
+      onClose={handleCloseVerifyTaskModal}
+      partnerUser={partnerUser}
+      task={taskToVerify}
+      onShowPopUpInfo={handleShowPopUpInfo}
+      onReject={handleOpenRejectModal}
+      // NEW PROP HERE:
+      onTaskVerified={handleTaskVerified} // We will define handleTaskVerified next
+    />
+  </Suspense>
+)}
       {isNewTaskModalOpen && authUser && (
         <Suspense fallback={<LoadingScreen isOverlay />}>
           <NewTask
@@ -697,13 +754,15 @@ useEffect(() => {
 
       {isConcludeTaskOpen && (
         <Suspense fallback={<LoadingScreen isOverlay />}>
-          <ConcludeTask
-            onClose={handleCloseConcludeTaskModal}
-            currentUser={authUser}
-            task={selectedTask}
-            onShowPopUpInfo={handleShowPopUpInfo}
-          />
-        </Suspense>
+      <ConcludeTask
+        onClose={handleCloseConcludeTaskModal}
+        currentUser={authUser}
+        task={selectedTask}
+        onShowPopUpInfo={handleShowPopUpInfo}
+        // NEW PROP HERE:
+        onTaskConcluded={handleTaskConcluded} // Pass the new callback
+      />
+    </Suspense>
       )}
       {isPopUpInfoOpen && (
         <Suspense fallback={<LoadingScreen isOverlay />}>
