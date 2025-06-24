@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTasks, removeRejectMessage } from "../../redux/taskSlice.js";
 import { getAuthUser } from "../../utils/storageUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice.js";
+import { notifyTasks } from "../../redux/taskSlice.js";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 import LoadingScreen from "../LoadingScreen.js";
@@ -46,7 +47,7 @@ function Tasks() {
   const [filter, setFilter] = useState("received");
   const [expandedTaskIndices, setExpandedTaskIndices] = useState({
     received: null,
-    attributed: null,
+    assigned: null,
   });
 
   const [myTasks, setMyTasks] = useState([]);
@@ -309,7 +310,7 @@ function Tasks() {
     };
 
     fetchPartner();
-  }, [authUser?.partnerId, dispatch, authUser]); // ✅ use only stable dependencies
+  }, [authUser?.partnerId, dispatch, authUser]); // use only stable dependencies
 
   //* open and close new task window
   const handleOpenNewTaskModal = () => {
@@ -368,13 +369,34 @@ function Tasks() {
   };
 
   const handleToggleTaskExpand = React.useCallback(
-    (index) => {
+    async (index) => {
       setExpandedTaskIndices((prev) => ({
         ...prev,
         [filter]: prev[filter] === index ? null : index,
       }));
+
+      // Só para tarefas atribuídas
+      if (filter === "assigned") {
+        const task = filteredTasks[index];
+        //console.log("Expand assigned task:", task);
+        if (task && task.notification === true) {
+          try {
+            // Atualiza notification na API
+            //console.log("Vai fazer PATCH para notification!");
+            await dispatch(notifyTasks({ id: task._id, notification: false }));
+            // Opcional: atualizar localmente para feedback imediato
+            setPartnerTasks((prev) =>
+              prev.map((t, i) =>
+                i === index ? { ...t, notification: false } : t
+              )
+            );
+          } catch (err) {
+            console.error("Erro ao atualizar notification:", err);
+          }
+        }
+      }
     },
-    [filter]
+    [filter, partnerTasks, dispatch]
   );
 
   const handleLoadMore = async () => {
@@ -423,7 +445,14 @@ function Tasks() {
                       expandedTaskIndex === index ? "expanded" : ""
                     } assignedTask`}
                     onClick={() => handleToggleTaskExpand(index)}
+                    style={{ position: "relative" }}
                   >
+                    {/* Badge individual no canto superior direito */}
+                    {filter === "assigned" &&
+                      task.completed === true &&
+                      task.notification === true && (
+                        <span className="badge badge-corner"></span>
+                      )}
                     <p className="taskTitle">{task.title}</p>
                     {expandedTaskIndex === index && (
                       <p className="taskDescription">
@@ -501,11 +530,15 @@ function Tasks() {
     }
   );
 
-  const hasTaskNotification = Array.isArray(tasks)
-    ? tasks.some(
-        (task) => task.notification === true && task.verified === false
-      )
-    : false;
+  const hasTaskNotification = React.useMemo(
+    () =>
+      Array.isArray(partnerTasks)
+        ? partnerTasks.some(
+            (task) => task.completed === true && task.notification === true
+          )
+        : false,
+    [partnerTasks]
+  );
 
   return (
     <div className="mainBody" id="tasksBody">

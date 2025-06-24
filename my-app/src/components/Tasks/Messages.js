@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import { getMessages, sendMessage } from "../../redux/messagesSlice";
 import { fetchPresetMessages } from "../../redux/presetMessagesSlice";
+import { markMessagesAsSeen } from "../../redux/messagesSlice";
 import { getAuthUser } from "../../utils/storageUtils";
 import { fetchPartnerUser } from "../../redux/usersSlice";
 import LoadingScreen from "../LoadingScreen";
@@ -133,6 +134,12 @@ function Messages() {
       dispatch(fetchPartnerUser(authUser.partnerId));
     }
   }, [authUser?.partnerId, dispatch]);
+
+  useEffect(() => {
+    if (authUser?._id) {
+      dispatch(markMessagesAsSeen(authUser._id));
+    }
+  }, [authUser?._id, dispatch]);
 
   //* fetch preset text messages
   useEffect(() => {
