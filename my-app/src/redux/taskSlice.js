@@ -137,7 +137,7 @@ export const verifyTask = createAsyncThunk(
         { rejectMessage, verified: verify },
         config
       );
-      return res.data;
+      return res.data.task || res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
