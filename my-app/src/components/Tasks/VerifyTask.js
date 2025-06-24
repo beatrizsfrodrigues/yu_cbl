@@ -2,37 +2,43 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { verifyTask } from "../../redux/taskSlice.js";
 
-
-function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject, onTaskVerified }) {
+function VerifyTask({
+  onClose,
+  partnerUser,
+  task,
+  onShowPopUpInfo,
+  onReject,
+  onTaskVerified,
+}) {
   const dispatch = useDispatch();
 
   if (!task) {
-    return null; 
+    return null;
   }
 
-  const handleVerifyTask = async (e) => { 
+  const handleVerifyTask = async (e) => {
     e.preventDefault();
 
     try {
-     
-      await dispatch(verifyTask({ id: task._id, rejectMessage: "", verify: true }));
+      console.log(task);
 
-      
+      await dispatch(
+        verifyTask({ id: task._id, rejectMessage: "", verify: true })
+      );
+
       const updatedTask = {
         ...task,
         completed: true,
-        verified: true, 
-        rejectMessage: "" 
+        verified: true,
+        rejectMessage: "",
       };
 
-      
       if (onTaskVerified) {
         onTaskVerified(updatedTask);
       }
 
-      onClose(); 
+      onClose();
       onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
-
     } catch (error) {
       console.error("Failed to verify task:", error);
       onShowPopUpInfo(`Erro ao validar a tarefa <b>${task.title}</b>.`);
@@ -59,11 +65,7 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject, onT
         <div className="line"></div>
         <div id="concludeTaskDiv">
           <h5 className="titleTask">{task.title}</h5>
-          <img
-            id="proofImage"
-            src={task.picture}
-            alt={task.picture}
-          />
+          <img id="proofImage" src={task.picture} alt={task.picture} />
         </div>
         <div id="btnGroupDiv">
           <button
