@@ -90,10 +90,7 @@ useEffect(() => {
             // The map inherently handles unique IDs.
             const newCombinedTasks = Array.from(existingTasksMap.values());
 
-            // To maintain order consistent with pagination, you might want to
-            // re-sort based on a timestamp or creation order, if `getTasks`
-            // doesn't guarantee the same order every time.
-            // For now, assuming `getTasks` returns consistent order for a given page.
+            
 
             return newCombinedTasks; // This ensures updates and new additions.
           });
