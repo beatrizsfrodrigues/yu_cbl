@@ -19,25 +19,20 @@ function VerifyTask({
   const handleVerifyTask = async (e) => {
     e.preventDefault();
 
-    console.log(task);
+    try {
+      const verifiedTask = await dispatch(
+        verifyTask({ id: task._id, rejectMessage: "", verify: true })
+      ).unwrap();
 
-    await dispatch(
-      verifyTask({ id: task._id, rejectMessage: "", verify: true })
-    ).unwrap();
+      if (onTaskVerified) {
+        onTaskVerified(verifiedTask); // Passa a task atualizada
+      }
 
-    const updatedTask = {
-      task,
-      completed: true,
-      verified: true,
-      rejectMessage: "",
-    };
-
-    if (onTaskVerified) {
-      onTaskVerified(updatedTask);
+      onClose();
+      onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
+    } catch (error) {
+      onShowPopUpInfo(`Erro ao validar a tarefa <b>${task.title}</b>.`);
     }
-
-    onClose();
-    onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
   };
 
   const handleRejectTask = (e) => {
