@@ -393,10 +393,10 @@ const userSlice = createSlice({
 
       // tarefas
       .addCase(getTasks.fulfilled, (s, a) => {
-        s.tasks = a.payload;
+        s.tasks = Array.isArray(a.payload) ? a.payload : [];
       })
       .addCase(completeTask.fulfilled, (state, action) => {
-        // Defensive: ensure tasks is an array
+        // Defensive: ensure tasks is an array *before* operations
         if (!Array.isArray(state.tasks)) {
           state.tasks = [];
         }
@@ -408,21 +408,32 @@ const userSlice = createSlice({
         if (idx > -1) {
           state.tasks[idx] = updatedTask;
         } else {
-          // Optionally add it if not found
           state.tasks.push(updatedTask);
         }
       })
-
       .addCase(verifyTask.fulfilled, (s, a) => {
+        if (!Array.isArray(s.tasks)) {
+          s.tasks = [];
+          // If it wasn't an array, there's nothing to find or update, so we can return early
+          return;
+        }
+
         const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
       .addCase(removeRejectMessage.fulfilled, (s, a) => {
+        // --- IMPORTANT FIX HERE ---
+        // Defensive: ensure s.tasks is an array before calling findIndex
+        if (!Array.isArray(s.tasks)) {
+          s.tasks = [];
+          return;
+        }
+
         const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
       .addCase(notifyTasks.fulfilled, (s, a) => {
-        // Garante que s.tasks é um array
+        // Garante que s.tasks é um array - You already had this, good!
         if (!Array.isArray(s.tasks)) s.tasks = [];
 
         // Usa _id para comparar, pois é o padrão do MongoDB
