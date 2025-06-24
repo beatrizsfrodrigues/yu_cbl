@@ -207,13 +207,7 @@ function Tasks() {
           ).unwrap();
 
           if (myResult && Array.isArray(myResult.tasks)) {
-            setMyTasks((prevTasks) => {
-              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
-              myResult.tasks.forEach((task) =>
-                updatedTasksMap.set(task._id, task)
-              );
-              return Array.from(updatedTasksMap.values());
-            });
+            setMyTasks(myResult.tasks);
           }
         }
 
@@ -230,13 +224,7 @@ function Tasks() {
           console.log("Partner tasks result:", partnerResult);
 
           if (partnerResult && Array.isArray(partnerResult.tasks)) {
-            setPartnerTasks((prevTasks) => {
-              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
-              partnerResult.tasks.forEach((task) =>
-                updatedTasksMap.set(task._id, task)
-              );
-              return Array.from(updatedTasksMap.values());
-            });
+            setPartnerTasks(partnerResult.tasks);
           }
         }
         if (isMounted && !hasPolled) setHasPolled(true);
