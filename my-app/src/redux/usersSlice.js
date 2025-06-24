@@ -414,6 +414,7 @@ const userSlice = createSlice({
       })
 
       .addCase(verifyTask.fulfilled, (s, a) => {
+        if (!Array.isArray(s.tasks)) s.tasks = [];
         const idx = s.tasks.findIndex((t) => t.id === a.payload.id);
         if (idx > -1) s.tasks[idx] = a.payload;
       })
