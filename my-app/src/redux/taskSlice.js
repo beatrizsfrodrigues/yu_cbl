@@ -134,7 +134,7 @@ export const verifyTask = createAsyncThunk(
 
       const res = await axios.patch(
         `${API_URL}/tasks/${id}/verify`,
-        { rejectMessage, verify },
+        { rejectMessage, verified: verify },
         config
       );
       return res.data;
