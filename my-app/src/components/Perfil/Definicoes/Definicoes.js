@@ -106,11 +106,59 @@ const Definicoes = ({ show, onClose }) => {
 
       {/* Popup Ligação Existente */}
       {showPopup && partner && (
-        <div className="popup-overlay" onClick={closePopup}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            {/* ... conteúdo do popup ... */}
-          </div>
-        </div>
+         <div className="popup-overlay" onClick={closePopup}>
+                   <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                     <h3>Ligação Existente</h3>
+                     <p>
+                       Já tens uma ligação com:
+                       <br />
+                       <strong>Parceiro:</strong> {partner.username}
+                       <br />
+                       <strong>Código do Parceiro:</strong> {partner.code}
+                     </p>
+         
+          
+                     <div className="avatars-container-popup">
+                     
+                       <div className="avatar-item-popup">
+                         <div className="avatar-username-popup">
+                           {authUserRedux?.username || authUser?.username || "–"}
+                         </div>
+                         <div className="avatar-wrapper">
+                           <Avatar
+                             mascot={authUserRedux?.mascot || null}
+                             equipped={authUserRedux?.accessoriesEquipped || {}}
+                             accessoriesList={accessories}
+                             size={64} 
+                           />
+                         </div>
+                       </div>
+         
+                 
+                       <div className="dotted-line-popup"></div>
+         
+               
+                       <div className="avatar-item-popup">
+                         <div className="avatar-username-popup">
+                           {partner.username}
+                         </div>
+                         <div className="avatar-wrapper">
+                           <Avatar
+                             mascot={partner.mascot}
+                             equipped={partner.accessoriesEquipped || {}}
+                             accessoriesList={accessories}
+                             size={64}
+                           />
+                         </div>
+                       </div>
+                     </div>
+                  
+         
+                     <button className="close-popup-button" onClick={closePopup}>
+                       Fechar
+                     </button>
+                   </div>
+                 </div>
       )}
 
       {/* Modal Principal Definições */}
