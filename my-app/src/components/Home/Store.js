@@ -92,7 +92,9 @@ export default function Store({
                 >
                   <img src={item.src} alt={item.name} />
                 </button>
-                <p>{item.value} <ion-icon name="star"></ion-icon></p>
+                <p>
+                  {item.value} <ion-icon name="star"></ion-icon>
+                </p>
               </div>
             ))}
           </div>
@@ -127,7 +129,9 @@ export default function Store({
               </button>
             ) : (
               <button
-                className="buttonMid btnHomeActive disabled"
+                className={`buttonMid btnHomeActive${
+                  selectedFit ? " buy-active" : ""
+                }`}
                 onClick={() => {
                   onShowPopUpInfo("Estrelas insuficientes!");
                 }}

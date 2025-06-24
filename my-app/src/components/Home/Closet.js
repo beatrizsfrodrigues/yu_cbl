@@ -5,7 +5,6 @@ import { equipAccessories } from "../../redux/usersSlice.js";
 const DEFAULT_COLOR_URL =
   "https://res.cloudinary.com/dinzra2oo/image/upload/v1748611193/YU-119_weajgx.svg";
 
-
 export default function Closet({
   ownedAccessories, // array
   equipped, // { background, shirt, hat, color, bigode, cachecol, chapeu, ouvidos, oculos }
@@ -33,7 +32,6 @@ export default function Closet({
   ];
 
   const { type, slot } = sections[active];
-
 
   let items = [];
   if (type === "Decor") {
@@ -74,18 +72,20 @@ export default function Closet({
     "oculos",
   ];
 
-function unequipAllAndSave() {
- 
-  ALL_SLOTS.forEach((s) => {
-    const t = typeBySlot[s];
-    dispatch(equipAccessories({ accessoryId: null, type: t }));
-  });
+  function unequipAllAndSave() {
+    ALL_SLOTS.forEach((s) => {
+      const t = typeBySlot[s];
+      dispatch(equipAccessories({ accessoryId: null, type: t }));
+    });
 
-  onPreview("color", null);
+    onPreview("color", null);
 
-  setTimeout(onSave, 50);
-}
+    setTimeout(onSave, 50);
+  }
 
+  const hasChanges = Object.values(equipped).some(
+    (v) => v !== null && v !== undefined
+  );
 
   return (
     <div className="closetOverlay">
@@ -116,15 +116,19 @@ function unequipAllAndSave() {
             <div className="avatarcontent">
               {items.map((it) => {
                 // se for Decor, slot é o type em minúsculas; caso contrário, é o slot padrão
-                const currSlot = type === "Decor" ? it.type.toLowerCase() : slot;
+                const currSlot =
+                  type === "Decor" ? it.type.toLowerCase() : slot;
 
                 // ativo se: (1) item normal e id coincidem OU (2) é cor default e nada equipado
                 const isActive =
                   equipped[currSlot] === it._id ||
-                  (currSlot === "color" && !equipped[currSlot] && it._id === "defaultColor");
+                  (currSlot === "color" &&
+                    !equipped[currSlot] &&
+                    it._id === "defaultColor");
 
                 // id a enviar para preview: para "defaultColor" usamos null
-                const nextId = it._id === "defaultColor" ? null : isActive ? null : it._id;
+                const nextId =
+                  it._id === "defaultColor" ? null : isActive ? null : it._id;
 
                 return (
                   <button
@@ -144,28 +148,31 @@ function unequipAllAndSave() {
         <div className="closetFooter">
           {/* 1. Botão “fechar” (cancela tudo) */}
           <button
-            className="profile-button btnHomeActive"
+            className="side-button btnHomeActive"
             onClick={closeCloset}
             aria-label="Fechar sem guardar"
           >
             <ion-icon name="close-outline" class="iconswhite" />
           </button>
 
-        
-
           {/* 3. Botão “Guardar” (aplica apenas o que estiver em pendingEquip) */}
-          <button className="buttonMid btnHomeActive" onClick={onSave}>
+          <button
+            className={`buttonMid btnHomeActive${
+              hasChanges ? " save-active" : ""
+            }`}
+            onClick={onSave}
+          >
             Guardar
           </button>
 
-            {/* 2. Botão “lixo” para desiquipar TUDO e guardar na BD */}
+          {/* 2. Botão “lixo” para desiquipar TUDO e guardar na BD */}
           <button
-            className="profile-button btnHomeActive"
+            className="side-button btnHomeActive"
             onClick={unequipAllAndSave}
             aria-label="Desequipar todos e guardar"
             style={{ margin: "0 8px" }}
           >
-            <ion-icon name="trash-outline" class="iconswhite" />
+            <ion-icon name="refresh-outline" class="iconswhite" />
           </button>
         </div>
       </div>
