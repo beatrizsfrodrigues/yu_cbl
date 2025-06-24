@@ -53,7 +53,7 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject, onT
           <ion-icon
             name="close-outline"
             onClick={onClose}
-            class="icons"
+            class="icons closeWindow"
           ></ion-icon>
         </div>
         <div className="line"></div>
@@ -61,7 +61,7 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject, onT
           <h5 className="titleTask">{task.title}</h5>
           <img
             id="proofImage"
-            src={`/imgsForUpload/${task.picture}`}
+            src={task.picture}
             alt={task.picture}
           />
         </div>
