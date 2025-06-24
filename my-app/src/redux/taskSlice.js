@@ -204,6 +204,12 @@ const setError = (state, action) => {
 
 const updateTaskInState = (state, action) => {
   state.status = "succeeded";
+
+  if (!Array.isArray(state.data)) {
+    console.error("state.data is not an array. Found:", state.data);
+    return;
+  }
+
   const index = state.data.findIndex((task) => task._id === action.payload._id);
   if (index !== -1) {
     state.data[index] = action.payload;
@@ -231,15 +237,17 @@ const tasksSlice = createSlice({
       // getTasks
       .addCase(getTasks.pending, setLoading)
       .addCase(getTasks.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        console.log("getTasks payload:", action.payload);
 
         const { tasks, page } = action.payload;
 
+        if (!Array.isArray(tasks)) {
+          console.error("Expected tasks to be an array but got:", tasks);
+        }
+
         if (page === 1) {
-          // first page, replace tasks
           state.data = tasks;
         } else {
-          // append to existing tasks
           state.data = [...state.data, ...tasks];
         }
       })
