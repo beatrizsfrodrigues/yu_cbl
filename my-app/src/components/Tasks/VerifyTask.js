@@ -2,25 +2,47 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { verifyTask } from "../../redux/taskSlice.js";
 
-function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
+
+function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject, onTaskVerified }) {
   const dispatch = useDispatch();
+
   if (!task) {
-    return null; // or a loader/message while waiting for task to be set
+    return null; 
   }
 
-  const handleVerifyTask = (e) => {
+  const handleVerifyTask = async (e) => { 
     e.preventDefault();
 
-    dispatch(verifyTask({ id: task._id, rejectMessage: "", verify: true }));
+    try {
+     
+      await dispatch(verifyTask({ id: task._id, rejectMessage: "", verify: true }));
 
-    onClose();
-    onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
+      
+      const updatedTask = {
+        ...task,
+        completed: true,
+        verified: true, 
+        rejectMessage: "" 
+      };
+
+      
+      if (onTaskVerified) {
+        onTaskVerified(updatedTask);
+      }
+
+      onClose(); 
+      onShowPopUpInfo(`Tarefa <b>${task.title}</b> foi validada com sucesso.`);
+
+    } catch (error) {
+      console.error("Failed to verify task:", error);
+      onShowPopUpInfo(`Erro ao validar a tarefa <b>${task.title}</b>.`);
+    }
   };
 
   const handleRejectTask = (e) => {
     e.preventDefault();
     onClose();
-    onReject({ task, partnerUser });
+    onReject(task); // Pass only the task object for rejection
   };
 
   return (
@@ -39,7 +61,6 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject }) {
           <h5 className="titleTask">{task.title}</h5>
           <img
             id="proofImage"
-            //! folder with images while we don't have a bd
             src={`/imgsForUpload/${task.picture}`}
             alt={task.picture}
           />

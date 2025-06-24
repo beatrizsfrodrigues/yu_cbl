@@ -1,5 +1,3 @@
-// src/components/Connection/Connection.js
-
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +6,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import QRScanner from "./QRScanner.js";
 import yu_icon from "../../assets/imgs/YU_icon/Group-48.webp";
 import qrIcon from '../../assets/imgs/Icons/qrcode-icon.svg';
-import { setAuthUser, getAuthUser } from "../../utils/storageUtils";
+import { setAuthUser, getAuthUser } from "../../utils/storageUtils"; // Keep for initial load/persistence
 import {
   fetchAuthUser,
   connectPartner,
@@ -18,45 +16,72 @@ import {
 const Connection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [hasPolled, setHasPolled] = React.useState(false);
 
-  // controla se o input de código deve aparecer
+  // Controls whether the code input should appear
   const [isCodeInputVisible, setIsCodeInputVisible] = useState(false);
 
-  // valor que o utilizador digita (o código do parceiro)
+  // Value the user types (partner's code)
   const [partnerCode, setPartnerCode] = useState("");
 
-  // infos do próprio utilizador (do cookie)
-  const [authUser] = useState(getAuthUser());
-  const [userCode, setUserCode] = useState("");
-  const [userName, setUserName] = useState("");
-
-  // nome do parceiro depois de conectar
+  // Partner's name after connection
   const [connectedUserName, setConnectedUserName] = useState("");
 
-  // mensagens de erro/sucesso
+  // Error/success messages
   const [message, setMessage] = useState("");
 
-  // flag para saber se já nos conectamos com sucesso
+  // Flag to know if we've successfully connected
   const [isConnected, setIsConnected] = useState(false);
 
-  // controla se o scanner de QRCode está visível
+  // Controls whether the QR code scanner is visible
   const [showScanner, setShowScanner] = useState(false);
 
-  // 1) pega o parceiro do estado Redux (após um fetchPartnerUser)
+  // 1) Get authUser from Redux state (should be populated by fetchAuthUser)
+  // Ensure your Redux user slice has an 'authUser' state
+  const authUser = useSelector((state) => state.user.authUser); // Assuming state.user.authUser
   const partner = useSelector((state) => state.user.partnerUser);
 
+  // Derive userCode and userName directly from Redux's authUser
+  const userCode = authUser?.code || "";
+  const userName = authUser?.username || "";
+
   // ───────────────────────────────────────────────
-  // Ao montar o componente, preenche userCode e userName
+  // Fetch auth user on component mount and set up polling
   // ───────────────────────────────────────────────
   useEffect(() => {
-    if (authUser) {
-      setUserCode(authUser.code);
-      setUserName(authUser.username);
-    } else {
-      setMessage("Nenhum utilizador autenticado.");
+    // Attempt to load from storage first if Redux state is empty
+    if (!authUser) {
+      const storedUser = getAuthUser();
+      if (storedUser) {
+        // Dispatch an action to update Redux state with the stored user
+        // You'll need an action like 'setAuthUserFromStorage' in your slice
+        // For simplicity, I'm just showing the dispatch here.
+        // dispatch(setAuthUserFromStorage(storedUser));
+        // Or, if fetchAuthUser handles initial load and persistence well:
+        dispatch(fetchAuthUser()); // This should get the user from API/cookie
+      }
     }
-  }, [authUser]);
+
+    const POLL_INTERVAL = 2000;
+    const pollUser = async () => {
+      try {
+        const resultAction = await dispatch(fetchAuthUser());
+        // If the user has a partnerId after polling, navigate
+        if (resultAction.payload?.partnerId) {
+          navigate("/home");
+        }
+      } catch (err) {
+        console.error("Polling failed:", err);
+      }
+    };
+
+    // Run immediately and then poll
+    pollUser();
+    const intervalId = setInterval(pollUser, POLL_INTERVAL);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [dispatch, navigate, authUser]); // Add authUser to dependencies to re-run if it changes
 
   useEffect(() => {
     if (isConnected && partner && partner.username) {
@@ -64,47 +89,16 @@ const Connection = () => {
     }
   }, [partner, isConnected]);
 
-  useEffect(() => {
-    let isMounted = true;
-    const POLL_INTERVAL = 2000;
-
-    const pollUser = async () => {
-      try {
-        // 1. Atualiza o Redux + espera o resultado
-        const resultAction = await dispatch(fetchAuthUser());
-
-        if (resultAction.payload !== authUser) {
-          const freshUser = resultAction.payload;
-          setAuthUser(freshUser);
-          if (freshUser?.partnerId) {
-            navigate("/home");
-          }
-        }
-      } catch (err) {
-        console.error("Polling falhou:", err);
-      }
-    };
-
-    pollUser(); // Executa imediatamente
-    const intervalId = setInterval(pollUser, POLL_INTERVAL);
-
-    return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-    };
-  }, [hasPolled, navigate]);
-
   // ───────────────────────────────────────────────
-  // Alterna entre mostrar input de código ou não
+  // Toggle visibility of code input / scanner
   // ───────────────────────────────────────────────
   const handleClick = () => {
     if (showScanner) {
       setShowScanner(false);
-      // Aguarda desmontar o QRScanner antes de mostrar o código
       setTimeout(() => {
         setIsCodeInputVisible((v) => !v);
         setMessage("");
-      }, 300); // dá tempo do QRScanner limpar câmera
+      }, 300);
     } else {
       setIsCodeInputVisible((v) => !v);
       setMessage("");
@@ -118,14 +112,20 @@ const Connection = () => {
     }
 
     try {
-      await dispatch(fetchPartnerUser());
-      await dispatch(connectPartner({ code: partnerCode }));
+      // You should connect the partner *first*, then fetch the partner user
+      const connectResult = await dispatch(connectPartner({ code: partnerCode }));
 
-      setPartnerCode("");
-      setIsConnected(true);
-      setMessage("Conexão realizada com sucesso ✔");
+      if (connectPartner.fulfilled.match(connectResult)) {
+        // After successful connection, fetch the partner user details
+        await dispatch(fetchPartnerUser());
+        setPartnerCode("");
+        setIsConnected(true);
+        setMessage("Conexão realizada com sucesso ✔");
+      } else {
+        setMessage(connectResult.payload || "Falha na ligação. Tente novamente.");
+      }
     } catch (err) {
-      setMessage(err || "Falha na ligação. Tente novamente.");
+      setMessage(err.message || "Falha na ligação. Tente novamente."); // Access error message
     }
   };
 
@@ -135,20 +135,18 @@ const Connection = () => {
 
   const handleScanSuccess = async (scannedCode) => {
     try {
-      // se deu certo, fetchPartnerUser e redireciona
-      await dispatch(fetchPartnerUser());
-      const result = await dispatch(connectPartner({ code: scannedCode }));
+      const connectResult = await dispatch(connectPartner({ code: scannedCode }));
 
-      if (connectPartner.fulfilled.match(result)) {
-        await dispatch(fetchPartnerUser()); // Agora faz sentido: já há parceiro ligado
+      if (connectPartner.fulfilled.match(connectResult)) {
+        await dispatch(fetchPartnerUser());
         setShowScanner(false);
         navigate("/home");
       } else {
-        setMessage(result.payload || "Falha na ligação. Tente novamente.");
+        setMessage(connectResult.payload || "Falha na ligação. Tente novamente.");
         setShowScanner(false);
       }
     } catch (error) {
-      setMessage(error || "Falha na ligação via QR. Tente novamente.");
+      setMessage(error.message || "Falha na ligação via QR. Tente novamente.");
       setShowScanner(false);
     }
   };
@@ -157,11 +155,13 @@ const Connection = () => {
     <div className="connection-page mainBody">
       <h1>Cria uma ligação mútua</h1>
 
+      {/* ... (rest of your JSX) ... */}
+
       {!isCodeInputVisible ? (
         <div className="connection-placeholder">
           <div className="profile-images">
             <div className="profile-item">
-              <span className="profile-label">{userName || "user"}</span>
+              <span className="profile-label">{userName || "user"}</span> {/* Use userName from Redux */}
               <img
                 src={yu_icon}
                 alt="User Profile"
@@ -218,7 +218,7 @@ const Connection = () => {
 
           {isCodeInputVisible ? (
             <div className="qr-section">
-              <span className="generated-code">{userCode}</span>
+              <span className="generated-code">{userCode}</span> {/* Use userCode from Redux */}
               <QRCodeCanvas
                 value={userCode}
                 size={180}
