@@ -137,6 +137,10 @@
   background-color: var(--purple-dark);
 }
 
+.buttonMid.btnHomeActive.save-active {
+  background-color: var(--purple);
+}
+
 /*? Avatar Styling */
 .avatarheader {
   padding: 0px 16px;
@@ -362,6 +366,11 @@ button.avatarcircle.activeFit {
 .buttonMid.btnHomeActive:active {
   background-color: var(--purple-darker);
 } /* catarina a mexer */
+
+.buttonMid.btnHomeActive.buy-active {
+  background-color: var(--purple);
+  color: white;
+}
 
 .ClassStar p {
   color: var(--purple-darker);
