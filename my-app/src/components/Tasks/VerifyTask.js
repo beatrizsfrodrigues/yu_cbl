@@ -23,7 +23,7 @@ function VerifyTask({
 
     await dispatch(
       verifyTask({ id: task._id, rejectMessage: "", verify: true })
-    ).unrap();
+    ).unwrap();
 
     const updatedTask = {
       task,
