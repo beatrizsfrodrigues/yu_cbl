@@ -246,7 +246,7 @@ const Register = () => {
                         Object.values(passwordRequirements).every(Boolean)
                           ? "icon-green"
                           : "icon-red"
-                      }`} 
+                      }`}
                     />
                   </button>
                 </label>
@@ -359,7 +359,66 @@ const Register = () => {
         <PasswordModal
           isOpen={isPasswordModalOpen}
           onClose={togglePasswordModal}
-        />
+        >
+          <ul className="password-requirements">
+            <li
+              className={passwordRequirements.minLength ? "valid" : "invalid"}
+            >
+              {passwordRequirements.minLength ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{" "}
+              Pelo menos 6 caracteres
+            </li>
+            <li
+              className={
+                passwordRequirements.hasUpperCase ? "valid" : "invalid"
+              }
+            >
+              {passwordRequirements.hasUpperCase ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{" "}
+              Pelo menos uma letra maiúscula
+            </li>
+            <li
+              className={
+                passwordRequirements.hasLowerCase ? "valid" : "invalid"
+              }
+            >
+              {passwordRequirements.hasLowerCase ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{" "}
+              Pelo menos uma letra minúscula
+            </li>
+            <li
+              className={passwordRequirements.hasNumbers ? "valid" : "invalid"}
+            >
+              {passwordRequirements.hasNumbers ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{" "}
+              Pelo menos um número
+            </li>
+            <li
+              className={
+                passwordRequirements.hasSpecialChar ? "valid" : "invalid"
+              }
+            >
+              {passwordRequirements.hasSpecialChar ? (
+                <i className="bi bi-check-circle" />
+              ) : (
+                <i className="bi bi-x-circle" />
+              )}{" "}
+              Pelo menos um caractere especial
+            </li>
+          </ul>
+        </PasswordModal>
       </Suspense>
 
       <TermsModal
