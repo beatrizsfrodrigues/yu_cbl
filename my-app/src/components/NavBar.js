@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getMessages } from "../redux/messagesSlice";
 import { getAuthUser } from "../utils/storageUtils";
 import { selectHasUnseenMessages } from "../redux/messagesSlice";
 import { NavLink, useLocation } from "react-router-dom";
 import "../assets/css/NavBar.css";
 
 function NavBar() {
+  const dispatch = useDispatch();
   const authUser = getAuthUser();
   const hasUnreadMessages = useSelector((state) =>
     selectHasUnseenMessages(state, authUser?._id)
   );
+
+  // Polling para atualizar mensagens a cada 5 segundos
+  useEffect(() => {
+    if (!authUser?._id) return;
+    const interval = setInterval(() => {
+      dispatch(getMessages({ userId: authUser._id, page: 1, limit: 5 }));
+    }, 5000); // 5 segundos
+
+    return () => clearInterval(interval);
+  }, [authUser?._id, dispatch]);
 
   console.log("hasUnreadMessages:", hasUnreadMessages);
 

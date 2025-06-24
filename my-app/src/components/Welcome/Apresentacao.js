@@ -117,15 +117,16 @@ export default function Apresentacao() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Botão Voltar */}
-      <button
-        onClick={handleBack}
-        disabled={current === 0 && location.state?.from !== "settings"}
-        aria-label="Voltar"
-        className="skip-voltar-btn"
-      >
-        <FaChevronLeft size={16} /> Voltar
-      </button>
+     {/* Só mostra o botão se viermos de “settings” */}
+      {location.state?.from === 'settings' && (
+        <button
+          onClick={handleBack}
+          aria-label="Voltar"
+          className="skip-voltar-btn"
+        >
+          <FaChevronLeft size={16} /> Voltar
+        </button>
+      )}
 
       {/* Header: Logo e Skip */}
       <div className="skip-container">
