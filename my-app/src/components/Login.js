@@ -49,7 +49,7 @@ const Login = () => {
         setAuthUser(user);
 
         if (user.role === "admin") {
-          window.location.href = `http://localhost:3002?token=${token}`;
+          window.location.href = `https://yu-admin-five.vercel.app/dashboard?token=${token}`;
         } else {
           navigate("/home");
         }
