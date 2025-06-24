@@ -8,6 +8,7 @@ import { notifyTasks } from "../../redux/taskSlice.js";
 import TopBar from "../TopBar.js";
 import "./tasks.css";
 import LoadingScreen from "../LoadingScreen.js";
+import _ from "lodash";
 
 const ConcludeTask = lazy(() => import("./ConcludeTask.js"));
 const VerifyTask = lazy(() => import("./VerifyTask.js"));
@@ -61,9 +62,11 @@ function Tasks() {
 
   const limit = 5;
 
+  // This useEffect handles initial fetches and "load more"
   useEffect(() => {
     if (authUser?._id) {
-      const fetchTasks = async () => {
+      const fetchMyTasks = async () => {
+        // Renamed for clarity
         try {
           const myResult = await dispatch(
             getTasks({
@@ -76,38 +79,40 @@ function Tasks() {
 
           if (Array.isArray(myResult.tasks)) {
             setMyTasks((prevTasks) => {
-              const newTasks =
-                currentPage === 1
-                  ? myResult.tasks
-                  : [
-                      ...(Array.isArray(prevTasks) ? prevTasks : []),
-                      ...myResult.tasks,
-                    ];
-              const uniqueTasks = Array.from(
-                new Map(newTasks.map((t) => [t._id, t])).values()
+              const existingTasksMap = new Map(
+                (Array.isArray(prevTasks) ? prevTasks : []).map((t) => [
+                  t._id,
+                  t,
+                ])
               );
-              return uniqueTasks;
+
+              myResult.tasks.forEach((task) => {
+                existingTasksMap.set(task._id, task);
+              });
+
+              const newCombinedTasks = Array.from(existingTasksMap.values());
+
+              return newCombinedTasks;
             });
-            console.log(myResult);
-            // Verifica se ainda há mais tarefas
             setHasMoreTasks(myResult.total > currentPage * limit);
           } else {
             console.warn("Unexpected task result for myTasks:", myResult);
-            setHasMoreTasks(false); // No tasks or unexpected format, so no more tasks
+            setHasMoreTasks(false);
           }
         } catch (err) {
           console.error("Failed to fetch tasks:", err);
           setHasMoreTasks(false);
         }
       };
-
-      fetchTasks();
+      fetchMyTasks();
     }
   }, [authUser?._id, currentPage, dispatch, limit, filterCriteria]);
 
+  // This useEffect handles initial fetches and "load more" for partner tasks
   useEffect(() => {
     if (authUser?.partnerId) {
-      const fetchPartnerTasks = async () => {
+      const fetchPartnerData = async () => {
+        // Renamed for clarity
         try {
           if (!partnerUser) {
             const part = await dispatch(
@@ -129,19 +134,20 @@ function Tasks() {
 
           if (Array.isArray(result?.tasks)) {
             setPartnerTasks((prevTasks) => {
-              const newTasks =
-                currentPagePartner === 1
-                  ? result.tasks
-                  : [
-                      ...(Array.isArray(prevTasks) ? prevTasks : []),
-                      ...result.tasks,
-                    ];
-              const uniqueTasks = Array.from(
-                new Map(newTasks.map((t) => [t._id, t])).values()
+              const existingTasksMap = new Map(
+                (Array.isArray(prevTasks) ? prevTasks : []).map((t) => [
+                  t._id,
+                  t,
+                ])
               );
-              return uniqueTasks;
-            });
 
+              result.tasks.forEach((task) => {
+                existingTasksMap.set(task._id, task);
+              });
+
+              const newCombinedTasks = Array.from(existingTasksMap.values());
+              return newCombinedTasks;
+            });
             setHasMoreTasks2(result.total > currentPagePartner * limit);
           } else {
             console.warn("Unexpected partner task result:", result);
@@ -151,7 +157,7 @@ function Tasks() {
           console.error("Failed to fetch partner user:", err);
         }
       };
-      fetchPartnerTasks();
+      fetchPartnerData();
     }
   }, [
     authUser?.partnerId,
@@ -168,33 +174,17 @@ function Tasks() {
   useEffect(() => {
     let isMounted = true;
     const POLL_INTERVAL = 5000;
+
     const pollTasks = async () => {
       try {
-        // const tasksChanged = (a = [], b = []) => {
-        //   if (a.length !== b.length) return true;
+        let shouldUpdateMyTasks = false;
+        let shouldUpdatePartnerTasks = false;
+        let fetchedMyTasks = [];
+        let fetchedPartnerTasks = [];
 
-        //   const taskMap = new Map(a.map((t) => [t._id, t]));
-
-        //   for (const task of b) {
-        //     const prevTask = taskMap.get(task._id);
-        //     if (!prevTask) return true;
-
-        //     // Compare relevant fields — you can tweak which fields to include
-        //     const keysToCompare = [
-        //       "completed",
-        //       "verified",
-        //       "completedDate",
-        //       "rejectMessage",
-        //       "notification",
-        //       "picture",
-        //     ];
-        //     for (const key of keysToCompare) {
-        //       if (prevTask[key] !== task[key]) return true;
-        //     }
-        //   }
-
-        //   return false;
-        // };
+        const areTasksEqual = (taskA, taskB) => {
+          return JSON.stringify(taskA) === JSON.stringify(taskB);
+        };
 
         if (authUser?._id) {
           const myResult = await dispatch(
@@ -208,11 +198,22 @@ function Tasks() {
 
           if (myResult && Array.isArray(myResult.tasks)) {
             setMyTasks((prevTasks) => {
-              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
-              myResult.tasks.forEach((task) =>
-                updatedTasksMap.set(task._id, task)
-              );
-              return Array.from(updatedTasksMap.values());
+              const currentTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
+              let hasChanges = false;
+
+              myResult.tasks.forEach((polledTask) => {
+                const existingTask = currentTasksMap.get(polledTask._id);
+                if (!existingTask || !areTasksEqual(existingTask, polledTask)) {
+                  currentTasksMap.set(polledTask._id, polledTask); // Replace task
+                  hasChanges = true;
+                }
+              });
+
+              const newTasksArray = Array.from(currentTasksMap.values());
+              if (hasChanges || newTasksArray.length !== prevTasks.length) {
+                return newTasksArray;
+              }
+              return prevTasks; // No actual changes
             });
           }
         }
@@ -227,15 +228,24 @@ function Tasks() {
             })
           ).unwrap();
 
-          console.log("Partner tasks result:", partnerResult);
-
           if (partnerResult && Array.isArray(partnerResult.tasks)) {
             setPartnerTasks((prevTasks) => {
-              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
-              partnerResult.tasks.forEach((task) =>
-                updatedTasksMap.set(task._id, task)
-              );
-              return Array.from(updatedTasksMap.values());
+              const currentTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
+              let hasChanges = false;
+
+              partnerResult.tasks.forEach((polledTask) => {
+                const existingTask = currentTasksMap.get(polledTask._id);
+                if (!existingTask || !areTasksEqual(existingTask, polledTask)) {
+                  currentTasksMap.set(polledTask._id, polledTask); // Replace task
+                  hasChanges = true;
+                }
+              });
+
+              const newTasksArray = Array.from(currentTasksMap.values());
+              if (hasChanges || newTasksArray.length !== prevTasks.length) {
+                return newTasksArray;
+              }
+              return prevTasks; // No actual changes
             });
           }
         }
@@ -253,11 +263,12 @@ function Tasks() {
   }, [
     authUser?._id,
     partnerUser?._id,
-    authUser?.partnerId,
     dispatch,
     hasPolled,
     currentPagePartner,
     currentPage,
+    filterCriteria, // CRITICAL: This was missing previously and affects which tasks are polled
+    limit, // CRITICAL: This was missing previously
   ]);
 
   useEffect(() => {
@@ -375,16 +386,11 @@ function Tasks() {
         [filter]: prev[filter] === index ? null : index,
       }));
 
-      // Só para tarefas atribuídas
       if (filter === "assigned") {
         const task = filteredTasks[index];
-        //console.log("Expand assigned task:", task);
         if (task && task.notification === true) {
           try {
-            // Atualiza notification na API
-            //console.log("Vai fazer PATCH para notification!");
             await dispatch(notifyTasks({ id: task._id, notification: false }));
-            // Opcional: atualizar localmente para feedback imediato
             setPartnerTasks((prev) =>
               prev.map((t, i) =>
                 i === index ? { ...t, notification: false } : t
@@ -412,6 +418,62 @@ function Tasks() {
       return prev + 1;
     });
   };
+
+  const handleTaskConcluded = React.useCallback(
+    (updatedTask) => {
+      if (updatedTask.userId === authUser._id) {
+        setMyTasks((prevTasks) => {
+          const newTasks = prevTasks.map((task) =>
+            task._id === updatedTask._id ? updatedTask : task
+          );
+          return Array.from(new Map(newTasks.map((t) => [t._id, t])).values());
+        });
+      } else if (partnerUser && updatedTask.userId === partnerUser._id) {
+        setPartnerTasks((prevTasks) => {
+          const newTasks = prevTasks.map((task) =>
+            task._id === updatedTask._id ? updatedTask : task
+          );
+          return Array.from(new Map(newTasks.map((t) => [t._id, t])).values());
+        });
+      }
+
+      // Close the conclude modal after update
+      handleCloseConcludeTaskModal();
+    },
+    [authUser._id, partnerUser]
+  );
+
+  const handleTaskVerified = React.useCallback(
+    (updatedTask) => {
+      if (updatedTask.userId === authUser._id) {
+        // It's a task assigned to the current user (myTasks)
+        setMyTasks((prevTasks) => {
+          // Find the task by ID and replace it with the updated version
+          const newTasks = prevTasks.map((task) =>
+            task._id === updatedTask._id ? updatedTask : task
+          );
+          // Ensure no duplicates and return
+          return Array.from(new Map(newTasks.map((t) => [t._id, t])).values());
+        });
+      } else if (
+        updatedTask.userId === authUser.partnerId ||
+        (partnerUser && updatedTask.userId === partnerUser._id)
+      ) {
+        // It's a task assigned by the current user to their partner (partnerTasks)
+        setPartnerTasks((prevTasks) => {
+          const newTasks = prevTasks.map((task) =>
+            task._id === updatedTask._id ? updatedTask : task
+          );
+          return Array.from(new Map(newTasks.map((t) => [t._id, t])).values());
+        });
+      }
+      // Close the verify modal after update
+      handleCloseVerifyTaskModal();
+      handleShowPopUpInfo("Tarefa verificada com sucesso!");
+    },
+    [authUser._id, authUser.partnerId, partnerUser]
+  ); // Add partnerUser to dependencies
+  // ...
 
   // Use React.memo with custom areEqual for TasksList
   const TasksList = React.memo(
@@ -633,6 +695,8 @@ function Tasks() {
             task={taskToVerify}
             onShowPopUpInfo={handleShowPopUpInfo}
             onReject={handleOpenRejectModal}
+            // NEW PROP HERE:
+            onTaskVerified={handleTaskVerified} // We will define handleTaskVerified next
           />
         </Suspense>
       )}
@@ -653,6 +717,8 @@ function Tasks() {
             currentUser={authUser}
             task={selectedTask}
             onShowPopUpInfo={handleShowPopUpInfo}
+            // NEW PROP HERE:
+            onTaskConcluded={handleTaskConcluded} // Pass the new callback
           />
         </Suspense>
       )}

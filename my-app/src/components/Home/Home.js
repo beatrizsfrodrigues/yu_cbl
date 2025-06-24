@@ -1,9 +1,8 @@
-// src/components/Home/Home.js
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  fetchAuthUser,
+  fetchAuthUser, // This is the action you'll poll
   fetchOwnedAccessories,
   fetchEquippedAccessories,
   buyAccessory,
@@ -28,7 +27,7 @@ export default function Home() {
   const dispatch = useDispatch();
 
   /* ─── Redux state ────────────────────────── */
-  const user = useSelector((s) => s.user.authUser);
+  const user = useSelector((s) => s.user.authUser); // User data, including points
   const owned = useSelector((s) => s.user.ownedAccessories);
   const equipped = useSelector((s) => s.user.equippedAccessories);
   const accessories = useSelector((s) => s.accessories.data);
@@ -74,15 +73,45 @@ export default function Home() {
     [accessories]
   );
 
-  /* ─── Carregamento inicial ───────────────── */
+  /* ─── Initial Data Loading & Polling for User Points ───────────────── */
   useEffect(() => {
+    // Initial fetches when the component mounts
     dispatch(fetchAuthUser());
     dispatch(fetchOwnedAccessories());
     dispatch(fetchEquippedAccessories());
     dispatch(fetchAccessories());
-  }, [dispatch]);
 
-  /* ─── Quando equipped chegar, atualiza layers ─── */
+    // Polling for user points (specifically `fetchAuthUser`)
+    const POLL_INTERVAL = 5000; // Poll every 5 seconds
+    let isMounted = true; // Flag to check if the component is mounted
+
+    const pollUserPoints = async () => {
+      try {
+        if (isMounted) { // Only dispatch if the component is still mounted
+          // No need to check JSON.stringify or prevUser,
+          // Redux useSelector will automatically re-render when 'user.authUser' changes.
+          await dispatch(fetchAuthUser()).unwrap();
+        }
+      } catch (err) {
+        // You might want to handle specific error types or inform the user
+        console.error("Failed to poll user points:", err);
+      }
+    };
+
+    // Run once immediately
+    pollUserPoints();
+    // Set up the interval for continuous polling
+    const intervalId = setInterval(pollUserPoints, POLL_INTERVAL);
+
+    // Cleanup function: Clear the interval when the component unmounts
+    return () => {
+      isMounted = false; // Set flag to false on unmount
+      clearInterval(intervalId);
+    };
+  }, [dispatch]); // Dependency array: only re-run if 'dispatch' changes (it's stable)
+
+
+  /* ─── When equipped data arrives, update layers ─── */
   useEffect(() => {
     if (!accessories) return;
     setSelectedBackground(findById(equipped.background));
@@ -150,9 +179,9 @@ export default function Home() {
     setSelectedFit(item);
     dressUp(item, item.type);
   };
-  
+
 const resetFit = () => {
-  setSelectedFit(null);       
+  setSelectedFit(null);
 
   setSelectedBackground(origBackground);
   setSelectedShirt(origShirt);
@@ -186,11 +215,11 @@ const resetFit = () => {
     setOrigShirt(selectedShirt);
     setOrigAcc(selectedAcc);
     setOrigColor(selectedColor);
-    setOrigBigode((origBigode) => setOrigBigode(selectedBigode));
-    setOrigCachecol((origCachecol) => setOrigCachecol(selectedCachecol));
-    setOrigChapeu((origChapeu) => setOrigChapeu(selectedChapeu));
-    setOrigOuvidos((origOuvidos) => setOrigOuvidos(selectedOuvidos));
-    setOrigOculos((origOculos) => setOrigOculos(selectedOculos));
+    setOrigBigode(selectedBigode); // Corrected this line
+    setOrigCachecol(selectedCachecol); // Corrected this line
+    setOrigChapeu(selectedChapeu); // Corrected this line
+    setOrigOuvidos(selectedOuvidos); // Corrected this line
+    setOrigOculos(selectedOculos); // Corrected this line
 
     setPendingEquip({});
     setShowCloset(true);
@@ -249,7 +278,7 @@ const resetFit = () => {
            updateUser({ ...user, mascot: DEFAULT_COLOR_URL })
          ).unwrap();
        } else {
-         const item = findById(id);         
+         const item = findById(id);
          if (item) {
            await dispatch(
              updateUser({ ...user, mascot: item.src })
@@ -387,7 +416,7 @@ const resetFit = () => {
           <TopBar>
             <div className="ClassStar">
               <ion-icon name="star-outline" class="icons" />
-              <p>{formatPoints(user.points)}</p>
+              <p>{formatPoints(user.points)}</p> {/* User points displayed here */}
             </div>
             <div className="buttonsCloset">
               <button
