@@ -61,204 +61,256 @@ function Tasks() {
 
   const limit = 5;
 
-  useEffect(() => {
-    if (authUser?._id) {
-      const fetchTasks = async () => {
-        try {
-          const myResult = await dispatch(
-            getTasks({
-              userId: authUser._id,
-              page: currentPage,
-              limit,
-              filterCriteria,
-            })
-          ).unwrap();
+  // This useEffect handles initial fetches and "load more"
+useEffect(() => {
+  if (authUser?._id) {
+    const fetchMyTasks = async () => { // Renamed for clarity
+      try {
+        const myResult = await dispatch(
+          getTasks({
+            userId: authUser._id,
+            page: currentPage,
+            limit,
+            filterCriteria,
+          })
+        ).unwrap();
 
-          if (Array.isArray(myResult.tasks)) {
-            setMyTasks((prevTasks) => {
-              const newTasks =
-                currentPage === 1
-                  ? myResult.tasks
-                  : [
-                      ...(Array.isArray(prevTasks) ? prevTasks : []),
-                      ...myResult.tasks,
-                    ];
-              const uniqueTasks = Array.from(
-                new Map(newTasks.map((t) => [t._id, t])).values()
-              );
-              return uniqueTasks;
+        if (Array.isArray(myResult.tasks)) {
+          setMyTasks((prevTasks) => {
+            // Create a Map of existing tasks for quick lookup and update
+            const existingTasksMap = new Map((Array.isArray(prevTasks) ? prevTasks : []).map((t) => [t._id, t]));
+
+            // Add or update tasks from the current fetched page
+            myResult.tasks.forEach(task => {
+                existingTasksMap.set(task._id, task);
             });
-            console.log(myResult);
-            // Verifica se ainda há mais tarefas
-            setHasMoreTasks(myResult.total > currentPage * limit);
-          } else {
-            console.warn("Unexpected task result for myTasks:", myResult);
-            setHasMoreTasks(false); // No tasks or unexpected format, so no more tasks
-          }
-        } catch (err) {
-          console.error("Failed to fetch tasks:", err);
+
+            // If it's the first page, just return the tasks from this page.
+            // Otherwise, merge with existing, prioritizing new data for updates.
+            // The map inherently handles unique IDs.
+            const newCombinedTasks = Array.from(existingTasksMap.values());
+
+            // To maintain order consistent with pagination, you might want to
+            // re-sort based on a timestamp or creation order, if `getTasks`
+            // doesn't guarantee the same order every time.
+            // For now, assuming `getTasks` returns consistent order for a given page.
+
+            return newCombinedTasks; // This ensures updates and new additions.
+          });
+          setHasMoreTasks(myResult.total > currentPage * limit);
+        } else {
+          console.warn("Unexpected task result for myTasks:", myResult);
           setHasMoreTasks(false);
         }
-      };
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
+        setHasMoreTasks(false);
+      }
+    };
+    fetchMyTasks();
+  }
+}, [authUser?._id, currentPage, dispatch, limit, filterCriteria]);
 
-      fetchTasks();
-    }
-  }, [authUser?._id, currentPage, dispatch, limit, filterCriteria]);
 
-  useEffect(() => {
-    if (authUser?.partnerId) {
-      const fetchPartnerTasks = async () => {
-        try {
-          if (!partnerUser) {
-            const part = await dispatch(
-              fetchPartnerUser(authUser.partnerId)
-            ).unwrap();
-            if (part) {
-              setPartnerUser(part);
-            }
-          }
-
-          const result = await dispatch(
-            getTasks({
-              userId: partnerUser?._id || authUser.partnerId,
-              page: currentPagePartner,
-              limit,
-              filterCriteria,
-            })
+// This useEffect handles initial fetches and "load more" for partner tasks
+useEffect(() => {
+  if (authUser?.partnerId) {
+    const fetchPartnerData = async () => { // Renamed for clarity
+      try {
+        if (!partnerUser) {
+          const part = await dispatch(
+            fetchPartnerUser(authUser.partnerId)
           ).unwrap();
+          if (part) {
+            setPartnerUser(part);
+          }
+        }
 
-          if (Array.isArray(result?.tasks)) {
-            setPartnerTasks((prevTasks) => {
-              const newTasks =
-                currentPagePartner === 1
-                  ? result.tasks
-                  : [
-                      ...(Array.isArray(prevTasks) ? prevTasks : []),
-                      ...result.tasks,
-                    ];
-              const uniqueTasks = Array.from(
-                new Map(newTasks.map((t) => [t._id, t])).values()
-              );
-              return uniqueTasks;
+        const result = await dispatch(
+          getTasks({
+            userId: partnerUser?._id || authUser.partnerId,
+            page: currentPagePartner,
+            limit,
+            filterCriteria,
+          })
+        ).unwrap();
+
+        if (Array.isArray(result?.tasks)) {
+          setPartnerTasks((prevTasks) => {
+            const existingTasksMap = new Map((Array.isArray(prevTasks) ? prevTasks : []).map((t) => [t._id, t]));
+
+            result.tasks.forEach(task => {
+                existingTasksMap.set(task._id, task);
             });
 
-            setHasMoreTasks2(result.total > currentPagePartner * limit);
-          } else {
-            console.warn("Unexpected partner task result:", result);
-            setHasMoreTasks2(false);
-          }
-        } catch (err) {
-          console.error("Failed to fetch partner user:", err);
+            const newCombinedTasks = Array.from(existingTasksMap.values());
+            return newCombinedTasks;
+          });
+          setHasMoreTasks2(result.total > currentPagePartner * limit);
+        } else {
+          console.warn("Unexpected partner task result:", result);
+          setHasMoreTasks2(false);
         }
-      };
-      fetchPartnerTasks();
-    }
-  }, [
-    authUser?.partnerId,
-    currentPagePartner,
-    dispatch,
-    limit,
-    filterCriteria,
-    partnerUser,
-  ]);
+      } catch (err) {
+        console.error("Failed to fetch partner user:", err);
+      }
+    };
+    fetchPartnerData();
+  }
+}, [
+  authUser?.partnerId,
+  currentPagePartner,
+  dispatch,
+  limit,
+  filterCriteria,
+  partnerUser,
+]);
+
 
   const prevMyTasksRef = React.useRef([]);
   const prevPartnerTasksRef = React.useRef([]);
 
   useEffect(() => {
-    let isMounted = true;
-    const POLL_INTERVAL = 5000;
-    const pollTasks = async () => {
-      try {
-        // const tasksChanged = (a = [], b = []) => {
-        //   if (a.length !== b.length) return true;
+  let isMounted = true;
+  const POLL_INTERVAL = 5000;
 
-        //   const taskMap = new Map(a.map((t) => [t._id, t]));
+  const pollTasks = async () => {
+    try {
+      let shouldUpdateMyTasks = false;
+      let shouldUpdatePartnerTasks = false;
+      let fetchedMyTasks = [];
+      let fetchedPartnerTasks = [];
 
-        //   for (const task of b) {
-        //     const prevTask = taskMap.get(task._id);
-        //     if (!prevTask) return true;
+      // Fetch all tasks that the user has currently loaded (combining all pages)
+      // This implies your `getTasks` needs to support fetching ALL without pagination
+      // or you need to loop through all `currentPage`s up to the current max.
+      // For simplicity, let's assume getTasks(userId, filterCriteria) returns all.
+      // If not, you might need to adjust your backend or fetch strategy here.
 
-        //     // Compare relevant fields — you can tweak which fields to include
-        //     const keysToCompare = [
-        //       "completed",
-        //       "verified",
-        //       "completedDate",
-        //       "rejectMessage",
-        //       "notification",
-        //       "picture",
-        //     ];
-        //     for (const key of keysToCompare) {
-        //       if (prevTask[key] !== task[key]) return true;
-        //     }
-        //   }
+      // For a robust solution, you'd likely fetch *all* tasks matching the filter criteria
+      // for the current user and partner, then reconcile with the current state.
+      // To integrate with pagination, it's more complex if the poll also paginates.
+      // Let's assume the poll should update *all* currently loaded tasks.
 
-        //   return false;
-        // };
+      // A more robust polling for "all loaded tasks" would involve:
+      // 1. Fetching all tasks for authUser matching filterCriteria.
+      // 2. Fetching all tasks for partnerUser matching filterCriteria.
+      // 3. Merging these full sets with the *current* myTasks/partnerTasks state.
 
-        if (authUser?._id) {
-          const myResult = await dispatch(
-            getTasks({
-              userId: authUser._id,
-              page: currentPage,
-              limit,
-              filterCriteria,
-            })
-          ).unwrap();
+      // Reverting polling to fetch current page tasks, but making the merge smarter.
+      // The assumption is that only tasks on the currently visible page might change,
+      // or that changes on other pages will be picked up when those pages are loaded.
+      // This is a trade-off for performance.
 
-          if (myResult && Array.isArray(myResult.tasks)) {
-            setMyTasks((prevTasks) => {
-              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
-              myResult.tasks.forEach((task) =>
-                updatedTasksMap.set(task._id, task)
-              );
-              return Array.from(updatedTasksMap.values());
+      // Let's modify the polling to fetch just the *current pages* but update existing tasks.
+      // The full list (myTasks, partnerTasks) already has merged data.
+      // The poll should update *only* the specific tasks it fetches.
+
+      if (authUser?._id) {
+        const myResult = await dispatch(
+          getTasks({
+            userId: authUser._id,
+            // For polling, we might actually want to fetch a broader set or specifically
+            // by IDs if we knew which ones might change.
+            // Sticking to current page/limit for now, as that's what's been discussed.
+            page: currentPage,
+            limit,
+            filterCriteria,
+          })
+        ).unwrap();
+
+        if (myResult && Array.isArray(myResult.tasks)) {
+          setMyTasks((prevTasks) => {
+            const currentTasksMap = new Map((Array.isArray(prevTasks) ? prevTasks : []).map((t) => [t._id, t]));
+            let hasChanges = false;
+
+            myResult.tasks.forEach((polledTask) => {
+              const existingTask = currentTasksMap.get(polledTask._id);
+              if (
+                !existingTask || // Task is new (shouldn't happen on a fixed page poll, but good safeguard)
+                existingTask.completed !== polledTask.completed ||
+                existingTask.verified !== polledTask.verified ||
+                existingTask.rejectMessage !== polledTask.rejectMessage ||
+                existingTask.notification !== polledTask.notification ||
+                existingTask.title !== polledTask.title ||
+                existingTask.description !== polledTask.description
+              ) {
+                currentTasksMap.set(polledTask._id, polledTask); // Update or add
+                hasChanges = true;
+              }
             });
-          }
+
+            // If any tasks were updated or new ones added, create a new array.
+            // Crucially, this maintains all previously loaded tasks.
+            const newTasksArray = Array.from(currentTasksMap.values());
+            if (hasChanges || newTasksArray.length !== prevTasks.length) {
+              return newTasksArray;
+            }
+            return prevTasks; // No actual changes, prevent re-render
+          });
         }
-
-        if (partnerUser?._id) {
-          const partnerResult = await dispatch(
-            getTasks({
-              userId: partnerUser._id,
-              page: currentPagePartner,
-              limit,
-              filterCriteria,
-            })
-          ).unwrap();
-
-          console.log("Partner tasks result:", partnerResult);
-
-          if (partnerResult && Array.isArray(partnerResult.tasks)) {
-            setPartnerTasks((prevTasks) => {
-              const updatedTasksMap = new Map(prevTasks.map((t) => [t._id, t]));
-              partnerResult.tasks.forEach((task) =>
-                updatedTasksMap.set(task._id, task)
-              );
-              return Array.from(updatedTasksMap.values());
-            });
-          }
-        }
-        if (isMounted && !hasPolled) setHasPolled(true);
-      } catch (err) {
-        console.error("Failed to poll tasks:", err);
       }
-    };
-    pollTasks(); // Run once immediately
-    const intervalId = setInterval(pollTasks, POLL_INTERVAL);
-    return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-    };
-  }, [
-    authUser?._id,
-    partnerUser?._id,
-    authUser?.partnerId,
-    dispatch,
-    hasPolled,
-    currentPagePartner,
-    currentPage,
-  ]);
+
+      if (partnerUser?._id) {
+        const partnerResult = await dispatch(
+          getTasks({
+            userId: partnerUser._id,
+            page: currentPagePartner,
+            limit,
+            filterCriteria,
+          })
+        ).unwrap();
+
+        if (partnerResult && Array.isArray(partnerResult.tasks)) {
+          setPartnerTasks((prevTasks) => {
+            const currentTasksMap = new Map((Array.isArray(prevTasks) ? prevTasks : []).map((t) => [t._id, t]));
+            let hasChanges = false;
+
+            partnerResult.tasks.forEach((polledTask) => {
+              const existingTask = currentTasksMap.get(polledTask._id);
+              if (
+                !existingTask ||
+                existingTask.completed !== polledTask.completed ||
+                existingTask.verified !== polledTask.verified ||
+                existingTask.rejectMessage !== polledTask.rejectMessage ||
+                existingTask.notification !== polledTask.notification ||
+                existingTask.title !== polledTask.title ||
+                existingTask.description !== polledTask.description
+              ) {
+                currentTasksMap.set(polledTask._id, polledTask);
+                hasChanges = true;
+              }
+            });
+
+            const newTasksArray = Array.from(currentTasksMap.values());
+            if (hasChanges || newTasksArray.length !== prevTasks.length) {
+              return newTasksArray;
+            }
+            return prevTasks;
+          });
+        }
+      }
+      if (isMounted && !hasPolled) setHasPolled(true);
+    } catch (err) {
+      console.error("Failed to poll tasks:", err);
+    }
+  };
+  pollTasks(); // Run once immediately
+  const intervalId = setInterval(pollTasks, POLL_INTERVAL);
+  return () => {
+    isMounted = false;
+    clearInterval(intervalId);
+  };
+}, [
+  authUser?._id,
+  partnerUser?._id,
+  dispatch,
+  hasPolled,
+  currentPagePartner,
+  currentPage,
+  filterCriteria, // CRITICAL: This was missing previously and affects which tasks are polled
+  limit, // CRITICAL: This was missing previously
+]);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {
