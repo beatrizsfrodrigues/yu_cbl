@@ -168,6 +168,7 @@ useEffect(() => {
   const prevPartnerTasksRef = React.useRef([]);
 
   useEffect(() => {
+
   let isMounted = true;
   const POLL_INTERVAL = 5000;
 
@@ -248,6 +249,7 @@ useEffect(() => {
         }
       }
 
+
       if (partnerUser?._id) {
         const partnerResult = await dispatch(
           getTasks({
@@ -285,6 +287,7 @@ useEffect(() => {
             }
             return prevTasks;
           });
+
         }
       }
       if (isMounted && !hasPolled) setHasPolled(true);
