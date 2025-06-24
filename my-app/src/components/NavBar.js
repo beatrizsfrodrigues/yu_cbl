@@ -82,9 +82,12 @@ function NavBar() {
 
   useEffect(() => {
     const updateItemWidth = () => {
-      if (window.innerWidth <= 768) {
-        setItemWidth(70); // Mobile
+      if (window.innerWidth <= 450) {
+        console.log("Mobile view detected");
+        console.log(window.innerWidth - window.innerWidth / 1.2);
+        setItemWidth(window.innerWidth - window.innerWidth / 1.21); // Mobile
       } else {
+        console.log("Desktop view detected");
         setItemWidth(80); // Desktop
       }
     };
