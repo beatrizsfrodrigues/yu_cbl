@@ -53,7 +53,7 @@ function VerifyTask({ onClose, partnerUser, task, onShowPopUpInfo, onReject, onT
           <ion-icon
             name="close-outline"
             onClick={onClose}
-            class="icons closeWindow"
+            class="icons"
           ></ion-icon>
         </div>
         <div className="line"></div>
